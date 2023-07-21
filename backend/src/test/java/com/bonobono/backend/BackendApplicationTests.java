@@ -1,10 +1,10 @@
-package com.ssafy.bonobono;
+package com.bonobono.backend;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class BonobonoApplicationTests {
+class BackendApplicationTests {
 
 	@Test
 	void contextLoads() {

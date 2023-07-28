@@ -26,5 +26,4 @@ public class ChatRoom extends BaseTimeEntity { //생성시각 상속
         this.sender=sender;
     }
 
-
 }

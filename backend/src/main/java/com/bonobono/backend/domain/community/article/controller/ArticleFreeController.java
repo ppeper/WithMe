@@ -2,6 +2,7 @@ package com.bonobono.backend.domain.community.article.controller;
 
 import com.bonobono.backend.domain.community.article.dto.req.ArticleCommentRequestDto;
 import com.bonobono.backend.domain.community.article.dto.req.ArticleFreeSaveRequestDto;
+import com.bonobono.backend.domain.community.article.dto.req.ArticleFreeUpdateRequestDto;
 import com.bonobono.backend.domain.community.article.dto.res.ArticleFreeDetailResponseDto;
 import com.bonobono.backend.domain.community.article.dto.res.ArticleFreeListResponseDto;
 import com.bonobono.backend.domain.community.article.service.ArticleCommentService;
@@ -20,22 +21,40 @@ public class ArticleFreeController {
 
     private final ArticleCommentService articleCommentService;
 
-    // 자유게시판 전체 글 조회
-    @GetMapping("")
-    public List<ArticleFreeListResponseDto> findAllDesc(){
-        return articleFreeService.findAllDesc();
-    }
-    
     // 자유게시판 글쓰기
     @PostMapping("")
     public Long save(@RequestBody ArticleFreeSaveRequestDto requestDto){
         return articleFreeService.save(requestDto);
     }
 
-    // 자유게시판 특정 글과 글에 대한 댓글 조회 (조회수 추가하기)
+    // 자유게시판 글에 댓글 쓰기
+    @PostMapping("/{id}/comment")
+    public Long saveComment(@PathVariable Long id, @RequestBody ArticleCommentRequestDto requestDto){
+        return articleCommentService.save(requestDto);
+    }
+
+    // 자유게시판 전체 글 조회
+    @GetMapping("")
+    public List<ArticleFreeListResponseDto> findAllDesc(){
+        return articleFreeService.findAllDesc();
+    }
+
+    // 자유게시판 특정 글, 글에 관한 댓글 조회하기
     @GetMapping("/{id}")
     public ArticleFreeDetailResponseDto findById(@PathVariable Long id){
         return articleFreeService.findById(id);
+    }
+
+    // 자유게시판 게시글 검색 (키워드가 제목, 내용 포함)
+    @GetMapping("/search")
+    public List<ArticleFreeListResponseDto> search(@RequestParam("keyword") String keyword){
+        return articleFreeService.search(keyword);
+    }
+
+    // 자유게시판 특정 글 수정
+    @PatchMapping("/{id}")
+    public Long update(@PathVariable Long id, @RequestBody ArticleFreeUpdateRequestDto requestDto){
+        return articleFreeService.update(id , requestDto);
     }
 
     // 자유게시판 특정 글 삭제
@@ -45,23 +64,14 @@ public class ArticleFreeController {
         return id;
     }
 
-    // 자유게시판 특정 글 수정
-    @PatchMapping("/{id}")
-    public Long update(@PathVariable Long id, @RequestBody ArticleFreeSaveRequestDto requestDto){
-        return articleFreeService.update(id , requestDto);
-    }
+    // ----- 기본 CRUD 외 Service 로직들 -----
 
-    // 자유게시판 게시글 검색 (키워드가 제목, 내용 포함)
-    @GetMapping("/search")
-    public List<ArticleFreeListResponseDto> search(@RequestParam("keyword") String keyword){
-        return articleFreeService.search(keyword);
-    }
-
+    /*
     // 자유게시판 특정 글 좋아요 (같은 member 좋아요 누르면 취소 되는 것 추가하기)
-
-    // 자유게시판 글에 댓글 쓰기
-    @PostMapping("/{id}/comment")
-    public Long saveComment(@PathVariable Long id, @RequestBody ArticleCommentRequestDto requestDto){
-        return articleCommentService.save(requestDto);
+    @PatchMapping("/{id}/like")
+    public Long like(@PathVariable Long id){
+        return articleFreeService.like(id);
     }
+
+     */
 }

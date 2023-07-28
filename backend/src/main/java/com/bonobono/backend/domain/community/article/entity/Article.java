@@ -12,6 +12,7 @@ import org.hibernate.annotations.OnDeleteAction;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @NoArgsConstructor
@@ -52,6 +53,9 @@ public class Article extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "article", fetch = FetchType.LAZY)
     private List<ArticleComment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "article", fetch = FetchType.LAZY)
+    private Set<ArticleLike> articleLikes;
 
     @Builder
     public Article(ArticleType type, String title, String content, String image, String urlTitle, String url, Member member) {

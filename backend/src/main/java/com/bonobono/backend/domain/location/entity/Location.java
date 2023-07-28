@@ -1,4 +1,4 @@
-package com.bonobono.backend.location.entity;
+package com.bonobono.backend.domain.location.entity;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

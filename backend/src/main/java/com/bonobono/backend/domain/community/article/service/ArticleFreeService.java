@@ -1,6 +1,7 @@
 package com.bonobono.backend.domain.community.article.service;
 
 import com.bonobono.backend.domain.community.article.dto.req.ArticleFreeSaveRequestDto;
+import com.bonobono.backend.domain.community.article.dto.req.ArticleFreeUpdateRequestDto;
 import com.bonobono.backend.domain.community.article.dto.res.ArticleFreeDetailResponseDto;
 import com.bonobono.backend.domain.community.article.dto.res.ArticleFreeListResponseDto;
 import com.bonobono.backend.domain.community.article.entity.Article;
@@ -23,14 +24,6 @@ public class ArticleFreeService {
 
     private final MemberRepository memberRepository;
 
-    // 자유게시판 전체글 내림차순
-    @Transactional(readOnly = true) // readOnly를 사용하여 조회 기능만 남겨두어 조회속도가 개선
-    public List<ArticleFreeListResponseDto> findAllDesc() {
-        return articleRepository.findAllDesc().stream()
-                .map(ArticleFreeListResponseDto::new)
-                .collect(Collectors.toList());
-    }
-
     // 자유게시판 글 저장
     @Transactional
     public Long save(ArticleFreeSaveRequestDto requestDto){
@@ -39,13 +32,37 @@ public class ArticleFreeService {
         return articleRepository.save(requestDto.toEntity(member)).getId();
     }
 
+    // 자유게시판 전체글 내림차순
+    @Transactional(readOnly = true) // readOnly를 사용하여 조회 기능만 남겨두어 조회속도가 개선
+    public List<ArticleFreeListResponseDto> findAllDesc() {
+        return articleRepository.findAllDesc().stream()
+                .map(ArticleFreeListResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
+    // 자유게시판 글 검색
+    @Transactional(readOnly = true) // readOnly를 사용하여 조회 기능만 남겨두어 조회속도가 개선
+    public List<ArticleFreeListResponseDto> search(String keyword) {
+        return articleRepository.findByTitleContainingOrContentContaining(keyword, keyword).stream()
+                .map(ArticleFreeListResponseDto::new)
+                .collect(Collectors.toList());
+    }
 
     // 자유게시판 특정글 조회
     public ArticleFreeDetailResponseDto findById(Long id){
         Article article = articleRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id =" + id));
-        article.increaseViews(article.getViews());
+        articleRepository.updateView(id); // 조회수 1 증가
         return new ArticleFreeDetailResponseDto(article);
+    }
+
+    // 자유게시판 특정 글 수정
+    @Transactional
+    public Long update(Long id, ArticleFreeUpdateRequestDto requestDto){
+        Article article = articleRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
+        article.updateFree(requestDto.getTitle(), requestDto.getContent(), requestDto.getImage());
+        return id;
     }
 
     // 자유게시판 특정글 삭제
@@ -57,21 +74,14 @@ public class ArticleFreeService {
         articleRepository.delete(article);
     }
 
-    // 자유게시판 특정 글 수정
+    // ----- 기본 CRUD 외 Service 로직들 -----
+
+    /*    // 자유게시판 글 좋아요
     @Transactional
-    public Long update(Long id, ArticleFreeSaveRequestDto requestDto){
-        Article article = articleRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
-        article.updateFree(requestDto.getTitle(), requestDto.getContent(), requestDto.getImage());
-        return id;
+    public Long like(Long id){
+        return articleRepository.
     }
 
-    // 자유게시판 글 검색
-    @Transactional(readOnly = true) // readOnly를 사용하여 조회 기능만 남겨두어 조회속도가 개선
-    public List<ArticleFreeListResponseDto> search(String keyword) {
-        return articleRepository.findByTitleContainingOrContentContaining(keyword, keyword).stream()
-                .map(ArticleFreeListResponseDto::new)
-                .collect(Collectors.toList());
-    }
+     */
 
 }

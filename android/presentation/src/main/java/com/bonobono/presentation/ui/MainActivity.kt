@@ -20,11 +20,11 @@ import dagger.hilt.android.AndroidEntryPoint
         setContent {
             AndroidTheme {
                 // A surface container using the 'background' color from the theme
-                Surface(
+                androidx.compose.material.Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    color = androidx.compose.material.MaterialTheme.colors.background
                 ) {
-                    Greeting("Android")
+                    MainScreen()
                 }
             }
         }

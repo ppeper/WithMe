@@ -9,13 +9,13 @@ import java.time.format.DateTimeFormatter;
 @Getter
 public class ChatRoomResponseDto {
     private Long id;
-    private Long sender;
+    private String roomname;
     private String createdDate;
     private String updatedDate;
 
     public ChatRoomResponseDto(ChatRoom chatRoom) {
         this.id = chatRoom.getId();
-        this.sender = chatRoom.getSender();
+        this.roomname = chatRoom.getRoomname();
         this.createdDate = chatRoom.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
         this.updatedDate = chatRoom.getUpdatedDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
     }

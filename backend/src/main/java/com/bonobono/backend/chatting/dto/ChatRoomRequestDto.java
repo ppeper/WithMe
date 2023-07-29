@@ -9,17 +9,17 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class ChatRoomRequestDto {
-    private Long sender;
+    private String roomname;
 
     @Builder
-    public ChatRoomRequestDto(Long sender) {
-        this.sender=sender;
+    public ChatRoomRequestDto(String roomname) {
+        this.roomname=roomname;
     }
 
     //채팅방이름으로 chatRoom객체 만들기(사용자 지정으로, username으로 클라이언트가 요청)
     public ChatRoom toEntity() {
         return ChatRoom.builder()
-                .sender(this.sender)
+                .roomname(this.roomname)
                 .build();
     }
 }

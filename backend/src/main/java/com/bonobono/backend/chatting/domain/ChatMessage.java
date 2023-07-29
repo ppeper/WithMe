@@ -24,6 +24,7 @@ public class ChatMessage extends BaseTimeEntity {
 
     //연관관계를 어떻게 넣어야할까???
     @DBRef
+    @Field("chatroom")
     private ChatRoom chatRoom; //채팅방
 
     @Field("sender")

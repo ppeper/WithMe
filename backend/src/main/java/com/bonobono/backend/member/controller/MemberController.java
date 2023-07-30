@@ -1,5 +1,6 @@
 package com.bonobono.backend.member.controller;
 
+import com.bonobono.backend.member.dto.MemberLoginRequest;
 import com.bonobono.backend.member.dto.MemberSignupRequest;
 import com.bonobono.backend.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -21,5 +22,11 @@ public class MemberController {
         memberService.signup(request.getName(), request.getNickname(), request.getAccountId(),
             request.getPassword(), request.getPhoneNumber());
         return ResponseEntity.ok().body("회원가입이 성공 했습니다.");
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody MemberLoginRequest request) {
+        String token = memberService.login(request.getAccountId(), request.getPassword());
+        return ResponseEntity.ok().body(token);
     }
 }

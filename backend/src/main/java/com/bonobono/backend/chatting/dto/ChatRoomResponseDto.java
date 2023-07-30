@@ -18,7 +18,7 @@ public class ChatRoomResponseDto {
 
     public ChatRoomResponseDto(ChatRoom chatRoom) {
         this.id = chatRoom.getId();
-        this.roomname = chatRoom.getRoomname();
+        this.roomname = chatRoom.getRoomName();
         this.createdDate = chatRoom.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
         this.updatedDate = chatRoom.getUpdatedDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
         this.messages = chatRoom.getChatMessageList().stream().map(ChatMessageResponseDto::new).collect(Collectors.toList());

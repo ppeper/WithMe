@@ -6,6 +6,7 @@ import com.bonobono.backend.chatting.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -16,7 +17,12 @@ public class ChatRoomController {
 
     //채팅방 만들기
     @PostMapping("/chatting")
-    public Long save(@RequestBody ChatRoomRequestDto requestDto) {
+    public Long save(@RequestParam HashMap<Object, Object> params) {
+        String roomName = (String) params.get("roomName");
+        ChatRoomRequestDto requestDto = new ChatRoomRequestDto();
+        if(roomName != null && !roomName.trim().equals("")) {
+            requestDto = new ChatRoomRequestDto(roomName);
+        }
         return chatRoomService.save(requestDto);
     }
 
@@ -28,7 +34,7 @@ public class ChatRoomController {
 
     //채팅방 일부 검색으로 조회
     @GetMapping("/chatting/search")
-    public List<ChatRoomResponseDto> findByName(@RequestParam("roomname") String roomname) {
+    public List<ChatRoomResponseDto> findByName(@RequestParam("roomName") String roomname) {
         return chatRoomService.findByRoomName(roomname);
     }
 
@@ -37,6 +43,7 @@ public class ChatRoomController {
     @DeleteMapping("/chatting/{roomId}")
     public void DeleteChat(@PathVariable Long roomId) {
         chatRoomService.delete(roomId);
+
     }
 
 }

@@ -9,7 +9,7 @@ import java.util.Date;
 
 @Getter
 public class ChatMessageResponseDto {
-    private String id;
+    private Long id;
     private String sender;
     private String message;
 //    private String imgUrl;
@@ -20,8 +20,5 @@ public class ChatMessageResponseDto {
         this.id = chatMessage.getId();
         this.sender = chatMessage.getSender();
         this.message = chatMessage.getMessage();
-//        this.imgUrl= chatMessage.getImgUrl();
-        this.createdDate = chatMessage.getCreatedTime();
-        this.updatedDate = chatMessage.getUpdatedTime();
     }
 }

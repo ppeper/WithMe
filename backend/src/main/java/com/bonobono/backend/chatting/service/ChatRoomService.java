@@ -20,14 +20,6 @@ public class ChatRoomService {
 
     private final ChatRoomRepository chatRoomRepository;// 채팅방조회
 
-    //채팅방 인덱스로 검색하기
-//    @Transactional(readOnly = true)
-//    public ChatRoom findById(final Long id) {
-//        ChatRoom chatRoom = this.chatRoomRepository.findById(id).orElseThrow(
-//                () -> new IllegalArgumentException("해당 chatroom이 존재하지 않습니다. id="+id)
-//        );
-//        return new ChatRoomResponseDto(chatRoom);
-//    }
 
     //채팅방 조회(이름으로 검색)
     @Transactional

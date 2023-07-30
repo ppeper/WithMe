@@ -4,46 +4,25 @@ import com.bonobono.backend.BaseTimeEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
-import org.springframework.data.mongodb.core.mapping.FieldType;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Getter
-@Document(collection = "ChatMessage")
+@Entity
 @NoArgsConstructor
-public class ChatMessage {
+public class ChatMessage extends BaseTimeEntity {
     @Id
-    @Field(value = "_id", targetType = FieldType.OBJECT_ID)
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String sender; //메시지 발신자(user)
+    private String message;
+//  private String uploadFileName; // 작성자가 업로드한 파일명(S3로 파일 저장)
+//  private String storeFileName; //서버 내부서 관리하는 파일명
+//    private Boolean isCheck; //상대방 확인여부는 DB가 아니라, 스레드를 통해서 확인가능?
 
-    //연관관계를 어떻게 넣어야할까???
-    @DBRef
-    @Transient
-    @Field("chatroom")
+    @ManyToOne(fetch = FetchType.LAZY)
     private ChatRoom chatRoom; //채팅방
 
-    @Field("sender")
-    private String sender;
-
-    @Field("message")
-    private String message;
-
-//    @Field("img_url")
-//    private String imgUrl;
-
-    @CreatedDate
-    @Field("createTime")
-    private Date createdTime;
-
-    @LastModifiedDate
-    @Field("updateTime")
-    private Date updatedTime;
 
     @Builder //생성자 빌드
     public ChatMessage(String sender, String message, ChatRoom chatRoom) {

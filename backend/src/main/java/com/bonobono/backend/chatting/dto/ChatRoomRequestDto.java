@@ -19,7 +19,7 @@ public class ChatRoomRequestDto {
     //채팅방이름으로 chatRoom객체 만들기(사용자 지정으로, username으로 클라이언트가 요청)
     public ChatRoom toEntity() {
         return ChatRoom.builder()
-                .roomname(this.roomname)
+                .roomName(this.roomname)
                 .build();
     }
 }

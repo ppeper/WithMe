@@ -4,7 +4,7 @@ import com.bonobono.backend.member.entity.Member;
 import com.bonobono.backend.member.exception.AppException;
 import com.bonobono.backend.member.exception.ErrorCode;
 import com.bonobono.backend.member.repository.MemberRepository;
-import com.bonobono.backend.member.util.JwtTokenUtil;
+import com.bonobono.backend.member.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -65,7 +65,7 @@ public class MemberService {
             throw new AppException(ErrorCode.INVALID_PASSWORD, "비밀번호를 잘못 입력했습니다.");
         }
 
-        String token = JwtTokenUtil.createToken(selectedMember.getAccountId(), key, expireTimeMs);
+        String token = JwtUtil.createToken(selectedMember.getAccountId(), key, expireTimeMs);
 
         // 로그인 성공 -> 토큰 발행
         return token;

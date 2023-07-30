@@ -27,4 +27,4 @@ spring:
 
 jwt:
   token:
-    secret-key: 1q2w3e4r
+    secret-key: ${JWT_SECRET_KEY}

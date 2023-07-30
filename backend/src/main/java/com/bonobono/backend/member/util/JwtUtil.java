@@ -5,7 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Date;
 
-public class JwtTokenUtil {
+public class JwtUtil {
     public static String createToken(String accountId, String key, long expireTimeMs) {
         Claims claims = Jwts.claims();
         claims.put("accountId", accountId);

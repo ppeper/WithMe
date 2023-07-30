@@ -5,12 +5,14 @@ import com.bonobono.backend.member.exception.AppException;
 import com.bonobono.backend.member.exception.ErrorCode;
 import com.bonobono.backend.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final BCryptPasswordEncoder encoder;
 
     public String signup(String name, String nickname, String accountId, String password, String phoneNumber) {
 
@@ -35,7 +37,7 @@ public class MemberService {
             .name(name)
             .nickname(nickname)
             .accountId(accountId)
-            .password(password)
+            .password(encoder.encode(password))
             .phoneNumber(phoneNumber)
             .build();
 

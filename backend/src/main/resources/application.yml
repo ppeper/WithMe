@@ -1,0 +1,26 @@
+server:
+  port: 8080
+  servlet:
+    encoding:
+      force-response: true
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:tcp://localhost/~/test
+    username: sa
+    password:
+
+logging:
+  level:
+    org.hibernate:
+      type.descriptor.sql: trace
+      SQL: debug

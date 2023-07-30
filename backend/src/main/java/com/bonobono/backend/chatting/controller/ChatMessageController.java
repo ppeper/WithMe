@@ -19,11 +19,12 @@ public class ChatMessageController {
 
     //채팅방 조회 후 메시지 쓰기
     @GetMapping("/chatting/{roomId}")
-    public String findById(@PathVariable Long roomId) {
-        return chatMessageService.save(roomId);
+    public void findById(@PathVariable Long roomId) {
+        chatMessageService.save(roomId);
     }
 
     //채팅방 나가면, 서버 끊기게
+
 
 
     //

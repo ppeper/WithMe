@@ -30,8 +30,9 @@ public class MyServer {
     //json 파일을 저장할 그 ... 자료구조 선언 후 넣고 클라이언트 연결종료시, db에 저장
     //jsonarray를 생성해서 넣어서 db에 저장
 
+
     //서버 시작하고, 스레드 시작
-    public void start() throws IOException {
+    public void start(Long id) throws IOException {
         serverSocket = new ServerSocket(8888);
         System.out.println( "[서버] 시작됨");
 
@@ -40,7 +41,7 @@ public class MyServer {
             while(true) {
                 Socket socket = serverSocket.accept();
                 System.out.println("접속: "+socket);
-                SocketClient sc = new SocketClient(this, socket);
+                SocketClient sc = new SocketClient(this, socket, id);
                 // DB에 담기 전, JSON을 쌓아놓을 배열(수정 필요)
 //                JSONArray jsonArray = new JSONArray();
             }
@@ -66,19 +67,19 @@ public class MyServer {
         System.out.println("현재 채팅자 수: " + chatinfo.size() + "\n");
     }
     //메소드: 모든 클라이언트에게 메시지 보냄
-    public void sendToAll(SocketClient sender, String message) {
+    public void sendToAll(SocketClient sender, String message, Long roomId) {
         try {
             JSONObject root = new JSONObject();
             //클라이언트에게 json파일 내 clientIp, message, 채팅방 id를 받기
             root.put("clientIp", sender.clientIp);
             root.put("message", message);
-            root.put("roomId", sender.RoomId);
+//            root.put("roomId", sender.RoomId);
             String json = root.toString();
 
             Collection<SocketClient> socketClients = chatinfo.values();
             for (SocketClient sc : socketClients) {
                 if (sc == sender) continue;
-                sc.send(json);
+                sc.send(json, roomId);
             }
         }
         catch (JSONException e) {

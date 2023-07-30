@@ -17,22 +17,18 @@ public class ChatMessageService {
     private final ChatRoomRepository chatRoomRepository;
 
 
-    public String save(Long id) {
-
+    public void save(Long id) {
         try {
             MyServer chatServer = new MyServer();
-            chatServer.start();
-            //messagerequest dto에 세팅하기
-        }catch(IOException e) {
+            chatServer.start(id); //치팅방정보는 api로 전달
+        } catch (IOException e) {
             System.out.println("[서버] " + e.getMessage());
         }
-        //message객체를 만듬
-        //repository.save()
-
-
-        return "hello";
-//        return this.chatMessageRepository.save(requestDto.toEntity()).getId();
     }
+
+
+//        return this.chatMessageRepository.save(requestDto.toEntity()).getId();
+
 //        try {
 //            MyServer chatServer = new MyServer();
 //            chatServer.start();

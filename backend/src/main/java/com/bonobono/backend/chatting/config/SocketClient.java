@@ -26,7 +26,7 @@ public class SocketClient {
     Long RoomId;
 
     //생성자
-    public SocketClient(MyServer myServer, Socket socket) {
+    public SocketClient(MyServer myServer, Socket socket, Long roomId) {
         try {
             this.myServer = myServer;
             this.socket = socket;
@@ -34,12 +34,12 @@ public class SocketClient {
             this.dos = new DataOutputStream(socket.getOutputStream());
             InetSocketAddress isa = (InetSocketAddress) socket.getRemoteSocketAddress();
             this.clientIp = isa.getHostName();
-            receive(); // inputstream json받아서 모든 사용자에 보여주고, 사용자도 보여줌
+            receive(roomId); // inputstream json받아서 모든 사용자에 보여주고, 사용자도 보여줌
         } catch(IOException e) {
         }
     }
     //메소드: JSON 받기
-    public void receive() {
+    public void receive(Long roomId) {
         myServer.threadPool.execute(() -> {
             try {
                 while(true) {
@@ -52,17 +52,17 @@ public class SocketClient {
                         case "incoming": //사용자가 들어온 것이면 socketclient추가
                             //채팅메시지 id(long)
                             this.chatName = jsonObject.getLong("data");
-                            myServer.sendToAll(this, "들어오셨습니다.");
+                            myServer.sendToAll(this, "들어오셨습니다.", roomId);
                             myServer.addSocketClient(this);
                             break;
                         case "message": //메시지면, 모든 사람에게 메시지 보여줌
                             String message = jsonObject.getString("data");
-                            myServer.sendToAll(this, message);
+                            myServer.sendToAll(this, message, roomId);
                             break;
                     }
                 }
             } catch(IOException e) {
-                myServer.sendToAll(this, "나가셨습니다.");
+                myServer.sendToAll(this, "나가셨습니다.", roomId);
                 myServer.removeSocketClient(this);
             }
         });
@@ -73,7 +73,7 @@ public class SocketClient {
     ChatRoomRepository chatRoomRepository;
 
     //메소드: JSON 보내기(outputstream을 써서 내보냄)
-    public void send(String json) {
+    public void send(String json, Long roomId) {
         try {
             dos.writeUTF(json);
 
@@ -84,7 +84,7 @@ public class SocketClient {
             // JSONObject에서 필요한 데이터 추출
             String clientIp = jsonObject.getString("clientIp");
             String message = jsonObject.getString("message");
-            Long roomId = jsonObject.getLong("roomId");
+//            Long roomId = jsonObject.getLong("roomId");
 
             ChatRoom chatRoom =  chatRoomRepository.findById(roomId).orElseThrow(()->
                     new IllegalArgumentException("채팅방이 존재하지 않습니다"+roomId));

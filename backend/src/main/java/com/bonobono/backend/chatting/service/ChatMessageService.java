@@ -13,18 +13,15 @@ import java.io.IOException;
 @Service
 public class ChatMessageService {
     //메시지 저장
-    private final ChatMessageRepository chatMessageRepository;
+    private final ChatMessageRepository chatMessageRepoitory;
     private final ChatRoomRepository chatRoomRepository;
 
 
     public String save(Long id) {
-        //채팅방 정보 불러오기
-        ChatRoom chatRoom =  chatRoomRepository.findById(id).orElseThrow(()->
-                new IllegalArgumentException("채팅방이 존재하지 않습니다"+id));
 
         try {
             MyServer chatServer = new MyServer();
-            chatServer.start(chatRoom);
+            chatServer.start();
             //messagerequest dto에 세팅하기
         }catch(IOException e) {
             System.out.println("[서버] " + e.getMessage());

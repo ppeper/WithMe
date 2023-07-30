@@ -4,6 +4,7 @@ import com.bonobono.backend.chatting.domain.ChatMessage;
 import com.bonobono.backend.chatting.domain.ChatRoom;
 import com.bonobono.backend.chatting.dto.ChatMessageRequestDto;
 import com.bonobono.backend.chatting.repository.ChatMessageRepository;
+import com.bonobono.backend.chatting.repository.ChatRoomRepository;
 import com.bonobono.backend.chatting.service.ChatMessageService;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,8 @@ public class SocketClient {
     DataOutputStream dos;
     String clientIp;
     Long chatName;
+    Long RoomId;
+
     //생성자
     public SocketClient(MyServer myServer, Socket socket) {
         try {
@@ -67,6 +70,7 @@ public class SocketClient {
 
     @Autowired
     ChatMessageRepository chatMessageRepository;
+    ChatRoomRepository chatRoomRepository;
 
     //메소드: JSON 보내기(outputstream을 써서 내보냄)
     public void send(String json) {
@@ -80,11 +84,16 @@ public class SocketClient {
             // JSONObject에서 필요한 데이터 추출
             String clientIp = jsonObject.getString("clientIp");
             String message = jsonObject.getString("message");
+            Long roomId = jsonObject.getLong("roomId");
+
+            ChatRoom chatRoom =  chatRoomRepository.findById(roomId).orElseThrow(()->
+                    new IllegalArgumentException("채팅방이 존재하지 않습니다"+roomId));
 
             // 추출한 데이터를 사용하여 ChatMessageRequestDto 객체 생성
             ChatMessageRequestDto dto = ChatMessageRequestDto.builder()
                     .sender(clientIp)
                     .message(message)
+                    .chatRoom(chatRoom)
                     .build();
 
             // ChatMessageRequestDto 객체를 ChatMessage 객체로 변환

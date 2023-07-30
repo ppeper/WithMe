@@ -20,10 +20,10 @@ public class ChatMessageRequestDto {
 
     //생성자
     @Builder
-    public ChatMessageRequestDto(String sender, String message) {
+    public ChatMessageRequestDto(String sender, String message, ChatRoom chatRoom) {
         this.sender = sender;
         this.message = message;
-//        this.chatRoom = chatRoom;
+        this.chatRoom = chatRoom;
 //        this.imgUrl = imgUrl;
     }
     //객체 만들기
@@ -31,7 +31,7 @@ public class ChatMessageRequestDto {
         return ChatMessage.builder()
                 .sender(sender)
                 .message(message)
-//                .chatRoom(chatRoom)
+                .chatRoom(chatRoom)
 //                .imgUrl(imgUrl)
                 .build();
     }

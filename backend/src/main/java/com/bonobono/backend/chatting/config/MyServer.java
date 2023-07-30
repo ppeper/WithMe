@@ -1,5 +1,6 @@
 package com.bonobono.backend.chatting.config;
 
+import com.bonobono.backend.chatting.domain.ChatRoom;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
@@ -30,7 +31,7 @@ public class MyServer {
     //jsonarray를 생성해서 넣어서 db에 저장
 
     //서버 시작하고, 스레드 시작
-    public void start() throws IOException {
+    public void start(ChatRoom chatRoom1) throws IOException {
         serverSocket = new ServerSocket(8888);
         System.out.println( "[서버] 시작됨");
 
@@ -52,6 +53,7 @@ public class MyServer {
     public void addSocketClient(SocketClient socketClient) {
         String key = socketClient.chatName + "@" + socketClient.clientIp;
         chatRoom.put(key, socketClient);
+        
         System.out.println("입장: " + key);
         System.out.println("현재 채팅자 수: " + chatRoom.size() + "\n");
     }
@@ -68,7 +70,6 @@ public class MyServer {
         try {
             JSONObject root = new JSONObject();
             root.put("clientIp", sender.clientIp);
-            root.put("chatName", sender.chatName);
             root.put("message", message);
             String json = root.toString();
 

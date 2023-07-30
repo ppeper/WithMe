@@ -1,6 +1,12 @@
 package com.bonobono.backend.chatting.config;
 
+import com.bonobono.backend.chatting.domain.ChatMessage;
+import com.bonobono.backend.chatting.domain.ChatRoom;
+import com.bonobono.backend.chatting.dto.ChatMessageRequestDto;
+import com.bonobono.backend.chatting.repository.ChatMessageRepository;
+import com.bonobono.backend.chatting.service.ChatMessageService;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -15,7 +21,7 @@ public class SocketClient {
     DataInputStream dis;
     DataOutputStream dos;
     String clientIp;
-    String chatName;
+    Long chatName;
     //생성자
     public SocketClient(MyServer myServer, Socket socket) {
         try {
@@ -41,7 +47,8 @@ public class SocketClient {
 
                     switch(command) {
                         case "incoming": //사용자가 들어온 것이면 socketclient추가
-                            this.chatName = jsonObject.getString("data");
+                            //채팅메시지 id(long)
+                            this.chatName = jsonObject.getLong("data");
                             myServer.sendToAll(this, "들어오셨습니다.");
                             myServer.addSocketClient(this);
                             break;
@@ -57,13 +64,35 @@ public class SocketClient {
             }
         });
     }
+
+    @Autowired
+    ChatMessageRepository chatMessageRepository;
+
     //메소드: JSON 보내기(outputstream을 써서 내보냄)
     public void send(String json) {
         try {
             dos.writeUTF(json);
-            // json을 DB에 넣기(필드는 맞춰야할듯)
-            // 지금 들어가는 필드는 clientIp, chatname, message
-            // 보낸시간, 확인여부, 사진은... 어떻게 하지..?
+
+            //보내기 전 db에 저장
+            //json을 dto로 바꾸고, repository저장
+            JSONObject jsonObject = new JSONObject(json);
+
+            // JSONObject에서 필요한 데이터 추출
+            String clientIp = jsonObject.getString("clientIp");
+            String message = jsonObject.getString("message");
+
+            // 추출한 데이터를 사용하여 ChatMessageRequestDto 객체 생성
+            ChatMessageRequestDto dto = ChatMessageRequestDto.builder()
+                    .sender(clientIp)
+                    .message(message)
+                    .build();
+
+            // ChatMessageRequestDto 객체를 ChatMessage 객체로 변환
+            ChatMessage chatMessage = dto.toEntity();
+
+            // ChatMessage 객체를 저장
+            chatMessageRepository.save(chatMessage);
+
             dos.flush();
         } catch(IOException e) {
         }

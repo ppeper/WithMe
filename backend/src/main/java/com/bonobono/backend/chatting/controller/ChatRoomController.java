@@ -20,26 +20,17 @@ public class ChatRoomController {
         return chatRoomService.save(requestDto);
     }
 
-    //채팅방 일부 검색으로 조회
-    @GetMapping("/chatting/search")
-    public List<ChatRoomResponseDto> findByName(@RequestParam("roomname") String roomname) {
-        return chatRoomService.findByRoomName(roomname);
-    }
-
-    //전체 검색 조회
+    //전체 조회
     @GetMapping("/chatting")
     public List<ChatRoomResponseDto> findAll() {
         return chatRoomService.findByList();
     }
 
-    //채팅방 조회(id으로 조회)
-    @GetMapping("/chatting/{roomId}")
-    public ChatRoomResponseDto findById(@PathVariable Long roomId) {
-        return chatRoomService.findById(roomId);
+    //채팅방 일부 검색으로 조회
+    @GetMapping("/chatting/search")
+    public List<ChatRoomResponseDto> findByName(@RequestParam("roomname") String roomname) {
+        return chatRoomService.findByRoomName(roomname);
     }
-
-    //채팅방 나가면, 서버 끊기게
-
 
     //채팅방 삭제
     //채팅방 삭제하면 채팅도 삭제되는지 확인 필요

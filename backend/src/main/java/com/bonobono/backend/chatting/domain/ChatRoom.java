@@ -21,7 +21,7 @@ public class ChatRoom extends BaseTimeEntity { //생성시각 상속
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="member_id")
-    private Member member;
+    private Member member; //방을 만든 사람
 
     private String roomname;
 

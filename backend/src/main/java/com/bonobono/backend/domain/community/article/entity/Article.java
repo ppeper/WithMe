@@ -1,16 +1,15 @@
 package com.bonobono.backend.domain.community.article.entity;
 
-import com.bonobono.backend.global.entity.BaseTimeEntity;
-import com.bonobono.backend.domain.member.entity.Member;
 import com.bonobono.backend.domain.community.article.enumclass.ArticleType;
+import com.bonobono.backend.domain.member.entity.Member;
+import com.bonobono.backend.global.entity.BaseTimeEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -47,15 +46,14 @@ public class Article extends BaseTimeEntity {
     private String url;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="member_id")
-    @OnDelete(action = OnDeleteAction.CASCADE) // 연관된 member가 삭제되면 article도 삭제
+    @JoinColumn(name="member_id", nullable = false)
     private Member member;
 
-    @OneToMany(mappedBy = "article", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "article")
     private List<ArticleComment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "article", fetch = FetchType.LAZY)
-    private Set<ArticleLike> articleLikes;
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
+    private Set<ArticleLike> articleLikes = new HashSet<>();
 
     @Builder
     public Article(ArticleType type, String title, String content, String image, String urlTitle, String url, Member member) {
@@ -66,11 +64,6 @@ public class Article extends BaseTimeEntity {
         this.urlTitle = urlTitle;
         this.url = url;
         this.member = member;
-    }
-
-    // 조회 시 조회수 증가
-    public void increaseViews(int views){
-        this.views = views + 1;
     }
 
     // 글 수정

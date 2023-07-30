@@ -16,9 +16,15 @@ public class ArticleLike {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name="member_id")
     private Member member;
 
     @ManyToOne
+    @JoinColumn(name="article_id")
     private Article article;
 
+    public ArticleLike(Member member, Article article){
+        this.member = member;
+        this.article = article;
+    }
 }

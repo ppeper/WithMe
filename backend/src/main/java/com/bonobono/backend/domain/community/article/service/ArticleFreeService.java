@@ -5,6 +5,8 @@ import com.bonobono.backend.domain.community.article.dto.req.ArticleFreeUpdateRe
 import com.bonobono.backend.domain.community.article.dto.res.ArticleFreeDetailResponseDto;
 import com.bonobono.backend.domain.community.article.dto.res.ArticleFreeListResponseDto;
 import com.bonobono.backend.domain.community.article.entity.Article;
+import com.bonobono.backend.domain.community.article.entity.ArticleLike;
+import com.bonobono.backend.domain.community.article.repository.ArticleLikeRepository;
 import com.bonobono.backend.domain.community.article.repository.ArticleRepository;
 import com.bonobono.backend.domain.member.entity.Member;
 import com.bonobono.backend.domain.member.repository.MemberRepository;
@@ -24,12 +26,15 @@ public class ArticleFreeService {
 
     private final MemberRepository memberRepository;
 
+    private final ArticleLikeRepository articleLikeRepository;
+
     // 자유게시판 글 저장
     @Transactional
-    public Long save(ArticleFreeSaveRequestDto requestDto){
+    public ArticleFreeDetailResponseDto save(ArticleFreeSaveRequestDto requestDto){
         Member member = memberRepository.findById(requestDto.getMemberId())
                 .orElseThrow(() -> new NoSuchElementException("해당 ID 값을 가진 Member가 없습니다 + id = " + requestDto.getMemberId()));
-        return articleRepository.save(requestDto.toEntity(member)).getId();
+        Article article  = articleRepository.save(requestDto.toEntity(member));
+        return new ArticleFreeDetailResponseDto(article);
     }
 
     // 자유게시판 전체글 내림차순
@@ -49,39 +54,46 @@ public class ArticleFreeService {
     }
 
     // 자유게시판 특정글 조회
-    public ArticleFreeDetailResponseDto findById(Long id){
-        Article article = articleRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id =" + id));
-        articleRepository.updateView(id); // 조회수 1 증가
+    @Transactional
+    public ArticleFreeDetailResponseDto findById(Long articleId){
+        Article article = articleRepository.findById(articleId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id =" + articleId));
+        articleRepository.updateView(articleId);
         return new ArticleFreeDetailResponseDto(article);
     }
 
     // 자유게시판 특정 글 수정
     @Transactional
-    public Long update(Long id, ArticleFreeUpdateRequestDto requestDto){
-        Article article = articleRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
+    public ArticleFreeDetailResponseDto update(Long articleId, ArticleFreeUpdateRequestDto requestDto){
+        Article article = articleRepository.findById(articleId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + articleId));
         article.updateFree(requestDto.getTitle(), requestDto.getContent(), requestDto.getImage());
-        return id;
+        return new ArticleFreeDetailResponseDto(article);
     }
 
     // 자유게시판 특정글 삭제
     @Transactional
-    public void delete(Long id){
-        Article article = articleRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
-
+    public void delete(Long articleId){
+        Article article = articleRepository.findById(articleId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + articleId));
         articleRepository.delete(article);
     }
 
-    // ----- 기본 CRUD 외 Service 로직들 -----
-
-    /*    // 자유게시판 글 좋아요
+    // 자유게시판 좋아요
     @Transactional
-    public Long like(Long id){
-        return articleRepository.
+    public boolean addLike(Long articleId, Member member){
+        Article article = articleRepository.findById(articleId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + articleId));
+        if(isNotAlreadyLike(member, article)){
+            articleLikeRepository.save(new ArticleLike(member, article));
+            return true;
+        }
+        articleLikeRepository.deleteArticleLikeByMemberAndArticle(member, article);
+        return false;
     }
-
-     */
+    // 해당 Member가 좋아요 눌렀는지 판단
+    private boolean isNotAlreadyLike(Member member, Article article){
+        return articleLikeRepository.findByMemberAndArticle(member, article).isEmpty();
+    }
 
 }

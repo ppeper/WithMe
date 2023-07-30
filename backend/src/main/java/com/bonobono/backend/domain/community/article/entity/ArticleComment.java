@@ -1,12 +1,10 @@
 package com.bonobono.backend.domain.community.article.entity;
 
-import com.bonobono.backend.global.entity.BaseTimeEntity;
 import com.bonobono.backend.domain.member.entity.Member;
+import com.bonobono.backend.global.entity.BaseTimeEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 
@@ -25,14 +23,12 @@ public class ArticleComment extends BaseTimeEntity {
 
     private int likes;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="article_id")
-    @OnDelete(action = OnDeleteAction.CASCADE) // 연관된 article 삭제되면 comment도 삭제
+    @ManyToOne
+    @JoinColumn(name="article_id", nullable = false)
     private Article article;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="member_id")
-    @OnDelete(action = OnDeleteAction.CASCADE) // 연관된 member가 삭제되면 comment도 삭제
+    @JoinColumn(name="member_id", nullable = false)
     private Member member;
 
     @Builder
@@ -40,5 +36,9 @@ public class ArticleComment extends BaseTimeEntity {
         this.content = content;
         this.article = article;
         this.member = member;
+    }
+
+    public void updateComment(String content){
+        this.content = content;
     }
 }

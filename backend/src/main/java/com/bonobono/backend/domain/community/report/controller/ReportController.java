@@ -10,7 +10,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/community")
+@RequestMapping("/community/report")
 public class ReportController {
 
     private final ReportService reportService;

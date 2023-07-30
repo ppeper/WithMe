@@ -12,13 +12,11 @@ import lombok.NoArgsConstructor;
 public class ArticleCommentRequestDto {
 
     private String content;
-    private Long articleId;
     private Long memberId;
 
     @Builder
-    public ArticleCommentRequestDto(String content, Long articleId, Long memberId){
+    public ArticleCommentRequestDto(String content, Long memberId){
         this.content = content;
-        this.articleId = articleId;
         this.memberId = memberId;
     }
     public ArticleComment toEntity(Article article, Member member) {

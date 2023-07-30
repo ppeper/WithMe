@@ -10,23 +10,22 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ArticleFreeListResponseDto {
 
-    private Long id;
     private ArticleType type;
     private String title;
     private String content;
     private String image;
     private int likes;
     private int views;
-//    private Member member;
+    private Long memberId;
 
     public ArticleFreeListResponseDto(Article entity) {
-        this.id = entity.getId();
         this.type = entity.getType();
         this.title = entity.getTitle();
         this.content = entity.getContent();
         this.image = entity.getImage();
         this.likes = entity.getLikes();
         this.views = entity.getViews();
+        this.memberId = entity.getMember().getId();
     }
 }
 

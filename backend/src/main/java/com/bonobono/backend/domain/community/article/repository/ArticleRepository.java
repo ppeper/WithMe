@@ -1,8 +1,6 @@
 package com.bonobono.backend.domain.community.article.repository;
 
 import com.bonobono.backend.domain.community.article.entity.Article;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -23,7 +21,5 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     // 게시글 조회수 1 증가 기능
     @Modifying
     @Query("update Article a set a.views = a.views + 1 where a.id = :id ")
-    int updateView(Long id);
-
-    // 게시글 좋아요 증가 기능
+    void updateView(Long id);
 }

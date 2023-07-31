@@ -78,6 +78,14 @@ object NavigationRouteName {
     const val MISSION = "mission"
     const val ENCYCLOPEDIA = "encyclopedia"
     const val NOTICE = "notice"
+
+    // Community
+    const val COMMUNITY_FREE = "free_community"
+    const val COMMUNITY_WITH = "with_community"
+    const val COMMUNITY_REPORT = "report_community"
+    // FAB Route
+    const val COMMUNITY_POST = "write"
+    const val COMMUNITY_POST_REPORT = "report"
 }
 
 object NavigationTitle {
@@ -86,6 +94,10 @@ object NavigationTitle {
     const val MAIN_CHATTING = "채팅"
     const val MAIN_COMMUNITY = "게시판"
     const val MAIN_MY_PAGE = "프로필"
+
+    const val COMMUNITY_FREE = "자유게시판"
+    const val COMMUNITY_WITH = "함께게시판"
+    const val COMMUNITY_REPORT = "신고게시판"
 
     const val MISSION = "미션"
     const val ENCYCLOPEDIA = "도감"

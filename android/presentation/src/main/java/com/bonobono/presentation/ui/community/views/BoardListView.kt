@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.bonobono.presentation.R
+import com.bonobono.presentation.ui.NavigationRouteName
 import com.bonobono.presentation.ui.theme.Black_100
 import com.bonobono.presentation.ui.theme.TextGray
 
@@ -45,19 +46,19 @@ fun BoardListView(
 ) {
     val boardList = listOf(
         BoardInfo(
-            route = "free",
+            route = NavigationRouteName.COMMUNITY_FREE,
             icon = R.drawable.ic_board_free,
             title = stringResource(R.string.community_free_title),
             description = stringResource(R.string.community_free_description)
         ),
         BoardInfo(
-            route = "with",
+            route = NavigationRouteName.COMMUNITY_WITH,
             icon = R.drawable.ic_board_with,
             title = stringResource(R.string.community_with_title),
             description = stringResource(R.string.community_with_description)
         ),
         BoardInfo(
-            route = "alert",
+            route = NavigationRouteName.COMMUNITY_REPORT,
             icon = R.drawable.ic_board_question,
             title = stringResource(R.string.community_alert_title),
             description = stringResource(R.string.community_alert_description)

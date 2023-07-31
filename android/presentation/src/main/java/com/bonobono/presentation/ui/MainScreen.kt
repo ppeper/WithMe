@@ -6,10 +6,12 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -66,11 +68,31 @@ fun MainScreen() {
             }
         },
         floatingActionButton = {
-            if (currentRoute == NavigationRouteName.MAIN_HOME) {
-                MainFloatingActionButtons(
-                    navController = navController,
-                    currentRoute = currentRoute
-                )
+            when (currentRoute) {
+                NavigationRouteName.MAIN_HOME -> {
+                    MainFloatingActionButtons(
+                        navController = navController,
+                        currentRoute = currentRoute
+                    )
+                }
+                NavigationRouteName.COMMUNITY_FREE -> {
+                    CommunityFloatingActionButton(
+                        navController = navController,
+                        item = CommunityFab.FREE
+                    )
+                }
+                NavigationRouteName.COMMUNITY_WITH -> {
+                    CommunityFloatingActionButton(
+                        navController = navController,
+                        item = CommunityFab.WITH
+                    )
+                }
+                NavigationRouteName.COMMUNITY_REPORT-> {
+                    CommunityFloatingActionButton(
+                        navController = navController,
+                        item = CommunityFab.REPORT
+                    )
+                }
             }
         }
     ) {
@@ -102,6 +124,29 @@ fun MainFloatingActionButtons(navController: NavHostController, currentRoute: St
             }
             Spacer(modifier = Modifier.height(16.dp))
         }
+    }
+}
+
+@Composable
+fun CommunityFloatingActionButton(
+    navController: NavHostController,
+    item: CommunityFab
+) {
+    FloatingActionButton(
+        containerColor = PrimaryBlue,
+        contentColor = White,
+        shape = CircleShape,
+        onClick = {
+            NavigationUtils.navigate(
+                navController, item.route,
+                navController.graph.startDestinationRoute
+            )
+        }
+    ) {
+        Icon(
+            painter = painterResource(id = item.icon),
+            contentDescription = item.title
+        )
     }
 }
 

@@ -57,7 +57,7 @@ public class Article extends BaseTimeEntity {
     private Set<ArticleLike> articleLikes = new HashSet<>();
 
     @Builder
-    public Article(ArticleType type, String title, String content, String image, String urlTitle, String url, Member member) {
+    public Article(ArticleType type, String title, String content, String urlTitle, String url, Member member) {
         this.type = type;
         this.title = title;
         this.content = content;
@@ -67,7 +67,7 @@ public class Article extends BaseTimeEntity {
     }
 
     // 글 수정
-    public void updateFree(String title, String content, String image){
+    public void updateFree(String title, String content){
         this.title = title;
         this.content = content;
     }

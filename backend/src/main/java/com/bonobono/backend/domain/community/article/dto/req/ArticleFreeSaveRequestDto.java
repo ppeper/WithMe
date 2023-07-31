@@ -1,6 +1,7 @@
 package com.bonobono.backend.domain.community.article.dto.req;
 
 import com.bonobono.backend.domain.community.article.entity.Article;
+import com.bonobono.backend.domain.community.article.entity.ArticleImage;
 import com.bonobono.backend.domain.community.article.enumclass.ArticleType;
 import com.bonobono.backend.domain.member.entity.Member;
 import lombok.Builder;
@@ -21,7 +22,7 @@ public class ArticleFreeSaveRequestDto {
 
 
     @Builder
-    public ArticleFreeSaveRequestDto(ArticleType type, String title, String content, List<ArticleImageRequestDto> images, Long memberId){
+    public ArticleFreeSaveRequestDto(ArticleType type, String title, String content,  List<ArticleImageRequestDto> images, Long memberId){
         this.type = type;
         this.title = title;
         this.content = content;
@@ -30,11 +31,18 @@ public class ArticleFreeSaveRequestDto {
     }
 
     public Article toEntity(Member member){
-        return Article.builder()
+        Article article = Article.builder()
                 .type(type)
                 .title(title)
                 .content(content)
                 .member(member)
                 .build();
+
+        for (ArticleImageRequestDto image : images){
+            ArticleImage articleImage = image.toEntity(article);
+            article.getImages().add(articleImage);
+        }
+        return article;
     }
+
 }

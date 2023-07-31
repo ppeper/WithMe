@@ -2,9 +2,11 @@ package com.bonobono.backend.domain.community.article.service;
 
 import com.bonobono.backend.domain.community.article.dto.req.ArticleFreeSaveRequestDto;
 import com.bonobono.backend.domain.community.article.dto.req.ArticleFreeUpdateRequestDto;
+import com.bonobono.backend.domain.community.article.dto.req.ArticleImageRequestDto;
 import com.bonobono.backend.domain.community.article.dto.res.ArticleFreeDetailResponseDto;
 import com.bonobono.backend.domain.community.article.dto.res.ArticleFreeListResponseDto;
 import com.bonobono.backend.domain.community.article.entity.Article;
+import com.bonobono.backend.domain.community.article.repository.ArticleImageRepository;
 import com.bonobono.backend.domain.community.article.repository.ArticleLikeRepository;
 import com.bonobono.backend.domain.community.article.repository.ArticleRepository;
 import com.bonobono.backend.domain.member.entity.Member;
@@ -13,7 +15,9 @@ import com.bonobono.backend.global.service.AwsS3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -26,6 +30,8 @@ public class ArticleFreeService {
 
     private final MemberRepository memberRepository;
 
+    private final ArticleImageRepository articleImageRepository;
+
     private final ArticleLikeRepository articleLikeRepository;
 
     private final AwsS3Service awsS3Service;
@@ -33,9 +39,19 @@ public class ArticleFreeService {
 
     // 자유게시판 글 저장
     @Transactional
-    public ArticleFreeDetailResponseDto save(ArticleFreeSaveRequestDto requestDto){
+    public ArticleFreeDetailResponseDto save(ArticleFreeSaveRequestDto requestDto, List<MultipartFile> imageFiles){
         Member member = memberRepository.findById(requestDto.getMemberId())
                 .orElseThrow(() -> new NoSuchElementException("해당 ID 값을 가진 Member가 없습니다 + id = " + requestDto.getMemberId()));
+
+        List<ArticleImageRequestDto> images = new ArrayList<>();
+        for(MultipartFile imageFile : imageFiles){
+            String imageUrl = awsS3Service.upload(imageFile, "article_images");
+            images.add(new ArticleImageRequestDto()
+                    .builder()
+                    .imageName(imageFile.getOriginalFilename())
+                    .imageUrl(imageUrl)
+                    .build());
+        }
         Article article  = articleRepository.save(requestDto.toEntity(member));
         return new ArticleFreeDetailResponseDto(article);
     }
@@ -70,7 +86,7 @@ public class ArticleFreeService {
     public ArticleFreeDetailResponseDto update(Long articleId, ArticleFreeUpdateRequestDto requestDto){
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + articleId));
-        article.updateFree(requestDto.getTitle(), requestDto.getContent(), requestDto.getImage());
+        article.updateFree(requestDto.getTitle(), requestDto.getContent());
         return new ArticleFreeDetailResponseDto(article);
     }
 

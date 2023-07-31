@@ -11,19 +11,16 @@ public class ArticleFreeUpdateRequestDto {
 
     private String title;
     private String content;
-    private String image;
 
     @Builder
     public ArticleFreeUpdateRequestDto(String title, String content, String image){
         this.title = title;
         this.content = content;
-        this.image = image;
     }
     public Article toEntity(){
         return Article.builder()
                 .title(title)
                 .content(content)
-                .image(image)
                 .build();
     }
 }

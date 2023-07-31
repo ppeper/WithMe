@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -18,36 +17,26 @@ public class ArticleImage {
     private Long id;
 
     @Column(nullable = false)
-    private String originalName; // 원본 파일명
+    private String imageName; // 원본 파일명
 
     @Column(nullable = false)
-    private String saveName; // 실제 저장 파일명
+    private String imageUrl; // 이미지 url
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="article_id")
     private Article article;// 연관 게시글
 
     @Builder
-    public ArticleImage(String originalName, String saveName, Article article){
-        this.originalName = originalName;
-        this.saveName = saveName;
+    public ArticleImage(String imageName, String imageUrl, Article article){
+        this.imageName = imageName;
+        this.imageUrl = imageUrl;
         this.article = article;
     }
 
-    // 첫번째 이미지만 받기
-    public ArticleImage getFirstImage(Article entity){
-        List<ArticleImage> images = entity.getImages();
-        if(images.isEmpty()){
-            return null;
-        } else{
-            return images.get(0);
-        }
-    }
-
     // 이미지 수정
-    public void updateImage(String originalName, String saveName){
-        this.originalName = originalName;
-        this.saveName = saveName;
+    public void updateImage(String imageName, String imageUrl){
+        this.imageName = imageName;
+        this.imageUrl = imageUrl;
     }
 
 }

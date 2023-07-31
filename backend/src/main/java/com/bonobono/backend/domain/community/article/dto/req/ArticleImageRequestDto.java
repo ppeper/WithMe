@@ -2,6 +2,7 @@ package com.bonobono.backend.domain.community.article.dto.req;
 
 import com.bonobono.backend.domain.community.article.entity.Article;
 import com.bonobono.backend.domain.community.article.entity.ArticleImage;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,13 +10,19 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ArticleImageRequestDto {
 
-    private String originalName;
-    private String saveName;
+    private String imageName;
+    private String imageUrl;
+
+    @Builder
+    public ArticleImageRequestDto(String imageName, String imageUrl){
+        this.imageName = imageName;
+        this.imageUrl = imageUrl;
+    }
 
     public ArticleImage toEntity(Article article){
         return ArticleImage.builder()
-                .originalName(originalName)
-                .saveName(saveName)
+                .imageName(imageName)
+                .imageUrl(imageUrl)
                 .article(article)
                 .build();
     }

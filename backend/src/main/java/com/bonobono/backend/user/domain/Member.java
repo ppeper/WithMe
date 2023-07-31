@@ -4,7 +4,6 @@ import com.bonobono.backend.chatting.domain.ChatRoom;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.tomcat.jni.Address;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -21,7 +20,7 @@ public class Member {
     private String name;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "member") //주인은 외래키를 가지는 order, map을 당하는 member
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL) //주인은 외래키를 가지는 order, map을 당하는 member
     private List<ChatRoom> chatRooms = new ArrayList<>();
 
 }

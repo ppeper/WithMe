@@ -4,9 +4,18 @@ spring:
     driver-class-name: org.mariadb.jdbc.Driver
     username: root
     password: 1234
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      username: MongoDB
+      password:
+#      uri: mongodb://localhost:27017/websocket
+      authentication-database: admin
+      database: websocket
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true

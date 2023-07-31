@@ -1,9 +1,11 @@
 package com.bonobono.backend.chatting.handler;
 
 
+import com.bonobono.backend.chatting.service.ChatMessageService;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.BinaryMessage;
 import org.springframework.web.socket.CloseStatus;
@@ -26,6 +28,9 @@ public class SocketHandler extends TextWebSocketHandler {
     private static final String FILE_UPLOAD_PATH = "C:/Users:/SSAFY/Desktop/ver1";
     static int fileUploadIdx = 0;
     static String fileUploadSession = "";
+
+    @Autowired
+    ChatMessageService chatMessageService = new ChatMessageService();
 
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message) {
@@ -56,7 +61,9 @@ public class SocketHandler extends TextWebSocketHandler {
                     WebSocketSession wss = (WebSocketSession) temp.get(k);
                     if(wss != null) {
                         try {
-                            wss.sendMessage(new TextMessage(obj.toJSONString()));
+                            TextMessage textMessage = new TextMessage(obj.toJSONString());
+                            wss.sendMessage(textMessage);
+
                         } catch (IOException e) {
                             e.printStackTrace();
                         }

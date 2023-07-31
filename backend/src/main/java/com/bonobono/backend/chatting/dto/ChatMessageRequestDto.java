@@ -16,23 +16,21 @@ public class ChatMessageRequestDto {
     private String sender;
     private String message;
     private ChatRoom chatRoom; //채팅방 정보
-    private String imgUrl;
+    private String imgByte;
 
     //생성자
     @Builder
-    public ChatMessageRequestDto(String sender, String message, ChatRoom chatRoom) {
+    public ChatMessageRequestDto(String sender, String message, String imgByte) {
         this.sender = sender;
         this.message = message;
-        this.chatRoom = chatRoom;
-//        this.imgUrl = imgUrl;
+        this.imgByte = imgByte;
     }
     //객체 만들기
     public ChatMessage toEntity() {
         return ChatMessage.builder()
                 .sender(sender)
                 .message(message)
-                .chatRoom(chatRoom)
-//                .imgUrl(imgUrl)
+                .imgByte(imgByte)
                 .build();
     }
 }

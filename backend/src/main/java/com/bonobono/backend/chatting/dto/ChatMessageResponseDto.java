@@ -9,7 +9,7 @@ import java.util.Date;
 
 @Getter
 public class ChatMessageResponseDto {
-    private Long id;
+    private String id;
     private String sender;
     private String message;
 //    private String imgUrl;

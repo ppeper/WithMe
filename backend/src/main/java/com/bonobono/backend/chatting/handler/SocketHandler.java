@@ -23,7 +23,7 @@ import java.util.List;
 @Component
 public class SocketHandler extends TextWebSocketHandler {
     List<HashMap<String, Object>> rls = new ArrayList<>(); //웹소켓 세션을 담아둘 리스트 ---roomListSessions
-    private static final String FILE_UPLOAD_PATH = "C:/test/websocket/";
+    private static final String FILE_UPLOAD_PATH = "C:/Users:/SSAFY/Desktop/ver1";
     static int fileUploadIdx = 0;
     static String fileUploadSession = "";
 
@@ -70,6 +70,9 @@ public class SocketHandler extends TextWebSocketHandler {
     public void handleBinaryMessage(WebSocketSession session, BinaryMessage message) {
         //바이너리 메시지 발송
         ByteBuffer byteBuffer = message.getPayload();
+
+        System.out.println(byteBuffer);
+
         String fileName = "temp.jpg";
         File dir = new File(FILE_UPLOAD_PATH);
         if(!dir.exists()) {
@@ -156,6 +159,7 @@ public class SocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         //소켓 종료
+        System.out.println("죽나?");
         if(rls.size() > 0) { //소켓이 종료되면 해당 세션값들을 찾아서 지운다.
             for(int i=0; i<rls.size(); i++) {
                 rls.get(i).remove(session.getId());
@@ -175,3 +179,5 @@ public class SocketHandler extends TextWebSocketHandler {
         return obj;
     }
 }
+
+//{"sessionId":"1d66943a-aa76-f4b0-574d-b1421b7758ec","type":"fileUpload","roomNumber":"1","userName":"11","msg":"안녕","file":"[-119,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,4,36,0]"}

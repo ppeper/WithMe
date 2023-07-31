@@ -4,6 +4,7 @@ import androidx.annotation.DrawableRes
 import com.bonobono.presentation.ui.common.topbar.item.ActionMenuItem
 
 sealed interface Screen {
+    val isCenterTopBar: Boolean
     val route: String
     val isAppBarVisible: Boolean
     @get:DrawableRes

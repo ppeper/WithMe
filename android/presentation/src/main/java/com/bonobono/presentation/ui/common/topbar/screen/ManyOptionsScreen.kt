@@ -1,12 +1,9 @@
 package com.bonobono.presentation.ui.common.topbar.screen
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.common.topbar.item.ActionMenuItem
@@ -18,7 +15,9 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 val ManyOptionsRoute = "options"
+// 사용 예시 클래스
 object ManyOptionsScreen : Screen {
+    override val isCenterTopBar: Boolean = false
     override val route: String = ManyOptionsRoute
     override val isAppBarVisible: Boolean = true
     override val navigationIcon: Int = R.drawable.ic_back

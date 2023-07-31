@@ -36,6 +36,8 @@ class AppBarState(
     var currentScreen by mutableStateOf<Screen?>(null)
         private set
 
+    val isCenterTopBar: Boolean
+        @Composable get() = currentScreen?.isCenterTopBar == true
     val isVisible: Boolean
         @Composable get() = currentScreen?.isAppBarVisible == true
 

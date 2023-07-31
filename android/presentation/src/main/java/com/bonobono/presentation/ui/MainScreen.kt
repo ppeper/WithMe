@@ -55,22 +55,30 @@ fun MainScreen() {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
     Scaffold(
-        topBar = { SharedTopAppBar(appBarState = appBarState)},
+        topBar = {
+            if (appBarState.isVisible) {
+                SharedTopAppBar(appBarState = appBarState)
+            }
+        },
         bottomBar = {
-            if(MainNav.isMainRoute(currentRoute)) {
+            if (MainNav.isMainRoute(currentRoute)) {
                 MainBottomNavigationBar(navController = navController, currentRoute = currentRoute)
             }
         },
-        floatingActionButton =  {
-            if(currentRoute == NavigationRouteName.MAIN_HOME) {
-                MainFloatingActionButtons(navController = navController, currentRoute = currentRoute)
+        floatingActionButton = {
+            if (currentRoute == NavigationRouteName.MAIN_HOME) {
+                MainFloatingActionButtons(
+                    navController = navController,
+                    currentRoute = currentRoute
+                )
             }
         }
     ) {
         MainNavigationScreen(
             innerPaddings = it,
             navController = navController,
-            scaffoldState = scaffoldState)
+            scaffoldState = scaffoldState
+        )
     }
 }
 
@@ -145,7 +153,11 @@ fun MainNavigationScreen(
     navController: NavHostController,
     scaffoldState: ScaffoldState
 ) {
-    NavHost(modifier = Modifier.padding(innerPaddings), navController = navController, startDestination = MainNav.Home.route) {
+    NavHost(
+        modifier = Modifier.padding(innerPaddings),
+        navController = navController,
+        startDestination = MainNav.Home.route
+    ) {
         composable(
             route = MainNav.Home.route,
             deepLinks = MainNav.Home.deepLinks

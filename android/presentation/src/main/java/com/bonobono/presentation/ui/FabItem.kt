@@ -6,6 +6,7 @@ import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.ui.graphics.vector.ImageVector
 
+
 sealed class MainFab(val route: String, val icon: ImageVector, val title: String) {
     object MISSION : MainFab(NavigationRouteName.MISSION, Icons.Filled.DateRange, FabTitle.MISSION)
     object ENCYCLOPEDIA : MainFab(NavigationRouteName.ENCYCLOPEDIA, Icons.Filled.List, FabTitle.ENCYCLOPEDIA)

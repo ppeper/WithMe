@@ -2,8 +2,10 @@ package com.bonobono.presentation.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.ScaffoldState
@@ -54,7 +56,7 @@ fun MainScreen() {
         }
     ) {
         it
-        MainNavigationScreen(navController = navController, scaffoldState = scaffoldState)
+        MainNavigationScreen(navController = navController, scaffoldState = scaffoldState, it)
     }
 }
 
@@ -108,9 +110,10 @@ fun MainBottomNavigationBar(navController: NavHostController, currentRoute: Stri
 @Composable
 fun MainNavigationScreen(
     navController: NavHostController,
-    scaffoldState: ScaffoldState
+    scaffoldState: ScaffoldState,
+    paddingValues: PaddingValues
 ) {
-    NavHost(navController = navController, startDestination = MainNav.Home.route) {
+    NavHost(navController = navController, startDestination = MainNav.Home.route, modifier = Modifier.padding(paddingValues)) {
         composable(
             route = MainNav.Home.route,
             deepLinks = MainNav.Home.deepLinks

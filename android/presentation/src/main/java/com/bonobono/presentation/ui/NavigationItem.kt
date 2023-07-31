@@ -36,6 +36,31 @@ sealed class MainNav(override val route: String, val icon: ImageVector, override
     }
 }
 
+object MissionNav : Destination {
+    override val route: String = NavigationRouteName.MISSION
+    override val title: String = NavigationTitle.MISSION
+    override val deepLinks: List<NavDeepLink> = listOf(
+        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME$route" }
+    )
+}
+
+object EncyclopediaNav : Destination {
+    override val route: String = NavigationRouteName.ENCYCLOPEDIA
+    override val title: String = NavigationTitle.ENCYCLOPEDIA
+    override val deepLinks: List<NavDeepLink> = listOf(
+        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME$route" }
+    )
+}
+
+object NoticeNav : Destination {
+    override val route: String = NavigationRouteName.NOTICE
+    override val title: String = NavigationTitle.NOTICE
+    override val deepLinks: List<NavDeepLink> = listOf(
+        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME$route" }
+    )
+}
+
+
 interface Destination {
     val route: String
     val title: String
@@ -49,6 +74,10 @@ object NavigationRouteName {
     const val MAIN_MY_PAGE = "main_my_page"
     const val MAIN_CHATTING = "main_chat"
     const val MAIN_MAP = "main_map"
+
+    const val MISSION = "mission"
+    const val ENCYCLOPEDIA = "encyclopedia"
+    const val NOTICE = "notice"
 }
 
 object NavigationTitle {
@@ -57,4 +86,8 @@ object NavigationTitle {
     const val MAIN_CHATTING = "채팅"
     const val MAIN_COMMUNITY = "커뮤니티"
     const val MAIN_MY_PAGE = "마이페이지"
+
+    const val MISSION = "미션"
+    const val ENCYCLOPEDIA = "도감"
+    const val NOTICE = "공지"
 }

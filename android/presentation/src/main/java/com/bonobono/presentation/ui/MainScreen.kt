@@ -64,8 +64,8 @@ fun MainScreen() {
 fun MainFloatingActionButtons(navController: NavHostController, currentRoute: String?) {
     val fabItems = listOf(
         MainFab.MISSION,
+        MainFab.ENCYCLOPEDIA,
         MainFab.NOTICE,
-        MainFab.ENCYCLOPEDIA
     )
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,

@@ -67,8 +67,51 @@ fun MissionCard() {
     }
 }
 
+@Composable
+fun EncyclopediaCard() {
+    Card(
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(4.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(vertical = 16.dp, horizontal = 8.dp)
+        ) {
+            Image(
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .background(Color.White)
+                    .padding(12.dp),
+                painter = painterResource(id = R.drawable.beluga_whale),
+                contentDescription = "미션 캐릭터",
+                contentScale = ContentScale.Crop
+            )
+            Spacer(modifier = Modifier.size(16.dp))
+            Column {
+                HeaderTwoText(text = "벨루가")
+                Spacer(modifier = Modifier.size(8.dp))
+                Text(
+                    text = "구한 날짜: 2023.07.31",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 14.sp,
+                    color = Black_100
+                )
+                Spacer(modifier = Modifier.size(8.dp))
+                Text(
+                    text = "장소: 일산지",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 14.sp,
+                    color = Black_100
+                )
+            }
+        }
+    }
+}
+
 @Preview
 @Composable
-fun DefaultPreview() {
-    MissionCard()
+fun CardPreview() {
+    EncyclopediaCard()
 }

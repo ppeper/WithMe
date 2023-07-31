@@ -5,11 +5,11 @@ import com.bonobono.backend.domain.community.article.dto.req.ArticleFreeUpdateRe
 import com.bonobono.backend.domain.community.article.dto.res.ArticleFreeDetailResponseDto;
 import com.bonobono.backend.domain.community.article.dto.res.ArticleFreeListResponseDto;
 import com.bonobono.backend.domain.community.article.entity.Article;
-import com.bonobono.backend.domain.community.article.entity.ArticleLike;
 import com.bonobono.backend.domain.community.article.repository.ArticleLikeRepository;
 import com.bonobono.backend.domain.community.article.repository.ArticleRepository;
 import com.bonobono.backend.domain.member.entity.Member;
 import com.bonobono.backend.domain.member.repository.MemberRepository;
+import com.bonobono.backend.global.service.AwsS3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +27,9 @@ public class ArticleFreeService {
     private final MemberRepository memberRepository;
 
     private final ArticleLikeRepository articleLikeRepository;
+
+    private final AwsS3Service awsS3Service;
+
 
     // 자유게시판 글 저장
     @Transactional
@@ -79,6 +82,7 @@ public class ArticleFreeService {
         articleRepository.delete(article);
     }
 
+    /*
     // 자유게시판 좋아요
     @Transactional
     public boolean addLike(Long articleId, Member member){
@@ -95,5 +99,6 @@ public class ArticleFreeService {
     private boolean isNotAlreadyLike(Member member, Article article){
         return articleLikeRepository.findByMemberAndArticle(member, article).isEmpty();
     }
+    */
 
 }

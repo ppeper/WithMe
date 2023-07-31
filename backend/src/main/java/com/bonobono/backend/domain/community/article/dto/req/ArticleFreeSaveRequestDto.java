@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @NoArgsConstructor
 public class ArticleFreeSaveRequestDto {
@@ -14,16 +16,16 @@ public class ArticleFreeSaveRequestDto {
     private ArticleType type;
     private String title;
     private String content;
-    private String image;
-    private Long memberId;
+    private List<ArticleImageRequestDto> images;
+    private Long memberId; // 후에 user 현재 정보로 바꾸기
 
 
     @Builder
-    public ArticleFreeSaveRequestDto(ArticleType type, String title, String content, String image, Long memberId){
+    public ArticleFreeSaveRequestDto(ArticleType type, String title, String content, List<ArticleImageRequestDto> images, Long memberId){
         this.type = type;
         this.title = title;
         this.content = content;
-        this.image = image;
+        this.images = images;
         this.memberId = memberId;
     }
 
@@ -32,7 +34,6 @@ public class ArticleFreeSaveRequestDto {
                 .type(type)
                 .title(title)
                 .content(content)
-                .image(image)
                 .member(member)
                 .build();
     }

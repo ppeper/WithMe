@@ -27,6 +27,8 @@ public class Member extends BaseTimeEntity {
 
     private String password;
 
+    private String nickname;
+
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Article> articles = new ArrayList<>();
 

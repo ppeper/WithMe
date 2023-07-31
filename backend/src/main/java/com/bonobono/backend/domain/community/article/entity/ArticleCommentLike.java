@@ -9,12 +9,16 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @Entity
-public class ArticleLike {
+public class ArticleCommentLike {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "article_like_id")
+    @Column(name = "article_comment_like_id")
     private Long id;
+
+    @ManyToOne
+    @JoinColumn(name="article_comment_id")
+    private ArticleComment articleComment;
 
     @ManyToOne
     @JoinColumn(name="article_id")
@@ -24,9 +28,8 @@ public class ArticleLike {
     @JoinColumn(name="member_id")
     private Member member;
 
-
-
-    public ArticleLike(Article article, Member member){
+    public ArticleCommentLike(ArticleComment articleComment, Article article, Member member){
+        this.articleComment = articleComment;
         this.article = article;
         this.member = member;
 

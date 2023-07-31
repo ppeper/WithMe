@@ -33,8 +33,6 @@ public class Article extends BaseTimeEntity {
     @Column(nullable = false)
     private String content;
 
-    private String image;
-
     private int likes;
 
     private int views;
@@ -49,10 +47,13 @@ public class Article extends BaseTimeEntity {
     @JoinColumn(name="member_id", nullable = false)
     private Member member;
 
-    @OneToMany(mappedBy = "article")
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ArticleImage> images = new ArrayList<>();
+
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ArticleComment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ArticleLike> articleLikes = new HashSet<>();
 
     @Builder
@@ -60,7 +61,6 @@ public class Article extends BaseTimeEntity {
         this.type = type;
         this.title = title;
         this.content = content;
-        this.image = image;
         this.urlTitle = urlTitle;
         this.url = url;
         this.member = member;
@@ -70,6 +70,5 @@ public class Article extends BaseTimeEntity {
     public void updateFree(String title, String content, String image){
         this.title = title;
         this.content = content;
-        this.image = image;
     }
 }

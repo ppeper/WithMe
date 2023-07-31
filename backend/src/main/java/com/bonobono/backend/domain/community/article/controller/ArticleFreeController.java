@@ -10,6 +10,7 @@ import com.bonobono.backend.domain.community.article.service.ArticleCommentServi
 import com.bonobono.backend.domain.community.article.service.ArticleFreeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +26,7 @@ public class ArticleFreeController {
     private final ArticleCommentService articleCommentService;
 
     // 자유게시판 글쓰기
-    @PostMapping("")
+    @PostMapping(value = "",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ArticleFreeDetailResponseDto> save(@RequestBody ArticleFreeSaveRequestDto requestDto){
         ArticleFreeDetailResponseDto responseDto =  articleFreeService.save(requestDto);
         return new ResponseEntity(responseDto ,HttpStatus.CREATED);
@@ -34,8 +35,8 @@ public class ArticleFreeController {
     // 자유게시판 전체 글 조회
     @GetMapping("")
     public ResponseEntity<List<ArticleFreeListResponseDto>> findAllDesc(){
-        List<ArticleFreeListResponseDto> articles =  articleFreeService.findAllDesc();
-        return new ResponseEntity<>(articles, HttpStatus.OK);
+        List<ArticleFreeListResponseDto> responseDto =  articleFreeService.findAllDesc();
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
     // 자유게시판 특정 글, 글에 관한 댓글 조회하기
@@ -47,8 +48,10 @@ public class ArticleFreeController {
 
     // 자유게시판 게시글 검색 (키워드가 제목, 내용 포함)
     @GetMapping("/search")
-    public List<ArticleFreeListResponseDto> search(@RequestParam("keyword") String keyword){
-        return articleFreeService.search(keyword);
+    public ResponseEntity<List<ArticleFreeListResponseDto>> search(@RequestParam("keyword") String keyword){
+        List<ArticleFreeListResponseDto> responseDto = articleFreeService.search(keyword);
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+
     }
 
     // 자유게시판 특정 글 수정
@@ -87,6 +90,7 @@ public class ArticleFreeController {
         ArticleCommentResponseDto responseDto = articleCommentService.update(articleId, commentId, requestDto);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
+
 
     // ----- 기본 CRUD 외 Service 로직들 -----
 

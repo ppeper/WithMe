@@ -9,11 +9,13 @@ import lombok.NoArgsConstructor;
 public class ArticleCommentResponseDto {
     private String content;
     private int likes;
-    private Long memberId;
+    private String nickname;
+    private ArticleComment parentComment;
 
     public ArticleCommentResponseDto(ArticleComment entity){
         this.content = entity.getContent();
         this.likes = entity.getLikes();
-        this.memberId = entity.getMember().getId();
+        this.nickname = entity.getMember().getNickname();
+        this.parentComment = entity.getParentComment();
     }
 }

@@ -31,11 +31,16 @@ public class ArticleComment extends BaseTimeEntity {
     @JoinColumn(name="member_id", nullable = false)
     private Member member;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="parent_comment_id", nullable = true)
+    private ArticleComment parentComment;
+
     @Builder
-    public ArticleComment(String content, Article article, Member member){
+    public ArticleComment(String content, Article article, Member member, ArticleComment parentComment){
         this.content = content;
         this.article = article;
         this.member = member;
+        this.parentComment = parentComment;
     }
 
     public void updateComment(String content){

@@ -15,20 +15,22 @@ public class ArticleFreeDetailResponseDto {
     private ArticleType type;
     private String title;
     private String content;
-    private String image;
     private int likes;
     private int views;
-    private Long memberId;
+    private String nickname;
+    private List<ArticleImageResponseDto> images;
     private List<ArticleCommentResponseDto> comments;
 
     public ArticleFreeDetailResponseDto(Article entity){
         this.type = entity.getType();
         this.title = entity.getTitle();
         this.content = entity.getContent();
-        this.image = entity.getImage();
         this.likes = entity.getLikes();
         this.views = entity.getViews();
-        this.memberId = entity.getMember().getId();
+        this.images = entity.getImages().stream()
+                .map(ArticleImageResponseDto::new)
+                .collect(Collectors.toList());
+        this.nickname = entity.getMember().getNickname();
         this.comments = entity.getComments().stream()
                 .map(ArticleCommentResponseDto::new)
                 .collect(Collectors.toList());

@@ -29,7 +29,14 @@ public class ArticleCommentService {
                 .orElseThrow(()-> new IllegalArgumentException("해당 게시글이 없습니다. id=" + articleId));
         Member member = memberRepository.findById(requestDto.getMemberId())
                 .orElseThrow(()-> new IllegalArgumentException("해당 멤버가 없습니다. id=" + requestDto.getMemberId()));
-        ArticleComment articleComment = articleCommentRepository.save(requestDto.toEntity(article, member));
+
+        ArticleComment parentComment;
+        if (requestDto.getParentComment() != null) {
+            parentComment = articleCommentRepository.findByParentCommentId(requestDto.getParentComment().getId());
+        } else {
+            parentComment = null;
+        }
+        ArticleComment articleComment = articleCommentRepository.save(requestDto.toEntity(article, member, parentComment));
         return new ArticleCommentResponseDto(articleComment);
     }
 

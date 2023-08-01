@@ -23,6 +23,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,12 +36,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.bonobono.presentation.R
+import com.bonobono.presentation.ui.common.topbar.screen.PostItemScreen
 import com.bonobono.presentation.ui.theme.Black_70
 import com.bonobono.presentation.ui.theme.DarkGray
 import com.bonobono.presentation.ui.theme.Green
 import com.bonobono.presentation.ui.theme.TextGray
 import com.bonobono.presentation.ui.theme.White
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 // TODO("서버와 데이터 맞추기")
 data class BoardItem(
@@ -60,8 +66,20 @@ data class BoardItem(
 
 @Composable
 fun CommonPostListView(
-    boardList: List<BoardItem>
+    boardList: List<BoardItem>,
+    navController: NavController,
 ) {
+    LaunchedEffect(key1 = Unit) {
+        PostItemScreen.buttons
+            .onEach { button ->
+                when (button) {
+                    PostItemScreen.AppBarIcons.Search -> { /* TODO("서버에서 게시글 검색")*/ }
+                    PostItemScreen.AppBarIcons.Alarm -> {}
+                    PostItemScreen.AppBarIcons.NavigationIcon -> { navController.popBackStack() }
+                }
+            }.launchIn(this)
+    }
+
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         contentPadding = PaddingValues(16.dp),
@@ -241,7 +259,11 @@ fun ProceedingView(
             .height(8.dp)
             .clip(CircleShape)
             .background(
-                color = if (isProceeding) { Green } else { DarkGray }
+                color = if (isProceeding) {
+                    Green
+                } else {
+                    DarkGray
+                }
             )
         )
         Text(
@@ -300,29 +322,7 @@ fun BoardPhotoView(
 @Preview
 @Composable
 fun PreviewBoardList() {
-    val list = listOf(
-        BoardItem(
-            title = "테스트 타이틀",
-            content = "내용은 다음과 같습니다.",
-            comment = 3,
-            like = 3,
-        ),
-        BoardItem(
-            title = "테스트 타이틀",
-            content = "내용은 다음과 같습니다.",
-            images = listOf("test", "test", "test"),
-            like = 3,
-        ),
-        BoardItem(
-            communityId = 1,
-            title = "테스트 타이틀",
-            content = "내용은 다음과 같습니다.",
-            images = listOf("test"),
-            comment = 3,
-            isProceeding = true
-        )
-    )
-    CommonPostListView(boardList = list)
+    CommonPostListView(boardList = DummyData.boardList, navController = rememberNavController())
 }
 
 @Preview

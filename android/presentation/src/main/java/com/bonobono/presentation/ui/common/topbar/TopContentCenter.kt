@@ -1,4 +1,4 @@
-package com.bonobono.presentation.ui.community.views
+package com.bonobono.presentation.ui.common.topbar
 
 import android.util.Log
 import androidx.compose.foundation.layout.padding
@@ -11,7 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,7 +25,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.bonobono.presentation.R
+import com.bonobono.presentation.ui.community.views.Photo
+import com.bonobono.presentation.ui.theme.Black_100
 import com.bonobono.presentation.ui.theme.PrimaryBlue
+import com.bonobono.presentation.ui.theme.TextGray
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,8 +61,8 @@ fun TopContentCenter(
             TextButton(
                 onClick = { Log.d("선택된 이미지", "TopContentCenter: ${selectedPhotos.size}") },
                 colors = ButtonDefaults.textButtonColors(
-                    contentColor = Color(0xFF191919),
-                    disabledContentColor = Color(0xFF919191)
+                    contentColor = Black_100,
+                    disabledContentColor = TextGray
                 )
             ) {
                 if (0 < selectedPhotos.size) {
@@ -90,5 +93,5 @@ fun TopContentCenter(
 @Preview
 @Composable
 fun PreviewCommunityWriteView() {
-    TopContentCenter("사진", navController = rememberNavController(), rememberSaveable { mutableStateListOf() })
+    TopContentCenter("사진", navController = rememberNavController(), remember { mutableStateListOf() })
 }

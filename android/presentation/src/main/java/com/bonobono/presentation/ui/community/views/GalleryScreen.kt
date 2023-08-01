@@ -41,6 +41,7 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.bonobono.presentation.R
+import com.bonobono.presentation.ui.common.topbar.TopContentCenter
 import com.bonobono.presentation.ui.theme.Black_20
 import com.bonobono.presentation.ui.theme.PrimaryBlue
 import com.bonobono.presentation.ui.theme.White
@@ -56,8 +57,8 @@ data class Photo(
 @Composable
 fun GalleryScreen(
     modifier: Modifier = Modifier,
-    selectedPhotos: SnapshotStateList<Photo>
 ) {
+    val selectedPhotos = remember { mutableStateListOf<Photo>() }
 //    val photoList = loadPhotos()
     // Test
     val photoList = mutableListOf<Photo>()
@@ -81,7 +82,7 @@ fun GalleryScreen(
 @Composable
 @Preview
 fun PreviewGalleryScreen() {
-    GalleryScreen(selectedPhotos = remember { mutableStateListOf() })
+    GalleryScreen()
 }
 @Composable
 fun GalleryGridListView(
@@ -149,7 +150,8 @@ fun GalleryPhotoView(
             )
         }
         Box(
-            modifier = modifier.padding(8.dp)
+            modifier = modifier
+                .padding(8.dp)
                 .align(Alignment.TopEnd)
         ) {
             Box(

@@ -20,6 +20,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
@@ -35,6 +37,11 @@ import com.bonobono.presentation.ui.chatting.MainChattingScreen
 import com.bonobono.presentation.ui.common.topbar.SharedTopAppBar
 import com.bonobono.presentation.ui.common.topbar.rememberAppBarState
 import com.bonobono.presentation.ui.community.CommunityScreen
+import com.bonobono.presentation.ui.community.views.BoardItem
+import com.bonobono.presentation.ui.community.views.BoardWriteScreen
+import com.bonobono.presentation.ui.community.views.CommonPostListView
+import com.bonobono.presentation.ui.community.views.DummyData
+import com.bonobono.presentation.ui.community.views.GalleryScreen
 import com.bonobono.presentation.ui.component.FloatingButton
 import com.bonobono.presentation.ui.main.EncyclopediaScreen
 import com.bonobono.presentation.ui.main.MainHomeScreen
@@ -250,6 +257,45 @@ fun MainNavigationScreen(
             deepLinks = NoticeNav.deepLinks
         ) {
             NoticeScreen()
+        }
+        /// TODO("커뮤니티 글쓰기 TEST")
+        composable(
+            route = NavigationRouteName.GALLERY
+        ) {
+            GalleryScreen()
+        }
+        composable(
+            route = CommunityFab.FREE.route
+        ) {
+            BoardWriteScreen(navController = navController)
+        }
+        composable(
+            route = CommunityFab.WITH.route
+        ) {
+            BoardWriteScreen(navController = navController)
+        }
+        composable(
+            route = CommunityFab.REPORT.route
+        ) {
+            BoardWriteScreen(navController = navController)
+        }
+        composable(
+            route = CommunityFreeNav.route,
+            deepLinks = CommunityFreeNav.deepLinks
+        ) {
+            CommonPostListView(boardList = DummyData.boardList, navController = navController)
+        }
+        composable(
+            route = CommunityWithNav.route,
+            deepLinks = CommunityWithNav.deepLinks
+        ) {
+            CommonPostListView(boardList = DummyData.boardList, navController = navController)
+        }
+        composable(
+            route = CommunityReportNav.route,
+            deepLinks = CommunityReportNav.deepLinks
+        ) {
+            CommonPostListView(boardList = DummyData.boardList, navController = navController)
         }
     }
 }

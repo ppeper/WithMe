@@ -4,6 +4,9 @@ import androidx.annotation.DrawableRes
 import androidx.navigation.NavDeepLink
 import androidx.navigation.navDeepLink
 import com.bonobono.presentation.R
+import com.bonobono.presentation.ui.NavigationRouteName.COMMUNITY_FREE
+import com.bonobono.presentation.ui.NavigationRouteName.COMMUNITY_REPORT
+import com.bonobono.presentation.ui.NavigationRouteName.COMMUNITY_WITH
 import com.bonobono.presentation.ui.NavigationRouteName.DEEP_LINK_SCHEME
 import com.bonobono.presentation.ui.NavigationRouteName.MAIN_COMMUNITY
 import com.bonobono.presentation.ui.NavigationRouteName.MAIN_HOME
@@ -29,7 +32,8 @@ sealed class MainNav(
     companion object {
         fun isMainRoute(route: String?) : Boolean {
             return when (route) {
-                MAIN_HOME, MAIN_MAP, MAIN_CHATTING, MAIN_COMMUNITY, MAIN_MY_PAGE -> true
+                MAIN_HOME, MAIN_MAP, MAIN_CHATTING, MAIN_COMMUNITY, MAIN_MY_PAGE,
+                COMMUNITY_REPORT, COMMUNITY_WITH, COMMUNITY_FREE-> true
                 else -> false
             }
         }
@@ -60,6 +64,30 @@ object NoticeNav : Destination {
     )
 }
 
+object CommunityFreeNav : Destination {
+    override val route: String = NavigationRouteName.COMMUNITY_FREE
+    override val title: String = NavigationTitle.COMMUNITY_FREE
+    override val deepLinks: List<NavDeepLink> = listOf(
+        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${NoticeNav.route}" }
+    )
+}
+
+object CommunityWithNav : Destination {
+    override val route: String = NavigationRouteName.COMMUNITY_WITH
+    override val title: String = NavigationTitle.COMMUNITY_WITH
+    override val deepLinks: List<NavDeepLink> = listOf(
+        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${NoticeNav.route}" }
+    )
+}
+
+object CommunityReportNav : Destination {
+    override val route: String = NavigationRouteName.COMMUNITY_REPORT
+    override val title: String = NavigationTitle.COMMUNITY_REPORT
+    override val deepLinks: List<NavDeepLink> = listOf(
+        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${NoticeNav.route}" }
+    )
+}
+
 
 interface Destination {
     val route: String
@@ -86,6 +114,8 @@ object NavigationRouteName {
     // FAB Route
     const val COMMUNITY_POST = "write"
     const val COMMUNITY_POST_REPORT = "report"
+    // Gallery Route
+    const val GALLERY = "gallery"
 }
 
 object NavigationTitle {

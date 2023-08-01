@@ -11,6 +11,8 @@ import com.bonobono.presentation.ui.common.topbar.screen.Screen
 fun getScreen(route: String?): Screen? = when (route) {
     NavigationRouteName.MAIN_COMMUNITY -> CommunityListScreen
     NavigationRouteName.COMMUNITY_FREE -> PostItemScreen
+    NavigationRouteName.COMMUNITY_WITH -> PostItemScreen
+    NavigationRouteName.COMMUNITY_REPORT -> PostItemScreen
     ManyOptionsRoute -> ManyOptionsScreen
     else -> null
 }

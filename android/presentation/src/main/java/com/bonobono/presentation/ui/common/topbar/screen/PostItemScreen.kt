@@ -1,6 +1,7 @@
 package com.bonobono.presentation.ui.common.topbar.screen
 
 import com.bonobono.presentation.R
+import com.bonobono.presentation.ui.CommunityFreeNav
 import com.bonobono.presentation.ui.NavigationRouteName
 import com.bonobono.presentation.ui.common.topbar.item.ActionMenuItem
 import kotlinx.coroutines.flow.Flow
@@ -19,7 +20,7 @@ object PostItemScreen: Screen {
     val buttons: Flow<AppBarIcons> = _buttons.asSharedFlow()
 
     override val isCenterTopBar: Boolean = false
-    override val route: String = NavigationRouteName.COMMUNITY_FREE
+    override val route: String = CommunityFreeNav.route
     override val isAppBarVisible: Boolean = true
     override val navigationIcon: Int = R.drawable.ic_back
     override val navigationIconContentDescription: String = "뒤로가기"

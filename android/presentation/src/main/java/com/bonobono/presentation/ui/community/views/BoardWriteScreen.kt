@@ -1,5 +1,6 @@
 package com.bonobono.presentation.ui.community.views
 
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,7 +24,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.bonobono.presentation.ui.NavigationRouteName
 import com.bonobono.presentation.ui.common.topbar.SharedTopAppBar
 import com.bonobono.presentation.ui.common.topbar.rememberAppBarState
 import com.bonobono.presentation.ui.theme.Black_100
@@ -31,16 +34,15 @@ import com.bonobono.presentation.ui.theme.TextGray
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CommunityWriteView(
+fun BoardWriteScreen(
     modifier: Modifier = Modifier,
-    onCompleteClick: () -> Unit
+    navController: NavController,
 ) {
-    val navController = rememberNavController()
     val appBarState = rememberAppBarState(navController = navController)
     Scaffold(
         topBar = { SharedTopAppBar(appBarState = appBarState) },
         bottomBar = {
-            BoardWriteBottomView(onPhotoClick = {})
+            BoardWriteBottomView(onPhotoClick = { navController.navigate(NavigationRouteName.GALLERY) })
         }
     ) { innerPaddings ->
         Surface(
@@ -115,9 +117,7 @@ fun CommunityWriteView(
                         )
                     }
                     PhotoSelectedListView(
-                        selectedPhotos = listOf(
-                            PhotoSelected("1"),
-                        )
+                        selectedPhotos = DummyData.selectedPhotos
                     )
                 }
             }
@@ -128,5 +128,5 @@ fun CommunityWriteView(
 @Preview
 @Composable
 fun Preview() {
-    CommunityWriteView(onCompleteClick = {})
+    BoardWriteScreen(navController = rememberNavController())
 }

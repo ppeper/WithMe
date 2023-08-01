@@ -6,12 +6,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ScaffoldState
-import androidx.compose.material.rememberScaffoldState
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -39,7 +34,8 @@ import com.bonobono.presentation.ui.community.views.BoardWriteScreen
 import com.bonobono.presentation.ui.community.views.CommonPostListView
 import com.bonobono.presentation.ui.community.views.DummyData
 import com.bonobono.presentation.ui.community.views.GalleryScreen
-import com.bonobono.presentation.ui.component.FloatingButton
+import com.bonobono.presentation.ui.component.CommunityFloatingActionButton
+import com.bonobono.presentation.ui.component.HomeFloatingActionButton
 import com.bonobono.presentation.ui.main.EncyclopediaScreen
 import com.bonobono.presentation.ui.main.MainHomeScreen
 import com.bonobono.presentation.ui.main.MissionScreen
@@ -53,10 +49,8 @@ import com.bonobono.presentation.ui.theme.White
 import com.bonobono.presentation.utils.NavigationUtils
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen() {
-    val scaffoldState = rememberScaffoldState()
     val navController = rememberNavController()
     val appBarState = rememberAppBarState(navController = navController)
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -80,19 +74,22 @@ fun MainScreen() {
                         currentRoute = currentRoute
                     )
                 }
+
                 NavigationRouteName.COMMUNITY_FREE -> {
                     CommunityFloatingActionButton(
                         navController = navController,
                         item = CommunityFab.FREE
                     )
                 }
+
                 NavigationRouteName.COMMUNITY_WITH -> {
                     CommunityFloatingActionButton(
                         navController = navController,
                         item = CommunityFab.WITH
                     )
                 }
-                NavigationRouteName.COMMUNITY_REPORT-> {
+
+                NavigationRouteName.COMMUNITY_REPORT -> {
                     CommunityFloatingActionButton(
                         navController = navController,
                         item = CommunityFab.REPORT
@@ -104,7 +101,6 @@ fun MainScreen() {
         MainNavigationScreen(
             innerPaddings = it,
             navController = navController,
-            scaffoldState = scaffoldState
         )
     }
 }
@@ -121,7 +117,7 @@ fun MainFloatingActionButtons(navController: NavHostController, currentRoute: St
         verticalArrangement = Arrangement.Bottom
     ) {
         fabItems.forEach { item ->
-            FloatingButton(icon = item.icon, title = item.title) {
+            HomeFloatingActionButton(icon = item.icon, title = item.title) {
                 NavigationUtils.navigate(
                     navController, item.route,
                     navController.graph.startDestinationRoute
@@ -129,29 +125,6 @@ fun MainFloatingActionButtons(navController: NavHostController, currentRoute: St
             }
             Spacer(modifier = Modifier.height(16.dp))
         }
-    }
-}
-
-@Composable
-fun CommunityFloatingActionButton(
-    navController: NavHostController,
-    item: CommunityFab
-) {
-    FloatingActionButton(
-        containerColor = PrimaryBlue,
-        contentColor = White,
-        shape = CircleShape,
-        onClick = {
-            NavigationUtils.navigate(
-                navController, item.route,
-                navController.graph.startDestinationRoute
-            )
-        }
-    ) {
-        Icon(
-            painter = painterResource(id = item.icon),
-            contentDescription = item.title
-        )
     }
 }
 
@@ -201,7 +174,6 @@ fun MainBottomNavigationBar(navController: NavHostController, currentRoute: Stri
 fun MainNavigationScreen(
     innerPaddings: PaddingValues,
     navController: NavHostController,
-    scaffoldState: ScaffoldState
 ) {
     NavHost(
         modifier = Modifier.padding(innerPaddings),

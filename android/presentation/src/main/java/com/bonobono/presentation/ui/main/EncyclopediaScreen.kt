@@ -7,23 +7,17 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.bonobono.presentation.ui.component.AnimatedCard
-import com.bonobono.presentation.ui.component.CharacterBlind
-import com.bonobono.presentation.ui.component.CharacterProfile
+import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.component.EncyclopediaCard
 import com.bonobono.presentation.ui.component.HeaderTwoText
-import com.bonobono.presentation.ui.component.MissionCard
-import com.bonobono.presentation.ui.component.ProgressBar
+import com.bonobono.presentation.ui.main.component.AnimatedProfile
+import com.bonobono.presentation.ui.main.component.CharacterBlind
 
 @Composable
 fun EncyclopediaScreen() {
@@ -33,7 +27,7 @@ fun EncyclopediaScreen() {
             .verticalScroll(rememberScrollState())
     ) {
         Spacer(modifier = Modifier.size(12.dp))
-        AnimatedCard()
+        AnimatedProfile(profileImage = R.drawable.beluga_whale)
         Spacer(modifier = Modifier.size(12.dp))
         KnownCharacter()
         UnknownCharacter()
@@ -77,7 +71,7 @@ fun UnknownCharacter() {
         Modifier.padding(vertical = 4.dp)
     ) {
         items(items.size) {
-            CharacterBlind()
+            CharacterBlind(R.drawable.beluga_whale)
         }
     }
 }

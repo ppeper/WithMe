@@ -8,14 +8,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -43,10 +44,13 @@ import com.bonobono.presentation.ui.community.views.CommonPostListView
 import com.bonobono.presentation.ui.community.views.DummyData
 import com.bonobono.presentation.ui.community.views.GalleryScreen
 import com.bonobono.presentation.ui.component.FloatingButton
+import com.bonobono.presentation.ui.community.MainCommunityScreen
+import com.bonobono.presentation.ui.component.FloatingButton
 import com.bonobono.presentation.ui.main.EncyclopediaScreen
 import com.bonobono.presentation.ui.main.MainHomeScreen
 import com.bonobono.presentation.ui.main.MissionScreen
 import com.bonobono.presentation.ui.main.NoticeScreen
+import com.bonobono.presentation.ui.map.CameraScreen
 import com.bonobono.presentation.ui.map.MainMapScreen
 import com.bonobono.presentation.ui.mypage.MainMyPageScreen
 import com.bonobono.presentation.ui.theme.PrimaryBlue
@@ -115,8 +119,8 @@ fun MainScreen() {
 fun MainFloatingActionButtons(navController: NavHostController, currentRoute: String?) {
     val fabItems = listOf(
         MainFab.MISSION,
-        MainFab.NOTICE,
-        MainFab.ENCYCLOPEDIA
+        MainFab.ENCYCLOPEDIA,
+        MainFab.NOTICE
     )
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -257,6 +261,12 @@ fun MainNavigationScreen(
             deepLinks = NoticeNav.deepLinks
         ) {
             NoticeScreen()
+        }
+        composable(
+            route = CameraNav.route,
+            deepLinks = CameraNav.deepLinks
+        ) {
+            CameraScreen()
         }
         /// TODO("커뮤니티 글쓰기 TEST")
         composable(

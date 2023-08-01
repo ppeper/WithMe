@@ -4,14 +4,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.bonobono.presentation.R
 
 
-sealed class MainFab(val route: String, val icon: ImageVector, val title: String) {
-    object MISSION : MainFab(NavigationRouteName.MISSION, Icons.Filled.DateRange, FabTitle.MISSION)
-    object ENCYCLOPEDIA : MainFab(NavigationRouteName.ENCYCLOPEDIA, Icons.Filled.List, FabTitle.ENCYCLOPEDIA)
-    object NOTICE : MainFab(NavigationRouteName.NOTICE, Icons.Filled.Notifications, FabTitle.NOTICE)
+sealed class MainFab(val route: String, val icon: Int, val title: String) {
+    object MISSION : MainFab(NavigationRouteName.MISSION, R.drawable.ic_mission, FabTitle.MISSION)
+    object ENCYCLOPEDIA : MainFab(NavigationRouteName.ENCYCLOPEDIA, R.drawable.ic_ecyclopedia, FabTitle.ENCYCLOPEDIA)
+    object NOTICE : MainFab(NavigationRouteName.NOTICE, R.drawable.ic_notice, FabTitle.NOTICE)
 }
 
 sealed class CommunityFab(val route: String, val icon: Int, val title: String) {

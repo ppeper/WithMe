@@ -8,11 +8,11 @@ import com.bonobono.presentation.ui.NavigationRouteName.COMMUNITY_FREE
 import com.bonobono.presentation.ui.NavigationRouteName.COMMUNITY_REPORT
 import com.bonobono.presentation.ui.NavigationRouteName.COMMUNITY_WITH
 import com.bonobono.presentation.ui.NavigationRouteName.DEEP_LINK_SCHEME
+import com.bonobono.presentation.ui.NavigationRouteName.MAIN_CHATTING
 import com.bonobono.presentation.ui.NavigationRouteName.MAIN_COMMUNITY
 import com.bonobono.presentation.ui.NavigationRouteName.MAIN_HOME
-import com.bonobono.presentation.ui.NavigationRouteName.MAIN_MY_PAGE
-import com.bonobono.presentation.ui.NavigationRouteName.MAIN_CHATTING
 import com.bonobono.presentation.ui.NavigationRouteName.MAIN_MAP
+import com.bonobono.presentation.ui.NavigationRouteName.MAIN_MY_PAGE
 
 sealed class MainNav(
     override val route: String,
@@ -30,7 +30,7 @@ sealed class MainNav(
     )
 
     companion object {
-        fun isMainRoute(route: String?) : Boolean {
+        fun isMainRoute(route: String?): Boolean {
             return when (route) {
                 MAIN_HOME, MAIN_MAP, MAIN_CHATTING, MAIN_COMMUNITY, MAIN_MY_PAGE,
                 COMMUNITY_REPORT, COMMUNITY_WITH, COMMUNITY_FREE-> true
@@ -88,6 +88,14 @@ object CommunityReportNav : Destination {
     )
 }
 
+object CameraNav : Destination {
+    override val route: String = NavigationRouteName.CAMERA
+    override val title: String = NavigationTitle.CAMERA
+    override val deepLinks: List<NavDeepLink> = listOf(
+        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${NoticeNav.route}" }
+    )
+}
+
 
 interface Destination {
     val route: String
@@ -116,6 +124,8 @@ object NavigationRouteName {
     const val COMMUNITY_POST_REPORT = "report"
     // Gallery Route
     const val GALLERY = "gallery"
+
+    const val CAMERA = "camera"
 }
 
 object NavigationTitle {
@@ -132,4 +142,6 @@ object NavigationTitle {
     const val MISSION = "미션"
     const val ENCYCLOPEDIA = "도감"
     const val NOTICE = "공지"
+
+    const val CAMERA = "카메라"
 }

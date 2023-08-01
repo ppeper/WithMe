@@ -2,15 +2,19 @@ package com.bonobono.presentation.ui.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -105,6 +109,49 @@ fun EncyclopediaCard() {
                     fontSize = 14.sp,
                     color = Black_100
                 )
+            }
+        }
+    }
+}
+
+@Composable
+fun MyPageInfoCard(seaAnimalExp: String, rewardMoney: String) {
+    Card(
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(4.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 24.dp),
+            Arrangement.Center,
+            Alignment.CenterVertically
+        ) {
+            Column(
+                modifier = Modifier.padding(horizontal = 24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(text = "바다 친구 포인트")
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(text = "$seaAnimalExp Exp")
+            }
+            Divider(
+                color = Color.LightGray,
+                modifier = Modifier
+                    .height(64.dp)
+                    .width(2.dp)
+            )
+            Column(
+                modifier = Modifier.padding(horizontal = 24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(text = "리워드 MONEY")
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(text = "$rewardMoney P")
             }
         }
     }

@@ -9,13 +9,17 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavDeepLink
 import androidx.navigation.navDeepLink
 import com.bonobono.presentation.ui.NavigationRouteName.DEEP_LINK_SCHEME
+import com.bonobono.presentation.ui.NavigationRouteName.MAIN_CHATTING
 import com.bonobono.presentation.ui.NavigationRouteName.MAIN_COMMUNITY
 import com.bonobono.presentation.ui.NavigationRouteName.MAIN_HOME
-import com.bonobono.presentation.ui.NavigationRouteName.MAIN_MY_PAGE
-import com.bonobono.presentation.ui.NavigationRouteName.MAIN_CHATTING
 import com.bonobono.presentation.ui.NavigationRouteName.MAIN_MAP
+import com.bonobono.presentation.ui.NavigationRouteName.MAIN_MY_PAGE
 
-sealed class MainNav(override val route: String, val icon: ImageVector, override val title: String) : Destination {
+sealed class MainNav(
+    override val route: String,
+    val icon: ImageVector,
+    override val title: String
+) : Destination {
     object Home : MainNav(MAIN_HOME, Icons.Filled.Home, NavigationTitle.MAIN_HOME)
     object Map : MainNav(MAIN_MAP, Icons.Filled.Favorite, NavigationTitle.MAIN_MAP)
     object Community : MainNav(MAIN_COMMUNITY, Icons.Filled.Star, NavigationTitle.MAIN_COMMUNITY)
@@ -27,7 +31,7 @@ sealed class MainNav(override val route: String, val icon: ImageVector, override
     )
 
     companion object {
-        fun isMainRoute(route: String?) : Boolean {
+        fun isMainRoute(route: String?): Boolean {
             return when (route) {
                 MAIN_HOME, MAIN_MAP, MAIN_CHATTING, MAIN_COMMUNITY, MAIN_MY_PAGE -> true
                 else -> false
@@ -60,6 +64,14 @@ object NoticeNav : Destination {
     )
 }
 
+object CameraNav : Destination {
+    override val route: String = NavigationRouteName.CAMERA
+    override val title: String = NavigationTitle.CAMERA
+    override val deepLinks: List<NavDeepLink> = listOf(
+        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${NoticeNav.route}" }
+    )
+}
+
 
 interface Destination {
     val route: String
@@ -78,6 +90,8 @@ object NavigationRouteName {
     const val MISSION = "mission"
     const val ENCYCLOPEDIA = "encyclopedia"
     const val NOTICE = "notice"
+
+    const val CAMERA = "camera"
 }
 
 object NavigationTitle {
@@ -90,4 +104,6 @@ object NavigationTitle {
     const val MISSION = "미션"
     const val ENCYCLOPEDIA = "도감"
     const val NOTICE = "공지"
+
+    const val CAMERA = "카메라"
 }

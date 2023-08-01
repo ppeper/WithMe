@@ -6,10 +6,15 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.Colors
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
@@ -17,17 +22,22 @@ import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.bonobono.presentation.R
@@ -40,29 +50,11 @@ fun ProfileEdit(profileImage: Int) {
         Image(
             modifier = Modifier
                 .clip(CircleShape)
-                .background(Color.White)
                 .padding(12.dp)
                 .constrainAs(image) {},
             painter = painterResource(id = profileImage),
             contentDescription = "프로필 사진"
         )
-        IconButton(
-            onClick = { /*TODO*/ },
-            Modifier
-                .size(24.dp)
-                .constrainAs(button) {
-                    bottom.linkTo(parent.bottom, margin = 4.dp)
-                    end.linkTo(parent.end, margin = 4.dp)
-                }
-        ) {
-            Icon(
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .background(Color.Gray),
-                imageVector = Icons.Filled.Add,
-                contentDescription = "프로필 수정"
-            )
-        }
     }
 }
 
@@ -72,10 +64,11 @@ fun CharacterProfile(progressBar: @Composable () -> Unit) {
     val progress by animateLottieCompositionAsState(composition)
 
     Card(
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
         modifier = Modifier
             .fillMaxWidth()
             .padding(4.dp),
+        colors = CardDefaults.cardColors(Color.Transparent)
     ) {
         Column(
             modifier = Modifier.padding(12.dp)
@@ -86,31 +79,32 @@ fun CharacterProfile(progressBar: @Composable () -> Unit) {
             ) {
                 ProfileEdit(profileImage = R.drawable.beluga_whale)
             }
-            ProgressBar(icon = Icons.Filled.AccountBox, title = "제목", percent = 0.3)
-            progressBar()
         }
     }
 }
 
 @Composable
 fun AnimatedCard() {
-    val composition  by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.in_sea))
-    val progress by animateLottieCompositionAsState(composition)
+    val composition  by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.animation_card))
+    val progress by animateLottieCompositionAsState(composition, iterations = LottieConstants.IterateForever)
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(4.dp)
+            .clip(CircleShape),
+        contentAlignment = Alignment.Center
     ) {
         // 로티 애니메이션을 Box의 배경으로 추가합니다.
         LottieAnimation(
+            modifier = Modifier
+                .zIndex(-0.1f)
+                .fillMaxWidth()
+                .height(300.dp),
             composition = composition,
             progress = { progress },
         )
-
         CharacterProfile {
 
         }
-
     }
 }
 

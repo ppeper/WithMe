@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.bonobono.presentation.ui.component.AnimatedCard
 import com.bonobono.presentation.ui.component.CharacterBlind
 import com.bonobono.presentation.ui.component.CharacterProfile
 import com.bonobono.presentation.ui.component.EncyclopediaCard
@@ -32,7 +33,7 @@ fun EncyclopediaScreen() {
             .verticalScroll(rememberScrollState())
     ) {
         Spacer(modifier = Modifier.size(12.dp))
-        CharacterProfile { }
+        AnimatedCard()
         Spacer(modifier = Modifier.size(12.dp))
         KnownCharacter()
         UnknownCharacter()

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.ScaffoldState
@@ -25,12 +26,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.bonobono.presentation.ui.chatting.MainChattingScreen
-import com.bonobono.presentation.ui.component.FloatingButton
 import com.bonobono.presentation.ui.community.MainCommunityScreen
+import com.bonobono.presentation.ui.component.FloatingButton
 import com.bonobono.presentation.ui.main.EncyclopediaScreen
 import com.bonobono.presentation.ui.main.MainHomeScreen
 import com.bonobono.presentation.ui.main.MissionScreen
 import com.bonobono.presentation.ui.main.NoticeScreen
+import com.bonobono.presentation.ui.map.CameraScreen
 import com.bonobono.presentation.ui.map.MainMapScreen
 import com.bonobono.presentation.ui.mypage.MainMyPageScreen
 import com.bonobono.presentation.utils.NavigationUtils
@@ -161,6 +163,12 @@ fun MainNavigationScreen(
             deepLinks = NoticeNav.deepLinks
         ) {
             NoticeScreen()
+        }
+        composable(
+            route = CameraNav.route,
+            deepLinks = CameraNav.deepLinks
+        ) {
+            CameraScreen()
         }
     }
 }

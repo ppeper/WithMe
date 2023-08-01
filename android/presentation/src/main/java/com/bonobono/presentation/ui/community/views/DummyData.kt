@@ -47,4 +47,16 @@ object DummyData {
     val selectedPhotos = listOf(
         PhotoSelected(imageUrl)
     )
+    val commentUser = TestUser(
+        profile = imageUrl,
+        name = "황신운",
+        comment = "댓글 테스트",
+        commentList = listOf(
+            TestUser(
+                profile = imageUrl,
+                name = "황신운",
+                comment = "댓글 테스트"
+            )
+        )
+    )
 }

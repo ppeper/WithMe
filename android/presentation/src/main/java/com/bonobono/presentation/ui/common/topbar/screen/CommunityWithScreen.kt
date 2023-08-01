@@ -2,32 +2,34 @@ package com.bonobono.presentation.ui.common.topbar.screen
 
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.CommunityFreeNav
-import com.bonobono.presentation.ui.NavigationRouteName
+import com.bonobono.presentation.ui.CommunityWithNav
 import com.bonobono.presentation.ui.common.topbar.item.ActionMenuItem
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
-object PostItemScreen: Screen {
+object CommunityWithScreen: Screen {
 
     enum class AppBarIcons {
         NavigationIcon,
         Search,
         Alarm,
+        ALL,
+        RECRUIT
     }
 
     private val _buttons = MutableSharedFlow<AppBarIcons>(extraBufferCapacity = 1)
     val buttons: Flow<AppBarIcons> = _buttons.asSharedFlow()
 
     override val isCenterTopBar: Boolean = false
-    override val route: String = CommunityFreeNav.route
+    override val route: String = CommunityWithNav.route
     override val isAppBarVisible: Boolean = true
     override val navigationIcon: Int = R.drawable.ic_back
     override val navigationIconContentDescription: String = "뒤로가기"
     override val onNavigationIconClick: () -> Unit = {
         _buttons.tryEmit(AppBarIcons.NavigationIcon)
     }
-    override val title: String = "자유게시판"
+    override val title: String = CommunityWithNav.title
     override val actions: List<ActionMenuItem> = listOf(
         ActionMenuItem.IconMenuItem.AlwaysShown(
             title = "검색",
@@ -44,7 +46,19 @@ object PostItemScreen: Screen {
             },
             icon = R.drawable.ic_alarm,
             contentDescription = "좋아요"
-        )
+        ),
+        ActionMenuItem.NeverShown(
+            title = "전체 보기",
+            onClick = {
+                _buttons.tryEmit(AppBarIcons.ALL)
+            },
+        ),
+        ActionMenuItem.NeverShown(
+            title = "모집중 보기",
+            onClick = {
+                _buttons.tryEmit(AppBarIcons.RECRUIT)
+            },
+        ),
 
     )
 }

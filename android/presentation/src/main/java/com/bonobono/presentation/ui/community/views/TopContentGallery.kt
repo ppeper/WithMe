@@ -1,4 +1,4 @@
-package com.bonobono.presentation.ui.common.topbar
+package com.bonobono.presentation.ui.community.views
 
 import android.util.Log
 import androidx.compose.foundation.layout.padding
@@ -14,7 +14,6 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -25,14 +24,14 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.bonobono.presentation.R
-import com.bonobono.presentation.ui.community.views.Photo
+import com.bonobono.presentation.ui.community.Photo
 import com.bonobono.presentation.ui.theme.Black_100
 import com.bonobono.presentation.ui.theme.PrimaryBlue
 import com.bonobono.presentation.ui.theme.TextGray
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopContentCenter(
+fun TopContentGallery(
     title: String = "",
     navController: NavController,
     selectedPhotos: SnapshotStateList<Photo>,
@@ -59,7 +58,7 @@ fun TopContentCenter(
         },
         actions = {
             TextButton(
-                onClick = { Log.d("선택된 이미지", "TopContentCenter: ${selectedPhotos.size}") },
+                onClick = { navController.popBackStack() },
                 colors = ButtonDefaults.textButtonColors(
                     contentColor = Black_100,
                     disabledContentColor = TextGray
@@ -93,5 +92,5 @@ fun TopContentCenter(
 @Preview
 @Composable
 fun PreviewCommunityWriteView() {
-    TopContentCenter("사진", navController = rememberNavController(), remember { mutableStateListOf() })
+    TopContentGallery("사진", navController = rememberNavController(), remember { mutableStateListOf() })
 }

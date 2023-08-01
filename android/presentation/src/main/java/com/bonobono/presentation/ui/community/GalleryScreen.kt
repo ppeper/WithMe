@@ -1,4 +1,4 @@
-package com.bonobono.presentation.ui.community.views
+package com.bonobono.presentation.ui.community
 
 import android.provider.MediaStore
 import android.util.Log
@@ -37,11 +37,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.bonobono.presentation.R
-import com.bonobono.presentation.ui.common.topbar.TopContentCenter
+import com.bonobono.presentation.ui.community.views.TopContentGallery
+import com.bonobono.presentation.ui.community.views.TopContentWrite
 import com.bonobono.presentation.ui.theme.Black_20
 import com.bonobono.presentation.ui.theme.PrimaryBlue
 import com.bonobono.presentation.ui.theme.White
@@ -57,19 +59,13 @@ data class Photo(
 @Composable
 fun GalleryScreen(
     modifier: Modifier = Modifier,
+    navController: NavController
 ) {
     val selectedPhotos = remember { mutableStateListOf<Photo>() }
-//    val photoList = loadPhotos()
-    // Test
-    val photoList = mutableListOf<Photo>()
-        .apply {
-            repeat(20) {
-                add(Photo(url = "https://images.unsplash.com/photo-1689852484069-3e0fe82cc7c1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1887&q=80"))
-            }
-        }
+    val photoList = loadPhotos()
     Scaffold(
         modifier = modifier.fillMaxWidth(),
-        topBar = { TopContentCenter(title = "사진", rememberNavController(), selectedPhotos) }
+        topBar = { TopContentGallery(title = "사진", navController, selectedPhotos) }
     ) {
         Surface(
             modifier = modifier.padding(it)
@@ -82,7 +78,7 @@ fun GalleryScreen(
 @Composable
 @Preview
 fun PreviewGalleryScreen() {
-    GalleryScreen()
+    GalleryScreen(navController = rememberNavController())
 }
 @Composable
 fun GalleryGridListView(

@@ -1,6 +1,5 @@
-package com.bonobono.presentation.ui.community.views
+package com.bonobono.presentation.ui.community
 
-import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,8 +26,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.bonobono.presentation.ui.NavigationRouteName
-import com.bonobono.presentation.ui.common.topbar.SharedTopAppBar
-import com.bonobono.presentation.ui.common.topbar.rememberAppBarState
+import com.bonobono.presentation.ui.community.views.BoardWriteBottomView
+import com.bonobono.presentation.ui.community.views.DummyData
+import com.bonobono.presentation.ui.community.views.PhotoSelectedListView
+import com.bonobono.presentation.ui.community.views.TopContentWrite
 import com.bonobono.presentation.ui.theme.Black_100
 import com.bonobono.presentation.ui.theme.TextGray
 
@@ -38,9 +39,14 @@ fun BoardWriteScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
 ) {
-    val appBarState = rememberAppBarState(navController = navController)
     Scaffold(
-        topBar = { SharedTopAppBar(appBarState = appBarState) },
+        topBar = {
+            TopContentWrite(
+                title = "글 작성",
+                navController = navController,
+                onCompleteClick = { /* TODO("서버로 게시글 등록") */ }
+            )
+        },
         bottomBar = {
             BoardWriteBottomView(onPhotoClick = { navController.navigate(NavigationRouteName.GALLERY) })
         }

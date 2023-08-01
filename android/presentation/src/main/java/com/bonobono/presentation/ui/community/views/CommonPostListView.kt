@@ -39,7 +39,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.bonobono.presentation.R
-import com.bonobono.presentation.ui.common.topbar.screen.PostItemScreen
+import com.bonobono.presentation.ui.common.topbar.screen.CommunityFreeScreen
+import com.bonobono.presentation.ui.community.util.freeLaunchEffect
+import com.bonobono.presentation.ui.community.util.reportLaunchEffect
+import com.bonobono.presentation.ui.community.util.withLaunchEffect
 import com.bonobono.presentation.ui.theme.Black_70
 import com.bonobono.presentation.ui.theme.DarkGray
 import com.bonobono.presentation.ui.theme.Green
@@ -69,16 +72,9 @@ fun CommonPostListView(
     boardList: List<BoardItem>,
     navController: NavController,
 ) {
-    LaunchedEffect(key1 = Unit) {
-        PostItemScreen.buttons
-            .onEach { button ->
-                when (button) {
-                    PostItemScreen.AppBarIcons.Search -> { /* TODO("서버에서 게시글 검색")*/ }
-                    PostItemScreen.AppBarIcons.Alarm -> {}
-                    PostItemScreen.AppBarIcons.NavigationIcon -> { navController.popBackStack() }
-                }
-            }.launchIn(this)
-    }
+    freeLaunchEffect(navController = navController)
+    withLaunchEffect(navController = navController)
+    reportLaunchEffect(navController = navController)
 
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(16.dp),

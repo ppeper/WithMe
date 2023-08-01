@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.rememberScaffoldState
@@ -31,14 +30,18 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.bonobono.presentation.ui.NavigationRouteName.COMMUNITY_FREE
+import com.bonobono.presentation.ui.NavigationRouteName.COMMUNITY_REPORT
+import com.bonobono.presentation.ui.NavigationRouteName.COMMUNITY_WITH
+import com.bonobono.presentation.ui.NavigationRouteName.MAIN_COMMUNITY
 import com.bonobono.presentation.ui.chatting.MainChattingScreen
 import com.bonobono.presentation.ui.common.topbar.SharedTopAppBar
 import com.bonobono.presentation.ui.common.topbar.rememberAppBarState
 import com.bonobono.presentation.ui.community.CommunityScreen
-import com.bonobono.presentation.ui.community.views.BoardWriteScreen
+import com.bonobono.presentation.ui.community.BoardWriteScreen
 import com.bonobono.presentation.ui.community.views.CommonPostListView
 import com.bonobono.presentation.ui.community.views.DummyData
-import com.bonobono.presentation.ui.community.views.GalleryScreen
+import com.bonobono.presentation.ui.community.GalleryScreen
 import com.bonobono.presentation.ui.component.FloatingButton
 import com.bonobono.presentation.ui.main.EncyclopediaScreen
 import com.bonobono.presentation.ui.main.MainHomeScreen
@@ -140,7 +143,6 @@ fun CommunityFloatingActionButton(
     FloatingActionButton(
         containerColor = PrimaryBlue,
         contentColor = White,
-        shape = CircleShape,
         onClick = {
             NavigationUtils.navigate(
                 navController, item.route,
@@ -152,6 +154,17 @@ fun CommunityFloatingActionButton(
             painter = painterResource(id = item.icon),
             contentDescription = item.title
         )
+    }
+}
+
+// 커뮤니티에서의 bottom Navigation Route
+fun isCommunityRoute(
+    route: String
+): String {
+    return if (route in listOf(COMMUNITY_FREE, COMMUNITY_WITH, COMMUNITY_REPORT)) {
+        MAIN_COMMUNITY
+    } else {
+        route
     }
 }
 
@@ -187,7 +200,7 @@ fun MainBottomNavigationBar(navController: NavHostController, currentRoute: Stri
                 ),
                 label = { Text(text = item.title) },
                 icon = { Icon(painter = painterResource(id = item.icon), item.route) },
-                selected = currentRoute == item.route, onClick = {
+                selected = currentRoute == item.route || currentRoute?.let { isCommunityRoute(it) } == item.route, onClick = {
                     NavigationUtils.navigate(
                         navController, item.route,
                         navController.graph.startDestinationRoute
@@ -266,7 +279,7 @@ fun MainNavigationScreen(
         composable(
             route = NavigationRouteName.GALLERY
         ) {
-            GalleryScreen()
+            GalleryScreen(navController = navController)
         }
         composable(
             route = CommunityFab.FREE.route

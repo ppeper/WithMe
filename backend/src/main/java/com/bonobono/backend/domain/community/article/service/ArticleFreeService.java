@@ -6,6 +6,7 @@ import com.bonobono.backend.domain.community.article.dto.req.ArticleImageRequest
 import com.bonobono.backend.domain.community.article.dto.res.ArticleFreeDetailResponseDto;
 import com.bonobono.backend.domain.community.article.dto.res.ArticleFreeListResponseDto;
 import com.bonobono.backend.domain.community.article.entity.Article;
+import com.bonobono.backend.domain.community.article.entity.ArticleImage;
 import com.bonobono.backend.domain.community.article.repository.ArticleImageRepository;
 import com.bonobono.backend.domain.community.article.repository.ArticleLikeRepository;
 import com.bonobono.backend.domain.community.article.repository.ArticleRepository;
@@ -17,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -43,18 +43,27 @@ public class ArticleFreeService {
         Member member = memberRepository.findById(requestDto.getMemberId())
                 .orElseThrow(() -> new NoSuchElementException("해당 ID 값을 가진 Member가 없습니다 + id = " + requestDto.getMemberId()));
 
-        List<ArticleImageRequestDto> images = new ArrayList<>();
-        for(MultipartFile imageFile : imageFiles){
-            String imageUrl = awsS3Service.upload(imageFile, "article_images");
-            images.add(new ArticleImageRequestDto()
-                    .builder()
-                    .imageName(imageFile.getOriginalFilename())
-                    .imageUrl(imageUrl)
-                    .build());
-        }
         Article article  = articleRepository.save(requestDto.toEntity(member));
-        return new ArticleFreeDetailResponseDto(article);
+
+        for(MultipartFile imageFile : imageFiles){
+            String imageUrl = awsS3Service.upload(imageFile, "article_images").getPath();
+            ArticleImage articleImage  = saveImage(imageFile.getOriginalFilename(), imageUrl).toEntity(article);
+            articleImageRepository.save(articleImage);
+        }
+
+        Article newArticle = articleRepository.findById(article.getId())
+                .orElseThrow(() -> new NoSuchElementException("해당 ID 값을 가진 게시글이 없습니다 + id = " + article.getId()));
+
+        return new ArticleFreeDetailResponseDto(newArticle);
     }
+
+    private ArticleImageRequestDto saveImage(String imageName, String imageUrl){
+        return ArticleImageRequestDto.builder()
+                .imageName(imageName)
+                .imageUrl(imageUrl)
+                .build();
+    }
+
 
     // 자유게시판 전체글 내림차순
     @Transactional(readOnly = true) // readOnly를 사용하여 조회 기능만 남겨두어 조회속도가 개선

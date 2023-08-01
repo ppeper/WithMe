@@ -31,8 +31,8 @@ public class ArticleCommentService {
                 .orElseThrow(()-> new IllegalArgumentException("해당 멤버가 없습니다. id=" + requestDto.getMemberId()));
 
         ArticleComment parentComment;
-        if (requestDto.getParentComment() != null) {
-            parentComment = articleCommentRepository.findByParentCommentId(requestDto.getParentComment().getId());
+        if (requestDto.getParentId() != null) {
+            parentComment = articleCommentRepository.findByParentId(requestDto.getParentId());
         } else {
             parentComment = null;
         }

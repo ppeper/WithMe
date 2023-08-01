@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -32,15 +34,18 @@ public class ArticleComment extends BaseTimeEntity {
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="parent_comment_id", nullable = true)
-    private ArticleComment parentComment;
+    @JoinColumn(name="parent_id", nullable = true)
+    private ArticleComment parent;
+
+    @OneToMany(mappedBy = "parent", orphanRemoval = true)
+    private List<ArticleComment> commentList = new ArrayList<>();
 
     @Builder
-    public ArticleComment(String content, Article article, Member member, ArticleComment parentComment){
+    public ArticleComment(String content, Article article, Member member, ArticleComment parent){
         this.content = content;
         this.article = article;
         this.member = member;
-        this.parentComment = parentComment;
+        this.parent = parent;
     }
 
     public void updateComment(String content){

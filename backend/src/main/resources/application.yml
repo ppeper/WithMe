@@ -1,35 +1,37 @@
 # h2 console setting
 spring:
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
   datasource:
-    url: jdbc:h2:~/test;
-    driverClassName: org.h2.Driver
-    username: sa
-    password:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://localhost:3306/bonobono?characterEncoding=UTF-8&serverTimezone=UTC
+    username: root
+    password: 1234
+
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.H2Dialect
-        format_sql: true
-        show_sql: true
     hibernate:
       ddl-auto: create
-    defer-datasource-initialization: true
+    properties:
+      hibernate:
+        format_sql: true #To beautify or pretty print the SQL
+        show_sql: true #show sql
   sql:
     init:
       data-locations: classpath:data.sql
       mode: always
+  mvc: # swagger로 인해서 세팅
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+
 
 # S3 image upload setting
 cloud:
   aws:
     credentials:
-      accessKey: AKIARNYJE4X5R3J4NUGZ
-      secretKey: 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
+      accessKey: AKIARNYJE4X55QI7TB6F
+      secretKey: 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
     s3:
       bucket: bonobono
     region:

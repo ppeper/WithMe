@@ -10,12 +10,12 @@ public class ArticleCommentResponseDto {
     private String content;
     private int likes;
     private String nickname;
-    private ArticleComment parentComment;
+    private ArticleComment parent;
 
     public ArticleCommentResponseDto(ArticleComment entity){
         this.content = entity.getContent();
         this.likes = entity.getLikes();
         this.nickname = entity.getMember().getNickname();
-        this.parentComment = entity.getParentComment();
+        this.parent = entity.getParent();
     }
 }

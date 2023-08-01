@@ -28,7 +28,7 @@ public class ArticleFreeController {
 
     // 자유게시판 글쓰기
     @PostMapping(value = "",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ArticleFreeDetailResponseDto> save(@RequestBody ArticleFreeSaveRequestDto requestDto,  @RequestPart(value = "imageFiles") List<MultipartFile> imageFiles){
+    public ResponseEntity<ArticleFreeDetailResponseDto> save(@RequestPart ArticleFreeSaveRequestDto requestDto,  @RequestPart(value = "imageFiles") List<MultipartFile> imageFiles){
         ArticleFreeDetailResponseDto responseDto =  articleFreeService.save(requestDto, imageFiles);
         return new ResponseEntity(responseDto ,HttpStatus.CREATED);
     }
@@ -96,7 +96,7 @@ public class ArticleFreeController {
     // ----- 기본 CRUD 외 Service 로직들 -----
 
     /*
-
+    // 내가 좋아요 눌렀는지도 확인할 수 있게 flag를 보내기
     // 자유게시판 특정 글 좋아요 (같은 member 좋아요 누르면 취소 되는 것 추가하기)
     @PatchMapping("/{id}/like")
     public ResponseEntity<Void> li ke(@PathVariable Long id, @AuthenticationPrincipal Member member) {

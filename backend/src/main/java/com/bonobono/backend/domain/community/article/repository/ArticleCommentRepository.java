@@ -12,9 +12,9 @@ public interface ArticleCommentRepository extends JpaRepository<ArticleComment, 
 
     List<ArticleComment> findAllByArticleId(Long articleId);
 
-    ArticleComment findByArticleIdAndParentCommentIsNull(Long articleId);
+    ArticleComment findByArticleIdAndParentIsNull(Long articleId);
 
-    ArticleComment findByParentCommentId(Long parentCommentId);
+    ArticleComment findByParentId(Long parentCommentId);
 
 
 

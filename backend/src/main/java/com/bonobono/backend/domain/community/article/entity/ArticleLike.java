@@ -1,6 +1,7 @@
 package com.bonobono.backend.domain.community.article.entity;
 
 import com.bonobono.backend.domain.member.entity.Member;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -24,8 +25,7 @@ public class ArticleLike {
     @JoinColumn(name="member_id")
     private Member member;
 
-
-
+    @Builder
     public ArticleLike(Article article, Member member){
         this.article = article;
         this.member = member;

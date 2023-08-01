@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -23,9 +24,9 @@ public class ChatRoomService {
 
     //채팅방 조회(이름으로 검색)
     @Transactional
-    public List<ChatRoomResponseDto> findByRoomName(String roomName) {
+    public List<ChatRoomResponseDto> findByOther(String other) {
         Sort sort = Sort.by(Sort.Direction.ASC, "id");
-        List<ChatRoom> chatRoomList = this.chatRoomRepository.findByRoomName(roomName);
+        List<ChatRoom> chatRoomList = this.chatRoomRepository.findByOther(other);
         return chatRoomList.stream().map(ChatRoomResponseDto::new).collect(Collectors.toList());
     }
 
@@ -42,19 +43,19 @@ public class ChatRoomService {
         return dtolist;
     }
 
-
-
     //채팅방 개설
     @Transactional
-    public Long save(final ChatRoomRequestDto requestDto) {
-        return this.chatRoomRepository.save(requestDto.toEntity()).getId();
+    public ChatRoom save(final ChatRoomRequestDto requestDto) {
+        return this.chatRoomRepository.save(requestDto.toEntity());
     }
 
     //채팅방 삭제
     @Transactional
-    public void delete(final Long id) {
-        ChatRoom chatRoom = this.chatRoomRepository.findById(id).orElseThrow(
-                ()->new IllegalArgumentException("해당 chatroom이 존재하지 않습니다 +id"+id));
+    public void delete(final String roomNumber) {
+        ChatRoom chatRoom = this.chatRoomRepository.findByRoomNumber(roomNumber).orElseThrow(
+                ()->new IllegalArgumentException("해당 chatroom이 존재하지 않습니다 +id"+roomNumber));
         this.chatRoomRepository.delete(chatRoom);
     }
+
+
 }

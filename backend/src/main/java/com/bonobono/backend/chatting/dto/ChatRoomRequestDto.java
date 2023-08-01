@@ -9,17 +9,20 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class ChatRoomRequestDto {
-    private String roomname;
+    private String other;
+    private String roomNumber;
 
     @Builder
-    public ChatRoomRequestDto(String roomname) {
-        this.roomname=roomname;
+    public ChatRoomRequestDto(String other, String roomNumber) {
+        this.other=other;
+        this.roomNumber=roomNumber;
     }
 
     //채팅방이름으로 chatRoom객체 만들기(사용자 지정으로, username으로 클라이언트가 요청)
     public ChatRoom toEntity() {
         return ChatRoom.builder()
-                .roomName(this.roomname)
+                .other(this.other)
+                .roomNumber(this.roomNumber)
                 .build();
     }
 }

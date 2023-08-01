@@ -6,13 +6,8 @@ spring:
     password: 1234
   data:
     mongodb:
-      host: localhost
-      port: 27017
-      username: MongoDB
-      password:
-#      uri: mongodb://localhost:27017/websocket
-      authentication-database: admin
-      database: websocket
+      uri: mongodb://localhost:27017/websocket
+
   jpa:
     hibernate:
       ddl-auto: update

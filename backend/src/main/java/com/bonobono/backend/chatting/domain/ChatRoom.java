@@ -23,15 +23,14 @@ public class ChatRoom extends BaseTimeEntity { //생성시각 상속
     @JoinColumn(name="member_id")
     private Member member; //방을 만든 사람
 
-    private String roomName;
+    private String other; //대화상대
 
-//    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true) //채팅방 삭제-> 메시지도 삭제되도록
-//    private List<ChatMessage> chatMessageList= new ArrayList<>();
-//    //ChatMessage엔티티 클래스에서 선언된 chatRoom필드에 매핑
+    private String roomNumber; //메시지의 room번호와 연결위해(클라이언트에게 받아야하나..)
 
     @Builder
-    public ChatRoom(String roomName) {
-        this.roomName=roomName;
+    public ChatRoom(String other, String roomNumber) {
+        this.other=other;
+        this.roomNumber=roomNumber;
     }
 
 }

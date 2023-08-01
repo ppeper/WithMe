@@ -1,6 +1,7 @@
 package com.bonobono.backend.chatting.handler;
 
 
+import com.bonobono.backend.chatting.dto.ChatMessageRequestDto;
 import com.bonobono.backend.chatting.service.ChatMessageService;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -30,13 +31,22 @@ public class SocketHandler extends TextWebSocketHandler {
     static String fileUploadSession = "";
 
     @Autowired
-    ChatMessageService chatMessageService = new ChatMessageService();
+    private ChatMessageService chatMessageService;
 
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message) {
         //메시지 발송
         String msg = message.getPayload(); //JSON형태의 String메시지를 받는다.
         JSONObject obj = jsonToObjectParser(msg); //JSON데이터를 JSONObject로 파싱한다.
+
+        ChatMessageRequestDto chatMessageRequestDto = ChatMessageRequestDto.builder()
+                                    .userName((String) obj.get("userName"))
+                                    .msg((String) obj.get("msg"))
+                                    .sessionId((String) obj.get("sessionId"))
+                                    .file((String)obj.get("file"))
+                                    .roomNumber((String) obj.get("roomNumber"))
+                                    .build();
+                            chatMessageService.save(chatMessageRequestDto);
 
         String rN = (String) obj.get("roomNumber"); //방의 번호를 받는다.
         String msgType = (String) obj.get("type"); //메시지의 타입을 확인한다.
@@ -51,7 +61,7 @@ public class SocketHandler extends TextWebSocketHandler {
                     break;
                 }
             }
-            if(!msgType.equals("fileUpload")) { //메시지의 타입이 파일업로드가 아닐때만 전송한다.
+            if(!msgType.equals("fileUploadw")) { //메시지의 타입이 파일업로드가 아닐때만 전송한다.
                 //해당 방의 세션들만 찾아서 메시지를 발송해준다.
                 for(String k : temp.keySet()) {
                     if(k.equals("roomNumber")) { //다만 방번호일 경우에는 건너뛴다.
@@ -63,6 +73,14 @@ public class SocketHandler extends TextWebSocketHandler {
                         try {
                             TextMessage textMessage = new TextMessage(obj.toJSONString());
                             wss.sendMessage(textMessage);
+//                            ChatMessageRequestDto chatMessageRequestDto = ChatMessageRequestDto.builder()
+//                                    .userName((String) obj.get("userName"))
+//                                    .msg((String) obj.get("msg"))
+//                                    .sessionId((String) obj.get("sessionId"))
+//                                    .file((String)obj.get("file"))
+//                                    .roomNumber((String) obj.get("roomNumber"))
+//                                    .build();
+//                            chatMessageService.save(chatMessageRequestDto);
 
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -166,7 +184,7 @@ public class SocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         //소켓 종료
-        System.out.println("죽나?");
+        System.out.println("소켓 죽었다");
         if(rls.size() > 0) { //소켓이 종료되면 해당 세션값들을 찾아서 지운다.
             for(int i=0; i<rls.size(); i++) {
                 rls.get(i).remove(session.getId());

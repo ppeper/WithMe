@@ -9,7 +9,7 @@
 //import org.springframework.data.mongodb.core.convert.DefaultMongoTypeMapper;
 //import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 //import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
-//
+////mongoDB class 필드 없애는 코드
 //@Configuration
 //public class MongoConfig {
 //    @Autowired

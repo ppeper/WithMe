@@ -20,6 +20,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,12 +28,21 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.component.MyPageInfoCard
+import com.bonobono.presentation.ui.component.MyPageProfileImg
+import com.bonobono.presentation.ui.theme.WaveBlue
+import com.bonobono.presentation.ui.theme.White
 
 @Composable
 fun MainMyPageScreen(navController: NavController) {
@@ -82,7 +92,7 @@ fun WaveBackGround() {  // blue wave background, setting button, profile image, 
             contentDescription = "waveBackground",
             modifier = Modifier.fillMaxWidth()
         )
-//        WaveAnimation()
+        WaveAnimation()
         Column(modifier = Modifier.fillMaxWidth()) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -93,8 +103,9 @@ fun WaveBackGround() {  // blue wave background, setting button, profile image, 
                     modifier = Modifier.size(60.dp)
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.setting_icon),
+                        painter = painterResource(id = R.drawable.ic_setting),
                         contentDescription = "settingBtn",
+                        tint = WaveBlue
                     )
                 }
             }
@@ -106,35 +117,12 @@ fun WaveBackGround() {  // blue wave background, setting button, profile image, 
 //                    Spacer(modifier = Modifier.height(32.dp))
                 MyPageProfileImg()
                 Spacer(modifier = Modifier.height(16.dp))
-                Text(text = "test")
+                Text(text = "test",
+                    color = White,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 24.sp)
             }
         }
-    }
-}
-
-@Composable
-fun MyPageProfileImg() {
-    val imagePainter = painterResource(id = R.drawable.sea_turtle)
-    Box(
-        modifier = Modifier
-            .size(128.dp)
-            .clip(CircleShape)
-            .shadow(8.dp)
-    ) {
-        Box(
-            modifier = Modifier
-                .size(128.dp)
-                .background(Color.LightGray)
-                .clip(CircleShape)
-        )
-        Image(
-            painter = imagePainter,
-            contentDescription = "profileImg",
-            modifier = Modifier
-                .aspectRatio(1f)
-                .fillMaxSize(),
-            contentScale = ContentScale.Crop,
-        )
     }
 }
 @Composable
@@ -144,7 +132,7 @@ fun MyPageButton(imgUrl: String, buttonType: String) {
 //        if(imageBitmap != null) {
 //            Icon(painter = BitmapPainter(imageBitmap), contentDescription = "buttonIcon")
 //        }
-        Icon(painter = painterResource(id = R.drawable.help_icon),
+        Icon(painter = painterResource(id = R.drawable.ic_help),
             contentDescription = "buttonIcon",
             modifier = Modifier
                 .wrapContentSize(align = Alignment.Center)
@@ -160,7 +148,7 @@ fun MyPageButton(imgUrl: String, buttonType: String) {
                 linkTo(parent.top, parent.bottom, topMargin = 8.dp, bottomMargin = 8.dp)
                 start.linkTo(buttonIcon.end, margin = 8.dp)
             })
-        Icon(painter = painterResource(id = R.drawable.right_icon),
+        Icon(painter = painterResource(id = R.drawable.ic_right),
             contentDescription = "rightIcon",
             modifier = Modifier
                 .size(40.dp)
@@ -172,22 +160,22 @@ fun MyPageButton(imgUrl: String, buttonType: String) {
     }
 }
 
-//@Composable
-//fun WaveAnimation() {
-//    val composition by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.ocean_wave2))
-//    val progress by animateLottieCompositionAsState(composition = composition,
-//        iterations = LottieConstants.IterateForever)
-//
-//    Box(modifier = Modifier
-//        .fillMaxWidth()
-//        .height(300.dp),
-//    ) {
-//        LottieAnimation(
-//            composition = composition,
-//            progress = { progress },
-//            contentScale = ContentScale.FillWidth,
-//            modifier = Modifier
-//                .height(100.dp)
-//        )
-//    }
-//}
+@Composable
+fun WaveAnimation() {
+    val composition by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.ocean_wave))
+    val progress by animateLottieCompositionAsState(composition = composition,
+        iterations = LottieConstants.IterateForever)
+
+    Box(modifier = Modifier
+        .fillMaxWidth()
+        .height(300.dp),
+    ) {
+        LottieAnimation(
+            composition = composition,
+            progress = { progress },
+            contentScale = ContentScale.FillWidth,
+            modifier = Modifier
+                .height(100.dp)
+        )
+    }
+}

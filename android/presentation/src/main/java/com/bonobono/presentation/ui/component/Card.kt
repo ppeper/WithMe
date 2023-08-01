@@ -130,13 +130,20 @@ fun MyPageInfoCard(seaAnimalExp: String, rewardMoney: String) {
             Alignment.CenterVertically
         ) {
             Column(
-                modifier = Modifier.padding(horizontal = 24.dp),
+                modifier = Modifier.padding(0.dp, 0.dp, 32.dp, 0.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Text(text = "바다 친구 포인트")
+                Text(
+                    text = "바다 친구 포인트",
+                    fontSize = 14.sp
+                )
                 Spacer(modifier = Modifier.height(12.dp))
-                Text(text = "$seaAnimalExp Exp")
+                Text(
+                    text = "$seaAnimalExp Exp",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold
+                )
             }
             Divider(
                 color = Color.LightGray,
@@ -145,13 +152,20 @@ fun MyPageInfoCard(seaAnimalExp: String, rewardMoney: String) {
                     .width(2.dp)
             )
             Column(
-                modifier = Modifier.padding(horizontal = 24.dp),
+                modifier = Modifier.padding(32.dp, 0.dp, 0.dp, 0.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Text(text = "리워드 MONEY")
+                Text(
+                    text = "리워드 MONEY",
+                    fontSize = 14.sp
+                )
                 Spacer(modifier = Modifier.height(12.dp))
-                Text(text = "$rewardMoney P")
+                Text(
+                    text = "$rewardMoney P",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold
+                )
             }
         }
     }

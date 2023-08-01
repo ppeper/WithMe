@@ -96,6 +96,13 @@ object CameraNav : Destination {
     )
 }
 
+object SettingNav : Destination {
+    override val route: String = NavigationRouteName.SETTING
+    override val title: String = NavigationTitle.SETTING
+    override val deepLinks: List<NavDeepLink>
+        get() = TODO("Not yet implemented")
+}
+
 
 interface Destination {
     val route: String
@@ -126,6 +133,10 @@ object NavigationRouteName {
     const val GALLERY = "gallery"
 
     const val CAMERA = "camera"
+
+    const val SETTING = "setting"
+    const val PROFILE_EDIT = "profile_edit"
+    const val POINT_STORE = "point_store"
 }
 
 object NavigationTitle {
@@ -144,4 +155,8 @@ object NavigationTitle {
     const val NOTICE = "공지"
 
     const val CAMERA = "카메라"
+
+    const val SETTING = "설정"
+    const val PROFILE_EDIT = "회원정보 수정"
+    const val POINT_STORE = "포인트 상점"
 }

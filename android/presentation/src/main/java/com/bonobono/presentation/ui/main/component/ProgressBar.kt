@@ -1,7 +1,10 @@
 package com.bonobono.presentation.ui.main.component
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,7 +21,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -79,17 +84,47 @@ fun LinearProgressBar(source: Int, title: String, percent: Float) {
 }
 
 @Composable
-fun CircularProgressBar(percent: Float) {
-    CircularProgressIndicator(
-        color = Green,
-        trackColor = LightGray,
-        progress = percent
-    )
+fun CircularProgressBar(percent: Float, content: String) {
+    val animatedProgress = animateFloatAsState(targetValue = percent, label = "")
+
+    Box(
+        contentAlignment = Alignment.Center
+    ) {
+        Canvas(modifier = Modifier.size(80.dp)) {
+            drawArc(
+                color = LightGray,
+                startAngle = -90f,
+                sweepAngle = 360f,
+                useCenter = false,
+                style = Stroke(width = 8.dp.toPx())
+            )
+            drawArc(
+                color = Green,
+                startAngle = -90f,
+                sweepAngle = animatedProgress.value * 360f,
+                useCenter = false,
+                style = Stroke(width = 8.dp.toPx())
+            )
+        }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "${(animatedProgress.value * 100).toInt()}%",
+                style = TextStyle(fontSize = 16.sp)
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = content,
+                style = TextStyle(fontSize = 12.sp)
+            )
+        }
+    }
 }
 
 @Preview
 @Composable
 fun PreviewProgressBar() {
     LinearProgressBar(source = R.drawable.ic_check, title = "경험치", percent = 0.3f)
-    CircularProgressBar(percent = 0.5f)
+    CircularProgressBar(percent = 0.5f, "")
 }

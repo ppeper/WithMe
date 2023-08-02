@@ -13,4 +13,10 @@ object CustomTextStyle {
         fontWeight = FontWeight.Bold,
         color = Black_100,
     )
+
+    val gameGuideTextStyle = TextStyle(
+        fontSize = 14.sp,
+        fontWeight = FontWeight.Bold,
+        color = Black_100,
+    )
 }

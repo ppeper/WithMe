@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.theme.Black_100
+import com.bonobono.presentation.ui.theme.White
 
 @Composable
 fun MissionCard() {

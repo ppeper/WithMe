@@ -14,14 +14,14 @@ object DummyData {
         BoardItem(
             title = "테스트 타이틀",
             content = "내용은 다음과 같습니다.",
-            images = listOf("test", "test", "test"),
+            images = listOf(imageUrl, imageUrl_2, imageUrl_3),
             like = 3,
         ),
         BoardItem(
             communityId = 1,
             title = "테스트 타이틀",
             content = "내용은 다음과 같습니다.",
-            images = listOf("test"),
+            images = listOf(imageUrl_3),
             comment = 3,
             isProceeding = true
         ),
@@ -34,14 +34,13 @@ object DummyData {
         BoardItem(
             title = "테스트 타이틀",
             content = "내용은 다음과 같습니다.",
-            images = listOf("test", "test", "test"),
+            images = listOf(imageUrl_2),
             like = 3,
         ),
         BoardItem(
             communityId = 1,
             title = "테스트 타이틀",
             content = "내용은 다음과 같습니다.",
-            images = listOf("test"),
             comment = 3,
             isProceeding = true
         )

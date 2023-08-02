@@ -3,13 +3,16 @@
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import com.bonobono.presentation.ui.theme.AndroidTheme
+import com.bonobono.presentation.utils.rememberImeState
 import dagger.hilt.android.AndroidEntryPoint
 
  @AndroidEntryPoint
@@ -18,6 +21,14 @@ import dagger.hilt.android.AndroidEntryPoint
         super.onCreate(savedInstanceState)
         setContent {
             AndroidTheme {
+                val imeState = rememberImeState()
+                val scrollState = rememberScrollState()
+
+                LaunchedEffect(key1 = imeState.value) {
+                    if (imeState.value) {
+                        scrollState.animateScrollTo(scrollState.maxValue, tween(300))
+                    }
+                }
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),

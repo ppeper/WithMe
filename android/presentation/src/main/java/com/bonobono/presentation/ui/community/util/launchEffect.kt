@@ -3,6 +3,7 @@ package com.bonobono.presentation.ui.community.util
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavController
+import com.bonobono.presentation.ui.common.topbar.screen.BoardDetailScreen
 import com.bonobono.presentation.ui.common.topbar.screen.CommunityFreeScreen
 import com.bonobono.presentation.ui.common.topbar.screen.CommunityReportScreen
 import com.bonobono.presentation.ui.common.topbar.screen.CommunityWithScreen
@@ -63,6 +64,22 @@ fun reportLaunchEffect(
 
                     CommunityReportScreen.AppBarIcons.Alarm -> {}
                     CommunityReportScreen.AppBarIcons.NavigationIcon -> {
+                        navController.popBackStack()
+                    }
+                }
+            }.launchIn(this)
+    }
+}
+
+@Composable
+fun boardDetailLaunchEffect(
+    navController: NavController
+) {
+    LaunchedEffect(key1 = Unit) {
+        BoardDetailScreen.buttons
+            .onEach { button ->
+                when (button) {
+                    BoardDetailScreen.AppBarIcons.NavigationIcon -> {
                         navController.popBackStack()
                     }
                 }

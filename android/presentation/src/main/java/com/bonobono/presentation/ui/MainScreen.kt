@@ -46,6 +46,7 @@ import com.bonobono.presentation.ui.community.views.CommonPostListView
 import com.bonobono.presentation.ui.community.views.DummyData
 import com.bonobono.presentation.ui.community.GalleryScreen
 import com.bonobono.presentation.ui.community.PostDetail
+import com.bonobono.presentation.ui.community.views.WriteCommentView
 import com.bonobono.presentation.ui.component.FloatingButton
 import com.bonobono.presentation.ui.main.EncyclopediaScreen
 import com.bonobono.presentation.ui.main.MainHomeScreen
@@ -77,6 +78,11 @@ fun MainScreen() {
         bottomBar = {
             if (MainNav.isMainRoute(currentRoute)) {
                 MainBottomNavigationBar(navController = navController, currentRoute = currentRoute)
+            }
+            when (currentRoute) {
+                BoardDetailNav.route -> {
+                    WriteCommentView()
+                }
             }
         },
         floatingActionButton = {
@@ -334,11 +340,12 @@ fun MainNavigationScreen(
                     profile = "https://images.unsplash.com/photo-1689852484069-3e0fe82cc7c1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1887&q=80",
                     time = System.currentTimeMillis(),
                     images = listOf(
+                        DummyData.imageUrl_3,
                         DummyData.imageUrl,
-                        DummyData.imageUrl_2,
-                        DummyData.imageUrl_3
+                        DummyData.imageUrl_2
                     )
-                )
+                ),
+                navController = navController
             )
         }
     }

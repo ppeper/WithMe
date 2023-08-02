@@ -28,7 +28,7 @@ fun TopContentWrite(
 ) {
     CenterAlignedTopAppBar(
         modifier = Modifier.graphicsLayer {
-            shadowElevation = 10f
+            shadowElevation = 5f
         },
         title = {
             Text(

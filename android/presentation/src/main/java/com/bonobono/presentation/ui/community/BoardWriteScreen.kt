@@ -26,7 +26,10 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.bonobono.presentation.ui.CommunityFab
 import com.bonobono.presentation.ui.NavigationRouteName
+import com.bonobono.presentation.ui.community.util.routeMapper
+import com.bonobono.presentation.ui.community.util.textMapper
 import com.bonobono.presentation.ui.community.views.BoardWriteBottomView
 import com.bonobono.presentation.ui.community.views.PhotoSelectedListView
 import com.bonobono.presentation.ui.community.views.TopContentWrite
@@ -41,6 +44,7 @@ fun BoardWriteScreen(
     navController: NavController,
     photoViewModel: PhotoViewModel = hiltViewModel()
 ) {
+    val route = navController.currentDestination?.route ?: CommunityFab.FREE.route
     Scaffold(
         topBar = {
             TopContentWrite(
@@ -50,7 +54,11 @@ fun BoardWriteScreen(
             )
         },
         bottomBar = {
-            BoardWriteBottomView(onPhotoClick = { navController.navigate(NavigationRouteName.GALLERY) })
+            BoardWriteBottomView(
+                route = route,
+                onPhotoClick = { navController.navigate(routeMapper(navController)) },
+                onMapClick = { /* TODO("지도 맵 선택 화면 이동") */ }
+            )
         }
     ) { innerPaddings ->
         Surface(
@@ -111,7 +119,7 @@ fun BoardWriteScreen(
                             decorationBox = { innerTextField ->
                                 if (contentTextState.value.isEmpty()) {
                                     Text(
-                                        text = "자유롭게 글을 작성해주세요.",
+                                        text = textMapper(navController),
                                         style = TextStyle(
                                             fontSize = 16.sp,
                                             fontWeight = FontWeight(400),
@@ -122,6 +130,12 @@ fun BoardWriteScreen(
                                 innerTextField()
                             }
                         )
+                    }
+                    // 커뮤니티 별 추가 UI
+                    if (route == CommunityFab.WITH.route) {
+
+                    } else if (route == CommunityFab.REPORT.route) {
+
                     }
                     PhotoSelectedListView(
                         photoViewModel = photoViewModel

@@ -23,46 +23,76 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bonobono.presentation.R
+import com.bonobono.presentation.ui.CommunityFab
 import com.bonobono.presentation.ui.theme.DividerGray
 import com.bonobono.presentation.ui.theme.TextGray
 
 @Composable
 fun BoardWriteBottomView(
     modifier: Modifier = Modifier,
-    onPhotoClick: () -> Unit
+    route: String,
+    onPhotoClick: () -> Unit,
+    onMapClick: () -> Unit
 ) {
     Column {
         Divider(color = DividerGray)
-        Box(
-            modifier = modifier
-                .clip(CircleShape)
-                .clickable(
-                    interactionSource = MutableInteractionSource(),
-                    indication = null
-                ) {
-                    onPhotoClick()
-                }
+        Row(
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                modifier = modifier
-                    .wrapContentHeight()
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_photo),
-                    contentDescription = "사진"
-                )
-                Text(
-                    text = "사진",
-                    style = TextStyle(
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight(400),
-                        color = TextGray
-                    )
+            IconTextView(
+                modifier = modifier,
+                R.drawable.ic_photo,
+                "사진",
+                onPhotoClick
+            )
+            if (route == CommunityFab.REPORT.route) {
+                IconTextView(
+                    modifier = modifier,
+                    R.drawable.ic_map_pin,
+                    "위치",
+                    onMapClick
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun IconTextView(
+    modifier: Modifier = Modifier,
+    icon: Int,
+    text: String,
+    onClickListener: () -> Unit
+) {
+    Box(
+        modifier = modifier
+            .clip(CircleShape)
+            .clickable(
+                interactionSource = MutableInteractionSource(),
+                indication = null
+            ) {
+                onClickListener()
+            }
+    ) {
+        Row(
+            modifier = modifier
+                .wrapContentHeight()
+                .padding(start = 16.dp, top = 16.dp, bottom = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                painter = painterResource(icon),
+                contentDescription = text
+            )
+            Text(
+                text = text,
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight(400),
+                    color = TextGray
+                )
+            )
         }
     }
 }
@@ -70,5 +100,5 @@ fun BoardWriteBottomView(
 @Preview
 @Composable
 fun PreviewBoardWriteBottomView() {
-    BoardWriteBottomView(onPhotoClick = {})
+    BoardWriteBottomView(route = CommunityFab.REPORT.route, onPhotoClick = {}, onMapClick = {})
 }

@@ -17,8 +17,8 @@ sealed class MainFab(val route: String, val icon: Int, val title: String) {
 
 sealed class CommunityFab(val route: String, val icon: Int, val title: String) {
     object FREE : CommunityFab(NavigationRouteName.COMMUNITY_POST, R.drawable.ic_write, FabTitle.FREE)
-    object WITH : CommunityFab(NavigationRouteName.COMMUNITY_POST, R.drawable.ic_write, FabTitle.WITH)
-    object REPORT : CommunityFab(NavigationRouteName.COMMUNITY_POST,  R.drawable.ic_report, FabTitle.REPORT)
+    object WITH : CommunityFab(NavigationRouteName.COMMUNITY_POST_WITH, R.drawable.ic_write, FabTitle.WITH)
+    object REPORT : CommunityFab(NavigationRouteName.COMMUNITY_POST_REPORT,  R.drawable.ic_report, FabTitle.REPORT)
 }
 
 object FabTitle {

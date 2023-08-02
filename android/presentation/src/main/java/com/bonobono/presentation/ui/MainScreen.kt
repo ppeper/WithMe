@@ -292,7 +292,33 @@ fun MainNavigationScreen(
             GalleryScreen(navController = navController, photoViewModel = hiltViewModel(parentEntry))
         }
         composable(
-            route = NavigationRouteName.COMMUNITY_POST
+            route = NavigationRouteName.GALLERY_WITH
+        ) {
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry(NavigationRouteName.COMMUNITY_POST_WITH)
+            }
+            GalleryScreen(navController = navController, photoViewModel = hiltViewModel(parentEntry))
+        }
+        composable(
+            route = NavigationRouteName.GALLERY_REPORT
+        ) {
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry(NavigationRouteName.COMMUNITY_POST_REPORT)
+            }
+            GalleryScreen(navController = navController, photoViewModel = hiltViewModel(parentEntry))
+        }
+        composable(
+            route = CommunityFab.FREE.route
+        ) {
+            BoardWriteScreen(navController = navController)
+        }
+        composable(
+            route = CommunityFab.WITH.route
+        ) {
+            BoardWriteScreen(navController = navController)
+        }
+        composable(
+            route = CommunityFab.REPORT.route
         ) {
             BoardWriteScreen(navController = navController)
         }

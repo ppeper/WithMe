@@ -1,15 +1,35 @@
 package com.bonobono.backend.dailymission.controller;
 
+import com.bonobono.backend.dailymission.dto.AttendanceDto;
 import com.bonobono.backend.dailymission.service.AttendanceService;
+import com.bonobono.backend.member.entity.Member;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
 @RequestMapping("/attendance")
+@RequiredArgsConstructor
 public class AttendanceController {
-    //좋아요와 비슷한 것
-//    private final AttendanceService attendanceService;
+
+    private final AttendanceService attendanceService;
+
+    //이미 출석했는지 확인
+    @PostMapping
+    public ResponseEntity<Void> check(@AuthenticationPrincipal Member member) {
+        //시큐리티를 사용한다는 가정
+        AttendanceDto attendanceDto = new AttendanceDto(member.getId());
+        Boolean IsCheck = attendanceService.check(attendanceDto);
+        return IsCheck ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
 
 
 

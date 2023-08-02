@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -38,6 +39,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.BoardDetailNav
 import com.bonobono.presentation.ui.community.util.freeLaunchEffect
@@ -285,11 +288,12 @@ fun BoardPhotoView(
     Box(
         modifier = modifier.size(64.dp)
     ) {
-        Image(
-            modifier = modifier
-                .clip(RoundedCornerShape(10.dp)),
-            painter = painterResource(id = R.drawable.ic_board_free),
-            contentDescription = "게시글 이미지",
+        AsyncImage(
+            modifier = modifier.clip(RoundedCornerShape(10.dp)),
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(images[0])
+                .build(),
+            contentDescription = "갤러리 사진",
             contentScale = ContentScale.Crop
         )
         // 이미지 개수에 대한 Box layout

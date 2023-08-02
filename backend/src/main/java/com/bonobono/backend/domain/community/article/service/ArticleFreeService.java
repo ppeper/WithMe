@@ -15,6 +15,7 @@ import com.bonobono.backend.domain.member.repository.MemberRepository;
 import com.bonobono.backend.global.service.AwsS3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -39,22 +40,21 @@ public class ArticleFreeService {
 
     // 자유게시판 글 저장
     @Transactional
-    public ArticleFreeDetailResponseDto save(ArticleFreeSaveRequestDto requestDto, List<MultipartFile> imageFiles){
+    public Long save(ArticleFreeSaveRequestDto requestDto, List<MultipartFile> imageFiles){
         Member member = memberRepository.findById(requestDto.getMemberId())
                 .orElseThrow(() -> new NoSuchElementException("해당 ID 값을 가진 Member가 없습니다 + id = " + requestDto.getMemberId()));
 
         Article article  = articleRepository.save(requestDto.toEntity(member));
+        if (imageFiles != null) {
+            for (MultipartFile imageFile : imageFiles) {
+                String imageUrl = awsS3Service.upload(imageFile, "article_images").getPath();
+                ArticleImage articleImage = saveImage(imageFile.getOriginalFilename(), imageUrl).toEntity(article);
+                articleImageRepository.save(articleImage);
+            }
 
-        for(MultipartFile imageFile : imageFiles){
-            String imageUrl = awsS3Service.upload(imageFile, "article_images").getPath();
-            ArticleImage articleImage  = saveImage(imageFile.getOriginalFilename(), imageUrl).toEntity(article);
-            articleImageRepository.save(articleImage);
         }
 
-        Article newArticle = articleRepository.findById(article.getId())
-                .orElseThrow(() -> new NoSuchElementException("해당 ID 값을 가진 게시글이 없습니다 + id = " + article.getId()));
-
-        return new ArticleFreeDetailResponseDto(newArticle);
+        return article.getId();
     }
 
     private ArticleImageRequestDto saveImage(String imageName, String imageUrl){
@@ -63,7 +63,6 @@ public class ArticleFreeService {
                 .imageUrl(imageUrl)
                 .build();
     }
-
 
     // 자유게시판 전체글 내림차순
     @Transactional(readOnly = true) // readOnly를 사용하여 조회 기능만 남겨두어 조회속도가 개선

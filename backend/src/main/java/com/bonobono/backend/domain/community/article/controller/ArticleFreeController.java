@@ -28,9 +28,9 @@ public class ArticleFreeController {
 
     // 자유게시판 글쓰기
     @PostMapping(value = "",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ArticleFreeDetailResponseDto> save(@RequestPart ArticleFreeSaveRequestDto requestDto,  @RequestPart(value = "imageFiles") List<MultipartFile> imageFiles){
-        ArticleFreeDetailResponseDto responseDto =  articleFreeService.save(requestDto, imageFiles);
-        return new ResponseEntity(responseDto ,HttpStatus.CREATED);
+    public ResponseEntity<Void> save(@RequestPart ArticleFreeSaveRequestDto requestDto,  @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles){
+        Long articleId = articleFreeService.save(requestDto, imageFiles);
+        return new ResponseEntity(HttpStatus.CREATED);
     }
 
     // 자유게시판 전체 글 조회

@@ -64,7 +64,6 @@ fun SettingTitle(title: String) {
         modifier = Modifier.fillMaxWidth())
 }
 
-
 @Composable
 fun SettingOptions(option: String) {
     ConstraintLayout(modifier = Modifier.fillMaxWidth()) {

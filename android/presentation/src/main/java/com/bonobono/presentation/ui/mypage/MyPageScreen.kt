@@ -75,7 +75,6 @@ fun MainMyPageScreen(navController: NavController) {
             MyPageButton(buttonType = "회원정보 수정", iconName = "ic_profile_edit")
             MyPageButton(buttonType = "로그아웃", iconName = "ic_logout")
         }
-
     }
 }
 
@@ -103,6 +102,7 @@ fun WaveBackGround() {  // blue wave background, setting button, profile image, 
                         tint = WaveBlue
                     )
                 }
+
             }
             Column(
                 modifier = Modifier

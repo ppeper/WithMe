@@ -1,0 +1,47 @@
+spring:
+  datasource:
+    url: jdbc:mariadb://localhost:3306/websocket
+    driver-class-name: org.mariadb.jdbc.Driver
+    username: root
+    password: 1234
+    sql:
+      init:
+        data-locations: classpath:data.sql
+        mode: always
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/websocket
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true #show sql
+
+  mvc: # swagger로 인해서 세팅
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+
+
+logging.level:
+  org.hibernate.SQL: DEBUG
+
+# S3 image upload setting
+cloud:
+  aws:
+    credentials:
+      accessKey: AKIARNYJE4X55QI7TB6F
+      secretKey: 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
+    s3:
+      bucket: bonobono
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false

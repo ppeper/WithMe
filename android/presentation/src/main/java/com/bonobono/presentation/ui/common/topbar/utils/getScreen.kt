@@ -6,6 +6,7 @@ import com.bonobono.presentation.ui.common.topbar.screen.ManyOptionsRoute
 import com.bonobono.presentation.ui.common.topbar.screen.ManyOptionsScreen
 import com.bonobono.presentation.ui.common.topbar.screen.PostItemScreen
 import com.bonobono.presentation.ui.common.topbar.screen.Screen
+import com.bonobono.presentation.ui.common.topbar.screen.SettingScreen
 
 // TopBar 보여줄 요소에 따라 Route 지정
 fun getScreen(route: String?): Screen? = when (route) {
@@ -13,6 +14,7 @@ fun getScreen(route: String?): Screen? = when (route) {
     NavigationRouteName.COMMUNITY_FREE -> PostItemScreen
     NavigationRouteName.COMMUNITY_WITH -> PostItemScreen
     NavigationRouteName.COMMUNITY_REPORT -> PostItemScreen
+    NavigationRouteName.SETTING -> SettingScreen
     ManyOptionsRoute -> ManyOptionsScreen
     else -> null
 }

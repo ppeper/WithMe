@@ -99,8 +99,9 @@ object CameraNav : Destination {
 object SettingNav : Destination {
     override val route: String = NavigationRouteName.SETTING
     override val title: String = NavigationTitle.SETTING
-    override val deepLinks: List<NavDeepLink>
-        get() = TODO("Not yet implemented")
+    override val deepLinks: List<NavDeepLink> = listOf(
+        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME$MAIN_MY_PAGE" }
+    )
 }
 
 

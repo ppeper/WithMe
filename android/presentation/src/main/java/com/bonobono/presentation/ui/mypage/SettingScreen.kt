@@ -50,11 +50,11 @@ fun SettingScreen(
         SettingOptions(option = "권한설정")
         SettingOptions(option = "비밀번호")
         SettingOptions(option = "회원탈퇴")
-        SettingDivder()
+        SettingDivider()
         SettingTitle(title = "앱 정보")
         SettingVersionOption(version = "1.00")
         SettingOptions(option = "라이선스")
-        SettingDivder()
+        SettingDivider()
     }
 }
 
@@ -105,7 +105,7 @@ fun SettingVersionOption(version:String) {
 }
 
 @Composable
-fun SettingDivder() {
+fun SettingDivider() {
     Divider(
         modifier = Modifier
             .fillMaxWidth()

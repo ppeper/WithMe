@@ -125,7 +125,7 @@ fun MyPageInfoCard(seaAnimalExp: String, rewardMoney: String) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 24.dp),
+                .padding(vertical = 16.dp),
             Arrangement.Center,
             Alignment.CenterVertically
         ) {

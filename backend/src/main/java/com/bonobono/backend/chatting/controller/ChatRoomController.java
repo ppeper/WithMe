@@ -10,8 +10,10 @@ import com.bonobono.backend.chatting.mongo.ChatMessageRepository;
 import com.bonobono.backend.chatting.repository.ChatRoomRepository;
 import com.bonobono.backend.chatting.service.ChatMessageService;
 import com.bonobono.backend.chatting.service.ChatRoomService;
+import com.bonobono.backend.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.swing.plaf.BorderUIResource;
@@ -31,7 +33,7 @@ public class ChatRoomController {
 
     //방이 이미 있으면 get아니면 새로 save하기
     @GetMapping("/{roomNumber}/{other}")
-    public ChatRoomWithMessagesDto makeRoom(@PathVariable String roomNumber, @PathVariable String other) {
+    public ChatRoomWithMessagesDto makeRoom(@PathVariable String roomNumber, @PathVariable String other, @AuthenticationPrincipal Member member) {
         Optional<ChatRoom> optionalChatRoom = chatRoomRepository.findByRoomNumber(roomNumber);
         if (optionalChatRoom.isPresent()) {
             List<ChatMessageResponseDto> chatMessage = chatMessageService.findByRoomNumber(roomNumber);
@@ -39,7 +41,7 @@ public class ChatRoomController {
             return new ChatRoomWithMessagesDto(chatRoom,chatMessage);
         }
         else {
-            ChatRoomRequestDto requestDto = new ChatRoomRequestDto(other, roomNumber);
+            ChatRoomRequestDto requestDto = new ChatRoomRequestDto(other, roomNumber, member);
             ChatRoom newChatRoom=chatRoomService.save(requestDto);
             return new ChatRoomWithMessagesDto(newChatRoom, new ArrayList<>());
         }

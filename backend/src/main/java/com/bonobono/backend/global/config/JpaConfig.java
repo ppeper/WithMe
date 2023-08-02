@@ -7,7 +7,12 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 //import org.springframework.data.mongodb.config.EnableReactiveMongoAuditing;
 
 @EnableJpaAuditing
-//@EnableJpaRepositories(basePackages = "com.bonobono.backend.chatting.repository")
+@EnableJpaRepositories(basePackages =  {
+        "com.bonobono.backend.chatting.repository",
+        "com.bonobono.backend.community.article.repository",
+        "com.bonobono.backend.member.repository",
+        "com.bonobono.backend.community.report.repository"
+})
 @EnableMongoRepositories(basePackages = "com.bonobono.backend.chatting.mongo")
 @Configuration
 public class JpaConfig {

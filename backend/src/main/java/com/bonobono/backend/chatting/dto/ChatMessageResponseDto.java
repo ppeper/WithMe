@@ -16,7 +16,7 @@ public class ChatMessageResponseDto {
     private String file;
     private String roomNumber;
     private String sessionId;
-//    private LocalDateTime createdDate;
+    private LocalDateTime createdDate;
 //    private LocalDateTime updatedDate;
 
 
@@ -27,7 +27,7 @@ public class ChatMessageResponseDto {
         this.file = chatMessage.getFile();
         this.roomNumber=chatMessage.getRoomNumber();
         this.sessionId=chatMessage.getSessionId();
-//        this.createdDate=chatMessage.getCreatedDate();
+        this.createdDate=chatMessage.getCreatedTime();
 //        this.updatedDate=chatMessage.getUpdatedDate();
     }
 

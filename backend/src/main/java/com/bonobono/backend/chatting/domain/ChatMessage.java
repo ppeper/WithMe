@@ -1,5 +1,6 @@
 package com.bonobono.backend.chatting.domain;
 
+import com.bonobono.backend.global.entity.BaseTimeEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,13 +8,13 @@ import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Document(collection = "chatMessage")
-//@Entity
 @NoArgsConstructor
-public class ChatMessage {
+public class ChatMessage extends BaseTimeEntity {
     @Id
     private String id;
     private String sessionId; //sessionid(
@@ -21,8 +22,7 @@ public class ChatMessage {
     private String msg; //msg
     private String file; // file(BYTE형식으로 변환?)
     private String roomNumber;
-
-
+    private LocalDateTime createdTime;
 
 
     @Builder //생성자 빌드
@@ -32,6 +32,7 @@ public class ChatMessage {
         this.roomNumber=roomNumber;
         this.userName=userName;
         this.sessionId=sessionId;
+        this.createdTime=LocalDateTime.now();
     }
 
 }

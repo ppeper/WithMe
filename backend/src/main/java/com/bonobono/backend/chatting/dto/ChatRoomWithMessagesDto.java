@@ -2,7 +2,7 @@ package com.bonobono.backend.chatting.dto;
 
 import com.bonobono.backend.chatting.domain.ChatMessage;
 import com.bonobono.backend.chatting.domain.ChatRoom;
-import com.bonobono.backend.user.domain.Member;
+import com.bonobono.backend.member.entity.Member;
 import lombok.Getter;
 import lombok.Setter;
 

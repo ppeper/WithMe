@@ -129,7 +129,6 @@ object NavigationRouteName {
     const val COMMUNITY_REPORT = "report_community"
     // FAB Route
     const val COMMUNITY_POST = "write"
-    const val COMMUNITY_POST_REPORT = "report"
     // Gallery Route
     const val GALLERY = "gallery"
     // Post Detail

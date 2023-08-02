@@ -154,10 +154,7 @@ fun CommunityFloatingActionButton(
         containerColor = PrimaryBlue,
         contentColor = White,
         onClick = {
-            NavigationUtils.navigate(
-                navController, item.route,
-                navController.graph.startDestinationRoute
-            )
+            navController.navigate(item.route)
         }
     ) {
         Icon(
@@ -295,17 +292,7 @@ fun MainNavigationScreen(
             GalleryScreen(navController = navController, photoViewModel = hiltViewModel(parentEntry))
         }
         composable(
-            route = CommunityFab.FREE.route
-        ) {
-            BoardWriteScreen(navController = navController)
-        }
-        composable(
-            route = CommunityFab.WITH.route
-        ) {
-            BoardWriteScreen(navController = navController)
-        }
-        composable(
-            route = CommunityFab.REPORT.route
+            route = NavigationRouteName.COMMUNITY_POST
         ) {
             BoardWriteScreen(navController = navController)
         }

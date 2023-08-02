@@ -1,6 +1,5 @@
 package com.bonobono.backend.chatting.domain;
 
-import com.bonobono.backend.BaseTimeEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

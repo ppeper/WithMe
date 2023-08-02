@@ -116,6 +116,6 @@ fun SettingDivder() {
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun SettingScreenPreview() {
     SettingScreen(rememberNavController())
 }

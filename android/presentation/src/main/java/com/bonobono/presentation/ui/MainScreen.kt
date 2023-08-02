@@ -47,8 +47,12 @@ import com.bonobono.presentation.ui.theme.PrimaryBlue
 import com.bonobono.presentation.ui.theme.TextGray
 import com.bonobono.presentation.ui.theme.White
 import com.bonobono.presentation.utils.NavigationUtils
+import com.bonobono.presentation.utils.RequestMultiplePermissions
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
 
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()
@@ -128,6 +132,7 @@ fun MainFloatingActionButtons(navController: NavHostController, currentRoute: St
     }
 }
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun MainBottomNavigationBar(navController: NavHostController, currentRoute: String?) {
     val bottomNavigationItems = listOf(
@@ -137,6 +142,12 @@ fun MainBottomNavigationBar(navController: NavHostController, currentRoute: Stri
         MainNav.Chatting,
         MainNav.MyPage,
     )
+
+    val permissions = listOf<String>(
+        android.Manifest.permission.ACCESS_COARSE_LOCATION,
+        android.Manifest.permission.ACCESS_FINE_LOCATION
+    )
+    val multiplePermissionsState = rememberMultiplePermissionsState(permissions = permissions)
 
     NavigationBar(
         modifier = Modifier.graphicsLayer {
@@ -161,6 +172,9 @@ fun MainBottomNavigationBar(navController: NavHostController, currentRoute: Stri
                 label = { Text(text = item.title) },
                 icon = { Icon(painter = painterResource(id = item.icon), item.route) },
                 selected = currentRoute == item.route, onClick = {
+                    if(item.route == NavigationRouteName.MAIN_MAP) {
+                        multiplePermissionsState.launchMultiplePermissionRequest()
+                    }
                     NavigationUtils.navigate(
                         navController, item.route,
                         navController.graph.startDestinationRoute
@@ -170,6 +184,8 @@ fun MainBottomNavigationBar(navController: NavHostController, currentRoute: Stri
     }
 }
 
+
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun MainNavigationScreen(
     innerPaddings: PaddingValues,

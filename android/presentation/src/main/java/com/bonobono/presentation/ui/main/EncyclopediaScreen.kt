@@ -44,7 +44,7 @@ fun EncyclopediaScreen() {
         Modifier
 
     ) {
-        AnimatedProfile(profileImage = R.drawable.beluga_whale, source = R.raw.encyclopedia_background)
+        AnimatedProfile(profileImage = R.drawable.beluga_whale, source = R.raw.animation_card)
         CurInformation()
         Spacer(modifier = Modifier.size(12.dp))
         Characters()
@@ -60,7 +60,7 @@ fun CurInformation() {
     ) {
         // Display image as the background
         Image(
-            painter = painterResource(id = R.drawable.background_encyclopedia_status),
+            painter = painterResource(id = R.drawable.img_pixel_chat),
             contentDescription = null,
             contentScale = ContentScale.FillWidth,
             modifier = Modifier

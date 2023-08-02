@@ -13,6 +13,9 @@ import androidx.navigation.NavHostController
 import com.bonobono.presentation.ui.CameraNav
 import com.bonobono.presentation.ui.theme.PrimaryBlue
 import com.bonobono.presentation.utils.NavigationUtils
+import com.bonobono.presentation.utils.RequestMultiplePermissions
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
@@ -20,13 +23,17 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun MainMapScreen(navController: NavHostController) {
     val latLng = LatLng(37.7387295, 127.0458908)
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(latLng, 15f)
     }
-
+    val permissions = listOf<String>(
+        android.Manifest.permission.CAMERA
+    )
+    val multiplePermissionsState = rememberMultiplePermissionsState(permissions = permissions)
     GoogleMap(
         modifier = Modifier.fillMaxSize(),
         cameraPositionState = cameraPositionState
@@ -46,6 +53,7 @@ fun MainMapScreen(navController: NavHostController) {
 
         Button(
             onClick = {
+                multiplePermissionsState.launchMultiplePermissionRequest()
                 // 버튼을 눌렀을 때, 카메라 포지션을 업데이트하여 원하는 장소로 이동
                 cameraPositionState.position = CameraPosition.fromLatLngZoom(LatLng(37.7, 127.1), 15f)
                 NavigationUtils.navigate(

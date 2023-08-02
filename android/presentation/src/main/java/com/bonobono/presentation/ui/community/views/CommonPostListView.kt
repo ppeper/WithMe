@@ -21,9 +21,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,7 +39,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.bonobono.presentation.R
-import com.bonobono.presentation.ui.common.topbar.screen.CommunityFreeScreen
+import com.bonobono.presentation.ui.BoardDetailNav
 import com.bonobono.presentation.ui.community.util.freeLaunchEffect
 import com.bonobono.presentation.ui.community.util.reportLaunchEffect
 import com.bonobono.presentation.ui.community.util.withLaunchEffect
@@ -48,8 +48,6 @@ import com.bonobono.presentation.ui.theme.DarkGray
 import com.bonobono.presentation.ui.theme.Green
 import com.bonobono.presentation.ui.theme.TextGray
 import com.bonobono.presentation.ui.theme.White
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 
 // TODO("서버와 데이터 맞추기")
 data class BoardItem(
@@ -81,15 +79,17 @@ fun CommonPostListView(
         contentPadding = PaddingValues(16.dp),
     ) {
         items(boardList) { item ->
-            BoardItemView(item = item)
+            BoardItemView(item = item, navController = navController)
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BoardItemView(
     modifier: Modifier = Modifier,
-    item: BoardItem
+    item: BoardItem,
+    navController: NavController
 ) {
     Card(
         modifier = modifier
@@ -98,7 +98,10 @@ fun BoardItemView(
         colors = CardDefaults.cardColors(
             containerColor = Color.White
         ),
-        shape = RoundedCornerShape(10.dp)
+        shape = RoundedCornerShape(10.dp),
+        onClick = {
+            navController.navigate(BoardDetailNav.route)
+        }
     ) {
         Row(
             modifier = modifier
@@ -330,6 +333,7 @@ fun PreviewBoardItem() {
             content = "내용은 다음과 같습니다.",
             comment = 3,
             like = 2,
-        )
+        ),
+        navController = rememberNavController()
     )
 }

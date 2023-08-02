@@ -37,40 +37,54 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.bonobono.presentation.R
+import com.bonobono.presentation.ui.community.views.DummyData.selectedPhotos
 import com.bonobono.presentation.ui.community.views.TopContentGallery
-import com.bonobono.presentation.ui.community.views.TopContentWrite
 import com.bonobono.presentation.ui.theme.Black_20
 import com.bonobono.presentation.ui.theme.PrimaryBlue
 import com.bonobono.presentation.ui.theme.White
+import com.bonobono.presentation.viewmodel.PhotoViewModel
+import javax.inject.Inject
 
 private val TAG = "갤러리"
 
 data class Photo(
     var url: String = "",
-    var isSelected: Boolean = false
+    var isSelected: Boolean = false,
+    val isVisible: Boolean = true
 )
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GalleryScreen(
     modifier: Modifier = Modifier,
-    navController: NavController
+    navController: NavController,
+    photoViewModel: PhotoViewModel
 ) {
-    val selectedPhotos = remember { mutableStateListOf<Photo>() }
     val photoList = loadPhotos()
+    val currentSelectedPhoto = remember {
+        mutableStateListOf<Photo>()
+    }
     Scaffold(
         modifier = modifier.fillMaxWidth(),
-        topBar = { TopContentGallery(title = "사진", navController, selectedPhotos) }
+        topBar = {
+            TopContentGallery(
+                title = "사진", navController,
+                photoViewModel = photoViewModel,
+                currentSelectedPhoto = currentSelectedPhoto
+            )
+        }
     ) {
         Surface(
             modifier = modifier.padding(it)
         ) {
-            GalleryGridListView(photoList = photoList, selectedPhotos = selectedPhotos)
+            GalleryGridListView(
+                photoList = photoList,
+                currentSelectedPhoto = currentSelectedPhoto)
         }
     }
 }
@@ -78,12 +92,13 @@ fun GalleryScreen(
 @Composable
 @Preview
 fun PreviewGalleryScreen() {
-    GalleryScreen(navController = rememberNavController())
+    GalleryScreen(navController = rememberNavController(), photoViewModel = PhotoViewModel())
 }
+
 @Composable
 fun GalleryGridListView(
     photoList: List<Photo>,
-    selectedPhotos: SnapshotStateList<Photo>
+    currentSelectedPhoto: SnapshotStateList<Photo>
 ) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
@@ -95,9 +110,9 @@ fun GalleryGridListView(
                 photo = photo,
                 onPhotoSelected = { photo ->
                     if (photo.isSelected) {
-                        selectedPhotos.add(photo)
+                        currentSelectedPhoto.add(photo)
                     } else {
-                        selectedPhotos.remove(photo)
+                        currentSelectedPhoto.remove(photo)
                     }
                 }
             )
@@ -115,7 +130,9 @@ fun PreviewGalleryGridListView() {
                     add(Photo(url = "https://images.unsplash.com/photo-1689852484069-3e0fe82cc7c1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1887&q=80"))
                 }
             },
-        selectedPhotos = remember { mutableStateListOf() }
+        currentSelectedPhoto = remember {
+            mutableStateListOf()
+        }
     )
 }
 

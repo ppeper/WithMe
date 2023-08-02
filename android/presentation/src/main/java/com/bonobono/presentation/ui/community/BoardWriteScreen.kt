@@ -1,5 +1,6 @@
 package com.bonobono.presentation.ui.community
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,13 +10,14 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -23,21 +25,23 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.bonobono.presentation.ui.NavigationRouteName
 import com.bonobono.presentation.ui.community.views.BoardWriteBottomView
-import com.bonobono.presentation.ui.community.views.DummyData
 import com.bonobono.presentation.ui.community.views.PhotoSelectedListView
 import com.bonobono.presentation.ui.community.views.TopContentWrite
 import com.bonobono.presentation.ui.theme.Black_100
 import com.bonobono.presentation.ui.theme.TextGray
+import com.bonobono.presentation.viewmodel.PhotoViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BoardWriteScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
+    photoViewModel: PhotoViewModel = hiltViewModel()
 ) {
     Scaffold(
         topBar = {
@@ -61,9 +65,8 @@ fun BoardWriteScreen(
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
             ) {
-
-                val titleTextState = remember { mutableStateOf("") }
-                val contentTextState = remember { mutableStateOf("") }
+                val titleTextState = rememberSaveable { mutableStateOf("") }
+                val contentTextState = rememberSaveable { mutableStateOf("") }
 
                 Column(
                     modifier = modifier.padding(vertical = 32.dp, horizontal = 16.dp),
@@ -123,7 +126,7 @@ fun BoardWriteScreen(
                         )
                     }
                     PhotoSelectedListView(
-                        selectedPhotos = DummyData.selectedPhotos
+                        photoViewModel = photoViewModel
                     )
                 }
             }

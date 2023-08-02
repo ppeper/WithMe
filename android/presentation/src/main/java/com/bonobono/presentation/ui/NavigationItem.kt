@@ -68,7 +68,7 @@ object CommunityFreeNav : Destination {
     override val route: String = NavigationRouteName.COMMUNITY_FREE
     override val title: String = NavigationTitle.COMMUNITY_FREE
     override val deepLinks: List<NavDeepLink> = listOf(
-        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${NoticeNav.route}" }
+        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${route}" }
     )
 }
 
@@ -76,7 +76,7 @@ object CommunityWithNav : Destination {
     override val route: String = NavigationRouteName.COMMUNITY_WITH
     override val title: String = NavigationTitle.COMMUNITY_WITH
     override val deepLinks: List<NavDeepLink> = listOf(
-        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${NoticeNav.route}" }
+        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${route}" }
     )
 }
 
@@ -84,7 +84,15 @@ object CommunityReportNav : Destination {
     override val route: String = NavigationRouteName.COMMUNITY_REPORT
     override val title: String = NavigationTitle.COMMUNITY_REPORT
     override val deepLinks: List<NavDeepLink> = listOf(
-        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${NoticeNav.route}" }
+        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${route}" }
+    )
+}
+
+object BoardDetailNav : Destination {
+    override val route: String = NavigationRouteName.BOARD_DETAIL
+    override val title: String = ""
+    override val deepLinks: List<NavDeepLink> = listOf(
+        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${route}" }
     )
 }
 
@@ -124,6 +132,8 @@ object NavigationRouteName {
     const val COMMUNITY_POST_REPORT = "report"
     // Gallery Route
     const val GALLERY = "gallery"
+    // Post Detail
+    const val BOARD_DETAIL = "board_detail"
 
     const val CAMERA = "camera"
 }

@@ -8,6 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -37,19 +38,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.bonobono.presentation.R
-import com.bonobono.presentation.ui.community.views.DummyData.selectedPhotos
 import com.bonobono.presentation.ui.community.views.TopContentGallery
 import com.bonobono.presentation.ui.theme.Black_20
 import com.bonobono.presentation.ui.theme.PrimaryBlue
 import com.bonobono.presentation.ui.theme.White
 import com.bonobono.presentation.viewmodel.PhotoViewModel
-import javax.inject.Inject
 
 private val TAG = "갤러리"
 
@@ -59,6 +57,7 @@ data class Photo(
     val isVisible: Boolean = true
 )
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GalleryScreen(
     modifier: Modifier = Modifier,
@@ -148,6 +147,7 @@ fun GalleryPhotoView(
             .aspectRatio(1f)
     ) {
         AsyncImage(
+            modifier = modifier.fillMaxSize(),
             model = ImageRequest.Builder(LocalContext.current)
                 .data(photo.url)
                 .build(),

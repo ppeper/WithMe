@@ -28,9 +28,9 @@ public class ArticleFreeController {
 
     // 자유게시판 글쓰기
     @PostMapping(value = "",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> save(@RequestPart ArticleFreeSaveRequestDto requestDto, @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles){
+    public ResponseEntity<Long> save(@RequestPart ArticleFreeSaveRequestDto requestDto, @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles){
         Long articleId = articleFreeService.save(requestDto, imageFiles);
-        return new ResponseEntity(HttpStatus.CREATED);
+        return new ResponseEntity(articleId + "번 게시글 생성완료", HttpStatus.CREATED);
     }
 
     // 자유게시판 전체 글 조회
@@ -57,9 +57,9 @@ public class ArticleFreeController {
 
     // 자유게시판 특정 글 수정
     @PatchMapping("/{articleId}")
-    public ResponseEntity<ArticleFreeDetailResponseDto> update(@PathVariable Long articleId, @RequestBody ArticleFreeUpdateRequestDto requestDto){
-        ArticleFreeDetailResponseDto responseDto = articleFreeService.update(articleId , requestDto);
-        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    public ResponseEntity<Void> update(@PathVariable Long articleId, @RequestBody ArticleFreeUpdateRequestDto requestDto){
+        articleFreeService.update(articleId , requestDto);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     // 자유게시판 특정 글 삭제
@@ -92,17 +92,13 @@ public class ArticleFreeController {
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
-
-    // ----- 기본 CRUD 외 Service 로직들 -----
-
-    /*
     // 내가 좋아요 눌렀는지도 확인할 수 있게 flag를 보내기
     // 자유게시판 특정 글 좋아요 (같은 member 좋아요 누르면 취소 되는 것 추가하기)
-    @PatchMapping("/{id}/like")
-    public ResponseEntity<Void> li ke(@PathVariable Long id, @AuthenticationPrincipal Member member) {
+    /*
+    @PatchMapping("/{articleId}/like")
+    public ResponseEntity<Void> like(@PathVariable Long articleId, Member member) {
         result = articleFreeService.addLike(member.getMember(), id);
         return result ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
     */
-
 }

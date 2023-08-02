@@ -3,14 +3,17 @@ package com.bonobono.backend.community.article.service;
 import com.bonobono.backend.community.article.dto.req.ArticleCommentRequestDto;
 import com.bonobono.backend.community.article.dto.res.ArticleCommentResponseDto;
 import com.bonobono.backend.community.article.entity.Article;
-import com.bonobono.backend.community.article.repository.ArticleCommentRepository;
 import com.bonobono.backend.community.article.entity.ArticleComment;
+import com.bonobono.backend.community.article.repository.ArticleCommentRepository;
 import com.bonobono.backend.community.article.repository.ArticleRepository;
 import com.bonobono.backend.member.entity.Member;
 import com.bonobono.backend.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -25,19 +28,29 @@ public class ArticleCommentService {
     // 댓글 작성하기
     @Transactional
     public ArticleCommentResponseDto save(Long articleId, ArticleCommentRequestDto requestDto) {
-        Article article = articleRepository.findById(articleId)
-                .orElseThrow(()-> new IllegalArgumentException("해당 게시글이 없습니다. id=" + articleId));
         Member member = memberRepository.findById(requestDto.getMemberId())
                 .orElseThrow(()-> new IllegalArgumentException("해당 멤버가 없습니다. id=" + requestDto.getMemberId()));
 
-        ArticleComment parentComment;
-        if (requestDto.getParentId() != null) {
-            parentComment = articleCommentRepository.findByParentId(requestDto.getParentId());
-        } else {
-            parentComment = null;
+        Article article = articleRepository.findById(articleId)
+                .orElseThrow(()-> new IllegalArgumentException("해당 게시글이 없습니다. id=" + articleId));
+
+        ArticleComment parentComment = null;
+        if (requestDto.getParentCommentId() != null) {
+            parentComment = articleCommentRepository.findById(requestDto.getParentCommentId())
+                    .orElseThrow(()-> new IllegalArgumentException("해당 댓글이 없습니다. id=" + articleId));
         }
         ArticleComment articleComment = articleCommentRepository.save(requestDto.toEntity(article, member, parentComment));
+        parentComment.addChildComment(articleComment);
         return new ArticleCommentResponseDto(articleComment);
+
+    }
+
+    // 댓글 조회하기
+    @Transactional
+    public List<ArticleCommentResponseDto> findByArticleId(Long articleId){
+        return articleCommentRepository.findAllByArticleIdAndParentCommentIsNull(articleId).stream()
+                .map(ArticleCommentResponseDto::new)
+                .collect(Collectors.toList());
     }
 
     // 댓글 수정하기

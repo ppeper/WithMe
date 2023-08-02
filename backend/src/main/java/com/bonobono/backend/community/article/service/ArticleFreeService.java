@@ -3,6 +3,7 @@ package com.bonobono.backend.community.article.service;
 import com.bonobono.backend.community.article.dto.req.ArticleFreeSaveRequestDto;
 import com.bonobono.backend.community.article.dto.req.ArticleFreeUpdateRequestDto;
 import com.bonobono.backend.community.article.dto.req.ArticleImageRequestDto;
+import com.bonobono.backend.community.article.dto.res.ArticleCommentResponseDto;
 import com.bonobono.backend.community.article.dto.res.ArticleFreeDetailResponseDto;
 import com.bonobono.backend.community.article.dto.res.ArticleFreeListResponseDto;
 import com.bonobono.backend.community.article.entity.Article;
@@ -33,6 +34,8 @@ public class ArticleFreeService {
     private final ArticleImageRepository articleImageRepository;
 
     private final ArticleLikeRepository articleLikeRepository;
+
+    private final ArticleCommentService articleCommentService;
 
     private final AwsS3Service awsS3Service;
 
@@ -85,16 +88,17 @@ public class ArticleFreeService {
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id =" + articleId));
         articleRepository.updateView(articleId);
-        return new ArticleFreeDetailResponseDto(article);
+        List<ArticleCommentResponseDto> comments = articleCommentService.findByArticleId(articleId);
+        return new ArticleFreeDetailResponseDto(article, comments);
     }
 
     // 자유게시판 특정 글 수정
     @Transactional
-    public ArticleFreeDetailResponseDto update(Long articleId, ArticleFreeUpdateRequestDto requestDto){
+    public Long update(Long articleId, ArticleFreeUpdateRequestDto requestDto){
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + articleId));
         article.updateFree(requestDto.getTitle(), requestDto.getContent());
-        return new ArticleFreeDetailResponseDto(article);
+        return articleId;
     }
 
     // 자유게시판 특정글 삭제

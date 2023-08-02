@@ -4,11 +4,13 @@ import com.bonobono.backend.community.article.entity.Article;
 import com.bonobono.backend.community.article.enumclass.ArticleType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
+@Setter
 @NoArgsConstructor
 public class ArticleFreeDetailResponseDto {
 
@@ -21,7 +23,7 @@ public class ArticleFreeDetailResponseDto {
     private List<ArticleImageResponseDto> images;
     private List<ArticleCommentResponseDto> comments;
 
-    public ArticleFreeDetailResponseDto(Article entity){
+    public ArticleFreeDetailResponseDto(Article entity, List<ArticleCommentResponseDto> comments){
         this.type = entity.getType();
         this.title = entity.getTitle();
         this.content = entity.getContent();
@@ -31,9 +33,7 @@ public class ArticleFreeDetailResponseDto {
                 .map(ArticleImageResponseDto::new)
                 .collect(Collectors.toList());
         this.nickname = entity.getMember().getNickname();
-        this.comments = entity.getComments().stream()
-                .map(ArticleCommentResponseDto::new)
-                .collect(Collectors.toList());
+        this.comments = comments;
     }
 
 }

@@ -8,10 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -30,10 +27,12 @@ public class AttendanceController {
         return IsCheck ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-
-
-
     // date를 체크해서 한달 중 몇%를 했는지 반환해주는 함수
-
+    @GetMapping("/percentage")
+    public int attendancePercentage(@AuthenticationPrincipal Member member) {
+        AttendanceDto attendanceDto = new AttendanceDto(member.getId());
+        int result = attendanceService.AttendancePercentage(attendanceDto);
+        return result;
+    }
 
 }

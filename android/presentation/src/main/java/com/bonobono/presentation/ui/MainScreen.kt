@@ -45,6 +45,7 @@ import com.bonobono.presentation.ui.community.BoardWriteScreen
 import com.bonobono.presentation.ui.community.util.DummyData
 import com.bonobono.presentation.ui.community.GalleryScreen
 import com.bonobono.presentation.ui.community.PostDetail
+import com.bonobono.presentation.ui.community.util.DummyData.commentList
 import com.bonobono.presentation.ui.community.views.board.CommonPostListView
 import com.bonobono.presentation.ui.community.views.comment.WriteCommentView
 import com.bonobono.presentation.ui.component.FloatingButton
@@ -356,7 +357,8 @@ fun MainNavigationScreen(
                         DummyData.imageUrl_3,
                         DummyData.imageUrl,
                         DummyData.imageUrl_2
-                    )
+                    ),
+                    commentList = commentList
                 ),
                 navController = navController
             )

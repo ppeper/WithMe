@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
@@ -31,7 +32,9 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.bonobono.presentation.R
+import com.bonobono.presentation.ui.community.util.DummyData.commentList
 import com.bonobono.presentation.ui.community.util.DummyData.commentUser
+import com.bonobono.presentation.ui.community.util.DummyData.commentUserNotMe
 import com.bonobono.presentation.ui.theme.Black_100
 import com.bonobono.presentation.ui.theme.Red
 import com.bonobono.presentation.ui.theme.TextGray
@@ -49,11 +52,13 @@ data class TestUser(
 @Composable
 fun CommentListView(
     modifier: Modifier = Modifier,
-    comments: TestUser
+    commentList: List<TestUser>
 ) {
-    LazyColumn {
-        items(comments.commentList) {
-            CommentView(comments = comments)
+    LazyColumn(
+        modifier = Modifier.wrapContentHeight()
+    ) {
+        items(commentList) {
+            CommentView(comments = it)
         }
     }
 }
@@ -66,6 +71,7 @@ fun CommentView(
         modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight()
+            .padding(top = 16.dp)
     ) {
         AsyncImage(
             modifier = modifier
@@ -101,7 +107,21 @@ fun CommentView(
                 )
             )
             CommentRow(comments = comments)
+            // 대댓글 리스트
+            LazyColumn(
+                modifier = Modifier.wrapContentHeight()
+            ) {
+                items(comments.commentList) {
+                    CommentView(comments = it)
+                }
+            }
         }
+    }
+}
+
+fun LazyListScope.ReCommentView(commentList: List<TestUser>) {
+    items(commentList) {
+        CommentView(comments = it)
     }
 }
 
@@ -115,7 +135,7 @@ fun CommentRow(
             .wrapContentHeight()
             .wrapContentWidth()
             .padding(vertical = 4.dp),
-        horizontalArrangement = Arrangement.spacedBy(32.dp)
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
     ){
         Row(
             horizontalArrangement = Arrangement.Center,
@@ -167,7 +187,16 @@ fun CommentRow(
                 )
                 Spacer(modifier = modifier.size(4.dp))
                 Text(
-                    text = if (comments.commentList.isEmpty()) "댓글 쓰기" else "댓글",
+                    text = "댓글 쓰기",
+                    style = TextStyle(
+                        fontSize = 10.sp,
+                        color = TextGray,
+                        textAlign = TextAlign.Center,
+                    )
+                )
+                Spacer(modifier = modifier.size(4.dp))
+                Text(
+                    text = "4",
                     style = TextStyle(
                         fontSize = 10.sp,
                         color = TextGray,
@@ -181,17 +210,21 @@ fun CommentRow(
 }
 @Preview
 @Composable
-fun PreviewCommentList() {
-    CommentListView(comments = commentUser)
-}
-@Preview
-@Composable
 fun PreviewCommentRow() {
     CommentRow(comments = commentUser)
 }
 
 @Preview
 @Composable
+fun PreviewCommentList() {
+    CommentListView(commentList = commentList)
+}
+
+@Preview
+@Composable
 fun PreviewCommentView() {
-    CommentView(comments = commentUser)
+    Column {
+        CommentView(comments = commentUser)
+        CommentView(comments = commentUserNotMe)
+    }
 }

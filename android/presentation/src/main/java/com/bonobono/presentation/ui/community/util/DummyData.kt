@@ -58,10 +58,32 @@ object DummyData {
         comment = "댓글 테스트",
         commentList = listOf(
             TestUser(
-                profile = imageUrl,
-                name = "황신운",
+                profile = imageUrl_2,
+                name = "오케이",
                 comment = "댓글 테스트"
             )
         )
+    )
+    val commentUserNotMe = TestUser(
+        type = 1,
+        profile = imageUrl_3,
+        name = "홍길동",
+        comment = "청소하러 가자",
+        commentList = listOf(
+            TestUser(
+                profile = imageUrl,
+                name = "이지은",
+                comment = "굿굿"
+            ),
+            TestUser(
+                profile = imageUrl_2,
+                name = "장혁",
+                comment = "이상해 씨"
+            )
+        )
+    )
+    val commentList = listOf(
+        commentUser,
+        commentUserNotMe
     )
 }

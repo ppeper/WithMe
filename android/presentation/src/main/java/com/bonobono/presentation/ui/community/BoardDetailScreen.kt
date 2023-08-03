@@ -50,9 +50,12 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.bonobono.presentation.R
+import com.bonobono.presentation.ui.community.util.DummyData.commentList
 import com.bonobono.presentation.ui.community.util.boardDetailLaunchEffect
 import com.bonobono.presentation.ui.community.views.board.DropDownMenuView
+import com.bonobono.presentation.ui.community.views.comment.CommentListView
 import com.bonobono.presentation.ui.community.views.comment.NoCommentView
+import com.bonobono.presentation.ui.community.views.comment.TestUser
 import com.bonobono.presentation.ui.theme.Black_100
 import com.bonobono.presentation.ui.theme.Black_70
 import com.bonobono.presentation.ui.theme.DividerGray
@@ -69,6 +72,7 @@ data class PostDetail(
     val profile: String,
     val time: Long,
     val viewCount: Int = 0,
+    val commentList: List<TestUser> = emptyList()
 )
 
 @Composable
@@ -133,7 +137,15 @@ fun BoardDetailScreen(
                 )
             }
             LikeAndCommentView(postDetail = postDetail)
-            NoCommentView()
+            Column(
+                modifier = modifier.padding(horizontal = 16.dp)
+            ) {
+                if (postDetail.commentList.isEmpty()) {
+                    NoCommentView()
+                } else {
+                    CommentListView(commentList = postDetail.commentList)
+                }
+            }
         }
     }
 }
@@ -296,6 +308,20 @@ fun PreviewLikeAndCommentView() {
 
 @Preview
 @Composable
+fun PreviewWriterView() {
+    WriterView(
+        postDetail = PostDetail(
+            title = "쓰레기들 위치 찍습니다",
+            content = "발견된 해수욕장 쓰레기 무단 투기",
+            name = "홍길동",
+            profile = "https://images.unsplash.com/photo-1689852484069-3e0fe82cc7c1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1887&q=80",
+            time = System.currentTimeMillis()
+        )
+    )
+}
+
+@Preview
+@Composable
 fun PreviewBoardDetail() {
     BoardDetailScreen(
         postDetail = PostDetail(
@@ -307,23 +333,10 @@ fun PreviewBoardDetail() {
                 "https://images.unsplash.com/photo-1682685796063-d2604827f7b3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
             ),
             profile = "https://images.unsplash.com/photo-1689852484069-3e0fe82cc7c1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1887&q=80",
-            time = System.currentTimeMillis()
+            time = System.currentTimeMillis(),
+            commentList = commentList
         ),
         navController = rememberNavController()
-    )
-}
-
-@Preview
-@Composable
-fun PreviewWriterView() {
-    WriterView(
-        postDetail = PostDetail(
-            title = "쓰레기들 위치 찍습니다",
-            content = "발견된 해수욕장 쓰레기 무단 투기",
-            name = "홍길동",
-            profile = "https://images.unsplash.com/photo-1689852484069-3e0fe82cc7c1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1887&q=80",
-            time = System.currentTimeMillis()
-        )
     )
 }
 
@@ -390,15 +403,5 @@ fun ImageViewWithNumber(
         contentDescription = "업로드 사진",
         contentScale = ContentScale.Crop,
         modifier = modifier.fillMaxSize()
-    )
-}
-
-@Preview
-@Composable
-fun PreviewMultipleImageView() {
-    MultipleImageView(
-        images = listOf(
-            "https://images.unsplash.com/photo-1689852484069-3e0fe82cc7c1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1887&q=80",
-        )
     )
 }

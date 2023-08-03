@@ -42,7 +42,7 @@ public class Member extends BaseTimeEntity {
     private Set<Article> articleLikes;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "member_id", fetch = FetchType.LAZY, cascade = CascadeType.ALL) //주인은 외래키를 가지는 chatting, map을 당하는 member
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL) //주인은 외래키를 가지는 chatting, map을 당하는 member
     private List<ChatRoom> chatRooms = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "member")

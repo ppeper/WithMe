@@ -11,9 +11,9 @@ import com.bonobono.backend.community.article.entity.ArticleImage;
 import com.bonobono.backend.community.article.repository.ArticleImageRepository;
 import com.bonobono.backend.community.article.repository.ArticleLikeRepository;
 import com.bonobono.backend.community.article.repository.ArticleRepository;
+import com.bonobono.backend.global.service.AwsS3Service;
 import com.bonobono.backend.member.entity.Member;
 import com.bonobono.backend.member.repository.MemberRepository;
-import com.bonobono.backend.global.service.AwsS3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +36,8 @@ public class ArticleFreeService {
     private final ArticleLikeRepository articleLikeRepository;
 
     private final ArticleCommentService articleCommentService;
+
+    private final ArticleLikeService articleLikeService;
 
     private final AwsS3Service awsS3Service;
 
@@ -84,12 +86,15 @@ public class ArticleFreeService {
 
     // 자유게시판 특정글 조회
     @Transactional
-    public ArticleFreeDetailResponseDto findById(Long articleId){
+    public ArticleFreeDetailResponseDto findById(Long articleId, Long memberId){
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id =" + articleId));
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(()-> new IllegalArgumentException("해당 멤버가 없습니다. id =" + articleId));
         articleRepository.updateView(articleId);
         List<ArticleCommentResponseDto> comments = articleCommentService.findByArticleId(articleId);
-        return new ArticleFreeDetailResponseDto(article, comments);
+        Boolean isLiked = articleLikeService.checkLiked(article, member);
+        return new ArticleFreeDetailResponseDto(article, comments, isLiked);
     }
 
     // 자유게시판 특정 글 수정
@@ -109,23 +114,5 @@ public class ArticleFreeService {
         articleRepository.delete(article);
     }
 
-    /*
-    // 자유게시판 좋아요
-    @Transactional
-    public boolean addLike(Long articleId, Member member){
-        Article article = articleRepository.findById(articleId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + articleId));
-        if(isNotAlreadyLike(member, article)){
-            articleLikeRepository.save(new ArticleLike(member, article));
-            return true;
-        }
-        articleLikeRepository.deleteArticleLikeByMemberAndArticle(member, article);
-        return false;
-    }
-    // 해당 Member가 좋아요 눌렀는지 판단
-    private boolean isNotAlreadyLike(Member member, Article article){
-        return articleLikeRepository.findByMemberAndArticle(member, article).isEmpty();
-    }
-    */
 
 }

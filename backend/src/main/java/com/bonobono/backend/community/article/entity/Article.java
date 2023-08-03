@@ -33,8 +33,6 @@ public class Article extends BaseTimeEntity {
     @Column(nullable = false)
     private String content;
 
-    private int likes;
-
     private int views;
 
     private boolean recruitStatus;

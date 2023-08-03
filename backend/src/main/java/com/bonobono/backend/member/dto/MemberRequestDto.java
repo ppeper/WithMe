@@ -1,4 +1,4 @@
-package com.bonobono.backend.community.article.dto.req;
+package com.bonobono.backend.member.dto;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -6,12 +6,13 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class ArticleLikeRequestDto {
+public class MemberRequestDto {
 
     private Long memberId;
 
     @Builder
-    public ArticleLikeRequestDto(Long articleId, Long memberId){
+    public MemberRequestDto(Long memberId){
         this.memberId = memberId;
     }
+
 }

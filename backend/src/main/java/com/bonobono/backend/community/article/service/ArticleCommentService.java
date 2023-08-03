@@ -40,7 +40,9 @@ public class ArticleCommentService {
                     .orElseThrow(()-> new IllegalArgumentException("해당 댓글이 없습니다. id=" + articleId));
         }
         ArticleComment articleComment = articleCommentRepository.save(requestDto.toEntity(article, member, parentComment));
-        parentComment.addChildComment(articleComment);
+        if (parentComment != null){
+            parentComment.addChildComment(articleComment);
+        }
         return new ArticleCommentResponseDto(articleComment);
 
     }

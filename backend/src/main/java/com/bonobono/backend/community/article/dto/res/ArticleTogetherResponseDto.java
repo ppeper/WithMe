@@ -14,8 +14,8 @@ public class ArticleTogetherResponseDto {
     private ArticleType type;
     private String title;
     private String content;
-    private int likes;
     private int views;
+    private int likes;
     private boolean recruitStatus;
     private String urlTitle;
     private String url;
@@ -25,8 +25,8 @@ public class ArticleTogetherResponseDto {
         this.type = entity.getType();
         this.title = entity.getTitle();
         this.content = entity.getContent();
-        this.likes = entity.getLikes();
         this.views = entity.getViews();
+        this.likes = entity.getArticleLikes().size();
         this.recruitStatus = entity.isRecruitStatus();
         this.urlTitle = entity.getUrlTitle();
         this.url = entity.getUrl();

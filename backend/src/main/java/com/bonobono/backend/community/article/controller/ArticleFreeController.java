@@ -3,11 +3,15 @@ package com.bonobono.backend.community.article.controller;
 import com.bonobono.backend.community.article.dto.req.ArticleCommentRequestDto;
 import com.bonobono.backend.community.article.dto.req.ArticleFreeSaveRequestDto;
 import com.bonobono.backend.community.article.dto.req.ArticleFreeUpdateRequestDto;
+import com.bonobono.backend.community.article.dto.req.ArticleLikeRequestDto;
 import com.bonobono.backend.community.article.dto.res.ArticleCommentResponseDto;
 import com.bonobono.backend.community.article.dto.res.ArticleFreeDetailResponseDto;
 import com.bonobono.backend.community.article.dto.res.ArticleFreeListResponseDto;
+import com.bonobono.backend.community.article.dto.res.ArticleLikeResponseDto;
 import com.bonobono.backend.community.article.service.ArticleCommentService;
 import com.bonobono.backend.community.article.service.ArticleFreeService;
+import com.bonobono.backend.community.article.service.ArticleLikeService;
+import com.bonobono.backend.member.dto.MemberRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,6 +30,8 @@ public class ArticleFreeController {
 
     private final ArticleCommentService articleCommentService;
 
+    private final ArticleLikeService articleLikeService;
+
     // 자유게시판 글쓰기
     @PostMapping(value = "",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Long> save(@RequestPart ArticleFreeSaveRequestDto requestDto, @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles){
@@ -42,8 +48,9 @@ public class ArticleFreeController {
 
     // 자유게시판 특정 글, 글에 관한 댓글 조회하기
     @GetMapping("/{articleId}")
-    public ResponseEntity<ArticleFreeDetailResponseDto> findById(@PathVariable Long articleId){
-        ArticleFreeDetailResponseDto responseDto = articleFreeService.findById(articleId);
+    public ResponseEntity<ArticleFreeDetailResponseDto> findById(@PathVariable Long articleId, @RequestBody MemberRequestDto memberRequestDto) {
+        // @AuthenticationPrincipa 사용하기
+        ArticleFreeDetailResponseDto responseDto = articleFreeService.findById(articleId, memberRequestDto.getMemberId());
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
@@ -94,11 +101,10 @@ public class ArticleFreeController {
 
     // 내가 좋아요 눌렀는지도 확인할 수 있게 flag를 보내기
     // 자유게시판 특정 글 좋아요 (같은 member 좋아요 누르면 취소 되는 것 추가하기)
-    /*
     @PatchMapping("/{articleId}/like")
-    public ResponseEntity<Void> like(@PathVariable Long articleId, Member member) {
-        result = articleFreeService.addLike(member.getMember(), id);
-        return result ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ArticleLikeResponseDto> like(@PathVariable Long articleId, @RequestBody ArticleLikeRequestDto requestDto) {
+        ArticleLikeResponseDto responseDto = articleLikeService.like(articleId, requestDto);
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
-    */
+
 }

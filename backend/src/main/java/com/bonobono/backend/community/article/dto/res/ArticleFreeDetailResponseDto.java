@@ -17,23 +17,26 @@ public class ArticleFreeDetailResponseDto {
     private ArticleType type;
     private String title;
     private String content;
-    private int likes;
     private int views;
     private String nickname;
     private List<ArticleImageResponseDto> images;
     private List<ArticleCommentResponseDto> comments;
+    private int likes;
+    private boolean isLiked;
 
-    public ArticleFreeDetailResponseDto(Article entity, List<ArticleCommentResponseDto> comments){
+
+    public ArticleFreeDetailResponseDto(Article entity, List<ArticleCommentResponseDto> comments, boolean isLiked){
         this.type = entity.getType();
         this.title = entity.getTitle();
         this.content = entity.getContent();
-        this.likes = entity.getLikes();
         this.views = entity.getViews();
         this.images = entity.getImages().stream()
                 .map(ArticleImageResponseDto::new)
                 .collect(Collectors.toList());
         this.nickname = entity.getMember().getNickname();
         this.comments = comments;
+        this.likes = entity.getArticleLikes().size();
+        this.isLiked = isLiked;
     }
 
 }

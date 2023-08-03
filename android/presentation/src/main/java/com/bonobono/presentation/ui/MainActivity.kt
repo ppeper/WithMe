@@ -21,14 +21,6 @@ import dagger.hilt.android.AndroidEntryPoint
         super.onCreate(savedInstanceState)
         setContent {
             AndroidTheme {
-                val imeState = rememberImeState()
-                val scrollState = rememberScrollState()
-
-                LaunchedEffect(key1 = imeState.value) {
-                    if (imeState.value) {
-                        scrollState.animateScrollTo(scrollState.maxValue, tween(300))
-                    }
-                }
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),

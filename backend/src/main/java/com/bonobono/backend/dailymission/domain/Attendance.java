@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Setter
 @Table(name="Attendance")
 @NoArgsConstructor
 public class Attendance {

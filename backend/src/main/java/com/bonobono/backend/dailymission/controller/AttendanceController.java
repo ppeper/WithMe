@@ -20,17 +20,20 @@ public class AttendanceController {
 
     //이미 출석했는지 확인
     @PostMapping
-    public ResponseEntity<Void> check(@AuthenticationPrincipal Member member) {
-        //시큐리티를 사용한다는 가정
-        AttendanceDto attendanceDto = new AttendanceDto(member.getId());
+    public ResponseEntity<Void> check(@RequestParam("memberId") Long memberId) {
+        //시큐리티를 사용한다는 가정 @AuthenticationPrincipal Member member
+//        AttendanceDto attendanceDto = new AttendanceDto(member.getId());
+        AttendanceDto attendanceDto = new AttendanceDto(memberId);
         Boolean IsCheck = attendanceService.check(attendanceDto);
         return IsCheck ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     // date를 체크해서 한달 중 몇%를 했는지 반환해주는 함수
     @GetMapping("/percentage")
-    public int attendancePercentage(@AuthenticationPrincipal Member member) {
-        AttendanceDto attendanceDto = new AttendanceDto(member.getId());
+    public int attendancePercentage(@RequestParam("memberId") Long memberId) {
+//        @AuthenticationPrincipal Member member
+//        AttendanceDto attendanceDto = new AttendanceDto(member.getId());
+        AttendanceDto attendanceDto = new AttendanceDto(memberId);
         int result = attendanceService.AttendancePercentage(attendanceDto);
         return result;
     }

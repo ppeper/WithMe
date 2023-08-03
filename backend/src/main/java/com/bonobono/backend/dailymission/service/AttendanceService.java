@@ -1,5 +1,6 @@
 package com.bonobono.backend.dailymission.service;
 
+import com.bonobono.backend.character.domain.UserCharacter;
 import com.bonobono.backend.dailymission.domain.Attendance;
 import com.bonobono.backend.dailymission.dto.AttendanceDto;
 import com.bonobono.backend.dailymission.repository.AttendanceRepository;
@@ -36,6 +37,10 @@ public class AttendanceService {
                 .checkDate(checkDate)
                         .member(member)
                         .build();
+
+        //대표캐릭터 경험치 올리기
+        UserCharacter mainChracter = member.getMainCharacter();
+
 
         attendanceRepository.save(attendance);
         return true;

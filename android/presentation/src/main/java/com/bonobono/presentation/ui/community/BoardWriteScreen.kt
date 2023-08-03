@@ -3,6 +3,7 @@ package com.bonobono.presentation.ui.community
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
@@ -31,13 +32,13 @@ import com.bonobono.presentation.ui.NavigationRouteName
 import com.bonobono.presentation.ui.community.util.routeMapper
 import com.bonobono.presentation.ui.community.util.textMapper
 import com.bonobono.presentation.ui.community.views.BoardWriteBottomView
+import com.bonobono.presentation.ui.community.views.link.LinkView
 import com.bonobono.presentation.ui.community.views.PhotoSelectedListView
 import com.bonobono.presentation.ui.community.views.TopContentWrite
 import com.bonobono.presentation.ui.theme.Black_100
 import com.bonobono.presentation.ui.theme.TextGray
 import com.bonobono.presentation.viewmodel.PhotoViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BoardWriteScreen(
     modifier: Modifier = Modifier,
@@ -75,65 +76,65 @@ fun BoardWriteScreen(
                 val contentTextState = rememberSaveable { mutableStateOf("") }
 
                 Column(
-                    modifier = modifier.padding(vertical = 32.dp, horizontal = 16.dp),
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 32.dp, horizontal = 16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    SelectionContainer {
-                        BasicTextField(
-                            value = titleTextState.value,
-                            onValueChange = { titleTextState.value = it },
-                            textStyle = TextStyle(
-                                fontSize = 20.sp,
-                                lineHeight = 18.sp,
-                                fontWeight = FontWeight(700),
-                                color = Black_100,
-                            ),
-                            singleLine = true,
-                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                            decorationBox = { innerTextField ->
-                                if (titleTextState.value.isEmpty()) {
-                                    Text(
-                                        text = "제목 추가",
-                                        style = TextStyle(
-                                            fontSize = 20.sp,
-                                            lineHeight = 18.sp,
-                                            fontWeight = FontWeight(700),
-                                            color = TextGray,
-                                        ),
-                                    )
-                                }
-                                innerTextField()
+                    BasicTextField(
+                        modifier = modifier.fillMaxWidth(),
+                        value = titleTextState.value,
+                        onValueChange = { titleTextState.value = it },
+                        textStyle = TextStyle(
+                            fontSize = 20.sp,
+                            lineHeight = 18.sp,
+                            fontWeight = FontWeight(700),
+                            color = Black_100,
+                        ),
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                        decorationBox = { innerTextField ->
+                            if (titleTextState.value.isEmpty()) {
+                                Text(
+                                    text = "제목 추가",
+                                    style = TextStyle(
+                                        fontSize = 20.sp,
+                                        lineHeight = 18.sp,
+                                        fontWeight = FontWeight(700),
+                                        color = TextGray,
+                                    ),
+                                )
                             }
-                        )
-                    }
-                    SelectionContainer {
-                        BasicTextField(
-                            value = contentTextState.value,
-                            onValueChange = { contentTextState.value = it },
-                            textStyle = TextStyle(
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight(400),
-                                color = Black_100,
-                            ),
-                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                            decorationBox = { innerTextField ->
-                                if (contentTextState.value.isEmpty()) {
-                                    Text(
-                                        text = textMapper(navController),
-                                        style = TextStyle(
-                                            fontSize = 16.sp,
-                                            fontWeight = FontWeight(400),
-                                            color = TextGray,
-                                        ),
-                                    )
-                                }
-                                innerTextField()
+                            innerTextField()
+                        }
+                    )
+                    BasicTextField(
+                        modifier = modifier.fillMaxWidth(),
+                        value = contentTextState.value,
+                        onValueChange = { contentTextState.value = it },
+                        textStyle = TextStyle(
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight(400),
+                            color = Black_100,
+                        ),
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                        decorationBox = { innerTextField ->
+                            if (contentTextState.value.isEmpty()) {
+                                Text(
+                                    text = textMapper(navController),
+                                    style = TextStyle(
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight(400),
+                                        color = TextGray,
+                                    ),
+                                )
                             }
-                        )
-                    }
+                            innerTextField()
+                        }
+                    )
                     // 커뮤니티 별 추가 UI
                     if (route == CommunityFab.WITH.route) {
-
+                        LinkView()
                     } else if (route == CommunityFab.REPORT.route) {
 
                     }

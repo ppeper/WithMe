@@ -25,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -43,11 +44,14 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.bonobono.presentation.R
+import com.bonobono.presentation.ui.common.CustomDialog
+import com.bonobono.presentation.ui.common.PhotoCheckDialogContent
 import com.bonobono.presentation.ui.community.views.TopContentGallery
 import com.bonobono.presentation.ui.theme.Black_20
 import com.bonobono.presentation.ui.theme.PrimaryBlue
 import com.bonobono.presentation.ui.theme.White
 import com.bonobono.presentation.viewmodel.PhotoViewModel
+import kotlinx.coroutines.launch
 
 private val TAG = "갤러리"
 
@@ -83,6 +87,7 @@ fun GalleryScreen(
         ) {
             GalleryGridListView(
                 photoList = photoList,
+                photoViewModel = photoViewModel,
                 currentSelectedPhoto = currentSelectedPhoto)
         }
     }
@@ -97,6 +102,7 @@ fun PreviewGalleryScreen() {
 @Composable
 fun GalleryGridListView(
     photoList: List<Photo>,
+    photoViewModel: PhotoViewModel,
     currentSelectedPhoto: SnapshotStateList<Photo>
 ) {
     LazyVerticalGrid(
@@ -107,6 +113,8 @@ fun GalleryGridListView(
         items(photoList) { photo ->
             GalleryPhotoView(
                 photo = photo,
+                currentSelectedPhoto = currentSelectedPhoto,
+                photoViewModel = photoViewModel,
                 onPhotoSelected = { photo ->
                     if (photo.isSelected) {
                         currentSelectedPhoto.add(photo)
@@ -129,6 +137,7 @@ fun PreviewGalleryGridListView() {
                     add(Photo(url = "https://images.unsplash.com/photo-1689852484069-3e0fe82cc7c1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1887&q=80"))
                 }
             },
+        photoViewModel = PhotoViewModel(),
         currentSelectedPhoto = remember {
             mutableStateListOf()
         }
@@ -139,9 +148,23 @@ fun PreviewGalleryGridListView() {
 fun GalleryPhotoView(
     modifier: Modifier = Modifier,
     photo: Photo,
-    onPhotoSelected: (Photo) -> Unit
+    photoViewModel: PhotoViewModel,
+    currentSelectedPhoto: SnapshotStateList<Photo>,
+    onPhotoSelected: (Photo) -> Unit,
 ) {
     var isCheck by rememberSaveable { mutableStateOf(false) }
+    var showDialog by remember { mutableStateOf(false) }
+    val previousCount = photoViewModel.selectedPhoto.size
+
+    if (showDialog) {
+        CustomDialog(content = {
+            PhotoCheckDialogContent(count = (10 - previousCount).toString()) {
+                showDialog = !showDialog
+            }
+        }) {
+            showDialog = !showDialog
+        }
+    }
     Box(
         modifier = modifier
             .aspectRatio(1f)
@@ -178,9 +201,14 @@ fun GalleryPhotoView(
                     .clip(CircleShape)
                     .background(if (isCheck) PrimaryBlue else Color.Transparent)
                     .clickable {
-                        isCheck = !isCheck
-                        photo.isSelected = isCheck
-                        onPhotoSelected(photo)
+                        // 이미지는 최대 10장 업로드 가능하도록 설정
+                        if (10 <= previousCount + currentSelectedPhoto.size) {
+                            showDialog = true
+                        } else {
+                            isCheck = !isCheck
+                            photo.isSelected = isCheck
+                            onPhotoSelected(photo)
+                        }
                     },
                 contentAlignment = Center
             ) {

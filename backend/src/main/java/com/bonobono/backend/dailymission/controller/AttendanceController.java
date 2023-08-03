@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -20,9 +19,8 @@ public class AttendanceController {
 
     //이미 출석했는지 확인
     @PostMapping
-    public ResponseEntity<Void> check(@RequestParam("memberId") Long memberId) {
+    public ResponseEntity<Void> check(@RequestParam Long memberId) {
         //시큐리티를 사용한다는 가정 @AuthenticationPrincipal Member member
-//        AttendanceDto attendanceDto = new AttendanceDto(member.getId());
         AttendanceDto attendanceDto = new AttendanceDto(memberId);
         Boolean IsCheck = attendanceService.check(attendanceDto);
         return IsCheck ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.BAD_REQUEST);

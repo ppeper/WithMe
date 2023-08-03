@@ -11,6 +11,7 @@ public class OurCharacter {
     private String name;
 
     //하나의 사진만 올라감
+
     private String imageName; // 원본 파일명
 
     private String imageUrl; // 이미지 url

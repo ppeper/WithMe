@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface AttendanceRepository  extends JpaRepository<Attendance,Long> {
-    boolean existsByMemberIdAndCheckDate(Member member, LocalDate checkDate);
+    boolean existsByMemberIdAndCheckDate(Long memberId, LocalDate checkDate);
 
     List<Attendance> findAttendanceByMemberAndCheckDateBetween(Member member, LocalDate startDate, LocalDate endDate);
     //save사용 예정

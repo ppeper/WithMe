@@ -8,12 +8,14 @@ import com.bonobono.backend.global.entity.BaseTimeEntity;
 import com.bonobono.backend.member.entity.Member;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
 @Getter
+@NoArgsConstructor
 public class UserCharacter extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,4 +48,8 @@ public class UserCharacter extends BaseTimeEntity {
         this.custom_name = custom_name;
     }
 
+    // 글 수정
+    public void updateExperience(int experience){
+        this.experience = experience;
+    }
 }

@@ -4,11 +4,11 @@ import com.bonobono.backend.character.domain.UserCharacter;
 import com.bonobono.backend.dailymission.domain.Attendance;
 import com.bonobono.backend.dailymission.dto.AttendanceDto;
 import com.bonobono.backend.dailymission.repository.AttendanceRepository;
+import com.bonobono.backend.global.exception.MainCharacterNotFoundException;
 import com.bonobono.backend.member.entity.Member;
 import com.bonobono.backend.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,22 +28,28 @@ public class AttendanceService {
     public boolean check(AttendanceDto attendanceDto) {
         Member member = memberRepository.findById(attendanceDto.getMemberId())
                 .orElseThrow(()->new IllegalArgumentException("해당 멤버가 존재하지 않습니다 +id"+attendanceDto.getMemberId()));
-        if (attendanceRepository.existsByMemberIdAndCheckDate(member, checkDate)) {
+        if (attendanceRepository.existsByMemberIdAndCheckDate(member.getId(), checkDate)) {
             log.trace("이미 출석했습니다");
+            System.out.println("이미 출석했습니다");
             return false;
         }
+        else {
+            Attendance attendance = Attendance.builder()
+                    .checkDate(checkDate)
+                    .member(member)
+                    .build();
 
-        Attendance attendance = Attendance.builder()
-                .checkDate(checkDate)
-                        .member(member)
-                        .build();
-
-        //대표캐릭터 경험치 올리기
-        UserCharacter mainChracter = member.getMainCharacter();
-
-
-        attendanceRepository.save(attendance);
-        return true;
+            //대표캐릭터 경험치 올리기
+            UserCharacter mainChracter = member.getMainCharacter();
+            if (mainChracter != null) {
+                int currentExp = mainChracter.getExperience();
+                mainChracter.updateExperience(currentExp + 5); //경험치 5씩 증가
+            } else {
+                throw new MainCharacterNotFoundException("대표캐릭터가 존재하지 않습니다. 멤버ID:" + member.getId());
+            }
+            attendanceRepository.save(attendance);
+            return true;
+        }
     }
 
     // date를 체크해서 한달 중 몇%를 했는지 반환해주는 함수

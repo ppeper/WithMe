@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @NoArgsConstructor
@@ -23,8 +25,6 @@ public class ArticleComment extends BaseTimeEntity {
     @Column(nullable = false)
     private String content;
 
-    private int likes;
-
     @ManyToOne
     @JoinColumn(name="article_id", nullable = false)
     private Article article;
@@ -38,7 +38,11 @@ public class ArticleComment extends BaseTimeEntity {
     private ArticleComment parentComment;
 
     @OneToMany(mappedBy = "parentComment", orphanRemoval = true)
-    private List<ArticleComment> childrenComments = new ArrayList<>();
+    private List<ArticleComment> childComments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "articleComment", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ArticleCommentLike> articleCommentLikes = new HashSet<>();
+
 
     @Builder
     public ArticleComment(String content, Article article, Member member, ArticleComment parentComment){
@@ -55,6 +59,6 @@ public class ArticleComment extends BaseTimeEntity {
 
     // 대댓글 입력
     public void addChildComment(ArticleComment childComment){
-        this.childrenComments.add(childComment);
+        this.childComments.add(childComment);
     }
 }

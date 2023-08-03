@@ -3,11 +3,8 @@ package com.bonobono.backend.community.article.controller;
 import com.bonobono.backend.community.article.dto.req.ArticleCommentRequestDto;
 import com.bonobono.backend.community.article.dto.req.ArticleFreeSaveRequestDto;
 import com.bonobono.backend.community.article.dto.req.ArticleFreeUpdateRequestDto;
-import com.bonobono.backend.community.article.dto.req.ArticleLikeRequestDto;
-import com.bonobono.backend.community.article.dto.res.ArticleCommentResponseDto;
-import com.bonobono.backend.community.article.dto.res.ArticleFreeDetailResponseDto;
-import com.bonobono.backend.community.article.dto.res.ArticleFreeListResponseDto;
-import com.bonobono.backend.community.article.dto.res.ArticleLikeResponseDto;
+import com.bonobono.backend.community.article.dto.res.*;
+import com.bonobono.backend.community.article.service.ArticleCommentLikeService;
 import com.bonobono.backend.community.article.service.ArticleCommentService;
 import com.bonobono.backend.community.article.service.ArticleFreeService;
 import com.bonobono.backend.community.article.service.ArticleLikeService;
@@ -31,6 +28,8 @@ public class ArticleFreeController {
     private final ArticleCommentService articleCommentService;
 
     private final ArticleLikeService articleLikeService;
+
+    private final ArticleCommentLikeService articleCommentLikeService;
 
     // 자유게시판 글쓰기
     @PostMapping(value = "",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -99,11 +98,17 @@ public class ArticleFreeController {
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
-    // 내가 좋아요 눌렀는지도 확인할 수 있게 flag를 보내기
-    // 자유게시판 특정 글 좋아요 (같은 member 좋아요 누르면 취소 되는 것 추가하기)
+    // 자유게시판 좋아요
     @PatchMapping("/{articleId}/like")
-    public ResponseEntity<ArticleLikeResponseDto> like(@PathVariable Long articleId, @RequestBody ArticleLikeRequestDto requestDto) {
-        ArticleLikeResponseDto responseDto = articleLikeService.like(articleId, requestDto);
+    public ResponseEntity<ArticleLikeResponseDto> like(@PathVariable Long articleId, @RequestBody MemberRequestDto requestDto) {
+        ArticleLikeResponseDto responseDto = articleLikeService.like(articleId, requestDto.getMemberId());
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
+    // 자유게시판 댓글 좋아요
+    @PatchMapping("/{articleId}/comment/{commentId}/like")
+    public ResponseEntity<ArticleCommentLikeResponseDto> like(@PathVariable Long articleId, @PathVariable Long commentId, @RequestBody MemberRequestDto requestDto) {
+        ArticleCommentLikeResponseDto responseDto = articleCommentLikeService.like(articleId, commentId, requestDto.getMemberId());
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 

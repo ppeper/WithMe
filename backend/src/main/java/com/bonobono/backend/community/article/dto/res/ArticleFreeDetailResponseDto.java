@@ -2,6 +2,7 @@ package com.bonobono.backend.community.article.dto.res;
 
 import com.bonobono.backend.community.article.entity.Article;
 import com.bonobono.backend.community.article.enumclass.ArticleType;
+import com.bonobono.backend.member.entity.Member;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,7 +26,7 @@ public class ArticleFreeDetailResponseDto {
     private boolean isLiked;
 
 
-    public ArticleFreeDetailResponseDto(Article entity, List<ArticleCommentResponseDto> comments, boolean isLiked){
+    public ArticleFreeDetailResponseDto(Article entity, Member member, List<ArticleCommentResponseDto> comments){
         this.type = entity.getType();
         this.title = entity.getTitle();
         this.content = entity.getContent();
@@ -36,7 +37,7 @@ public class ArticleFreeDetailResponseDto {
         this.nickname = entity.getMember().getNickname();
         this.comments = comments;
         this.likes = entity.getArticleLikes().size();
-        this.isLiked = isLiked;
+        this.isLiked =  entity.getArticleLikes().stream().anyMatch(like -> like.getMember().getId().equals(member.getId()));
     }
 
 }

@@ -1,6 +1,5 @@
 package com.bonobono.backend.community.article.service;
 
-import com.bonobono.backend.community.article.dto.req.ArticleLikeRequestDto;
 import com.bonobono.backend.community.article.dto.res.ArticleLikeResponseDto;
 import com.bonobono.backend.community.article.entity.Article;
 import com.bonobono.backend.community.article.entity.ArticleLike;
@@ -22,11 +21,11 @@ public class ArticleLikeService {
 
     // 게시글 좋아요
     @Transactional
-    public ArticleLikeResponseDto like(Long articleId, ArticleLikeRequestDto requestDto){
+    public ArticleLikeResponseDto like(Long articleId, Long memberId){
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 ID 값을 가진 게시글이 없습니다 + id = " + articleId));
-        Member member = memberRepository.findById(requestDto.getMemberId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 ID 값을 가진 Member가 없습니다 + id = " + requestDto.getMemberId()));
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID 값을 가진 Member가 없습니다 + id = " + memberId));
 
         ArticleLike existingArticleLike = articleLikeRepository.findByArticleAndMember(article, member);
         boolean isLiked;

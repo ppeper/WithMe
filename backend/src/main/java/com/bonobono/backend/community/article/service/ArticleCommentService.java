@@ -43,15 +43,15 @@ public class ArticleCommentService {
         if (parentComment != null){
             parentComment.addChildComment(articleComment);
         }
-        return new ArticleCommentResponseDto(articleComment);
+        return new ArticleCommentResponseDto(articleComment, member);
 
     }
 
     // 댓글 조회하기
     @Transactional
-    public List<ArticleCommentResponseDto> findByArticleId(Long articleId){
+    public List<ArticleCommentResponseDto> findByArticleId(Long articleId, Member member){
         return articleCommentRepository.findAllByArticleIdAndParentCommentIsNull(articleId).stream()
-                .map(ArticleCommentResponseDto::new)
+                .map(articleComment -> new ArticleCommentResponseDto(articleComment, member))
                 .collect(Collectors.toList());
     }
 
@@ -63,8 +63,10 @@ public class ArticleCommentService {
         }
         ArticleComment articleComment = articleCommentRepository.findById(commentId)
                 .orElseThrow(()-> new IllegalArgumentException("해당 댓글이 없습니다. id=" + commentId));
+        Member member = memberRepository.findById(requestDto.getMemberId())
+                .orElseThrow(()-> new IllegalArgumentException("해당 멤버가 없습니다. id=" + requestDto.getMemberId()));
         articleComment.updateComment(requestDto.getContent());
-        return new ArticleCommentResponseDto(articleComment);
+        return new ArticleCommentResponseDto(articleComment, member);
     }
 
     // 댓글 삭제하기

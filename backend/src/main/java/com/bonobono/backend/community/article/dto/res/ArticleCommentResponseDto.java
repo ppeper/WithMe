@@ -1,6 +1,7 @@
 package com.bonobono.backend.community.article.dto.res;
 
 import com.bonobono.backend.community.article.entity.ArticleComment;
+import com.bonobono.backend.member.entity.Member;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,16 +13,19 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class ArticleCommentResponseDto {
     private String content;
-    private int likes;
     private String nickname;
-    private List<ArticleCommentResponseDto> childrenComments = new ArrayList<>();
+    private List<ArticleCommentResponseDto> childComments = new ArrayList<>();
+    private int likes;
+    private boolean isLiked;
 
-    public ArticleCommentResponseDto(ArticleComment entity){
+
+    public ArticleCommentResponseDto(ArticleComment entity, Member member){
         this.content = entity.getContent();
-        this.likes = entity.getLikes();
         this.nickname = entity.getMember().getNickname();
-        this.childrenComments = entity.getChildrenComments().stream()
-                .map(ArticleCommentResponseDto::new)
+        this.childComments = entity.getChildComments().stream()
+                .map(childComment -> new ArticleCommentResponseDto(childComment, member))
                 .collect(Collectors.toList());
+        this.likes = entity.getArticleCommentLikes().size();
+        this.isLiked = entity.getArticleCommentLikes().stream().anyMatch(like -> like.getMember().getId().equals(member.getId()));
     }
 }

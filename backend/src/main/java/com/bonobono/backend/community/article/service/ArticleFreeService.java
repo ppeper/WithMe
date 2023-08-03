@@ -92,9 +92,8 @@ public class ArticleFreeService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(()-> new IllegalArgumentException("해당 멤버가 없습니다. id =" + articleId));
         articleRepository.updateView(articleId);
-        List<ArticleCommentResponseDto> comments = articleCommentService.findByArticleId(articleId);
-        Boolean isLiked = articleLikeService.checkLiked(article, member);
-        return new ArticleFreeDetailResponseDto(article, comments, isLiked);
+        List<ArticleCommentResponseDto> comments = articleCommentService.findByArticleId(articleId, member);
+        return new ArticleFreeDetailResponseDto(article, member, comments);
     }
 
     // 자유게시판 특정 글 수정

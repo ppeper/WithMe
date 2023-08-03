@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
@@ -43,8 +44,7 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.bonobono.presentation.R
-import com.bonobono.presentation.ui.common.CustomDialog
-import com.bonobono.presentation.ui.common.PhotoCheckDialogContent
+import com.bonobono.presentation.ui.common.CheckCountDialog
 import com.bonobono.presentation.ui.community.views.gallery.TopContentGallery
 import com.bonobono.presentation.ui.theme.Black_20
 import com.bonobono.presentation.ui.theme.PrimaryBlue
@@ -155,17 +155,27 @@ fun GalleryPhotoView(
     val previousCount = photoViewModel.selectedPhoto.size
 
     if (showDialog) {
-        CustomDialog(content = {
-            PhotoCheckDialogContent(count = (10 - previousCount).toString()) {
-                showDialog = !showDialog
-            }
-        }) {
+        CheckCountDialog(count = (10 - previousCount)) {
             showDialog = !showDialog
         }
     }
+
     Box(
         modifier = modifier
             .aspectRatio(1f)
+            .clickable(
+                interactionSource = MutableInteractionSource(),
+                indication = null
+            ) {
+                // 이미지는 최대 10장 업로드 가능하도록 설정
+                if (!isCheck && 10 <= previousCount + currentSelectedPhoto.size) {
+                    showDialog = true
+                } else {
+                    isCheck = !isCheck
+                    photo.isSelected = isCheck
+                    onPhotoSelected(photo)
+                }
+            }
     ) {
         AsyncImage(
             modifier = modifier.fillMaxSize(),
@@ -197,17 +207,7 @@ fun GalleryPhotoView(
                         shape = CircleShape
                     )
                     .clip(CircleShape)
-                    .background(if (isCheck) PrimaryBlue else Color.Transparent)
-                    .clickable {
-                        // 이미지는 최대 10장 업로드 가능하도록 설정
-                        if (10 <= previousCount + currentSelectedPhoto.size) {
-                            showDialog = true
-                        } else {
-                            isCheck = !isCheck
-                            photo.isSelected = isCheck
-                            onPhotoSelected(photo)
-                        }
-                    },
+                    .background(if (isCheck) PrimaryBlue else Color.Transparent),
                 contentAlignment = Center
             ) {
                 if (isCheck) {

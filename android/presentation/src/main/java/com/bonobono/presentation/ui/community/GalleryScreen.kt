@@ -25,7 +25,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -46,12 +45,11 @@ import coil.request.ImageRequest
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.common.CustomDialog
 import com.bonobono.presentation.ui.common.PhotoCheckDialogContent
-import com.bonobono.presentation.ui.community.views.TopContentGallery
+import com.bonobono.presentation.ui.community.views.gallery.TopContentGallery
 import com.bonobono.presentation.ui.theme.Black_20
 import com.bonobono.presentation.ui.theme.PrimaryBlue
 import com.bonobono.presentation.ui.theme.White
 import com.bonobono.presentation.viewmodel.PhotoViewModel
-import kotlinx.coroutines.launch
 
 private val TAG = "갤러리"
 

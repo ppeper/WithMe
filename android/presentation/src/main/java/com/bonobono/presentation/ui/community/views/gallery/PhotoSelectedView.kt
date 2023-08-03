@@ -1,4 +1,4 @@
-package com.bonobono.presentation.ui.community.views
+package com.bonobono.presentation.ui.community.views.gallery
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

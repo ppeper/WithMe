@@ -1,4 +1,4 @@
-package com.bonobono.presentation.ui.community.views
+package com.bonobono.presentation.ui.community.views.board
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -46,6 +46,7 @@ import com.bonobono.presentation.ui.BoardDetailNav
 import com.bonobono.presentation.ui.community.util.freeLaunchEffect
 import com.bonobono.presentation.ui.community.util.reportLaunchEffect
 import com.bonobono.presentation.ui.community.util.withLaunchEffect
+import com.bonobono.presentation.ui.community.util.DummyData
 import com.bonobono.presentation.ui.theme.Black_70
 import com.bonobono.presentation.ui.theme.DarkGray
 import com.bonobono.presentation.ui.theme.Green

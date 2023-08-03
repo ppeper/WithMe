@@ -42,11 +42,11 @@ import com.bonobono.presentation.ui.common.topbar.rememberAppBarState
 import com.bonobono.presentation.ui.community.BoardDetailScreen
 import com.bonobono.presentation.ui.community.CommunityScreen
 import com.bonobono.presentation.ui.community.BoardWriteScreen
-import com.bonobono.presentation.ui.community.views.CommonPostListView
-import com.bonobono.presentation.ui.community.views.DummyData
+import com.bonobono.presentation.ui.community.util.DummyData
 import com.bonobono.presentation.ui.community.GalleryScreen
 import com.bonobono.presentation.ui.community.PostDetail
-import com.bonobono.presentation.ui.community.views.WriteCommentView
+import com.bonobono.presentation.ui.community.views.board.CommonPostListView
+import com.bonobono.presentation.ui.community.views.comment.WriteCommentView
 import com.bonobono.presentation.ui.component.FloatingButton
 import com.bonobono.presentation.ui.main.EncyclopediaScreen
 import com.bonobono.presentation.ui.main.MainHomeScreen

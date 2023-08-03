@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.bonobono.presentation.R
-import com.bonobono.presentation.ui.community.views.DummyData.commentUser
+import com.bonobono.presentation.ui.community.util.DummyData.commentUser
 import com.bonobono.presentation.ui.theme.Black_100
 import com.bonobono.presentation.ui.theme.Red
 import com.bonobono.presentation.ui.theme.TextGray

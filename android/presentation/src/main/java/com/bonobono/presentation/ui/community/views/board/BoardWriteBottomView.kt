@@ -1,4 +1,4 @@
-package com.bonobono.presentation.ui.community.views
+package com.bonobono.presentation.ui.community.views.board
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource

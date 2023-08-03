@@ -1,5 +1,7 @@
-package com.bonobono.presentation.ui.community.views
+package com.bonobono.presentation.ui.community.util
 
+import com.bonobono.presentation.ui.community.views.gallery.PhotoSelected
+import com.bonobono.presentation.ui.community.views.board.BoardItem
 import com.bonobono.presentation.ui.community.views.comment.TestUser
 
 object DummyData {

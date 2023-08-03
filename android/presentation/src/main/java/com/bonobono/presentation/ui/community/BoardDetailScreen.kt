@@ -51,7 +51,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.community.util.boardDetailLaunchEffect
-import com.bonobono.presentation.ui.community.views.DropDownMenuView
+import com.bonobono.presentation.ui.community.views.board.DropDownMenuView
 import com.bonobono.presentation.ui.community.views.comment.NoCommentView
 import com.bonobono.presentation.ui.theme.Black_100
 import com.bonobono.presentation.ui.theme.Black_70

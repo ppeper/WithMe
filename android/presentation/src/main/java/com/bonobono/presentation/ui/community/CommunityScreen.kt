@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavController
 import com.bonobono.presentation.ui.common.topbar.screen.CommunityListScreen
-import com.bonobono.presentation.ui.community.views.BoardListView
+import com.bonobono.presentation.ui.community.views.board.BoardListView
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 

@@ -13,7 +13,6 @@ import androidx.navigation.NavHostController
 import com.bonobono.presentation.ui.CameraNav
 import com.bonobono.presentation.ui.theme.PrimaryBlue
 import com.bonobono.presentation.utils.NavigationUtils
-import com.bonobono.presentation.utils.RequestMultiplePermissions
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.android.gms.maps.model.CameraPosition
@@ -55,7 +54,8 @@ fun MainMapScreen(navController: NavHostController) {
             onClick = {
                 multiplePermissionsState.launchMultiplePermissionRequest()
                 // 버튼을 눌렀을 때, 카메라 포지션을 업데이트하여 원하는 장소로 이동
-                cameraPositionState.position = CameraPosition.fromLatLngZoom(LatLng(37.7, 127.1), 15f)
+                cameraPositionState.position =
+                    CameraPosition.fromLatLngZoom(LatLng(37.7, 127.1), 15f)
                 NavigationUtils.navigate(
                     navController, CameraNav.route,
                     navController.graph.startDestinationRoute

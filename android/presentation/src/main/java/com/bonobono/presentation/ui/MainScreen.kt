@@ -1,5 +1,8 @@
 package com.bonobono.presentation.ui
 
+import android.content.Context
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -18,6 +21,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -47,12 +51,12 @@ import com.bonobono.presentation.ui.theme.PrimaryBlue
 import com.bonobono.presentation.ui.theme.TextGray
 import com.bonobono.presentation.ui.theme.White
 import com.bonobono.presentation.utils.NavigationUtils
-import com.bonobono.presentation.utils.RequestMultiplePermissions
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 
 
-@OptIn(ExperimentalPermissionsApi::class)
+private const val TAG = "MainScreen"
+
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()
@@ -143,11 +147,25 @@ fun MainBottomNavigationBar(navController: NavHostController, currentRoute: Stri
         MainNav.MyPage,
     )
 
-    val permissions = listOf<String>(
+    val permissions = listOf(
         android.Manifest.permission.ACCESS_COARSE_LOCATION,
         android.Manifest.permission.ACCESS_FINE_LOCATION
     )
-    val multiplePermissionsState = rememberMultiplePermissionsState(permissions = permissions)
+
+    val multiplePermissionsState = rememberMultiplePermissionsState(permissions = permissions) {
+        val result = it.values.reduce { acc, granted -> acc || granted }
+        if (result) {
+            val item = bottomNavigationItems.find { it.route == NavigationRouteName.MAIN_MAP }
+            if (item != null) {
+                NavigationUtils.navigate(
+                    navController, item.route,
+                    navController.graph.startDestinationRoute
+                )
+            }
+        } else {
+
+        }
+    }
 
     NavigationBar(
         modifier = Modifier.graphicsLayer {
@@ -172,13 +190,14 @@ fun MainBottomNavigationBar(navController: NavHostController, currentRoute: Stri
                 label = { Text(text = item.title) },
                 icon = { Icon(painter = painterResource(id = item.icon), item.route) },
                 selected = currentRoute == item.route, onClick = {
-                    if(item.route == NavigationRouteName.MAIN_MAP) {
+                    if (item.route == NavigationRouteName.MAIN_MAP) {
                         multiplePermissionsState.launchMultiplePermissionRequest()
+                    } else {
+                        NavigationUtils.navigate(
+                            navController, item.route,
+                            navController.graph.startDestinationRoute
+                        )
                     }
-                    NavigationUtils.navigate(
-                        navController, item.route,
-                        navController.graph.startDestinationRoute
-                    )
                 })
         }
     }

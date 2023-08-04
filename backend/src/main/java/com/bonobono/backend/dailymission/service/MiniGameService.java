@@ -1,12 +1,14 @@
 package com.bonobono.backend.dailymission.service;
 
 
+import com.bonobono.backend.character.domain.UserCharacter;
 import com.bonobono.backend.dailymission.domain.IsMiniGame;
 import com.bonobono.backend.dailymission.domain.MiniGame;
 import com.bonobono.backend.dailymission.dto.MiniGameRequestDto;
 import com.bonobono.backend.dailymission.dto.MiniGameResponseDto;
 import com.bonobono.backend.dailymission.repository.IsMiniGameRepository;
 import com.bonobono.backend.dailymission.repository.MiniGameRepository;
+import com.bonobono.backend.global.exception.MainCharacterNotFoundException;
 import com.bonobono.backend.member.entity.Member;
 import com.bonobono.backend.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +24,6 @@ import java.time.LocalDate;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-
 public class MiniGameService {
     private final MemberRepository memberRepository;
     private final MiniGameRepository miniGameRepository;
@@ -31,12 +32,12 @@ public class MiniGameService {
     LocalDate checkDate = LocalDate.now();
 
     //mini게임참여여부 체크하고, minigame랜덤으로 생성해서 전달
-    @Transactional(readOnly = true)
+    @Transactional
     public MiniGameResponseDto checkMiniGame(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(()->new IllegalArgumentException("해당 멤버가 존재하지 않습니다 +id"+memberId));
 
-        if (isMiniGameRepository.findByCheckDateAndMember(member.getId(), checkDate)) {
+        if (isMiniGameRepository.existsByMemberIdAndCheckDate(memberId,checkDate)) {
             log.trace("이미 게임에 참여했습니다");
             System.out.println("이미 게임에 참여했습니다");
             return new MiniGameResponseDto(null,null,false);
@@ -64,8 +65,34 @@ public class MiniGameService {
 
     }
 
-    // 문제와 답을 주면 맞는지 여부를 넘겨주고, 경험치 UP
+    // 문제와 답을 주면 맞는지 여부를 넘겨주고, 맞으면 경험치 UP
+    @Transactional
+    public boolean IsSuccess(MiniGameRequestDto miniGameRequestDto) {
+        Member member = memberRepository.findById(miniGameRequestDto.getMemberId())
+                .orElseThrow(()->new IllegalArgumentException("해당 멤버가 존재하지 않습니다 +id"+miniGameRequestDto.getMemberId()));
 
+        String problem = miniGameRequestDto.getProblem();
+        String answer = miniGameRequestDto.getAnswer();
+
+        MiniGame miniGame = miniGameRepository.findByProblem(problem)
+                .orElseThrow(()-> new IllegalArgumentException("잘못된 문제입니다. problem="+problem));
+
+        boolean isCorrect = miniGame.checkAnswer(answer);
+        //맞는지 여부 체크후
+
+        //대표캐릭터 경험치 올리기
+        if (isCorrect) {
+            UserCharacter mainChracter = member.getMainCharacter();
+            if (mainChracter != null) {
+                int currentExp = mainChracter.getExperience();
+                mainChracter.updateExperience(currentExp + 5); //경험치 5씩 증가
+            } else {
+                throw new MainCharacterNotFoundException("대표캐릭터가 존재하지 않습니다. 멤버ID:" + member.getId());
+            }
+        }
+
+        return isCorrect;
+    }
 
 }
 

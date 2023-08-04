@@ -1,6 +1,8 @@
 package com.bonobono.backend.dailymission.dto;
 
+import lombok.Getter;
 
+@Getter
 public class MiniGameResponseDto {
 
     private String problem;

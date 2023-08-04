@@ -29,12 +29,14 @@ public class UserCharacter extends BaseTimeEntity {
     @JoinColumn(name="character_id")
     private OurCharacter ourCharacter; //캐릭터id(정보를가지고 있음)
 
+    /*
+    * default는 ourcharacter의 name으로 지정하기*/
     private String custom_name;
 
     //경험치
     private int experience;
 
-//    //잡은 날짜는 update할 수 없다(JPA의 createdate를 catchdate로 사용)
+//    //잡은 날짜는 update할 수 없다(JPA의 createdate를 catchdate로 사용)->나중에 now로 지정
 //    @Column(name = "catch_date", updatable = false)
 //    private LocalDate catch_date;
 

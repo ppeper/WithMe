@@ -28,4 +28,7 @@ public class MiniGame {
         this.answer=answer;
     }
 
+    public boolean checkAnswer(String answer) {
+        return this.answer.equals(answer);
+    }
 }

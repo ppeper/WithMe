@@ -29,7 +29,11 @@ public class MiniGameController {
     }
 
     // 문제와 답을 주면 맞는지 여부를 넘겨주고, 경험치 UP
-//    @GetMapping
+    @GetMapping("/IsSuccess")
+    public ResponseEntity<Boolean> checkAnswer(@RequestBody MiniGameRequestDto miniGameRequestDto) {
+        boolean result = miniGameService.IsSuccess(miniGameRequestDto);
+        return ResponseEntity.ok(result);
+    }
 
 
 

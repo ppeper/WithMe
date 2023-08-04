@@ -29,10 +29,11 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.common.BasicTextField
-import com.bonobono.presentation.ui.common.button.BasicButton
-import com.bonobono.presentation.ui.common.button.SNSButton
+import com.bonobono.presentation.ui.common.button.PrimaryColorButton
 import com.bonobono.presentation.ui.common.text.LoginDarkGrayText
 import com.bonobono.presentation.ui.common.topbar.screen.FindIDScreen
+import com.bonobono.presentation.ui.login.view.LoginTextButton
+import com.bonobono.presentation.ui.login.view.SNSButton
 import com.bonobono.presentation.ui.theme.LightGray
 import com.bonobono.presentation.ui.theme.PrimaryBlue
 
@@ -53,7 +54,7 @@ fun LoginScreen() {
         Spacer(modifier = Modifier.height(16.dp))
         AutoLogin()
         Spacer(modifier = Modifier.height(32.dp))
-        BasicButton(text = R.string.login_login) {
+        PrimaryColorButton(text = R.string.login_login) {
             
         }
         Spacer(modifier = Modifier.height(16.dp))
@@ -108,16 +109,6 @@ fun LoginHelpOptions(navController: NavController) {
         LoginTextButton(text = "회원가입") {
             
         }
-    }
-}
-
-@Composable
-fun LoginTextButton(
-    text : String,
-    action : () -> Unit
-) {
-    TextButton(onClick = { action }) {
-        LoginDarkGrayText(text)
     }
 }
 

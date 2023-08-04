@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.bonobono.presentation.R
+import com.bonobono.presentation.ui.common.button.PrimaryColorButton
 import com.bonobono.presentation.ui.common.topbar.screen.SettingScreen
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -54,9 +55,9 @@ fun FindIDScreen(
             value = stringResource(id = R.string.login_authentic_code),
             onValueChange = {})
         Spacer(modifier = Modifier.height(16.dp))
-//        BasicButton(text = R.string.login_find_id) {
-//
-//        }
+        PrimaryColorButton(text = R.string.login_find_id) {
+            
+        }
     }
 }
 

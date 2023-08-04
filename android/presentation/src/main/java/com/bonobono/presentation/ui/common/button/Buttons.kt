@@ -37,7 +37,7 @@ fun PrimaryButton(content: String, modifier: Modifier, onClick: () -> Unit) {
 }
 
 @Composable
-fun BasicButton(
+fun PrimaryColorButton(
     @StringRes text: Int,
     action: () -> Unit
 ) {
@@ -48,20 +48,5 @@ fun BasicButton(
         ),
         onClick = { action }) {
         BasicButtonText(text = stringResource(text))
-    }
-}
-
-@Composable
-fun SNSButton(
-    @DrawableRes img : Int,
-    contentDescription : String,
-    action: () -> Unit
-) {
-    IconButton(onClick = { action }) {
-        Image(painter = painterResource(img),
-            contentDescription = contentDescription,
-            modifier = Modifier
-                .height(50.dp)
-                .width(50.dp))
     }
 }

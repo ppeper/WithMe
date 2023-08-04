@@ -34,8 +34,6 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.bonobono.presentation.R
-import com.bonobono.presentation.ui.component.MyPageInfoCard
-import com.bonobono.presentation.ui.component.MyPageProfileImg
 import com.bonobono.presentation.ui.theme.WaveBlue
 import com.bonobono.presentation.ui.theme.White
 
@@ -60,7 +58,6 @@ fun MainMyPageScreen(navController: NavController) {
                 top.linkTo(waveBackground.bottom)
                 linkTo(start = parent.start, end = parent.end)
             }) {
-            MyPageInfoCard("1,000", "1,000")
         }
 
         // rest buttons
@@ -110,7 +107,7 @@ fun WaveBackGround() {  // blue wave background, setting button, profile image, 
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 //                    Spacer(modifier = Modifier.height(32.dp))
-                MyPageProfileImg()
+
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(text = "test",
                     color = White,

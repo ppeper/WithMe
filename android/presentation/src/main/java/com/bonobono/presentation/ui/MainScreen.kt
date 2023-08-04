@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -44,11 +45,6 @@ import com.bonobono.presentation.ui.community.PostDetail
 import com.bonobono.presentation.ui.community.util.DummyData.commentList
 import com.bonobono.presentation.ui.community.views.board.CommonPostListView
 import com.bonobono.presentation.ui.community.views.comment.WriteCommentView
-import com.bonobono.presentation.ui.component.FloatingButton
-import com.bonobono.presentation.ui.community.views.BoardWriteScreen
-import com.bonobono.presentation.ui.community.views.CommonPostListView
-import com.bonobono.presentation.ui.community.views.DummyData
-import com.bonobono.presentation.ui.community.views.GalleryScreen
 import com.bonobono.presentation.ui.common.button.CommunityFloatingActionButton
 import com.bonobono.presentation.ui.common.button.HomeFloatingActionButton
 import com.bonobono.presentation.ui.main.EncyclopediaScreen
@@ -66,7 +62,6 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()

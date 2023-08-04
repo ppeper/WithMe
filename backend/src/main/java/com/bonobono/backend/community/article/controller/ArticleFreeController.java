@@ -36,7 +36,7 @@ public class ArticleFreeController {
     // 자유게시판 글쓰기
     @PostMapping(value = "",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Long> save(@RequestPart ArticleSaveRequestDto requestDto, @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles){
-        Long articleId = articleService.save(requestDto, imageFiles);
+        Long articleId = articleService.save(type, requestDto, imageFiles);
         return new ResponseEntity(articleId + "번 게시글 생성완료", HttpStatus.CREATED);
     }
 
@@ -51,7 +51,7 @@ public class ArticleFreeController {
     @GetMapping("/{articleId}")
     public ResponseEntity<ArticleDetailResponseDto> findById(@PathVariable Long articleId, @RequestBody MemberRequestDto memberRequestDto) {
         // @AuthenticationPrincipa 사용하기
-        ArticleDetailResponseDto responseDto = articleService.findById(articleId, memberRequestDto.getMemberId());
+        ArticleDetailResponseDto responseDto = articleService.findById(type, articleId, memberRequestDto.getMemberId());
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 

@@ -17,6 +17,7 @@ public class ArticleCommentResponseDto {
     private List<ArticleCommentResponseDto> childComments = new ArrayList<>();
     private int likes;
     private boolean isLiked;
+    private Long parentCommentId;
 
 
     public ArticleCommentResponseDto(ArticleComment entity, Member member){
@@ -27,5 +28,6 @@ public class ArticleCommentResponseDto {
                 .collect(Collectors.toList());
         this.likes = entity.getArticleCommentLikes().size();
         this.isLiked = entity.getArticleCommentLikes().stream().anyMatch(like -> like.getMember().getId().equals(member.getId()));
+        this.parentCommentId = entity.getParentComment() == null ? null : entity.getParentComment().getId();
     }
 }

@@ -43,13 +43,13 @@ public class ArticleService {
     private final AwsS3Service awsS3Service;
 
 
-    // 자유게시판 글 저장
+    // 게시글 글 저장
     @Transactional
-    public Long save(ArticleSaveRequestDto requestDto, List<MultipartFile> imageFiles){
+    public Long save(ArticleType type, ArticleSaveRequestDto requestDto, List<MultipartFile> imageFiles){
         Member member = memberRepository.findById(requestDto.getMemberId())
                 .orElseThrow(() -> new NoSuchElementException("해당 ID 값을 가진 Member가 없습니다 + id = " + requestDto.getMemberId()));
 
-        Article article  = articleRepository.save(requestDto.toEntity(member));
+        Article article  = articleRepository.save(requestDto.toEntity(type, member));
         if (imageFiles != null) {
             for (MultipartFile imageFile : imageFiles) {
                 String imageUrl = awsS3Service.upload(imageFile, "article_images").getPath();
@@ -69,7 +69,7 @@ public class ArticleService {
                 .build();
     }
 
-    // 자유게시판 전체글 내림차순
+    // 게시글 전체글 내림차순
     @Transactional(readOnly = true) // readOnly를 사용하여 조회 기능만 남겨두어 조회속도가 개선
     public List<ArticleListResponseDto> findAllDesc(ArticleType type) {
         return articleRepository.findAllByTypeOrderByIdDesc(type).stream()
@@ -77,7 +77,7 @@ public class ArticleService {
                 .collect(Collectors.toList());
     }
 
-    // 자유게시판 글 검색
+    // 게시글 글 검색
     @Transactional(readOnly = true) // readOnly를 사용하여 조회 기능만 남겨두어 조회속도가 개선
     public List<ArticleListResponseDto> search(ArticleType type, String keyword) {
         return articleRepository.findByTypeAndTitleContainingOrContentContaining(type, keyword, keyword).stream()
@@ -85,10 +85,10 @@ public class ArticleService {
                 .collect(Collectors.toList());
     }
 
-    // 자유게시판 특정글 조회
+    // 게시글 특정글 조회
     @Transactional
-    public ArticleDetailResponseDto findById(Long articleId, Long memberId){
-        Article article = articleRepository.findById(articleId)
+    public ArticleDetailResponseDto findById(ArticleType type, Long articleId, Long memberId){
+        Article article = articleRepository.findByIdAndType(articleId, type)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id =" + articleId));
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(()-> new IllegalArgumentException("해당 멤버가 없습니다. id =" + memberId));
@@ -97,7 +97,7 @@ public class ArticleService {
         return new ArticleDetailResponseDto(article, member, comments);
     }
 
-    // 자유게시판 특정 글 수정
+    // 게시글 특정 글 수정
     @Transactional
     public Long update(Long articleId, ArticleUpdateRequestDto requestDto, List<MultipartFile> imageFiles){
         Article article = articleRepository.findById(articleId)
@@ -114,7 +114,7 @@ public class ArticleService {
         return articleId;
     }
 
-    // 자유게시판 특정글 삭제
+    // 게시글 특정글 삭제
     @Transactional
     public void delete(Long articleId){
         Article article = articleRepository.findById(articleId)

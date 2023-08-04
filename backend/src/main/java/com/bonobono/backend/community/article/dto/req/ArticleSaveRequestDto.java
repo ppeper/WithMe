@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ArticleSaveRequestDto {
 
-    private ArticleType type;
     private String title;
     private String content;
     private String urlTitle;
@@ -20,13 +19,11 @@ public class ArticleSaveRequestDto {
 
 
     @Builder
-    public ArticleSaveRequestDto(ArticleType type,
-                                 String title,
+    public ArticleSaveRequestDto(String title,
                                  String content,
                                  String urlTitle,
                                  String url,
                                  Long memberId){
-        this.type = type;
         this.title = title;
         this.content = content;
         this.urlTitle = urlTitle;
@@ -34,7 +31,7 @@ public class ArticleSaveRequestDto {
         this.memberId = memberId;
     }
 
-    public Article toEntity(Member member){
+    public Article toEntity(ArticleType type, Member member){
         return Article.builder()
                 .type(type)
                 .title(title)

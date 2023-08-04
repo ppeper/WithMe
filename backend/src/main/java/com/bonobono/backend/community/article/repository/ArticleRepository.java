@@ -9,12 +9,16 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ArticleRepository extends JpaRepository<Article, Long> {
 
     // 게시판 전체 내림차순
     List<Article> findAllByTypeOrderByIdDesc(ArticleType type);
+
+    // 게시판 특정 글 조회
+    Optional<Article> findByIdAndType(Long articleId, ArticleType type);
 
     // 게시판 제목 내용 키워드 검색 기능
     List<Article> findByTypeAndTitleContainingOrContentContaining(ArticleType type, String keyword, String keyword2);

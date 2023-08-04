@@ -61,8 +61,7 @@ dependencies {
     implementation 'io.github.ujizin:camposer:0.1.0'
     implementation 'com.google.accompanist:accompanist-permissions:0.28.0'
 
-    implementation 'com.google.ar.sceneform.ux:sceneform-ux:1.17.1'
-    implementation 'com.google.ar:core:1.38.0'
+    implementation 'io.github.sceneview:arsceneview:0.10.0'
 
     implementation 'androidx.core:core-ktx:1.8.0'
     implementation platform('org.jetbrains.kotlin:kotlin-bom:1.8.0')

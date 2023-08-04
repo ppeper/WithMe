@@ -13,7 +13,6 @@ import androidx.compose.runtime.setValue
 import androidx.navigation.NavController
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.common.topbar.screen.ProfileEditScreen
-import com.bonobono.presentation.ui.component.ProfileEdit
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 

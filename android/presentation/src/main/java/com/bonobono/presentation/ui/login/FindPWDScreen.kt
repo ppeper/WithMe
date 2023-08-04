@@ -15,10 +15,10 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.bonobono.presentation.R
+import com.bonobono.presentation.ui.common.BasicTextField
+import com.bonobono.presentation.ui.common.TextFieldWithButton
+import com.bonobono.presentation.ui.common.button.BasicButton
 import com.bonobono.presentation.ui.common.topbar.screen.SettingScreen
-import com.bonobono.presentation.ui.component.BasicButton
-import com.bonobono.presentation.ui.component.BasicTextField
-import com.bonobono.presentation.ui.component.TextFieldWithButton
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 

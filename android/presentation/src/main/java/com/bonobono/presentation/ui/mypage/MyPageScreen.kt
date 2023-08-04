@@ -35,8 +35,6 @@ import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.SettingNav
-import com.bonobono.presentation.ui.component.MyPageInfoCard
-import com.bonobono.presentation.ui.component.MyPageProfileImg
 import com.bonobono.presentation.ui.theme.WaveBlue
 import com.bonobono.presentation.ui.theme.White
 

@@ -14,7 +14,6 @@ import com.bonobono.presentation.ui.common.topbar.screen.EncyclopediaScreen
 import com.bonobono.presentation.ui.common.topbar.screen.ManyOptionsRoute
 import com.bonobono.presentation.ui.common.topbar.screen.ManyOptionsScreen
 import com.bonobono.presentation.ui.common.topbar.screen.PointStoreScreen
-import com.bonobono.presentation.ui.common.topbar.screen.PostItemScreen
 import com.bonobono.presentation.ui.common.topbar.screen.ProfileEditScreen
 import com.bonobono.presentation.ui.common.topbar.screen.Screen
 import com.bonobono.presentation.ui.common.topbar.screen.SettingScreen

@@ -28,11 +28,11 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.bonobono.presentation.R
+import com.bonobono.presentation.ui.common.BasicTextField
+import com.bonobono.presentation.ui.common.button.BasicButton
+import com.bonobono.presentation.ui.common.button.SNSButton
+import com.bonobono.presentation.ui.common.text.LoginDarkGrayText
 import com.bonobono.presentation.ui.common.topbar.screen.FindIDScreen
-import com.bonobono.presentation.ui.component.BasicButton
-import com.bonobono.presentation.ui.component.BasicTextField
-import com.bonobono.presentation.ui.component.LoginDarkGrayText
-import com.bonobono.presentation.ui.component.SNSButton
 import com.bonobono.presentation.ui.theme.LightGray
 import com.bonobono.presentation.ui.theme.PrimaryBlue
 

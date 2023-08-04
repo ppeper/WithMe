@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.rememberScaffoldState
@@ -20,26 +19,36 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.bonobono.presentation.ui.NavigationRouteName.COMMUNITY_FREE
+import com.bonobono.presentation.ui.NavigationRouteName.COMMUNITY_REPORT
+import com.bonobono.presentation.ui.NavigationRouteName.COMMUNITY_WITH
+import com.bonobono.presentation.ui.NavigationRouteName.MAIN_COMMUNITY
 import com.bonobono.presentation.ui.chatting.MainChattingScreen
 import com.bonobono.presentation.ui.common.topbar.SharedTopAppBar
 import com.bonobono.presentation.ui.common.topbar.rememberAppBarState
 import com.bonobono.presentation.ui.common.topbar.screen.ProfileEditScreen
+import com.bonobono.presentation.ui.community.BoardDetailScreen
 import com.bonobono.presentation.ui.community.CommunityScreen
-import com.bonobono.presentation.ui.community.views.BoardWriteScreen
-import com.bonobono.presentation.ui.community.views.CommonPostListView
-import com.bonobono.presentation.ui.community.views.DummyData
-import com.bonobono.presentation.ui.community.views.GalleryScreen
+import com.bonobono.presentation.ui.community.BoardWriteScreen
+import com.bonobono.presentation.ui.community.util.DummyData
+import com.bonobono.presentation.ui.community.GalleryScreen
+import com.bonobono.presentation.ui.community.PostDetail
+import com.bonobono.presentation.ui.community.util.DummyData.commentList
+import com.bonobono.presentation.ui.community.views.board.CommonPostListView
+import com.bonobono.presentation.ui.community.views.comment.WriteCommentView
 import com.bonobono.presentation.ui.component.FloatingButton
 import com.bonobono.presentation.ui.main.EncyclopediaScreen
 import com.bonobono.presentation.ui.main.MainHomeScreen
@@ -75,6 +84,11 @@ fun MainScreen() {
             if (MainNav.isMainRoute(currentRoute)) {
                 MainBottomNavigationBar(navController = navController, currentRoute = currentRoute)
             }
+            when (currentRoute) {
+                BoardDetailNav.route -> {
+                    WriteCommentView()
+                }
+            }
         },
         floatingActionButton = {
             when (currentRoute) {
@@ -84,22 +98,19 @@ fun MainScreen() {
                         currentRoute = currentRoute
                     )
                 }
-
                 NavigationRouteName.COMMUNITY_FREE -> {
                     CommunityFloatingActionButton(
                         navController = navController,
                         item = CommunityFab.FREE
                     )
                 }
-
                 NavigationRouteName.COMMUNITY_WITH -> {
                     CommunityFloatingActionButton(
                         navController = navController,
                         item = CommunityFab.WITH
                     )
                 }
-
-                NavigationRouteName.COMMUNITY_REPORT -> {
+                NavigationRouteName.COMMUNITY_REPORT-> {
                     CommunityFloatingActionButton(
                         navController = navController,
                         item = CommunityFab.REPORT
@@ -147,18 +158,25 @@ fun CommunityFloatingActionButton(
     FloatingActionButton(
         containerColor = PrimaryBlue,
         contentColor = White,
-        shape = CircleShape,
         onClick = {
-            NavigationUtils.navigate(
-                navController, item.route,
-                navController.graph.startDestinationRoute
-            )
+            navController.navigate(item.route)
         }
     ) {
         Icon(
             painter = painterResource(id = item.icon),
             contentDescription = item.title
         )
+    }
+}
+
+// 커뮤니티에서의 bottom Navigation Route
+fun isCommunityRoute(
+    route: String
+): String {
+    return if (route in listOf(COMMUNITY_FREE, COMMUNITY_WITH, COMMUNITY_REPORT)) {
+        MAIN_COMMUNITY
+    } else {
+        route
     }
 }
 
@@ -194,7 +212,7 @@ fun MainBottomNavigationBar(navController: NavHostController, currentRoute: Stri
                 ),
                 label = { Text(text = item.title) },
                 icon = { Icon(painter = painterResource(id = item.icon), item.route) },
-                selected = currentRoute == item.route, onClick = {
+                selected = currentRoute == item.route || currentRoute?.let { isCommunityRoute(it) } == item.route, onClick = {
                     NavigationUtils.navigate(
                         navController, item.route,
                         navController.graph.startDestinationRoute
@@ -273,7 +291,26 @@ fun MainNavigationScreen(
         composable(
             route = NavigationRouteName.GALLERY
         ) {
-            GalleryScreen()
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry(NavigationRouteName.COMMUNITY_POST)
+            }
+            GalleryScreen(navController = navController, photoViewModel = hiltViewModel(parentEntry))
+        }
+        composable(
+            route = NavigationRouteName.GALLERY_WITH
+        ) {
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry(NavigationRouteName.COMMUNITY_POST_WITH)
+            }
+            GalleryScreen(navController = navController, photoViewModel = hiltViewModel(parentEntry))
+        }
+        composable(
+            route = NavigationRouteName.GALLERY_REPORT
+        ) {
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry(NavigationRouteName.COMMUNITY_POST_REPORT)
+            }
+            GalleryScreen(navController = navController, photoViewModel = hiltViewModel(parentEntry))
         }
         composable(
             route = CommunityFab.FREE.route
@@ -307,6 +344,28 @@ fun MainNavigationScreen(
             deepLinks = CommunityReportNav.deepLinks
         ) {
             CommonPostListView(boardList = DummyData.boardList, navController = navController)
+        }
+        composable(
+            route = BoardDetailNav.route,
+            deepLinks = BoardDetailNav.deepLinks
+        ) {
+            // TODO("실 구현시 서버에서 데이터 가져와서 bundle로 넘겨줌")
+            BoardDetailScreen(
+                postDetail = PostDetail(
+                    title = "쓰레기들 위치 찍습니다",
+                    content = "발견된 해수욕장 쓰레기 무단 투기",
+                    name = "홍길동",
+                    profile = "https://images.unsplash.com/photo-1689852484069-3e0fe82cc7c1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1887&q=80",
+                    time = System.currentTimeMillis(),
+                    images = listOf(
+                        DummyData.imageUrl_3,
+                        DummyData.imageUrl,
+                        DummyData.imageUrl_2
+                    ),
+                    commentList = commentList
+                ),
+                navController = navController
+            )
         }
         // 마이페이지
         composable(

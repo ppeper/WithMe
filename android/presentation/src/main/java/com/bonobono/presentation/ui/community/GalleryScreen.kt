@@ -1,13 +1,15 @@
-package com.bonobono.presentation.ui.community.views
+package com.bonobono.presentation.ui.community
 
 import android.provider.MediaStore
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -37,44 +39,54 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.bonobono.presentation.R
-import com.bonobono.presentation.ui.common.topbar.TopContentCenter
+import com.bonobono.presentation.ui.common.CheckCountDialog
+import com.bonobono.presentation.ui.community.views.gallery.TopContentGallery
 import com.bonobono.presentation.ui.theme.Black_20
 import com.bonobono.presentation.ui.theme.PrimaryBlue
 import com.bonobono.presentation.ui.theme.White
+import com.bonobono.presentation.viewmodel.PhotoViewModel
 
 private val TAG = "갤러리"
 
 data class Photo(
     var url: String = "",
-    var isSelected: Boolean = false
+    var isSelected: Boolean = false,
+    val isVisible: Boolean = true
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GalleryScreen(
     modifier: Modifier = Modifier,
+    navController: NavController,
+    photoViewModel: PhotoViewModel
 ) {
-    val selectedPhotos = remember { mutableStateListOf<Photo>() }
-//    val photoList = loadPhotos()
-    // Test
-    val photoList = mutableListOf<Photo>()
-        .apply {
-            repeat(20) {
-                add(Photo(url = "https://images.unsplash.com/photo-1689852484069-3e0fe82cc7c1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1887&q=80"))
-            }
-        }
+    val photoList = loadPhotos()
+    val currentSelectedPhoto = remember {
+        mutableStateListOf<Photo>()
+    }
     Scaffold(
         modifier = modifier.fillMaxWidth(),
-        topBar = { TopContentCenter(title = "사진", rememberNavController(), selectedPhotos) }
+        topBar = {
+            TopContentGallery(
+                title = "사진", navController,
+                photoViewModel = photoViewModel,
+                currentSelectedPhoto = currentSelectedPhoto
+            )
+        }
     ) {
         Surface(
             modifier = modifier.padding(it)
         ) {
-            GalleryGridListView(photoList = photoList, selectedPhotos = selectedPhotos)
+            GalleryGridListView(
+                photoList = photoList,
+                photoViewModel = photoViewModel,
+                currentSelectedPhoto = currentSelectedPhoto)
         }
     }
 }
@@ -82,12 +94,14 @@ fun GalleryScreen(
 @Composable
 @Preview
 fun PreviewGalleryScreen() {
-    GalleryScreen()
+    GalleryScreen(navController = rememberNavController(), photoViewModel = PhotoViewModel())
 }
+
 @Composable
 fun GalleryGridListView(
     photoList: List<Photo>,
-    selectedPhotos: SnapshotStateList<Photo>
+    photoViewModel: PhotoViewModel,
+    currentSelectedPhoto: SnapshotStateList<Photo>
 ) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
@@ -97,11 +111,13 @@ fun GalleryGridListView(
         items(photoList) { photo ->
             GalleryPhotoView(
                 photo = photo,
+                currentSelectedPhoto = currentSelectedPhoto,
+                photoViewModel = photoViewModel,
                 onPhotoSelected = { photo ->
                     if (photo.isSelected) {
-                        selectedPhotos.add(photo)
+                        currentSelectedPhoto.add(photo)
                     } else {
-                        selectedPhotos.remove(photo)
+                        currentSelectedPhoto.remove(photo)
                     }
                 }
             )
@@ -119,7 +135,10 @@ fun PreviewGalleryGridListView() {
                     add(Photo(url = "https://images.unsplash.com/photo-1689852484069-3e0fe82cc7c1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1887&q=80"))
                 }
             },
-        selectedPhotos = remember { mutableStateListOf() }
+        photoViewModel = PhotoViewModel(),
+        currentSelectedPhoto = remember {
+            mutableStateListOf()
+        }
     )
 }
 
@@ -127,14 +146,39 @@ fun PreviewGalleryGridListView() {
 fun GalleryPhotoView(
     modifier: Modifier = Modifier,
     photo: Photo,
-    onPhotoSelected: (Photo) -> Unit
+    photoViewModel: PhotoViewModel,
+    currentSelectedPhoto: SnapshotStateList<Photo>,
+    onPhotoSelected: (Photo) -> Unit,
 ) {
     var isCheck by rememberSaveable { mutableStateOf(false) }
+    var showDialog by remember { mutableStateOf(false) }
+    val previousCount = photoViewModel.selectedPhoto.size
+
+    if (showDialog) {
+        CheckCountDialog(count = (10 - previousCount)) {
+            showDialog = !showDialog
+        }
+    }
+
     Box(
         modifier = modifier
             .aspectRatio(1f)
+            .clickable(
+                interactionSource = MutableInteractionSource(),
+                indication = null
+            ) {
+                // 이미지는 최대 10장 업로드 가능하도록 설정
+                if (!isCheck && 10 <= previousCount + currentSelectedPhoto.size) {
+                    showDialog = true
+                } else {
+                    isCheck = !isCheck
+                    photo.isSelected = isCheck
+                    onPhotoSelected(photo)
+                }
+            }
     ) {
         AsyncImage(
+            modifier = modifier.fillMaxSize(),
             model = ImageRequest.Builder(LocalContext.current)
                 .data(photo.url)
                 .build(),
@@ -163,12 +207,7 @@ fun GalleryPhotoView(
                         shape = CircleShape
                     )
                     .clip(CircleShape)
-                    .background(if (isCheck) PrimaryBlue else Color.Transparent)
-                    .clickable {
-                        isCheck = !isCheck
-                        photo.isSelected = isCheck
-                        onPhotoSelected(photo)
-                    },
+                    .background(if (isCheck) PrimaryBlue else Color.Transparent),
                 contentAlignment = Center
             ) {
                 if (isCheck) {

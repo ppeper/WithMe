@@ -17,6 +17,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="${googleMapKey}" />
         <activity
+            android:windowSoftInputMode="adjustResize"
             android:name=".presentation.ui.MainActivity"
             android:exported="true"
             android:label="@string/app_name"

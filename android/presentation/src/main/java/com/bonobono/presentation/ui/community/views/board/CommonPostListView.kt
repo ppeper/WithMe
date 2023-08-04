@@ -1,4 +1,4 @@
-package com.bonobono.presentation.ui.community.views
+package com.bonobono.presentation.ui.community.views.board
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -21,14 +21,15 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -38,15 +39,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.bonobono.presentation.R
-import com.bonobono.presentation.ui.common.topbar.screen.PostItemScreen
+import com.bonobono.presentation.ui.BoardDetailNav
+import com.bonobono.presentation.ui.community.util.freeLaunchEffect
+import com.bonobono.presentation.ui.community.util.reportLaunchEffect
+import com.bonobono.presentation.ui.community.util.withLaunchEffect
+import com.bonobono.presentation.ui.community.util.DummyData
 import com.bonobono.presentation.ui.theme.Black_70
 import com.bonobono.presentation.ui.theme.DarkGray
 import com.bonobono.presentation.ui.theme.Green
 import com.bonobono.presentation.ui.theme.TextGray
 import com.bonobono.presentation.ui.theme.White
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 
 // TODO("서버와 데이터 맞추기")
 data class BoardItem(
@@ -69,31 +74,26 @@ fun CommonPostListView(
     boardList: List<BoardItem>,
     navController: NavController,
 ) {
-    LaunchedEffect(key1 = Unit) {
-        PostItemScreen.buttons
-            .onEach { button ->
-                when (button) {
-                    PostItemScreen.AppBarIcons.Search -> { /* TODO("서버에서 게시글 검색")*/ }
-                    PostItemScreen.AppBarIcons.Alarm -> {}
-                    PostItemScreen.AppBarIcons.NavigationIcon -> { navController.popBackStack() }
-                }
-            }.launchIn(this)
-    }
+    freeLaunchEffect(navController = navController)
+    withLaunchEffect(navController = navController)
+    reportLaunchEffect(navController = navController)
 
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         contentPadding = PaddingValues(16.dp),
     ) {
         items(boardList) { item ->
-            BoardItemView(item = item)
+            BoardItemView(item = item, navController = navController)
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BoardItemView(
     modifier: Modifier = Modifier,
-    item: BoardItem
+    item: BoardItem,
+    navController: NavController
 ) {
     Card(
         modifier = modifier
@@ -102,7 +102,10 @@ fun BoardItemView(
         colors = CardDefaults.cardColors(
             containerColor = Color.White
         ),
-        shape = RoundedCornerShape(10.dp)
+        shape = RoundedCornerShape(10.dp),
+        onClick = {
+            navController.navigate(BoardDetailNav.route)
+        }
     ) {
         Row(
             modifier = modifier
@@ -286,11 +289,12 @@ fun BoardPhotoView(
     Box(
         modifier = modifier.size(64.dp)
     ) {
-        Image(
-            modifier = modifier
-                .clip(RoundedCornerShape(10.dp)),
-            painter = painterResource(id = R.drawable.ic_board_free),
-            contentDescription = "게시글 이미지",
+        AsyncImage(
+            modifier = modifier.clip(RoundedCornerShape(10.dp)),
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(images[0])
+                .build(),
+            contentDescription = "갤러리 사진",
             contentScale = ContentScale.Crop
         )
         // 이미지 개수에 대한 Box layout
@@ -334,6 +338,7 @@ fun PreviewBoardItem() {
             content = "내용은 다음과 같습니다.",
             comment = 3,
             like = 2,
-        )
+        ),
+        navController = rememberNavController()
     )
 }

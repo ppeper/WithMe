@@ -25,7 +25,6 @@ import dagger.hilt.android.AndroidEntryPoint
                     color = colors.background
                 ) {
                     MainScreen()
-//                    LoginScreen()
                 }
             }
         }

@@ -104,6 +104,47 @@ object SettingNav : Destination {
     )
 }
 
+object ProfileEditNav : Destination {
+    override val route: String = NavigationRouteName.PROFILE_EDIT
+    override val title: String = NavigationTitle.PROFILE_EDIT
+    override val deepLinks: List<NavDeepLink> = listOf(
+        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME$MAIN_MY_PAGE" })
+}
+
+object PointStoreNav : Destination {
+    override val route: String = NavigationRouteName.POINT_STORE
+    override val title: String = NavigationTitle.POINT_STORE
+    override val deepLinks: List<NavDeepLink> = listOf(
+        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME$MAIN_MY_PAGE" })
+}
+
+object FindIdNav : Destination {
+    override val route: String = NavigationRouteName.FIND_ID
+    override val title: String = NavigationTitle.FIND_ID
+    override val deepLinks: List<NavDeepLink> = listOf(
+        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${FindIdNav.route}" })
+}
+
+object FindPasswordNav : Destination {
+    override val route: String = NavigationRouteName.FIND_PASSWORD
+    override val title: String = NavigationTitle.FIND_PASSWORD
+    override val deepLinks: List<NavDeepLink> = listOf(
+        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${FindPasswordNav.route}" })
+}
+
+object ChattingEditNav : Destination {
+    override val route: String = NavigationRouteName.CHATTING_EDIT
+    override val title: String = NavigationTitle.CHATTING_EDIT
+    override val deepLinks: List<NavDeepLink> = listOf(
+        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${ChattingEditNav.route}" })
+}
+
+object ChattingNav : Destination {
+    override val route: String = NavigationRouteName.CHATTING
+    override val title: String = NavigationTitle.CHATTING
+    override val deepLinks: List<NavDeepLink> = listOf(
+        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${ChattingNav.route}" })
+}
 
 interface Destination {
     val route: String
@@ -138,6 +179,14 @@ object NavigationRouteName {
     const val SETTING = "setting"
     const val PROFILE_EDIT = "profile_edit"
     const val POINT_STORE = "point_store"
+
+    const val LOGIN = "login"
+    const val JOIN = "join"
+    const val FIND_ID = "find_id"
+    const val FIND_PASSWORD = "find_password"
+
+    const val CHATTING_EDIT = "chatting_edit"
+    const val CHATTING = "chatting"
 }
 
 object NavigationTitle {
@@ -160,4 +209,12 @@ object NavigationTitle {
     const val SETTING = "설정"
     const val PROFILE_EDIT = "회원정보 수정"
     const val POINT_STORE = "포인트 상점"
+
+    const val LOGIN = "로그인"
+    const val JOIN = "회원가입"
+    const val FIND_ID = "아이디 찾기"
+    const val FIND_PASSWORD = "비밀번호 찾기"
+
+    const val CHATTING_EDIT = "편집"
+    const val CHATTING = "채팅"
 }

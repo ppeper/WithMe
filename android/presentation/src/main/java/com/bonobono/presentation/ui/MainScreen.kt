@@ -34,6 +34,7 @@ import androidx.navigation.compose.rememberNavController
 import com.bonobono.presentation.ui.chatting.MainChattingScreen
 import com.bonobono.presentation.ui.common.topbar.SharedTopAppBar
 import com.bonobono.presentation.ui.common.topbar.rememberAppBarState
+import com.bonobono.presentation.ui.common.topbar.screen.ProfileEditScreen
 import com.bonobono.presentation.ui.community.CommunityScreen
 import com.bonobono.presentation.ui.community.views.BoardWriteScreen
 import com.bonobono.presentation.ui.community.views.CommonPostListView
@@ -47,6 +48,9 @@ import com.bonobono.presentation.ui.main.NoticeScreen
 import com.bonobono.presentation.ui.map.CameraScreen
 import com.bonobono.presentation.ui.map.MainMapScreen
 import com.bonobono.presentation.ui.mypage.MainMyPageScreen
+import com.bonobono.presentation.ui.mypage.PointStoreScreen
+import com.bonobono.presentation.ui.mypage.ProfileEditScreen
+import com.bonobono.presentation.ui.mypage.SettingScreen
 import com.bonobono.presentation.ui.theme.PrimaryBlue
 import com.bonobono.presentation.ui.theme.TextGray
 import com.bonobono.presentation.ui.theme.White
@@ -80,19 +84,22 @@ fun MainScreen() {
                         currentRoute = currentRoute
                     )
                 }
+
                 NavigationRouteName.COMMUNITY_FREE -> {
                     CommunityFloatingActionButton(
                         navController = navController,
                         item = CommunityFab.FREE
                     )
                 }
+
                 NavigationRouteName.COMMUNITY_WITH -> {
                     CommunityFloatingActionButton(
                         navController = navController,
                         item = CommunityFab.WITH
                     )
                 }
-                NavigationRouteName.COMMUNITY_REPORT-> {
+
+                NavigationRouteName.COMMUNITY_REPORT -> {
                     CommunityFloatingActionButton(
                         navController = navController,
                         item = CommunityFab.REPORT
@@ -300,6 +307,25 @@ fun MainNavigationScreen(
             deepLinks = CommunityReportNav.deepLinks
         ) {
             CommonPostListView(boardList = DummyData.boardList, navController = navController)
+        }
+        // 마이페이지
+        composable(
+            route = SettingNav.route,
+            deepLinks = SettingNav.deepLinks
+        ) {
+            SettingScreen(navController = navController)
+        }
+        composable(
+            route = PointStoreNav.route,
+            deepLinks = PointStoreNav.deepLinks
+        ) {
+            PointStoreScreen(navController = navController)
+        }
+        composable(
+            route = ProfileEditNav.route,
+            deepLinks = ProfileEditNav.deepLinks
+        ) {
+            ProfileEditScreen(navController = navController)
         }
     }
 }

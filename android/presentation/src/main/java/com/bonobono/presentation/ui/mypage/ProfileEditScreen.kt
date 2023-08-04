@@ -5,15 +5,32 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.navigation.NavController
 import com.bonobono.presentation.R
+import com.bonobono.presentation.ui.common.topbar.screen.ProfileEditScreen
 import com.bonobono.presentation.ui.component.ProfileEdit
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 @Composable
-fun ProfileEditScreen() {
+fun ProfileEditScreen(
+    navController: NavController
+) {
+    LaunchedEffect(key1 = Unit) {
+        ProfileEditScreen.buttons
+            .onEach { button ->
+                when (button) {
+                    ProfileEditScreen.AppBarIcons.NavigationIcon -> {
+                        navController.popBackStack()
+                    }
+                }
+            }.launchIn(this)
+    }
     Surface {
         Column {
             ProfileEdit(profileImage = R.drawable.beluga_whale)

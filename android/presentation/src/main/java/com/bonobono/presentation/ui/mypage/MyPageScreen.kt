@@ -32,6 +32,7 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.bonobono.presentation.R
+import com.bonobono.presentation.ui.SettingNav
 import com.bonobono.presentation.ui.component.MyPageInfoCard
 import com.bonobono.presentation.ui.component.MyPageProfileImg
 import com.bonobono.presentation.ui.theme.WaveBlue
@@ -48,7 +49,7 @@ fun MainMyPageScreen(navController: NavController) {
                 top.linkTo(parent.top)
                 linkTo(start = parent.start, end = parent.end)
             }) {
-            WaveBackGround()
+            WaveBackGround(navController)
         }
         // experience and money info box
         Surface(modifier = Modifier
@@ -78,7 +79,7 @@ fun MainMyPageScreen(navController: NavController) {
 }
 
 @Composable
-fun WaveBackGround() {  // blue wave background, setting button, profile image, nickname
+fun WaveBackGround(navController: NavController) {  // blue wave background, setting button, profile image, nickname
     Box(modifier = Modifier.fillMaxWidth()) {
         Image(
             painter = painterResource(id = R.drawable.blue_wave_background),
@@ -92,7 +93,7 @@ fun WaveBackGround() {  // blue wave background, setting button, profile image, 
                 horizontalArrangement = Arrangement.End
             ) {
                 IconButton(
-                    onClick = { /*TODO*/ },
+                    onClick = { navController.navigate(SettingNav.route) },
                     modifier = Modifier.size(60.dp)
                 ) {
                     Icon(

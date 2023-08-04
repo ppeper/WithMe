@@ -1,5 +1,6 @@
 package com.bonobono.presentation.ui.mypage
 
+import androidx.annotation.ColorInt
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,6 +14,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -22,7 +24,9 @@ import androidx.navigation.compose.rememberNavController
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.common.topbar.screen.CommunityListScreen
 import com.bonobono.presentation.ui.common.topbar.screen.SettingScreen
+import com.bonobono.presentation.ui.theme.LightGray
 import com.bonobono.presentation.ui.theme.LightGray_50
+import com.bonobono.presentation.ui.theme.Red
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -47,13 +51,13 @@ fun SettingScreen(
         verticalArrangement = Arrangement.Top
     ) {
         SettingTitle(title = "계정 관리")
-        SettingOptions(option = "권한설정")
-        SettingOptions(option = "비밀번호")
-        SettingOptions(option = "회원탈퇴")
+        SettingOptions(option = "권한설정", color = LightGray)
+        SettingOptions(option = "비밀번호", color = LightGray)
+        SettingOptions(option = "회원탈퇴", color = Red)
         SettingDivder()
         SettingTitle(title = "앱 정보")
         SettingVersionOption(version = "1.00")
-        SettingOptions(option = "라이선스")
+        SettingOptions(option = "라이선스", color = LightGray)
         SettingDivder()
     }
 }
@@ -66,7 +70,9 @@ fun SettingTitle(title: String) {
 
 
 @Composable
-fun SettingOptions(option: String) {
+fun SettingOptions(
+    option: String,
+    color : Color) {
     ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
         val (optionStr, rightButton) = createRefs()
         Text(option,
@@ -88,7 +94,9 @@ fun SettingOptions(option: String) {
 }
 
 @Composable
-fun SettingVersionOption(version:String) {
+fun SettingVersionOption(
+    version:String
+) {
     ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
         val (versionStr, versionInfoStr) = createRefs()
         Text("버전정보",

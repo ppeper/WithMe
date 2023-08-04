@@ -13,31 +13,40 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ArticleFreeDetailResponseDto {
+public class ArticleDetailResponseDto {
 
     private ArticleType type;
     private String title;
     private String content;
     private int views;
-    private String nickname;
+    private boolean recruitStatus;
+    private String urlTitle;
+    private String url;
     private List<ArticleImageResponseDto> images;
-    private List<ArticleCommentResponseDto> comments;
     private int likes;
     private boolean isLiked;
+    private List<ArticleCommentResponseDto> comments;
+    private int commentCnt;
+    private String nickname;
 
 
-    public ArticleFreeDetailResponseDto(Article entity, Member member, List<ArticleCommentResponseDto> comments){
+    public ArticleDetailResponseDto(Article entity, Member member, List<ArticleCommentResponseDto> comments){
         this.type = entity.getType();
         this.title = entity.getTitle();
         this.content = entity.getContent();
         this.views = entity.getViews();
+        this.recruitStatus = entity.isRecruitStatus();
+        this.urlTitle = entity.getUrlTitle();
+        this.url = entity.getUrl();
         this.images = entity.getImages().stream()
                 .map(ArticleImageResponseDto::new)
                 .collect(Collectors.toList());
-        this.nickname = entity.getMember().getNickname();
-        this.comments = comments;
         this.likes = entity.getArticleLikes().size();
         this.isLiked =  entity.getArticleLikes().stream().anyMatch(like -> like.getMember().getId().equals(member.getId()));
+        this.comments = comments;
+        this.commentCnt = entity.getComments().size();
+        this.nickname = entity.getMember().getNickname();
+
     }
 
 }

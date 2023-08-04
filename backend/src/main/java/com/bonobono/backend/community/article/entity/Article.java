@@ -65,8 +65,10 @@ public class Article extends BaseTimeEntity {
     }
 
     // 글 수정
-    public void updateFree(String title, String content){
+    public void updateArticle(String title, String content, String urlTitle, String url){
         this.title = title;
         this.content = content;
+        this.urlTitle = urlTitle;
+        this.url = url;
     }
 }

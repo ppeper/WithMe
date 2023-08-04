@@ -1,12 +1,13 @@
 package com.bonobono.backend.community.article.controller;
 
 import com.bonobono.backend.community.article.dto.req.ArticleCommentRequestDto;
-import com.bonobono.backend.community.article.dto.req.ArticleFreeSaveRequestDto;
-import com.bonobono.backend.community.article.dto.req.ArticleFreeUpdateRequestDto;
+import com.bonobono.backend.community.article.dto.req.ArticleSaveRequestDto;
+import com.bonobono.backend.community.article.dto.req.ArticleUpdateRequestDto;
 import com.bonobono.backend.community.article.dto.res.*;
+import com.bonobono.backend.community.article.enumclass.ArticleType;
 import com.bonobono.backend.community.article.service.ArticleCommentLikeService;
 import com.bonobono.backend.community.article.service.ArticleCommentService;
-import com.bonobono.backend.community.article.service.ArticleFreeService;
+import com.bonobono.backend.community.article.service.ArticleService;
 import com.bonobono.backend.community.article.service.ArticleLikeService;
 import com.bonobono.backend.member.dto.MemberRequestDto;
 import lombok.RequiredArgsConstructor;
@@ -23,55 +24,58 @@ import java.util.List;
 @RequestMapping("/community/free")
 public class ArticleFreeController {
 
-    private final ArticleFreeService articleFreeService;
+    private final ArticleService articleService;
 
     private final ArticleCommentService articleCommentService;
 
     private final ArticleLikeService articleLikeService;
 
     private final ArticleCommentLikeService articleCommentLikeService;
+    private final ArticleType type = ArticleType.FREE;
 
     // 자유게시판 글쓰기
     @PostMapping(value = "",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Long> save(@RequestPart ArticleFreeSaveRequestDto requestDto, @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles){
-        Long articleId = articleFreeService.save(requestDto, imageFiles);
+    public ResponseEntity<Long> save(@RequestPart ArticleSaveRequestDto requestDto, @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles){
+        Long articleId = articleService.save(requestDto, imageFiles);
         return new ResponseEntity(articleId + "번 게시글 생성완료", HttpStatus.CREATED);
     }
 
     // 자유게시판 전체 글 조회
     @GetMapping("")
-    public ResponseEntity<List<ArticleFreeListResponseDto>> findAllDesc(){
-        List<ArticleFreeListResponseDto> responseDto =  articleFreeService.findAllDesc();
+    public ResponseEntity<List<ArticleListResponseDto>> findAllDesc(){
+        List<ArticleListResponseDto> responseDto =  articleService.findAllDesc(type);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
     // 자유게시판 특정 글, 글에 관한 댓글 조회하기
     @GetMapping("/{articleId}")
-    public ResponseEntity<ArticleFreeDetailResponseDto> findById(@PathVariable Long articleId, @RequestBody MemberRequestDto memberRequestDto) {
+    public ResponseEntity<ArticleDetailResponseDto> findById(@PathVariable Long articleId, @RequestBody MemberRequestDto memberRequestDto) {
         // @AuthenticationPrincipa 사용하기
-        ArticleFreeDetailResponseDto responseDto = articleFreeService.findById(articleId, memberRequestDto.getMemberId());
+        ArticleDetailResponseDto responseDto = articleService.findById(articleId, memberRequestDto.getMemberId());
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
     // 자유게시판 게시글 검색 (키워드가 제목, 내용 포함)
     @GetMapping("/search")
-    public ResponseEntity<List<ArticleFreeListResponseDto>> search(@RequestParam("keyword") String keyword){
-        List<ArticleFreeListResponseDto> responseDto = articleFreeService.search(keyword);
+    public ResponseEntity<List<ArticleListResponseDto>> search(@RequestParam("keyword") String keyword){
+        List<ArticleListResponseDto> responseDto = articleService.search(type, keyword);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
 
     }
 
     // 자유게시판 특정 글 수정
-    @PatchMapping("/{articleId}")
-    public ResponseEntity<Void> update(@PathVariable Long articleId, @RequestBody ArticleFreeUpdateRequestDto requestDto){
-        articleFreeService.update(articleId , requestDto);
+    @PatchMapping(value = "/{articleId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Void> update(@PathVariable Long articleId,
+                                       @RequestPart ArticleUpdateRequestDto requestDto,
+                                       @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles){
+        articleService.update(articleId , requestDto, imageFiles);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     // 자유게시판 특정 글 삭제
     @DeleteMapping("/{articleId}")
     public ResponseEntity<Void> delete(@PathVariable Long articleId){
-        articleFreeService.delete(articleId);
+        articleService.delete(articleId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

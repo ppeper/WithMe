@@ -32,9 +32,9 @@ public class MiniGameService {
 
     //mini게임참여여부 체크하고, minigame랜덤으로 생성해서 전달
     @Transactional(readOnly = true)
-    public MiniGameResponseDto checkMiniGame(MiniGameRequestDto miniGameRequestDto) {
-        Member member = memberRepository.findById(miniGameRequestDto.getMemberId())
-                .orElseThrow(()->new IllegalArgumentException("해당 멤버가 존재하지 않습니다 +id"+miniGameRequestDto.getMemberId()));
+    public MiniGameResponseDto checkMiniGame(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(()->new IllegalArgumentException("해당 멤버가 존재하지 않습니다 +id"+memberId));
 
         if (isMiniGameRepository.findByCheckDateAndMember(member.getId(), checkDate)) {
             log.trace("이미 게임에 참여했습니다");
@@ -64,6 +64,7 @@ public class MiniGameService {
 
     }
 
+    // 문제와 답을 주면 맞는지 여부를 넘겨주고, 경험치 UP
 
 
 }

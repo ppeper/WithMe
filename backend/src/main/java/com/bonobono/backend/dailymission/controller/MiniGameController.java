@@ -23,8 +23,8 @@ public class MiniGameController {
     //참여하기 버튼 누르면, 미니게임 이미 참여하면 참여하셨습니다를 반환
     // 미니게임 참여하지 않았으면, 미니게임 객체를 반환
     @PostMapping
-    public ResponseEntity<MiniGameResponseDto> checkMiniGame(@RequestBody MiniGameRequestDto miniGameRequestDto) {
-        MiniGameResponseDto miniGameResponseDto = miniGameService.checkMiniGame(miniGameRequestDto);
+    public ResponseEntity<MiniGameResponseDto> checkMiniGame(@RequestParam Long memberId) {
+        MiniGameResponseDto miniGameResponseDto = miniGameService.checkMiniGame(memberId);
         return ResponseEntity.ok(miniGameResponseDto);
     }
 

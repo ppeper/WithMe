@@ -71,10 +71,10 @@ fun MainMyPageScreen(navController: NavController) {
                 linkTo(parent.start, parent.end)
                 top.linkTo(infoBox.bottom, margin = 16.dp)
             }) {
-            MyPageButton(buttonType = "포인트 상점", iconName = "ic_point_store")
-            MyPageButton(buttonType = "나의 글", iconName = "ic_feed_history")
-            MyPageButton(buttonType = "회원정보 수정", iconName = "ic_profile_edit")
-            MyPageButton(buttonType = "로그아웃", iconName = "ic_logout")
+            MyPageButton(buttonType = "포인트 상점", iconName = "ic_point_store", navController = navController)
+            MyPageButton(buttonType = "나의 글", iconName = "ic_feed_history", navController = navController)
+            MyPageButton(buttonType = "회원정보 수정", iconName = "ic_profile_edit",  navController = navController)
+            MyPageButton(buttonType = "로그아웃", iconName = "ic_logout", navController = navController)
         }
     }
 }
@@ -122,7 +122,7 @@ fun WaveBackGround(navController: NavController) {  // blue wave background, set
     }
 }
 @Composable
-fun MyPageButton(buttonType: String, iconName: String) {
+fun MyPageButton(buttonType: String, iconName: String, navController: NavController) {
     ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
         val (buttonIcon, buttonTypeStr, rightButton) = createRefs()
         val context = LocalContext.current

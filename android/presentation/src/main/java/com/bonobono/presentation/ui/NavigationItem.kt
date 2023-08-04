@@ -102,22 +102,20 @@ object SettingNav : Destination {
     override val deepLinks: List<NavDeepLink> = listOf(
         navDeepLink { uriPattern = "$DEEP_LINK_SCHEME$MAIN_MY_PAGE" }
     )
-    override val deepLinks: List<NavDeepLink> = listOf(
-    navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${SettingNav.route}" })
 }
 
 object ProfileEditNav : Destination {
     override val route: String = NavigationRouteName.PROFILE_EDIT
     override val title: String = NavigationTitle.PROFILE_EDIT
     override val deepLinks: List<NavDeepLink> = listOf(
-        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${ProfileEditNav.route}" })
+        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME$MAIN_MY_PAGE" })
 }
 
 object PointStoreNav : Destination {
     override val route: String = NavigationRouteName.POINT_STORE
     override val title: String = NavigationTitle.POINT_STORE
     override val deepLinks: List<NavDeepLink> = listOf(
-        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${PointStoreNav.route}" })
+        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME$MAIN_MY_PAGE" })
 }
 
 object FindIdNav : Destination {

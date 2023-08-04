@@ -48,7 +48,7 @@ public class UserCharacter extends BaseTimeEntity {
         this.custom_name = custom_name;
     }
 
-    // 글 수정
+    //경험치 수정
     public void updateExperience(int experience){
         this.experience = experience;
     }

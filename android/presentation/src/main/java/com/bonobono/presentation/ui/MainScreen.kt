@@ -7,10 +7,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ScaffoldState
-import androidx.compose.material.rememberScaffoldState
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -49,6 +45,12 @@ import com.bonobono.presentation.ui.community.util.DummyData.commentList
 import com.bonobono.presentation.ui.community.views.board.CommonPostListView
 import com.bonobono.presentation.ui.community.views.comment.WriteCommentView
 import com.bonobono.presentation.ui.component.FloatingButton
+import com.bonobono.presentation.ui.community.views.BoardWriteScreen
+import com.bonobono.presentation.ui.community.views.CommonPostListView
+import com.bonobono.presentation.ui.community.views.DummyData
+import com.bonobono.presentation.ui.community.views.GalleryScreen
+import com.bonobono.presentation.ui.common.button.CommunityFloatingActionButton
+import com.bonobono.presentation.ui.common.button.HomeFloatingActionButton
 import com.bonobono.presentation.ui.main.EncyclopediaScreen
 import com.bonobono.presentation.ui.main.MainHomeScreen
 import com.bonobono.presentation.ui.main.MissionScreen
@@ -60,12 +62,13 @@ import com.bonobono.presentation.ui.theme.PrimaryBlue
 import com.bonobono.presentation.ui.theme.TextGray
 import com.bonobono.presentation.ui.theme.White
 import com.bonobono.presentation.utils.NavigationUtils
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen() {
-    val scaffoldState = rememberScaffoldState()
     val navController = rememberNavController()
     val appBarState = rememberAppBarState(navController = navController)
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -94,19 +97,22 @@ fun MainScreen() {
                         currentRoute = currentRoute
                     )
                 }
+
                 NavigationRouteName.COMMUNITY_FREE -> {
                     CommunityFloatingActionButton(
                         navController = navController,
                         item = CommunityFab.FREE
                     )
                 }
+
                 NavigationRouteName.COMMUNITY_WITH -> {
                     CommunityFloatingActionButton(
                         navController = navController,
                         item = CommunityFab.WITH
                     )
                 }
-                NavigationRouteName.COMMUNITY_REPORT-> {
+
+                NavigationRouteName.COMMUNITY_REPORT -> {
                     CommunityFloatingActionButton(
                         navController = navController,
                         item = CommunityFab.REPORT
@@ -118,7 +124,6 @@ fun MainScreen() {
         MainNavigationScreen(
             innerPaddings = it,
             navController = navController,
-            scaffoldState = scaffoldState
         )
     }
 }
@@ -135,7 +140,7 @@ fun MainFloatingActionButtons(navController: NavHostController, currentRoute: St
         verticalArrangement = Arrangement.Bottom
     ) {
         fabItems.forEach { item ->
-            FloatingButton(icon = item.icon, title = item.title) {
+            HomeFloatingActionButton(icon = item.icon, title = item.title) {
                 NavigationUtils.navigate(
                     navController, item.route,
                     navController.graph.startDestinationRoute
@@ -146,36 +151,7 @@ fun MainFloatingActionButtons(navController: NavHostController, currentRoute: St
     }
 }
 
-@Composable
-fun CommunityFloatingActionButton(
-    navController: NavHostController,
-    item: CommunityFab
-) {
-    FloatingActionButton(
-        containerColor = PrimaryBlue,
-        contentColor = White,
-        onClick = {
-            navController.navigate(item.route)
-        }
-    ) {
-        Icon(
-            painter = painterResource(id = item.icon),
-            contentDescription = item.title
-        )
-    }
-}
-
-// 커뮤니티에서의 bottom Navigation Route
-fun isCommunityRoute(
-    route: String
-): String {
-    return if (route in listOf(COMMUNITY_FREE, COMMUNITY_WITH, COMMUNITY_REPORT)) {
-        MAIN_COMMUNITY
-    } else {
-        route
-    }
-}
-
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun MainBottomNavigationBar(navController: NavHostController, currentRoute: String?) {
     val bottomNavigationItems = listOf(
@@ -185,6 +161,26 @@ fun MainBottomNavigationBar(navController: NavHostController, currentRoute: Stri
         MainNav.Chatting,
         MainNav.MyPage,
     )
+
+    val permissions = listOf(
+        android.Manifest.permission.ACCESS_COARSE_LOCATION,
+        android.Manifest.permission.ACCESS_FINE_LOCATION
+    )
+
+    val multiplePermissionsState = rememberMultiplePermissionsState(permissions = permissions) {
+        val result = it.values.reduce { acc, granted -> acc || granted }
+        if (result) {
+            val item = bottomNavigationItems.find { it.route == NavigationRouteName.MAIN_MAP }
+            if (item != null) {
+                NavigationUtils.navigate(
+                    navController, item.route,
+                    navController.graph.startDestinationRoute
+                )
+            }
+        } else {
+
+        }
+    }
 
     NavigationBar(
         modifier = Modifier.graphicsLayer {
@@ -208,21 +204,26 @@ fun MainBottomNavigationBar(navController: NavHostController, currentRoute: Stri
                 ),
                 label = { Text(text = item.title) },
                 icon = { Icon(painter = painterResource(id = item.icon), item.route) },
-                selected = currentRoute == item.route || currentRoute?.let { isCommunityRoute(it) } == item.route, onClick = {
-                    NavigationUtils.navigate(
-                        navController, item.route,
-                        navController.graph.startDestinationRoute
-                    )
+                selected = currentRoute == item.route, onClick = {
+                    if (item.route == NavigationRouteName.MAIN_MAP) {
+                        multiplePermissionsState.launchMultiplePermissionRequest()
+                    } else {
+                        NavigationUtils.navigate(
+                            navController, item.route,
+                            navController.graph.startDestinationRoute
+                        )
+                    }
                 })
         }
     }
 }
 
+
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun MainNavigationScreen(
     innerPaddings: PaddingValues,
     navController: NavHostController,
-    scaffoldState: ScaffoldState
 ) {
     NavHost(
         modifier = Modifier.padding(innerPaddings),

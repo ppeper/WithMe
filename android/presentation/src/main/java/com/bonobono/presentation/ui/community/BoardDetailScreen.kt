@@ -3,6 +3,7 @@ package com.bonobono.presentation.ui.community
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -37,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -227,41 +229,51 @@ fun LikeAndCommentView(
             Row(
                 modifier = modifier.weight(1f),
                 horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
             ) {
-                IconToggleButton(
-                    modifier = modifier.size(24.dp),
-                    checked = likeState,
-                    colors = IconButtonDefaults.iconToggleButtonColors(
-                        checkedContentColor = Red,
-                        contentColor = TextGray
-                    ),
-                    onCheckedChange = { likeState = !likeState/* TODO("서버에 좋아요 클릭 추가") */ },
-                    interactionSource = MutableInteractionSource()
+                Row(
+                    modifier = modifier.clickable(
+                        interactionSource = MutableInteractionSource(),
+                        indication = null
+                    ) {
+                        /* TODO("서버에 좋아요 클릭 추가") */
+                          likeState = !likeState
+                    },
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_like),
-                        contentDescription = "좋아요 아이콘"
+                    IconToggleButton(
+                        modifier = modifier.size(24.dp),
+                        checked = likeState,
+                        colors = IconButtonDefaults.iconToggleButtonColors(
+                            checkedContentColor = Red,
+                            contentColor = TextGray
+                        ),
+                        onCheckedChange = { likeState = !likeState },
+                        interactionSource = MutableInteractionSource()
+                    ) {
+                        Icon(
+                            painter = painterResource(if (likeState) R.drawable.ic_like_filled else R.drawable.ic_like),
+                            contentDescription = "좋아요 아이콘"
+                        )
+                    }
+                    Spacer(modifier = modifier.size(4.dp))
+                    Text(
+                        text = "좋아요",
+                        style = TextStyle(
+                            fontSize = 12.sp,
+                            color = if (likeState) Red else TextGray,
+                            textAlign = TextAlign.Center,
+                        )
+                    )
+                    Spacer(modifier = modifier.size(4.dp))
+                    Text(
+                        text = "4",
+                        style = TextStyle(
+                            fontSize = 12.sp,
+                            color = if (likeState) Red else TextGray,
+                            textAlign = TextAlign.Center,
+                        )
                     )
                 }
-                Spacer(modifier = modifier.size(4.dp))
-                Text(
-                    text = "좋아요",
-                    style = TextStyle(
-                        fontSize = 12.sp,
-                        color = if (likeState) Red else TextGray,
-                        textAlign = TextAlign.Center,
-                    )
-                )
-                Spacer(modifier = modifier.size(4.dp))
-                Text(
-                    text = "4",
-                    style = TextStyle(
-                        fontSize = 12.sp,
-                        color = if (likeState) Red else TextGray,
-                        textAlign = TextAlign.Center,
-                    )
-                )
             }
             Row(
                 modifier = modifier.weight(1f),

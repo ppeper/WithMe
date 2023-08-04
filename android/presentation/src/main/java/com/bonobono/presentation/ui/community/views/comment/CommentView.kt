@@ -1,7 +1,11 @@
 package com.bonobono.presentation.ui.community.views.comment
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowColumn
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,6 +22,10 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -54,14 +62,13 @@ fun CommentListView(
     modifier: Modifier = Modifier,
     commentList: List<TestUser>
 ) {
-    LazyColumn(
-        modifier = Modifier.wrapContentHeight()
-    ) {
-        items(commentList) {
+    Column {
+        commentList.forEach {
             CommentView(comments = it)
         }
     }
 }
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun CommentView(
     modifier: Modifier = Modifier,
@@ -108,20 +115,12 @@ fun CommentView(
             )
             CommentRow(comments = comments)
             // 대댓글 리스트
-            LazyColumn(
-                modifier = Modifier.wrapContentHeight()
-            ) {
-                items(comments.commentList) {
+            FlowColumn {
+                comments.commentList.forEach {
                     CommentView(comments = it)
                 }
             }
         }
-    }
-}
-
-fun LazyListScope.ReCommentView(commentList: List<TestUser>) {
-    items(commentList) {
-        CommentView(comments = it)
     }
 }
 
@@ -130,6 +129,9 @@ fun CommentRow(
     modifier: Modifier = Modifier,
     comments: TestUser
 ) {
+    // TODO("유저가 댓글 좋아요 눌렀는지 기본 세팅값 필요")
+    var likeState by rememberSaveable { mutableStateOf(comments.userClickLike) }
+
     Row(
         modifier = modifier
             .wrapContentHeight()
@@ -141,35 +143,47 @@ fun CommentRow(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            IconToggleButton(
-                modifier = modifier.size(20.dp),
-                checked = comments.userClickLike,
-                colors = IconButtonDefaults.iconToggleButtonColors(
-                    checkedContentColor = Red,
-                    contentColor = TextGray
-                ),
-                onCheckedChange = {/* TODO("서버에 좋아요 클릭 추가") */},
+            Row(
+                modifier = modifier.clickable(
+                    interactionSource = MutableInteractionSource(),
+                    indication = null
+                ) {
+                    /* TODO("서버에 좋아요 클릭 추가") */
+                    likeState = !likeState
+                },
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_like),
-                    contentDescription = "좋아요 아이콘",
+                IconToggleButton(
+                    modifier = modifier.size(20.dp),
+                    checked = likeState,
+                    colors = IconButtonDefaults.iconToggleButtonColors(
+                        checkedContentColor = Red,
+                        contentColor = TextGray
+                    ),
+                    onCheckedChange = { likeState = !likeState },
+                    interactionSource = MutableInteractionSource()
+                ) {
+                    Icon(
+                        painter = painterResource(if (likeState) R.drawable.ic_like_filled else R.drawable.ic_like),
+                        contentDescription = "좋아요 아이콘",
+                    )
+                }
+                Spacer(modifier = modifier.size(4.dp))
+                Text(
+                    text = "좋아요",
+                    style = TextStyle(
+                        fontSize = 10.sp,
+                        color = if (likeState) Red else TextGray,
+                        textAlign = TextAlign.Center,
+                    )
                 )
             }
-            Spacer(modifier = modifier.size(4.dp))
-            Text(
-                text = "좋아요",
-                style = TextStyle(
-                    fontSize = 10.sp,
-                    color = if (comments.userClickLike) Red else TextGray,
-                    textAlign = TextAlign.Center,
-                )
-            )
             Spacer(modifier = modifier.size(4.dp))
             Text(
                 text = "4",
                 style = TextStyle(
                     fontSize = 10.sp,
-                    color = if (comments.userClickLike) Red else TextGray,
+                    color = if (likeState) Red else TextGray,
                     textAlign = TextAlign.Center,
                 )
             )

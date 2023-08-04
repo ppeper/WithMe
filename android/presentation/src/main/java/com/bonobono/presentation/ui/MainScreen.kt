@@ -47,6 +47,7 @@ import com.bonobono.presentation.ui.main.NoticeScreen
 import com.bonobono.presentation.ui.map.CameraScreen
 import com.bonobono.presentation.ui.map.MainMapScreen
 import com.bonobono.presentation.ui.mypage.MainMyPageScreen
+import com.bonobono.presentation.ui.mypage.SettingScreen
 import com.bonobono.presentation.ui.theme.PrimaryBlue
 import com.bonobono.presentation.ui.theme.TextGray
 import com.bonobono.presentation.ui.theme.White
@@ -300,6 +301,13 @@ fun MainNavigationScreen(
             deepLinks = CommunityReportNav.deepLinks
         ) {
             CommonPostListView(boardList = DummyData.boardList, navController = navController)
+        }
+        // 마이페이지
+        composable(
+            route = SettingNav.route,
+            deepLinks = SettingNav.deepLinks
+        ) {
+            SettingScreen(navController = navController)
         }
     }
 }

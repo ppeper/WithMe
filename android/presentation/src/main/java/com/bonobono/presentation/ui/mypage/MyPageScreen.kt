@@ -61,7 +61,6 @@ fun MainMyPageScreen(navController: NavController) {
                 top.linkTo(waveBackground.bottom)
                 linkTo(start = parent.start, end = parent.end)
             }) {
-            MyPageInfoCard("1,000", "1,000")
         }
 
         // rest buttons
@@ -111,7 +110,7 @@ fun WaveBackGround(navController: NavController) {  // blue wave background, set
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 //                    Spacer(modifier = Modifier.height(32.dp))
-                MyPageProfileImg()
+
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(text = "test",
                     color = White,

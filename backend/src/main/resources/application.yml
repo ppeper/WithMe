@@ -1,13 +1,9 @@
 spring:
   datasource:
-    url: jdbc:mariadb://localhost:3306/websocket
+    url: jdbc:mariadb://localhost:3306/bonobono
     driver-class-name: org.mariadb.jdbc.Driver
     username: root
     password: 1234
-    sql:
-      init:
-        data-locations: classpath:data.sql
-        mode: always
   data:
     mongodb:
       uri: mongodb://localhost:27017/websocket
@@ -19,6 +15,12 @@ spring:
       hibernate:
         format_sql: true
         show_sql: true #show sql
+    defer-datasource-initialization: true
+
+  sql:
+    init:
+      data-locations: classpath:data.sql
+      mode: always
 
   mvc: # swagger로 인해서 세팅
     pathmatch:

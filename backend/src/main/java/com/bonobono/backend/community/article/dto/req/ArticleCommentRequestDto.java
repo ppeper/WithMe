@@ -13,20 +13,20 @@ public class ArticleCommentRequestDto {
 
     private String content;
     private Long memberId; // User 나중에 변경
-    private Long parentId;
+    private Long parentCommentId;
 
     @Builder
-    public ArticleCommentRequestDto(String content, Long memberId, Long parentId){
+    public ArticleCommentRequestDto(String content, Long memberId, Long parentCommentId){
         this.content = content;
         this.memberId = memberId;
-        this.parentId = parentId;
+        this.parentCommentId = parentCommentId;
     }
-    public ArticleComment toEntity(Article article, Member member, ArticleComment parent) {
+    public ArticleComment toEntity(Article article, Member member, ArticleComment parentComment) {
         return ArticleComment.builder()
                 .content(content)
                 .article(article)
                 .member(member)
-                .parent(parent)
+                .parentComment(parentComment)
                 .build();
     }
 }

@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @NoArgsConstructor
@@ -23,8 +25,6 @@ public class ArticleComment extends BaseTimeEntity {
     @Column(nullable = false)
     private String content;
 
-    private int likes;
-
     @ManyToOne
     @JoinColumn(name="article_id", nullable = false)
     private Article article;
@@ -34,21 +34,31 @@ public class ArticleComment extends BaseTimeEntity {
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="parent_id", nullable = true)
-    private ArticleComment parent;
+    @JoinColumn(name="parent_comment_id")
+    private ArticleComment parentComment;
 
-    @OneToMany(mappedBy = "parent", orphanRemoval = true)
-    private List<ArticleComment> commentList = new ArrayList<>();
+    @OneToMany(mappedBy = "parentComment", orphanRemoval = true)
+    private List<ArticleComment> childComments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "articleComment", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ArticleCommentLike> articleCommentLikes = new HashSet<>();
+
 
     @Builder
-    public ArticleComment(String content, Article article, Member member, ArticleComment parent){
+    public ArticleComment(String content, Article article, Member member, ArticleComment parentComment){
         this.content = content;
         this.article = article;
         this.member = member;
-        this.parent = parent;
+        this.parentComment = parentComment;
     }
 
+    // 댓글 수정
     public void updateComment(String content){
         this.content = content;
+    }
+
+    // 대댓글 입력
+    public void addChildComment(ArticleComment childComment){
+        this.childComments.add(childComment);
     }
 }

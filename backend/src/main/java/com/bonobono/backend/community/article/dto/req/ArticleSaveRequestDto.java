@@ -7,33 +7,37 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Getter
 @NoArgsConstructor
-public class ArticleFreeSaveRequestDto {
+public class ArticleSaveRequestDto {
 
-    private ArticleType type;
     private String title;
     private String content;
-    private List<ArticleImageRequestDto> images;
+    private String urlTitle;
+    private String url;
     private Long memberId; // 후에 user 현재 정보로 바꾸기
 
 
     @Builder
-    public ArticleFreeSaveRequestDto(ArticleType type, String title, String content,  List<ArticleImageRequestDto> images, Long memberId){
-        this.type = type;
+    public ArticleSaveRequestDto(String title,
+                                 String content,
+                                 String urlTitle,
+                                 String url,
+                                 Long memberId){
         this.title = title;
         this.content = content;
-        this.images = images;
+        this.urlTitle = urlTitle;
+        this.url = url;
         this.memberId = memberId;
     }
 
-    public Article toEntity(Member member){
+    public Article toEntity(ArticleType type, Member member){
         return Article.builder()
                 .type(type)
                 .title(title)
                 .content(content)
+                .urlTitle(urlTitle)
+                .url(url)
                 .member(member)
                 .build();
 

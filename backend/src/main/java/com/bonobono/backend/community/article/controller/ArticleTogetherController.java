@@ -1,12 +1,21 @@
 package com.bonobono.backend.community.article.controller;
 
-import com.bonobono.backend.community.article.dto.res.ArticleTogetherResponseDto;
-import com.bonobono.backend.community.article.service.ArticleTogetherService;
+import com.bonobono.backend.community.article.dto.req.ArticleCommentRequestDto;
+import com.bonobono.backend.community.article.dto.req.ArticleSaveRequestDto;
+import com.bonobono.backend.community.article.dto.req.ArticleUpdateRequestDto;
+import com.bonobono.backend.community.article.dto.res.*;
+import com.bonobono.backend.community.article.enumclass.ArticleType;
+import com.bonobono.backend.community.article.service.ArticleCommentLikeService;
+import com.bonobono.backend.community.article.service.ArticleCommentService;
+import com.bonobono.backend.community.article.service.ArticleLikeService;
+import com.bonobono.backend.community.article.service.ArticleService;
+import com.bonobono.backend.member.dto.MemberRequestDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -14,28 +23,102 @@ import java.util.List;
 @RestController
 @RequestMapping("/community/together")
 public class ArticleTogetherController {
-    private final ArticleTogetherService articleTogetherService;
 
-    // 함께 게시판 전체 조회
+    private final ArticleService articleService;
+
+    private final ArticleCommentService articleCommentService;
+
+    private final ArticleLikeService articleLikeService;
+
+    private final ArticleCommentLikeService articleCommentLikeService;
+
+    private final ArticleType type = ArticleType.TOGETHER;
+
+    // 함께게시판 글쓰기
+    @PostMapping(value = "",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Long> save(@RequestPart ArticleSaveRequestDto requestDto, @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles){
+        Long articleId = articleService.save(type, requestDto, imageFiles);
+        return new ResponseEntity(articleId + "번 게시글 생성완료", HttpStatus.CREATED);
+    }
+
+    // 함께게시판 전체 글 조회
     @GetMapping("")
-    public List<ArticleTogetherResponseDto> findAllDesc(){
-        return articleTogetherService.findAllDesc();
+    public ResponseEntity<List<ArticleListResponseDto>> findAllDesc(){
+        List<ArticleListResponseDto> responseDto =  articleService.findAllDesc(type);
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
+    // 함께게시판 특정 글, 글에 관한 댓글 조회하기
+    @GetMapping("/{articleId}")
+    public ResponseEntity<ArticleDetailResponseDto> findById(@PathVariable Long articleId, @RequestBody MemberRequestDto memberRequestDto) {
+        // @AuthenticationPrincipa 사용하기
+        ArticleDetailResponseDto responseDto = articleService.findById(type, articleId, memberRequestDto.getMemberId());
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
+    // 함께게시판 게시글 검색 (키워드가 제목, 내용 포함)
+    @GetMapping("/search")
+    public ResponseEntity<List<ArticleListResponseDto>> search(@RequestParam("keyword") String keyword){
+        List<ArticleListResponseDto> responseDto = articleService.search(type, keyword);
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+
+    }
+
+    // 함께게시판 특정 글 수정
+    @PatchMapping(value = "/{articleId}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Void> update(@PathVariable Long articleId,
+                                       @RequestPart ArticleUpdateRequestDto requestDto,
+                                       @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles){
+        articleService.update(articleId , requestDto, imageFiles);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    // 함께게시판 특정 글 삭제
+    @DeleteMapping("/{articleId}")
+    public ResponseEntity<Void> delete(@PathVariable Long articleId){
+        articleService.delete(articleId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 
-    // 함께 게시판 특정 글 조회
-    @GetMapping("/{id}")
-    public ArticleTogetherResponseDto findById(@PathVariable Long id){
-        return articleTogetherService.findById(id);
+    // ----------댓글---------
+    // 함께게시판 글에 댓글 쓰기
+    @PostMapping("/{articleId}/comment")
+    public ResponseEntity<ArticleCommentResponseDto> saveComment(@PathVariable Long articleId, @RequestBody ArticleCommentRequestDto requestDto){
+        ArticleCommentResponseDto responseDto = articleCommentService.save(articleId, requestDto);
+        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
-    // 함께 게시판 특정 글 삭제
+    // 함께게시판 댓글 삭제
+    @DeleteMapping("/{articleId}/comment/{commentId}")
+    public ResponseEntity<Void> deleteComment(@PathVariable Long articleId, @PathVariable Long commentId){
+        articleCommentService.delete(articleId, commentId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 
-    // 함께 게시판 특정 글 수정
+    // 함께게시판 댓글 수정
+    @PatchMapping("/{articleId}/comment/{commentId}")
+    public ResponseEntity<ArticleCommentResponseDto> updateComment(@PathVariable Long articleId, @PathVariable Long commentId, @RequestBody ArticleCommentRequestDto requestDto){
+        ArticleCommentResponseDto responseDto = articleCommentService.update(articleId, commentId, requestDto);
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
 
-    // 함께 게시판 모집 완료
+    // 함께게시판 좋아요
+    @PatchMapping("/{articleId}/like")
+    public ResponseEntity<ArticleLikeResponseDto> like(@PathVariable Long articleId, @RequestBody MemberRequestDto requestDto) {
+        ArticleLikeResponseDto responseDto = articleLikeService.like(articleId, requestDto.getMemberId());
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
 
-    // 함께 게시판 게시글 검색
+    // 함께게시판 댓글 좋아요
+    @PatchMapping("/{articleId}/comment/{commentId}/like")
+    public ResponseEntity<ArticleCommentLikeResponseDto> like(@PathVariable Long articleId, @PathVariable Long commentId, @RequestBody MemberRequestDto requestDto) {
+        ArticleCommentLikeResponseDto responseDto = articleCommentLikeService.like(articleId, commentId, requestDto.getMemberId());
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
 
-    // 함께 게시판 특정 글 좋아요
+
+    // ----------관리자 영역 -----------
+
+    // 함께게시판 관리자 확인 처리
 }

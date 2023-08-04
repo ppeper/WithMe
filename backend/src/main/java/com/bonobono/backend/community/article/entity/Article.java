@@ -33,8 +33,6 @@ public class Article extends BaseTimeEntity {
     @Column(nullable = false)
     private String content;
 
-    private int likes;
-
     private int views;
 
     private boolean recruitStatus;
@@ -67,8 +65,10 @@ public class Article extends BaseTimeEntity {
     }
 
     // 글 수정
-    public void updateFree(String title, String content){
+    public void updateArticle(String title, String content, String urlTitle, String url){
         this.title = title;
         this.content = content;
+        this.urlTitle = urlTitle;
+        this.url = url;
     }
 }

@@ -28,6 +28,7 @@ import com.bonobono.presentation.ui.common.button.PrimaryButton
 import com.bonobono.presentation.ui.common.text.CustomTextStyle
 import com.bonobono.presentation.ui.theme.White
 
+
 @Composable
 fun LargeSquareCardWithAnimation(source: Int, content: String) {
     Card(

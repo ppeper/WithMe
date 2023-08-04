@@ -1,4 +1,4 @@
-package com.bonobono.presentation.ui.component
+package com.bonobono.presentation.ui.common.button
 
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.FloatingActionButton

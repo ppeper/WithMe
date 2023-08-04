@@ -1,8 +1,5 @@
 package com.bonobono.presentation.ui
 
-import android.content.Context
-import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -21,7 +18,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -38,8 +34,8 @@ import com.bonobono.presentation.ui.community.views.BoardWriteScreen
 import com.bonobono.presentation.ui.community.views.CommonPostListView
 import com.bonobono.presentation.ui.community.views.DummyData
 import com.bonobono.presentation.ui.community.views.GalleryScreen
-import com.bonobono.presentation.ui.component.CommunityFloatingActionButton
-import com.bonobono.presentation.ui.component.HomeFloatingActionButton
+import com.bonobono.presentation.ui.common.button.CommunityFloatingActionButton
+import com.bonobono.presentation.ui.common.button.HomeFloatingActionButton
 import com.bonobono.presentation.ui.main.EncyclopediaScreen
 import com.bonobono.presentation.ui.main.MainHomeScreen
 import com.bonobono.presentation.ui.main.MissionScreen

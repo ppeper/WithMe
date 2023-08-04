@@ -30,7 +30,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bonobono.presentation.R
-import com.bonobono.presentation.ui.component.HeaderTwoText
 import com.bonobono.presentation.ui.main.component.AnimatedProfile
 import com.bonobono.presentation.ui.main.component.BlindProfilePhoto
 import com.bonobono.presentation.ui.main.component.ProfilePhoto
@@ -106,28 +105,6 @@ fun Characters() {
                     )
                 }
             }
-        }
-    }
-}
-
-@Composable
-fun UnknownCharacter() {
-    val items = listOf<String>(
-        "1", "2", " 3"
-    )
-    Spacer(modifier = Modifier.size(4.dp))
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center
-    ) {
-        HeaderTwoText(text = "기다리고 있는 친구들이 있어요!")
-    }
-    Spacer(modifier = Modifier.size(4.dp))
-    LazyRow(
-        Modifier.padding(vertical = 4.dp)
-    ) {
-        items(items.size) {
-            ProfilePhoto(R.drawable.beluga_whale, Modifier)
         }
     }
 }

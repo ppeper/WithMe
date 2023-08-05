@@ -9,7 +9,7 @@ import com.bonobono.backend.community.article.service.ArticleCommentLikeService;
 import com.bonobono.backend.community.article.service.ArticleCommentService;
 import com.bonobono.backend.community.article.service.ArticleService;
 import com.bonobono.backend.community.article.service.ArticleLikeService;
-import com.bonobono.backend.member.dto.MemberRequestDto;
+import com.bonobono.backend.member.dto.request.MemberRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

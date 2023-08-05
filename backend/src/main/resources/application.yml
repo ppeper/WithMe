@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    include: oauth
   datasource:
     url: jdbc:mariadb://localhost:3306/bonobono
     driver-class-name: org.mariadb.jdbc.Driver
@@ -30,6 +32,9 @@ spring:
       max-file-size: 50MB
       max-request-size: 50MB
 
+jwt:
+  token:
+    secret-key: ${JWT_SECRET_KEY} # q1w2e3r4
 
 logging.level:
   org.hibernate.SQL: DEBUG

@@ -1,22 +1,22 @@
-package com.bonobono.backend.member.entity;
+package com.bonobono.backend.member.domain;
 
 import com.bonobono.backend.chatting.domain.ChatRoom;
 import com.bonobono.backend.global.entity.BaseTimeEntity;
 import com.bonobono.backend.community.article.entity.Article;
 import com.bonobono.backend.community.article.entity.ArticleComment;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import lombok.*;
 
-@Getter
-@NoArgsConstructor
+@Builder
 @Entity
-public class Member extends BaseTimeEntity {
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+public class Member extends BaseTimeEntity  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,11 +25,23 @@ public class Member extends BaseTimeEntity {
 
     private String username;
 
-    private String name;
-
     private String password;
 
+    private String name;
+
     private String nickname;
+
+    private String phoneNumber;
+
+    private String profileImg;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    @Enumerated(EnumType.STRING)
+    private Provider provider;
+
+    private String refreshToken;
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Article> articles = new ArrayList<>();

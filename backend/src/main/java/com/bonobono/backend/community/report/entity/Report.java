@@ -4,7 +4,7 @@ import com.bonobono.backend.community.article.entity.ArticleComment;
 import com.bonobono.backend.community.article.entity.ArticleImage;
 import com.bonobono.backend.community.article.entity.ArticleLike;
 import com.bonobono.backend.global.entity.BaseTimeEntity;
-import com.bonobono.backend.member.entity.Member;
+import com.bonobono.backend.member.domain.Member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

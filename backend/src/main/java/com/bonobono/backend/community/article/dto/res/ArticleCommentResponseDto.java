@@ -1,7 +1,7 @@
 package com.bonobono.backend.community.article.dto.res;
 
 import com.bonobono.backend.community.article.entity.ArticleComment;
-import com.bonobono.backend.member.entity.Member;
+import com.bonobono.backend.member.domain.Member;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

@@ -7,7 +7,7 @@ import com.bonobono.backend.community.article.entity.ArticleCommentLike;
 import com.bonobono.backend.community.article.repository.ArticleCommentLikeRepository;
 import com.bonobono.backend.community.article.repository.ArticleCommentRepository;
 import com.bonobono.backend.community.article.repository.ArticleRepository;
-import com.bonobono.backend.member.entity.Member;
+import com.bonobono.backend.member.domain.Member;
 import com.bonobono.backend.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

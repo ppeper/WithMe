@@ -13,7 +13,7 @@ import com.bonobono.backend.community.article.repository.ArticleImageRepository;
 import com.bonobono.backend.community.article.repository.ArticleLikeRepository;
 import com.bonobono.backend.community.article.repository.ArticleRepository;
 import com.bonobono.backend.global.service.AwsS3Service;
-import com.bonobono.backend.member.entity.Member;
+import com.bonobono.backend.member.domain.Member;
 import com.bonobono.backend.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

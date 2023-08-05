@@ -327,19 +327,19 @@ fun MainNavigationScreen(
             route = CommunityFreeNav.route,
             deepLinks = CommunityFreeNav.deepLinks
         ) {
-            CommonPostListView(boardList = DummyData.boardList, navController = navController)
+            CommonPostListView(type = CommunityFreeNav.route, navController = navController)
         }
         composable(
             route = CommunityWithNav.route,
             deepLinks = CommunityWithNav.deepLinks
         ) {
-            CommonPostListView(boardList = DummyData.boardList, navController = navController)
+            CommonPostListView(type = CommunityWithNav.route, navController = navController)
         }
         composable(
             route = CommunityReportNav.route,
             deepLinks = CommunityReportNav.deepLinks
         ) {
-            CommonPostListView(boardList = DummyData.boardList, navController = navController)
+            CommonPostListView(type = CommunityReportNav.route, navController = navController)
         }
         composable(
             route = BoardDetailNav.route,

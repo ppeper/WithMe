@@ -21,14 +21,14 @@ interface CommunityService {
     @GET("community/{type}")
     suspend fun getArticleList(
         @Path(value = "type") communityType: String
-    ): Response<List<Article>>
+    ): List<ArticleResponse>
 
     // articleId 게시글 가져오기
     @GET("community/{type}/{articleId}")
     suspend fun getArticleById(
         @Path(value = "type") communityType: String,
         @Path(value = "articleId") articleId: Int,
-    ): Response<ArticleResponse>
+    ): ArticleResponse
 
     // 일반 게시글 등록
     @Multipart
@@ -37,21 +37,21 @@ interface CommunityService {
         @Path(value = "type") communityType: String,
         article: Article,
         @Part images: MultipartBody.Part
-    ): Response<Unit>
+    ): Unit
 
     // 게시글 삭제
     @DELETE("community/{type}/{articleId}")
     suspend fun deleteArticle(
         @Path(value = "type") communityType: String,
         @Path(value = "articleId") articleId: Int
-    ): Response<Unit>
+    ): Unit
 
     // 게시글 수정
     @PATCH("community/{type}/{articleId}")
     suspend fun updateArticle(
         @Path(value = "type") communityType: String,
         @Path(value = "articleId") articleId: Int
-    ): Response<Unit>
+    ): Unit
 
     // 게시글 댓글 등록
     @POST("community/{type}/{articleId}/comment")
@@ -59,14 +59,14 @@ interface CommunityService {
         @Path(value = "type") communityType: String,
         @Path(value = "articleId") articleId: Int,
         @Body comment: CommentResponse
-    ): Response<Unit>
+    ): Unit
 
     // 게시글 좋아요 클릭
     @PATCH("community/{type}/{articleId}/like")
     suspend fun updateArticleLike(
         @Path(value = "type") communityType: String,
         @Path(value = "articleId") articleId: Int
-    ): Response<Unit>
+    ): Unit
 
     // 댓글 좋아요 클릭
     @PATCH("community/{type}/{articleId}/comment/{commentId}/like")
@@ -74,7 +74,7 @@ interface CommunityService {
         @Path(value = "type") communityType: String,
         @Path(value = "articleId") articleId: Int,
         @Path(value = "commentId") commentId: Int
-    ): Response<Unit>
+    ): Unit
 
     // 댓글 수정
     @PATCH("community/{type}/{articleId}/comment/{commentId}")
@@ -82,7 +82,7 @@ interface CommunityService {
         @Path(value = "type") communityType: String,
         @Path(value = "articleId") articleId: Int,
         @Path(value = "commentId") commentId: Int
-    ): Response<Unit>
+    ): Unit
 
     // 댓글 삭제
     @DELETE("community/{type}/{articleId}/comment/{commentId}")
@@ -90,10 +90,10 @@ interface CommunityService {
         @Path(value = "type") communityType: String,
         @Path(value = "articleId") articleId: Int,
         @Path(value = "commentId") commentId: Int
-    ): Response<Unit>
+    ): Unit
 
     @GET("community/{type}/search/")
     suspend fun queryArticle(
         @Query("keyword") keyword: String
-    ): Response<NetworkResult<Unit>>
+    ): NetworkResult<Unit>
 }

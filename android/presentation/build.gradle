@@ -84,4 +84,6 @@ dependencies {
     implementation "io.coil-kt:coil-compose:2.4.0"
     // Pager
     implementation "com.google.accompanist:accompanist-pager:0.20.1"
+    // viewmodel
+    implementation "androidx.lifecycle:lifecycle-runtime-compose:2.6.1"
 }

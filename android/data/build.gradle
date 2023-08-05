@@ -6,6 +6,9 @@ plugins {
     id 'kotlin-parcelize'
 }
 
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
 android {
     namespace 'com.bonobono.data'
     compileSdk 33
@@ -15,6 +18,8 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
+        // 이미지 BASE_URL
+        buildConfigField "String", "IMAGE_BASE_URL", properties['image_base_url']
     }
 
     buildTypes {

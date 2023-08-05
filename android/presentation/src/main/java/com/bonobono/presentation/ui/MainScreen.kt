@@ -24,12 +24,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navigation
 import com.bonobono.presentation.ui.NavigationRouteName.COMMUNITY_FREE
+import com.bonobono.presentation.ui.NavigationRouteName.COMMUNITY_GRAPH
 import com.bonobono.presentation.ui.NavigationRouteName.COMMUNITY_REPORT
 import com.bonobono.presentation.ui.NavigationRouteName.COMMUNITY_WITH
 import com.bonobono.presentation.ui.NavigationRouteName.MAIN_COMMUNITY
@@ -203,7 +207,8 @@ fun MainBottomNavigationBar(navController: NavHostController, currentRoute: Stri
                 ),
                 label = { Text(text = item.title) },
                 icon = { Icon(painter = painterResource(id = item.icon), item.route) },
-                selected = currentRoute == item.route, onClick = {
+                selected = currentRoute == item.route || (item.route == currentRoute?.let { parseCommunityRoute(it) }),
+                onClick = {
                     if (item.route == NavigationRouteName.MAIN_MAP) {
                         multiplePermissionsState.launchMultiplePermissionRequest()
                     } else {
@@ -215,6 +220,10 @@ fun MainBottomNavigationBar(navController: NavHostController, currentRoute: Stri
                 })
         }
     }
+}
+
+fun parseCommunityRoute(route: String): String {
+    return if (route in listOf(COMMUNITY_FREE, COMMUNITY_WITH, COMMUNITY_REPORT)) MAIN_COMMUNITY else route
 }
 
 
@@ -290,7 +299,10 @@ fun MainNavigationScreen(
             val parentEntry = remember(it) {
                 navController.getBackStackEntry(NavigationRouteName.COMMUNITY_POST)
             }
-            GalleryScreen(navController = navController, photoViewModel = hiltViewModel(parentEntry))
+            GalleryScreen(
+                navController = navController,
+                photoViewModel = hiltViewModel(parentEntry)
+            )
         }
         composable(
             route = NavigationRouteName.GALLERY_WITH
@@ -298,7 +310,10 @@ fun MainNavigationScreen(
             val parentEntry = remember(it) {
                 navController.getBackStackEntry(NavigationRouteName.COMMUNITY_POST_WITH)
             }
-            GalleryScreen(navController = navController, photoViewModel = hiltViewModel(parentEntry))
+            GalleryScreen(
+                navController = navController,
+                photoViewModel = hiltViewModel(parentEntry)
+            )
         }
         composable(
             route = NavigationRouteName.GALLERY_REPORT
@@ -306,7 +321,10 @@ fun MainNavigationScreen(
             val parentEntry = remember(it) {
                 navController.getBackStackEntry(NavigationRouteName.COMMUNITY_POST_REPORT)
             }
-            GalleryScreen(navController = navController, photoViewModel = hiltViewModel(parentEntry))
+            GalleryScreen(
+                navController = navController,
+                photoViewModel = hiltViewModel(parentEntry)
+            )
         }
         composable(
             route = CommunityFab.FREE.route
@@ -323,24 +341,9 @@ fun MainNavigationScreen(
         ) {
             BoardWriteScreen(navController = navController)
         }
-        composable(
-            route = CommunityFreeNav.route,
-            deepLinks = CommunityFreeNav.deepLinks
-        ) {
-            CommonPostListView(type = CommunityFreeNav.route, navController = navController)
-        }
-        composable(
-            route = CommunityWithNav.route,
-            deepLinks = CommunityWithNav.deepLinks
-        ) {
-            CommonPostListView(type = CommunityWithNav.route, navController = navController)
-        }
-        composable(
-            route = CommunityReportNav.route,
-            deepLinks = CommunityReportNav.deepLinks
-        ) {
-            CommonPostListView(type = CommunityReportNav.route, navController = navController)
-        }
+
+        communityNavigation(navController = navController)
+
         composable(
             route = BoardDetailNav.route,
             deepLinks = BoardDetailNav.deepLinks
@@ -383,6 +386,32 @@ fun MainNavigationScreen(
             ProfileEditScreen(navController = navController)
         }
     }
+}
+
+fun NavGraphBuilder.communityNavigation(
+    navController: NavController
+) {
+    navigation(startDestination = MAIN_COMMUNITY, route = COMMUNITY_GRAPH) {
+        composable(
+            route = CommunityFreeNav.route,
+            deepLinks = CommunityFreeNav.deepLinks
+        ) {
+            CommonPostListView(type = CommunityFreeNav.route, navController = navController)
+        }
+        composable(
+            route = CommunityWithNav.route,
+            deepLinks = CommunityWithNav.deepLinks
+        ) {
+            CommonPostListView(type = CommunityWithNav.route, navController = navController)
+        }
+        composable(
+            route = CommunityReportNav.route,
+            deepLinks = CommunityReportNav.deepLinks
+        ) {
+            CommonPostListView(type = CommunityReportNav.route, navController = navController)
+        }
+    }
+
 }
 
 @Preview

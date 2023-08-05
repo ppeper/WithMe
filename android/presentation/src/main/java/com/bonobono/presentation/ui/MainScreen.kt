@@ -281,7 +281,7 @@ fun MainNavigationScreen(
             route = CameraNav.route,
             deepLinks = CameraNav.deepLinks
         ) {
-            //CameraScreen()
+            CameraScreen()
         }
         /// TODO("커뮤니티 글쓰기 TEST")
         composable(

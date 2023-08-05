@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -37,47 +38,73 @@ import io.github.sceneview.ar.node.PlacementMode
 
 
 @Composable
-fun Menu(modifier: Modifier,onClick:(String)->Unit) {
+fun CameraScreen() {
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+    ) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            val currentModel = remember {
+                mutableStateOf("burger")
+            }
+            ARScreen(currentModel.value)
+            Menu(modifier = Modifier.align(Alignment.BottomCenter)) {
+                currentModel.value = it
+            }
+
+        }
+    }
+}
+
+@Composable
+fun Menu(modifier: Modifier, onClick: (String) -> Unit) {
     var currentIndex by remember {
         mutableStateOf(0)
     }
 
     val itemsList = listOf(
-        Food("burger",R.drawable.ic_stars),
-        Food("instant",R.drawable.ic_stars),
-        Food("momos",R.drawable.ic_check),
-        Food("pizza",R.drawable.ic_back),
-        Food("ramen",R.drawable.ic_check),
+        Food("burger", R.drawable.ic_stars),
+        Food("instant", R.drawable.ic_stars),
+        Food("momos", R.drawable.ic_check),
+        Food("pizza", R.drawable.ic_back),
+        Food("ramen", R.drawable.ic_check),
 
         )
-    fun updateIndex(offset:Int){
-        currentIndex = (currentIndex+offset + itemsList.size) % itemsList.size
+
+    fun updateIndex(offset: Int) {
+        currentIndex = (currentIndex + offset + itemsList.size) % itemsList.size
         onClick(itemsList[currentIndex].name)
     }
-    Row(modifier = modifier.fillMaxWidth(),
+    Row(
+        modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceAround
     ) {
-        CircularImage(imageId = itemsList[currentIndex].imageId )
+        CircularImage(imageId = itemsList[currentIndex].imageId)
     }
 
 }
 
 @Composable
 fun CircularImage(
-    modifier: Modifier=Modifier,
+    modifier: Modifier = Modifier,
     imageId: Int
 ) {
-    Box(modifier = modifier
-        .size(140.dp)
-        .clip(CircleShape)
-    ){
-        Image(painter = painterResource(id = imageId), contentDescription = null, modifier = Modifier.size(140.dp), contentScale = ContentScale.FillBounds)
+    Box(
+        modifier = modifier
+            .size(140.dp)
+            .clip(CircleShape)
+    ) {
+        Image(
+            painter = painterResource(id = imageId),
+            contentDescription = null,
+            modifier = Modifier.size(140.dp),
+            contentScale = ContentScale.FillBounds
+        )
     }
 }
 
 @Composable
-fun CameraScreen(model:String) {
+fun ARScreen(model: String) {
     val nodes = remember {
         mutableListOf<ArNode>()
     }
@@ -87,25 +114,25 @@ fun CameraScreen(model:String) {
     val placeModelButton = remember {
         mutableStateOf(false)
     }
-    Box(modifier = Modifier.fillMaxSize()){
+    Box(modifier = Modifier.fillMaxSize()) {
         ARScene(
             modifier = Modifier.fillMaxSize(),
             nodes = nodes,
             planeRenderer = true,
-            onCreate = {arSceneView ->
+            onCreate = { arSceneView ->
                 arSceneView.lightEstimationMode = Config.LightEstimationMode.DISABLED
                 arSceneView.planeRenderer.isShadowReceiver = false
                 modelNode.value = ArModelNode(arSceneView.engine, PlacementMode.INSTANT).apply {
                     loadModelGlbAsync(
                         glbFileLocation = "models/${model}.glb",
                         scaleToUnits = 0.8f
-                    ){
+                    ) {
 
                     }
                     onAnchorChanged = {
                         placeModelButton.value = !isAnchored
                     }
-                    onHitResult = {node, hitResult ->
+                    onHitResult = { node, hitResult ->
                         placeModelButton.value = node.isTracking
                     }
 
@@ -116,7 +143,7 @@ fun CameraScreen(model:String) {
                 planeRenderer.isVisible = false
             }
         )
-        if(placeModelButton.value){
+        if (placeModelButton.value) {
             Button(onClick = {
                 modelNode.value?.anchor()
             }, modifier = Modifier.align(Alignment.Center)) {
@@ -126,18 +153,18 @@ fun CameraScreen(model:String) {
     }
 
 
-    LaunchedEffect(key1 = model){
+    LaunchedEffect(key1 = model) {
         modelNode.value?.loadModelGlbAsync(
             glbFileLocation = "models/${model}.glb",
             scaleToUnits = 0.8f
         )
-        Log.e("errorloading","ERROR LOADING MODEL")
+        Log.e("errorloading", "ERROR LOADING MODEL")
     }
 
 }
 
 
-data class Food(var name:String,var imageId:Int)
+data class Food(var name: String, var imageId: Int)
 
 
 

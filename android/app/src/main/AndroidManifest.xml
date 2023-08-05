@@ -13,9 +13,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Android"
         tools:targetApi="31">
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="${googleMapKey}" />
         <activity
             android:windowSoftInputMode="adjustResize"
             android:name=".presentation.ui.MainActivity"

@@ -38,16 +38,7 @@ object CustomTextStyle {
         fontSize = 12.sp,
         color = TextGray,
     )
-}
 
-@Composable
-fun HeaderTwoText(text: String) {
-    Text(
-        text = text,
-        fontSize = 18.sp,
-        fontWeight = FontWeight.Bold,
-        color = Black_100
-    )
 }
 
 @Composable

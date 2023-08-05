@@ -36,9 +36,9 @@ public class ArticleTogetherController {
 
     // 함께게시판 글쓰기
     @PostMapping(value = "",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Long> save(@RequestPart ArticleSaveRequestDto requestDto, @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles){
-        Long articleId = articleService.save(type, requestDto, imageFiles);
-        return new ResponseEntity(articleId + "번 게시글 생성완료", HttpStatus.CREATED);
+    public ResponseEntity<Void> save(@RequestPart ArticleSaveRequestDto requestDto, @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles){
+        articleService.save(type, requestDto, imageFiles);
+        return new ResponseEntity(HttpStatus.CREATED);
     }
 
     // 함께게시판 전체 글 조회
@@ -84,9 +84,9 @@ public class ArticleTogetherController {
     // ----------댓글---------
     // 함께게시판 글에 댓글 쓰기
     @PostMapping("/{articleId}/comment")
-    public ResponseEntity<ArticleCommentResponseDto> saveComment(@PathVariable Long articleId, @RequestBody ArticleCommentRequestDto requestDto){
-        ArticleCommentResponseDto responseDto = articleCommentService.save(articleId, requestDto);
-        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+    public ResponseEntity<Void> saveComment(@PathVariable Long articleId, @RequestBody ArticleCommentRequestDto requestDto){
+        articleCommentService.save(articleId, requestDto);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     // 함께게시판 댓글 삭제
@@ -98,23 +98,23 @@ public class ArticleTogetherController {
 
     // 함께게시판 댓글 수정
     @PatchMapping("/{articleId}/comment/{commentId}")
-    public ResponseEntity<ArticleCommentResponseDto> updateComment(@PathVariable Long articleId, @PathVariable Long commentId, @RequestBody ArticleCommentRequestDto requestDto){
-        ArticleCommentResponseDto responseDto = articleCommentService.update(articleId, commentId, requestDto);
-        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    public ResponseEntity<Void> updateComment(@PathVariable Long articleId, @PathVariable Long commentId, @RequestBody ArticleCommentRequestDto requestDto){
+        articleCommentService.update(articleId, commentId, requestDto);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     // 함께게시판 좋아요
     @PatchMapping("/{articleId}/like")
-    public ResponseEntity<ArticleLikeResponseDto> like(@PathVariable Long articleId, @RequestBody MemberRequestDto requestDto) {
-        ArticleLikeResponseDto responseDto = articleLikeService.like(articleId, requestDto.getMemberId());
-        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    public ResponseEntity<Void> like(@PathVariable Long articleId, @RequestBody MemberRequestDto requestDto) {
+        articleLikeService.like(articleId, requestDto.getMemberId());
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     // 함께게시판 댓글 좋아요
     @PatchMapping("/{articleId}/comment/{commentId}/like")
-    public ResponseEntity<ArticleCommentLikeResponseDto> like(@PathVariable Long articleId, @PathVariable Long commentId, @RequestBody MemberRequestDto requestDto) {
-        ArticleCommentLikeResponseDto responseDto = articleCommentLikeService.like(articleId, commentId, requestDto.getMemberId());
-        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    public ResponseEntity<Void> like(@PathVariable Long articleId, @PathVariable Long commentId, @RequestBody MemberRequestDto requestDto) {
+        articleCommentLikeService.like(articleId, commentId, requestDto.getMemberId());
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 

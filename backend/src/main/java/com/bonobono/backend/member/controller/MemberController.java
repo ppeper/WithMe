@@ -21,7 +21,7 @@ public class MemberController {
     public ResponseEntity<String> signup(@RequestBody MemberSignupRequest request) {
         memberService.signup(request.getName(), request.getNickname(), request.getAccountId(),
             request.getPassword(), request.getPhoneNumber());
-        return ResponseEntity.ok().body("회원가입이 성공 했습니다.");
+        return ResponseEntity.ok().body("회원가입 성공");
     }
 
     @PostMapping("/login")

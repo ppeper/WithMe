@@ -1,6 +1,7 @@
 package com.bonobono.backend.member.dto;
 
-import com.bonobono.backend.member.entity.Member;
+import com.bonobono.backend.member.domain.Member;
+import com.bonobono.backend.member.domain.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,6 +23,7 @@ public class MemberSignupRequest {
             .accountId(accountId)
             .password(password)
             .phoneNumber(phoneNumber)
+            .role(Role.USER)
             .build();
     }
 }

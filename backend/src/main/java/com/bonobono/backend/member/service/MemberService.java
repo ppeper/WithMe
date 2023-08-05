@@ -1,10 +1,12 @@
 package com.bonobono.backend.member.service;
 
-import com.bonobono.backend.member.entity.Member;
+import com.bonobono.backend.member.domain.Member;
+import com.bonobono.backend.member.domain.Provider;
+import com.bonobono.backend.member.domain.Role;
 import com.bonobono.backend.member.exception.AppException;
 import com.bonobono.backend.member.exception.ErrorCode;
 import com.bonobono.backend.member.repository.MemberRepository;
-import com.bonobono.backend.member.util.JwtUtil;
+import com.bonobono.backend.member.config.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -25,21 +27,15 @@ public class MemberService {
 
     public String signup(String name, String nickname, String accountId, String password, String phoneNumber) {
 
-        // 중복 check : nickname, accountId, phoneNumber
-//        memberRepository.findByNickname(nickname)
-//            .ifPresent(member -> {
-//                throw new RuntimeException("이미 존재하는 닉네임입니다.");
-//            });
-
         memberRepository.findByAccountId(accountId)
             .ifPresent(member -> {
-                throw new AppException(ErrorCode.ACCOUNTID_DUPLICATED, "중복되는 아이디입니다.");
+                throw new AppException(ErrorCode.ACCOUNTID_DUPLICATED, "이미 존재하는 아이디입니다.");
             });
 
-//        memberRepository.findByPhoneNumber(phoneNumber)
-//            .ifPresent(member -> {
-//                throw new RuntimeException("이미 가입한 휴대번호 입니다.");
-//            });
+        memberRepository.findByNickname(nickname)
+            .ifPresent(member -> {
+                throw new AppException(ErrorCode.ACCOUNTID_DUPLICATED, "이미 존재하는 닉네임입니다.");
+            });
 
         // 저장
         Member member = Member.builder()
@@ -48,6 +44,8 @@ public class MemberService {
             .accountId(accountId)
             .password(encoder.encode(password))
             .phoneNumber(phoneNumber)
+            .role(Role.USER)
+            .provider(Provider.EMPTY)
             .build();
 
         memberRepository.save(member);
@@ -65,7 +63,8 @@ public class MemberService {
             throw new AppException(ErrorCode.INVALID_PASSWORD, "비밀번호를 잘못 입력했습니다.");
         }
 
-        String token = JwtUtil.createToken(selectedMember.getAccountId(), key, expireTimeMs);
+        // 토큰 발급
+        String token = TokenProvider.createToken(selectedMember.getAccountId(), key, expireTimeMs);
 
         // 로그인 성공 -> 토큰 발행
         return token;

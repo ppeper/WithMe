@@ -1,7 +1,7 @@
 package com.bonobono.backend.member.dto;
 
 import com.bonobono.backend.member.domain.Member;
-import com.bonobono.backend.member.domain.Role;
+import com.bonobono.backend.member.domain.enumtype.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 @NoArgsConstructor
-public class MemberSignupRequest {
+public class MemberSignupRequestDto {
     private String name;
     private String nickname;
     private String username;

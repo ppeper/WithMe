@@ -4,6 +4,8 @@ import com.bonobono.backend.chatting.domain.ChatRoom;
 import com.bonobono.backend.global.entity.BaseTimeEntity;
 import com.bonobono.backend.community.article.entity.Article;
 import com.bonobono.backend.community.article.entity.ArticleComment;
+import com.bonobono.backend.member.domain.enumtype.Provider;
+import com.bonobono.backend.member.domain.enumtype.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;

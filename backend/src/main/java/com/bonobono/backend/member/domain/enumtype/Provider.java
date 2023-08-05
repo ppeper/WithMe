@@ -1,4 +1,4 @@
-package com.bonobono.backend.member.domain;
+package com.bonobono.backend.member.domain.enumtype;
 
 import lombok.Getter;
 

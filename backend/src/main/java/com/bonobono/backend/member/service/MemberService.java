@@ -1,8 +1,8 @@
 package com.bonobono.backend.member.service;
 
 import com.bonobono.backend.member.domain.Member;
-import com.bonobono.backend.member.domain.Provider;
-import com.bonobono.backend.member.domain.Role;
+import com.bonobono.backend.member.domain.enumtype.Provider;
+import com.bonobono.backend.member.domain.enumtype.Role;
 import com.bonobono.backend.member.exception.AppException;
 import com.bonobono.backend.member.exception.ErrorCode;
 import com.bonobono.backend.member.repository.MemberRepository;

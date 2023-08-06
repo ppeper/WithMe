@@ -23,12 +23,13 @@ public class ChatRoom extends BaseTimeEntity { //생성시각 상속
 
     private String other; //대화상대
 
-    private String roomNumber; //메시지의 room번호와 연결위해(클라이언트에게 받아야하나..)
+    private String roomNumber; //메시지의 room번호와 연결위해(클라이언트에게 받아야함..)
 
     @Builder
-    public ChatRoom(String other, String roomNumber) {
+    public ChatRoom(String other, String roomNumber, Member member) {
         this.other=other;
         this.roomNumber=roomNumber;
+        this.member=member;
     }
 
 }

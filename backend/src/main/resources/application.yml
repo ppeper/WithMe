@@ -31,6 +31,9 @@ spring:
 #      data-locations: classpath:data.sql
 #      mode: always
 
+  mvc: # swagger로 인해서 세팅
+    pathmatch:
+      matching-strategy: ant_path_matcher
   servlet:
     multipart:
       max-file-size: 50MB
@@ -38,8 +41,7 @@ spring:
 
 jwt:
   token:
-    secret-key: q1w2e3r4
-#    secret-key: ${JWT_SECRET_KEY} # q1w2e3r4
+    secret-key: q1w2e3r4 #${JWT_SECRET_KEY} #
 
 logging.level:
   org.hibernate.SQL: DEBUG

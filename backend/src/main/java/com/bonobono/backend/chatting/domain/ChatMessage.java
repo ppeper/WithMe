@@ -11,12 +11,13 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
 @Document(collection = "chatMessage")
 @NoArgsConstructor
 public class ChatMessage extends BaseTimeEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
+
     private String sessionId; //sessionid(
     private String userName; //username;
     private String msg; //msg

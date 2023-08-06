@@ -40,7 +40,7 @@ public class MiniGameService {
         if (isMiniGameRepository.existsByMemberIdAndCheckDate(memberId,checkDate)) {
             log.trace("이미 게임에 참여했습니다");
             System.out.println("이미 게임에 참여했습니다");
-            return new MiniGameResponseDto(null,null,false);
+            return new MiniGameResponseDto(null,null);
         }
 
         // 미니게임랜덤 생성
@@ -61,7 +61,7 @@ public class MiniGameService {
         isMiniGameRepository.save(isMiniGame);
 
         //랜덤으로 생성한 게임 반환
-        return new MiniGameResponseDto(miniGame.getProblem(), miniGame.getAnswer(), true);
+        return new MiniGameResponseDto(miniGame.getProblem(), miniGame.getAnswer());
 
     }
 

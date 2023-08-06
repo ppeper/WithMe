@@ -13,3 +13,5 @@ VALUES ("망나뇽","짱 귀여워", 1);
 
 INSERT INTO user_character (custom_name, experience, is_main, member_id, character_id)
 VALUES ("망냐망냐",10, true, 1, 1);
+
+INSERT INTO

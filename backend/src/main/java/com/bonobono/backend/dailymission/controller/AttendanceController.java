@@ -28,12 +28,12 @@ public class AttendanceController {
 
     // date를 체크해서 한달 중 몇%를 했는지 반환해주는 함수
     @GetMapping("/percentage")
-    public int attendancePercentage(@RequestParam("memberId") Long memberId) {
+    public ResponseEntity<Integer> attendancePercentage(@RequestParam("memberId") Long memberId) {
 //        @AuthenticationPrincipal Member member
 //        AttendanceDto attendanceDto = new AttendanceDto(member.getId());
         AttendanceDto attendanceDto = new AttendanceDto(memberId);
         int result = attendanceService.AttendancePercentage(attendanceDto);
-        return result;
+        return ResponseEntity.ok(result);
     }
 
 }

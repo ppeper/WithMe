@@ -30,6 +30,14 @@ spring:
     multipart:
       max-file-size: 50MB
       max-request-size: 50MB
+  profiles:
+    include: API-KEY
+
+#  openai:
+#    api-key: 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
+
+chatgpt:
+  api-key: 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
 
 
 logging.level:

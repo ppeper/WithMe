@@ -16,17 +16,17 @@ public class ChatMessageRequestDto {
     private String sessionId; //sessionid(
     private String userName; //username;
     private String msg; //msg
-    private String file; // file(BYTE형식으로 변환?)
+    private String imageUrl; // file(BYTE형식으로 변환?)
     private String roomNumber;
 
 
     //생성자
     @Builder
-    public ChatMessageRequestDto(String userName, String sessionId, String msg, String file, String roomNumber) {
+    public ChatMessageRequestDto(String userName, String sessionId, String msg, String imageUrl, String roomNumber) {
         this.msg = msg;
         this.userName = userName;
         this.sessionId = sessionId;
-        this.file=file;
+        this.imageUrl = imageUrl;
         this.roomNumber=roomNumber;
 
     }
@@ -35,7 +35,7 @@ public class ChatMessageRequestDto {
         return ChatMessage.builder()
                 .userName(userName)
                 .msg(msg)
-                .file(file)
+                .imageUrl(imageUrl)
                 .roomNumber(roomNumber)
                 .sessionId(sessionId)
                 .build();

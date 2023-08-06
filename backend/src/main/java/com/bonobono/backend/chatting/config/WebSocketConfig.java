@@ -8,6 +8,8 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 import org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean;
+import org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor;
+
 
 
 @Configuration
@@ -19,7 +21,9 @@ public class WebSocketConfig implements WebSocketConfigurer{
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(socketHandler, "/chating/{roomNumber}").setAllowedOrigins("*");
+        registry.addHandler(socketHandler, "/chating/{roomNumber}")
+                .addInterceptors(new HttpSessionHandshakeInterceptor(), new CustomHandshakeInterceptor())
+                .setAllowedOrigins("*");
     }
 
     @Bean
@@ -29,4 +33,6 @@ public class WebSocketConfig implements WebSocketConfigurer{
         container.setMaxTextMessageBufferSize(500000);
         return container;
     }
+
+
 }

@@ -10,12 +10,12 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class ChatRoomRequestDto {
-    private String other;
+    private Member other;
     private String roomNumber;
     private Member member;
 
     @Builder
-    public ChatRoomRequestDto(String other, String roomNumber, Member member) {
+    public ChatRoomRequestDto(Member other, String roomNumber, Member member) {
         this.other=other;
         this.roomNumber=roomNumber;
         this.member=member;

@@ -66,6 +66,7 @@ import com.bonobono.presentation.ui.theme.DividerGray
 import com.bonobono.presentation.ui.theme.Red
 import com.bonobono.presentation.ui.theme.TextGray
 import com.bonobono.presentation.ui.theme.White
+import com.bonobono.presentation.utils.DateUtils
 import com.bonobono.presentation.utils.rememberImeState
 import com.bonobono.presentation.viewmodel.CommunityViewModel
 
@@ -196,7 +197,7 @@ fun ProfileView(
                 .size(48.dp)
                 .clip(CircleShape),
             model = ImageRequest.Builder(LocalContext.current)
-                .data(article.profileUrl)
+                .data(article.profileImg)
                 .build(),
             contentDescription = "업로드 사진",
             contentScale = ContentScale.Crop
@@ -211,7 +212,7 @@ fun ProfileView(
                 )
             )
             Text(
-                text = "하루 전",
+                text = DateUtils.dateToString(article.createdDate),
                 style = TextStyle(
                     fontSize = 12.sp,
                     color = TextGray,

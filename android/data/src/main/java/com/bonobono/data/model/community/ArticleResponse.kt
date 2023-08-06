@@ -6,7 +6,7 @@ import java.util.Date
 
 @Parcelize
 data class ArticleResponse(
-    val id: String? = null,
+    val articleId: Int,
     val type: String,
     val title: String,
     val content: String,
@@ -15,10 +15,10 @@ data class ArticleResponse(
     val comments: Int,
     val likes: Int,
     val nickname: String,
-//    val profileUrl: String?,
+    val profileImg: String,
     val recruitStatus: Boolean,
     val url: String? = null,
     val urlTitle: String? = null,
     val views: Int = 0,
-//    val createdAt: Date = Date(),
+    val createdDate: Date,
 ): Parcelable

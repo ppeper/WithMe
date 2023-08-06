@@ -11,7 +11,7 @@ import com.bonobono.domain.model.community.Image
 
 fun ArticleResponse.toDomain(): Article {
     return Article(
-        id = 1,
+        articleId = articleId,
         type = type,
         title = title,
         content = content,
@@ -19,18 +19,18 @@ fun ArticleResponse.toDomain(): Article {
         commentCnt = comments,
         likes = likes,
         nickname = nickname,
-//        profileUrl = profileUrl,
+        profileImg = profileImg,
         recruitStatus = recruitStatus,
         url = url ?: "",
         urlTitle = urlTitle ?: "",
-//        createdAt = createdAt,
+        createdDate = createdDate,
         views = views
     )
 }
 
 fun ArticleDetailResponse.toDomain(): Article {
     return Article(
-        id = 1,
+        articleId = articleId,
         type = type,
         title = title,
         content = content,
@@ -39,11 +39,11 @@ fun ArticleDetailResponse.toDomain(): Article {
         comments = comments.map { it.toDomain() },
         likes = likes,
         nickname = nickname,
-//        profileUrl = profileUrl,
+        profileImg = profileImg,
         recruitStatus = recruitStatus,
         url = url,
         urlTitle = urlTitle,
-//        createdAt = createdAt,
+        createdDate = createdDate,
         views = views
     )
 }

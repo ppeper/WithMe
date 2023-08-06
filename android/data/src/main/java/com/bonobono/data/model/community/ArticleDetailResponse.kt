@@ -6,13 +6,14 @@ import java.util.Date
 
 @Parcelize
 data class ArticleDetailResponse(
+    val articleId: Int,
     val type: String,
     val title: String,
     val content: String,
     val comments: List<CommentResponse>,
     val likes: Int,
     val nickname: String,
-    val profileUrl: String,
+    val profileImg: String,
     val commentCnt: Int,
     val images: List<ImageResponse>?,
     val liked: Boolean,
@@ -20,5 +21,5 @@ data class ArticleDetailResponse(
     val url: String,
     val urlTitle: String,
     val views: Int,
-    val createdAt: Date,
+    val createdDate: Date,
 ): Parcelable

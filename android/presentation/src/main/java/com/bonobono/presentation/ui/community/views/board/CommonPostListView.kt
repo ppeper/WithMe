@@ -1,6 +1,5 @@
 package com.bonobono.presentation.ui.community.views.board
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -52,15 +51,16 @@ import com.bonobono.domain.model.NetworkResult
 import com.bonobono.domain.model.community.Article
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.BoardDetailNav
+import com.bonobono.presentation.ui.community.util.DummyData.dummyArticle
 import com.bonobono.presentation.ui.community.util.freeLaunchEffect
 import com.bonobono.presentation.ui.community.util.reportLaunchEffect
 import com.bonobono.presentation.ui.community.util.withLaunchEffect
-import com.bonobono.presentation.ui.community.util.DummyData.dummyArticle
 import com.bonobono.presentation.ui.theme.Black_70
 import com.bonobono.presentation.ui.theme.DarkGray
 import com.bonobono.presentation.ui.theme.Green
 import com.bonobono.presentation.ui.theme.TextGray
 import com.bonobono.presentation.ui.theme.White
+import com.bonobono.presentation.utils.DateUtils
 import com.bonobono.presentation.viewmodel.CommunityViewModel
 
 @Composable
@@ -117,8 +117,7 @@ fun BoardItemView(
         ),
         shape = RoundedCornerShape(10.dp),
         onClick = {
-            // 해당 게시글로 이동 TODO("현재는 임의의 1번으로 이동")
-            navController.navigate("${BoardDetailNav.route}/$type/1")
+            navController.navigate("${BoardDetailNav.route}/$type/${article}")
         }
     ) {
         Row(
@@ -168,7 +167,8 @@ fun BoardItemView(
                     ) {
                         AsyncImage(
                             model = ImageRequest.Builder(LocalContext.current)
-                                .data(article.profileUrl)
+                                .data(article.profileImg)
+                                .error(R.drawable.default_profile)
                                 .build(),
                             contentDescription = "프로필",
                             contentScale = ContentScale.Crop
@@ -194,7 +194,7 @@ fun BoardItemView(
                     )
                     // 업로드 시간
                     Text(
-                        text = "3 분전",
+                        text = DateUtils.dateToString(article.createdDate),
                         style = TextStyle(
                             fontSize = 10.sp,
                             fontWeight = FontWeight(400),
@@ -278,7 +278,11 @@ fun ProceedingView(
             .height(8.dp)
             .clip(CircleShape)
             .background(
-                color = if (isProceeding) { Green } else { DarkGray }
+                color = if (isProceeding) {
+                    Green
+                } else {
+                    DarkGray
+                }
             )
         )
         Text(

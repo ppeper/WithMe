@@ -343,24 +343,11 @@ fun MainNavigationScreen(
             route = "${BoardDetailNav.route}/{type}/{articleId}",
         ) {
             val type = it.arguments?.getString("type")
-            val articleId = it.arguments?.getInt("articleId")
+            val articleId = it.arguments?.getString("articleId")
             if (articleId != null && type != null) {
                 BoardDetailScreen(
                     type = type,
-                    articleId = articleId,
-        //                postDetail = PostDetail(
-        //                    title = "쓰레기들 위치 찍습니다",
-        //                    content = "발견된 해수욕장 쓰레기 무단 투기",
-        //                    name = "홍길동",
-        //                    profile = "https://images.unsplash.com/photo-1689852484069-3e0fe82cc7c1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1887&q=80",
-        //                    time = System.currentTimeMillis(),
-        //                    images = listOf(
-        //                        DummyData.imageUrl_3,
-        //                        DummyData.imageUrl,
-        //                        DummyData.imageUrl_2
-        //                    ),
-        //                    commentList = commentList
-        //                ),
+                    articleId = articleId.toInt(),
                     navController = navController
                 )
             }

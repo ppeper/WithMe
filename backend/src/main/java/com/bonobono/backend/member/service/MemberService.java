@@ -1,11 +1,13 @@
 package com.bonobono.backend.member.service;
 
 import com.bonobono.backend.auth.jwt.TokenProvider;
+import com.bonobono.backend.global.util.SecurityUtil;
 import com.bonobono.backend.member.domain.Authority;
 import com.bonobono.backend.member.domain.Member;
 import com.bonobono.backend.member.domain.RefreshToken;
 import com.bonobono.backend.member.domain.enumtype.Role;
 import com.bonobono.backend.member.dto.request.MemberRequestDto;
+import com.bonobono.backend.member.dto.request.MemberUpdateRequestDto;
 import com.bonobono.backend.member.dto.request.TokenRequestDto;
 import com.bonobono.backend.member.dto.response.MemberResponseDto;
 import com.bonobono.backend.member.dto.response.TokenDto;
@@ -17,12 +19,16 @@ import com.bonobono.backend.member.repository.RefreshTokenRepository;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +39,7 @@ public class MemberService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final StringRedisTemplate redisTemplate;
 
     /**
      * 회원가입
@@ -115,6 +122,56 @@ public class MemberService {
 
         // 토큰 발급
         return tokenDto;
+    }
+
+    /**
+     * 회원 정보 조회
+     */
+    @Transactional(readOnly = true)
+    public MemberResponseDto myProfile() {
+        return memberRepository.findById(SecurityUtil.getLoginMemberId())
+                .map(MemberResponseDto::of)
+                .orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다."));
+    }
+
+    /**
+     * 회원 정보 수정 (아이디 수정 불가)
+     */
+    @Transactional
+    public void updateMyInfo(MemberUpdateRequestDto dto) {
+        Member member = memberRepository
+                .findById(SecurityUtil.getLoginMemberId())
+                .orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다."));
+
+        member.updateMember(dto, bCryptPasswordEncoder);
+    }
+
+    /**
+     * 로그아웃
+     */
+    @Transactional
+    public void logout(HttpServletRequest request) {
+
+        // accessToken
+        String jwt = request.getHeader("Authorization").substring(7);
+        ValueOperations<String, String> logoutValueOperations = redisTemplate.opsForValue();
+        logoutValueOperations.set(jwt, jwt);
+
+        // refreshToken 삭제
+        refreshTokenRepository.deleteByKey(String.valueOf(SecurityUtil.getLoginMemberId()))
+                .orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다."));
+    }
+
+    /**
+     * 회원탈퇴
+     */
+    @Transactional
+    public void deleteMember() {
+        Long loginMemberId = SecurityUtil.getLoginMemberId();
+        if (loginMemberId == null) {
+            throw new RuntimeException("로그인 유저 정보가 없습니다.");
+        }
+        memberRepository.deleteById(loginMemberId);
     }
 
 

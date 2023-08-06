@@ -1,8 +1,11 @@
 package com.bonobono.backend.character.domain;
 
+import lombok.Getter;
+
 import javax.persistence.*;
 
 @Entity
+@Getter
 public class OurCharacter {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

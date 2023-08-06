@@ -9,10 +9,12 @@ VALUES ('계란껍데기', '일반쓰레기'),
        ('우유곽','종이');
 
 INSERT INTO our_character (name, description, level)
-VALUES ("망나뇽","짱 귀여워", 1);
+VALUES ('망나뇽','짱 귀여워', 1),
+VALUES ('망뇽','짱 귀여워', 1);
+
 
 INSERT INTO user_character (custom_name, experience, is_main, member_id, character_id)
-VALUES ("망냐망냐",10, true, 1, 1);
+VALUES ('망냐망냐',10, true, 1, 1);
 
 INSERT INTO quiz_problem (problem, answer, commentary)
 VALUES ('어떤 폐기물이 해양 동물에 가장 위험한 영향을 미칠까요?', '1','플라스틱 쓰레기는 해양 동물에 심각한 피해를 주며 해양 환경 오염의 주요 원인 중 하나입니다. 어린이들은 플라스틱 사용 줄이기와 재활용을 통해 이 문제를 함께 해결할 수 있습니다.');

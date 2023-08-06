@@ -12,7 +12,8 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
         "com.bonobono.backend.community.article.repository",
         "com.bonobono.backend.member.repository",
         "com.bonobono.backend.community.report.repository",
-        "com.bonobono.backend.dailymission.repository"
+        "com.bonobono.backend.dailymission.repository",
+        "com.bonobono.backend.character.repository"
 })
 @EnableMongoRepositories(basePackages = "com.bonobono.backend.chatting.mongo")
 @Configuration

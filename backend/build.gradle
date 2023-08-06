@@ -43,10 +43,9 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
-	implementation 'io.springfox:springfox-boot-starter:3.0.0'
-	implementation 'io.springfox:springfox-swagger-ui:3.0.0'
 	implementation 'io.github.flashvayne:chatgpt-spring-boot-starter:1.0.4'
-	implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.1'
+	implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.2'
+	implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.6.9'
 }
 
 tasks.named('test') {

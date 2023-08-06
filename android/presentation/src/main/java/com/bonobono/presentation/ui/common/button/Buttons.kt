@@ -24,7 +24,7 @@ import com.bonobono.presentation.ui.theme.White
 fun PrimaryButton(content: String, modifier: Modifier, onClick: () -> Unit) {
     Button(
         modifier = modifier,
-        onClick = { onClick },
+        onClick = { onClick() },
         colors = ButtonDefaults.buttonColors(
             containerColor = PrimaryBlue,
             contentColor = White

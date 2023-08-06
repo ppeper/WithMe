@@ -48,6 +48,8 @@ import com.bonobono.presentation.ui.community.views.board.CommonPostListView
 import com.bonobono.presentation.ui.community.views.comment.WriteCommentView
 import com.bonobono.presentation.ui.common.button.CommunityFloatingActionButton
 import com.bonobono.presentation.ui.common.button.HomeFloatingActionButton
+import com.bonobono.presentation.ui.game.GameScreen
+import com.bonobono.presentation.ui.game.QuizScreen
 import com.bonobono.presentation.ui.main.EncyclopediaScreen
 import com.bonobono.presentation.ui.main.MainHomeScreen
 import com.bonobono.presentation.ui.main.MissionScreen
@@ -381,6 +383,18 @@ fun MainNavigationScreen(
             deepLinks = ProfileEditNav.deepLinks
         ) {
             ProfileEditScreen(navController = navController)
+        }
+        composable(
+            route = QuizNav.route,
+            deepLinks = QuizNav.deepLinks
+        ) {
+            QuizScreen()
+        }
+        composable(
+            route = GameNav.route,
+            deepLinks = QuizNav.deepLinks
+        ) {
+            GameScreen()
         }
     }
 }

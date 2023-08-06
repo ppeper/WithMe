@@ -9,6 +9,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,8 +20,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.common.text.BasicButtonText
+import com.bonobono.presentation.ui.common.text.CustomTextStyle
 import com.bonobono.presentation.ui.theme.PrimaryBlue
-import com.bonobono.presentation.ui.theme.TextGray
 
 @Composable
 fun CommonTextField(
@@ -111,7 +112,7 @@ fun TextFieldWithButton(
 fun ProfileEditTextField(
     value: String,
     onValueChange: (String) -> Unit,
-    readOnly : Boolean
+    readOnly: Boolean
 ) {
 //    TextField(
 //        modifier = Modifier
@@ -122,10 +123,49 @@ fun ProfileEditTextField(
 //        onValueChange = onValueChange)
 }
 
+@Composable
+fun GameTextFieldWithButton(
+    value: String,
+    onValueChange: (String) -> Unit,
+    buttonTxt: String,
+    action: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(12.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        OutlinedTextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(0.dp, 0.dp, 16.dp, 0.dp)
+                .weight(3f),
+            value = value,
+            onValueChange = onValueChange,
+            textStyle = CustomTextStyle.quizContentStyle
+        )
+        Button(modifier = Modifier
+            .fillMaxWidth()
+            .weight(1f),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = PrimaryBlue
+            ),
+            onClick = { action }) {
+            Text(text = "확인", style = CustomTextStyle.quizContentStyle)
+        }
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 fun textFieldPreview() {
     val onChange: (String) -> Unit
-    TextFieldWithButton(value = "test", onValueChange = {}, buttonTxt = R.string.community_alert_title) {
+    TextFieldWithButton(
+        value = "test",
+        onValueChange = {},
+        buttonTxt = R.string.community_alert_title
+    ) {
     }
 }

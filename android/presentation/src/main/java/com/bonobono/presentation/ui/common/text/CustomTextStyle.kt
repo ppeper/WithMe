@@ -5,10 +5,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.theme.Black_100
 import com.bonobono.presentation.ui.theme.DarkGray
 import com.bonobono.presentation.ui.theme.TextGray
@@ -37,6 +40,16 @@ object CustomTextStyle {
     val mapGrayTextStyle = TextStyle(
         fontSize = 12.sp,
         color = TextGray,
+    )
+
+    val quizTitleStyle = TextStyle(
+        fontFamily = FontFamily(Font(R.font.ramche)),
+        fontSize = 24.sp
+    )
+
+    val quizContentStyle = TextStyle(
+        fontFamily = FontFamily(Font(R.font.ramche)),
+        fontSize = 14.sp
     )
 }
 

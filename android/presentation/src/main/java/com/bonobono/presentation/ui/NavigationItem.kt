@@ -154,6 +154,21 @@ object ChattingNav : Destination {
         navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${ChattingNav.route}" })
 }
 
+object QuizNav : Destination {
+    override val route: String = NavigationRouteName.QUIZ
+    override val title: String = NavigationTitle.QUIZ
+    override val deepLinks: List<NavDeepLink> = listOf(
+        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${QuizNav.route}" })
+}
+
+object GameNav : Destination {
+    override val route: String = NavigationRouteName.GAME
+    override val title: String = NavigationTitle.GAME
+    override val deepLinks: List<NavDeepLink> = listOf(
+        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${GameNav.route}" })
+}
+
+
 interface Destination {
     val route: String
     val title: String
@@ -168,7 +183,11 @@ object NavigationRouteName {
     const val MAIN_CHATTING = "main_chat"
     const val MAIN_MAP = "main_map"
 
+    // Mission
     const val MISSION = "mission"
+    const val QUIZ = "quiz"
+    const val GAME = "game"
+
     const val ENCYCLOPEDIA = "encyclopedia"
     const val NOTICE = "notice"
 
@@ -214,6 +233,8 @@ object NavigationTitle {
     const val COMMUNITY_REPORT = "신고게시판"
 
     const val MISSION = "미션"
+    const val QUIZ = "퀴즈"
+    const val GAME = "게임"
     const val ENCYCLOPEDIA = "도감"
     const val NOTICE = "공지"
 

@@ -3,6 +3,7 @@ package com.bonobono.backend.community.report.controller;
 import com.bonobono.backend.community.report.dto.req.ReportCommentRequestDto;
 import com.bonobono.backend.community.report.dto.req.ReportSaveRequestDto;
 import com.bonobono.backend.community.report.dto.req.ReportUpdateRequestDto;
+import com.bonobono.backend.community.report.dto.res.ReportCommentResponseDto;
 import com.bonobono.backend.community.report.dto.res.ReportDetailResponseDto;
 import com.bonobono.backend.community.report.dto.res.ReportListResponseDto;
 import com.bonobono.backend.community.report.service.ReportCommentService;
@@ -92,12 +93,12 @@ public class ReportController {
     // ----------댓글---------
     // 신고게시판 글에 댓글 쓰기 (관리자 또는 작성자만)
     @PostMapping("/{reportId}/comment")
-    public ResponseEntity<Void> saveComment(@AuthenticationPrincipal Member member,
-                                            @PathVariable Long reportId,
-                                            @RequestBody ReportCommentRequestDto requestDto
+    public ResponseEntity<ReportCommentResponseDto> saveComment(@AuthenticationPrincipal Member member,
+                                                                @PathVariable Long reportId,
+                                                                @RequestBody ReportCommentRequestDto requestDto
     ){
-        reportCommentService.save(member, reportId, requestDto);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        ReportCommentResponseDto responseDto = reportCommentService.save(member, reportId, requestDto);
+        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
     // 신고게시판 댓글 삭제

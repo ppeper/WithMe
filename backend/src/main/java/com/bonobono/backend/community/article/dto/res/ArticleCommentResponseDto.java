@@ -5,7 +5,6 @@ import com.bonobono.backend.member.domain.Member;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +28,7 @@ public class ArticleCommentResponseDto {
         this.content = entity.getContent();
         this.memberId = entity.getMember().getId();
         this.nickname = entity.getMember().getNickname();
+        this.profileImg = entity.getMember().getProfileImg();
         this.childComments = entity.getChildComments().stream()
                 .map(childComment -> new ArticleCommentResponseDto(childComment, member))
                 .collect(Collectors.toList());

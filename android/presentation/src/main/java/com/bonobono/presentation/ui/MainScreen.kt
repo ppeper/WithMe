@@ -81,11 +81,6 @@ fun MainScreen() {
             if (MainNav.isMainRoute(currentRoute)) {
                 MainBottomNavigationBar(navController = navController, currentRoute = currentRoute)
             }
-            when (currentRoute) {
-                BoardDetailNav.route -> {
-                    WriteCommentView()
-                }
-            }
         },
         floatingActionButton = {
             when (currentRoute) {
@@ -287,7 +282,7 @@ fun MainNavigationScreen(
         ) {
             CameraScreen()
         }
-        /// TODO("커뮤니티 글쓰기 TEST")
+        // TODO("커뮤니티 글쓰기 TEST")
         composable(
             route = NavigationRouteName.GALLERY
         ) {

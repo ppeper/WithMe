@@ -5,10 +5,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,23 +33,23 @@ fun CommonTextField(
     hint: String,
     onValueChange: (String) -> Unit
 ) {
-//    BasicTextField(
-//        modifier = Modifier.fillMaxWidth(),
-//        value = text,
-//        onValueChange = onValueChange,
-//        textStyle = textStyle,
-//        singleLine = singleLine,
-//        keyboardOptions = keyboardOptions,
-//        decorationBox = { innerTextField ->
-//            if (text.isEmpty()) {
-//                Text(
-//                    text = hint,
-//                    style = textStyle.copy(color = TextGray)
-//                )
-//            }
-//            innerTextField()
-//        }
-//    )
+    BasicTextField(
+        modifier = Modifier.fillMaxWidth(),
+        value = text,
+        onValueChange = onValueChange,
+        textStyle = textStyle,
+        singleLine = singleLine,
+        keyboardOptions = keyboardOptions,
+        decorationBox = { innerTextField ->
+            if (text.isEmpty()) {
+                Text(
+                    text = hint,
+                    style = textStyle.copy(color = TextGray)
+                )
+            }
+            innerTextField()
+        }
+    )
 }
 
 @Composable

@@ -1,5 +1,6 @@
 package com.bonobono.data.remote
 
+import com.bonobono.data.model.community.request.CommentRequest
 import com.bonobono.domain.model.NetworkResult
 import com.bonobono.domain.model.community.Article
 import com.bonobono.data.model.community.response.ArticleResponse
@@ -57,8 +58,8 @@ interface CommunityService {
     suspend fun writeComment(
         @Path(value = "type") communityType: String,
         @Path(value = "articleId") articleId: Int,
-        @Body comment: CommentResponse
-    ): Unit
+        @Body comment: CommentRequest
+    ): CommentResponse
 
     // 게시글 좋아요 클릭
     @PATCH("community/{type}/{articleId}/like")

@@ -8,10 +8,10 @@ import java.util.Date
 data class CommentResponse(
     val parentCommentId: Int?,
     val content: String,
-    val profileUrl: String,
+    val profileImg: String?,
     val childComments: List<CommentResponse>,
     val liked: Boolean,
     val likes: Int,
     val nickname: String,
-    val createdAt: Date
+    val createdDate: Date
 ): Parcelable

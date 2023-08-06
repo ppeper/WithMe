@@ -1,9 +1,11 @@
 package com.bonobono.presentation.ui.community
 
+import android.util.Log
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,6 +18,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
@@ -26,18 +31,26 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.IconToggleButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -58,8 +71,9 @@ import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.community.util.DummyData.dummyArticle
 import com.bonobono.presentation.ui.community.util.boardDetailLaunchEffect
 import com.bonobono.presentation.ui.community.views.board.DropDownMenuView
-import com.bonobono.presentation.ui.community.views.comment.CommentListView
+import com.bonobono.presentation.ui.community.views.comment.CommentView
 import com.bonobono.presentation.ui.community.views.comment.NoCommentView
+import com.bonobono.presentation.ui.community.views.comment.WriteCommentView
 import com.bonobono.presentation.ui.theme.Black_100
 import com.bonobono.presentation.ui.theme.Black_70
 import com.bonobono.presentation.ui.theme.DividerGray
@@ -69,7 +83,9 @@ import com.bonobono.presentation.ui.theme.White
 import com.bonobono.presentation.utils.DateUtils
 import com.bonobono.presentation.utils.rememberImeState
 import com.bonobono.presentation.viewmodel.CommunityViewModel
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun BoardDetailScreen(
     modifier: Modifier = Modifier,
@@ -80,96 +96,189 @@ fun BoardDetailScreen(
 ) {
     boardDetailLaunchEffect(navController = navController)
     val imeState = rememberImeState()
-    val scrollState = rememberScrollState()
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val scrollState = rememberLazyListState()
+    val articleState by communityViewModel.articleDetailState.collectAsStateWithLifecycle()
 
     LaunchedEffect(key1 = imeState.value) {
         if (imeState.value) {
-            scrollState.animateScrollTo(scrollState.maxValue, tween(200))
+            scrollState.animateScrollToItem(scrollState.layoutInfo.totalItemsCount - 1)
         }
     }
 
-    val state by communityViewModel.articleDetailState.collectAsStateWithLifecycle()
 
     // 게시글 정보 불러오기
     LaunchedEffect(Unit) {
         communityViewModel.getArticleById(type, articleId)
     }
-    when (state) {
+    when (articleState) {
         is NetworkResult.Loading -> {
 
         }
+
         is NetworkResult.Success -> {
-            val article = (state as NetworkResult.Success<Article>).data
+            val article = (articleState as NetworkResult.Success<Article>).data
+            val comments by remember { mutableStateOf(article.comments) }
             Box(
                 modifier = modifier.fillMaxSize()
                     .background(color = White)
             ) {
-                Column(
-                    modifier = modifier
-                        .fillMaxSize()
-                        .verticalScroll(scrollState)
+                LazyColumn(
+                    modifier = modifier.fillMaxSize()
                 ) {
-                    Column(
-                        modifier = modifier
-                            .fillMaxSize()
-                            .then(modifier.padding(16.dp)),
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
+                    item {
+                        Column(
+                            modifier = modifier
+                                .fillMaxSize()
+                                .then(modifier.padding(16.dp)),
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
 
-                        WriterView(article = article)
+                            WriterView(type = type, communityViewModel = communityViewModel, article = article)
 
-                        Text(
-                            text = article.title,
-                            style = TextStyle(
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight(700),
-                                color = Black_100,
+                            Text(
+                                text = article.title,
+                                style = TextStyle(
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight(700),
+                                    color = Black_100,
+                                )
                             )
-                        )
-                        Text(
-                            text = article.content,
-                            style = TextStyle(
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight(400),
-                                color = Black_100,
+                            Text(
+                                text = article.content,
+                                style = TextStyle(
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight(400),
+                                    color = Black_100,
+                                )
                             )
-                        )
-                        if (article.images.isNotEmpty()) {
-                            MultipleImageView(images = article.images)
+                            if (article.images.isNotEmpty()) {
+                                MultipleImageView(images = article.images)
+                            }
+                            Text(
+                                text = "조회수 ${article.views}",
+                                style = TextStyle(
+                                    fontSize = 12.sp,
+                                    color = TextGray,
+                                    textAlign = TextAlign.Center,
+                                )
+                            )
                         }
-                        Text(
-                            text = "조회수 ${article.views}",
-                            style = TextStyle(
-                                fontSize = 12.sp,
-                                color = TextGray,
-                                textAlign = TextAlign.Center,
-                            )
-                        )
+                        // 게시글 좋아요 추가
+                        LikeAndCommentView(article = article) {
+                            communityViewModel.updateArticleLike(type, articleId)
+                        }
                     }
-                    // 게시글 좋아요 추가
-                    LikeAndCommentView(article = article) {
-                        communityViewModel.updateArticleLike(type, articleId)
-                    }
-
-                    Column(
-                        modifier = modifier.padding(horizontal = 16.dp)
-                    ) {
-                        if (article.comments.isEmpty()) {
+                    if (article.comments.isEmpty()) {
+                        item {
                             NoCommentView()
-                        } else {
-                            CommentListView(commentList = article.comments)
+                        }
+                    } else {
+                        items(comments) {
+                            CommentView(comments = it)
                         }
                     }
                 }
             }
         }
-        is NetworkResult.Error -> {}
+
+        is NetworkResult.Error -> {
+            // TODO("테스트 용")
+            val article = dummyArticle
+            var comments by remember { mutableStateOf(article.comments) }
+            Scaffold(
+                bottomBar = {
+                    WriteCommentView(
+                        modifier = modifier,
+                        type = type,
+                        articleId = article.articleId,
+                        onWriteCommentClicked = { comment ->
+                            Log.d("게시글 댓글 작성", "BoardDetailScreen: $comment")
+                            comments = comments.toMutableList().apply { add(comment) }
+                        }
+                    )
+                }
+            ) {
+                Box(
+                    modifier = modifier.fillMaxSize()
+                        .background(color = White)
+                        .padding(it)
+                        .pointerInput(Unit) {
+                            detectTapGestures {
+                                if (imeState.value) {
+                                    keyboardController?.hide()
+                                }
+                            }
+                        }
+                ) {
+                    LazyColumn(
+                        modifier = modifier.fillMaxSize(),
+                        state = scrollState
+                    ) {
+                        item {
+                            Column(
+                                modifier = modifier
+                                    .fillMaxSize()
+                                    .then(modifier.padding(16.dp)),
+                                verticalArrangement = Arrangement.spacedBy(16.dp)
+                            ) {
+
+                                WriterView(type = type, communityViewModel = communityViewModel, article = article)
+
+                                Text(
+                                    text = article.title,
+                                    style = TextStyle(
+                                        fontSize = 20.sp,
+                                        fontWeight = FontWeight(700),
+                                        color = Black_100,
+                                    )
+                                )
+                                Text(
+                                    text = article.content,
+                                    style = TextStyle(
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight(400),
+                                        color = Black_100,
+                                    )
+                                )
+                                if (article.images.isNotEmpty()) {
+                                    MultipleImageView(images = article.images)
+                                }
+                                Text(
+                                    text = "조회수 ${article.views}",
+                                    style = TextStyle(
+                                        fontSize = 12.sp,
+                                        color = TextGray,
+                                        textAlign = TextAlign.Center,
+                                    )
+                                )
+                            }
+                            // 게시글 좋아요 추가
+                            LikeAndCommentView(article = article) {
+                                communityViewModel.updateArticleLike(type, articleId)
+                            }
+                        }
+
+                        if (article.comments.isEmpty()) {
+                            item { NoCommentView() }
+                        } else {
+                            Log.d("댓글 리스트 뷰", "$comments")
+                            items(comments) {
+                                CommentView(comments = it)
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
 @Composable
 fun WriterView(
     modifier: Modifier = Modifier,
+    type: String,
+    communityViewModel: CommunityViewModel,
     article: Article,
 ) {
     Row(
@@ -183,7 +292,7 @@ fun WriterView(
         // TODO("내가 쓴 글만 DropDown 보이기 -> 로그인 완성되면 Token으로 확인)
         DropDownMenuView(
             onUpdateClick = {},
-            onDeleteClick = {},
+            onDeleteClick = { communityViewModel.deleteArticle(type, article.articleId)},
         )
     }
 }
@@ -271,7 +380,15 @@ fun LikeAndCommentView(
                             checkedContentColor = Red,
                             contentColor = TextGray
                         ),
-                        onCheckedChange = { likeState = !likeState },
+                        onCheckedChange = {
+                            onLikeClick()
+                            if (likeState) {
+                                likeCntState -= 1
+                            } else {
+                                likeCntState += 1
+                            }
+                            likeState = !likeState
+                        },
                         interactionSource = MutableInteractionSource()
                     ) {
                         Icon(
@@ -346,6 +463,8 @@ fun PreviewLikeAndCommentView() {
 @Composable
 fun PreviewWriterView() {
     WriterView(
+        type = "free",
+        communityViewModel = hiltViewModel(),
         article = dummyArticle
     )
 }

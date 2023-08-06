@@ -3,12 +3,12 @@ package com.bonobono.domain.model.community
 import java.util.Date
 
 data class Comment(
-    val parentCommentId: Int?,
+    val parentCommentId: Int? = null,
     val content: String,
-    val nickname: String,
-    val profileUrl: String,
-    val childComments: List<Comment>,
-    val liked: Boolean,
-    val likes: Int,
-    val createdAt: Date
+    val nickname: String? = null,
+    val profileImg: String? = null,
+    val childComments: List<Comment> = emptyList(),
+    val liked: Boolean = false,
+    val likes: Int = 0,
+    val createdDate: Date = Date()
 )

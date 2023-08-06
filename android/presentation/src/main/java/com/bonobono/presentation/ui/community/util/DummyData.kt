@@ -1,6 +1,7 @@
 package com.bonobono.presentation.ui.community.util
 
 import com.bonobono.domain.model.community.Article
+import com.bonobono.domain.model.community.Comment
 import com.bonobono.presentation.ui.community.views.gallery.PhotoSelected
 
 object DummyData {
@@ -11,7 +12,9 @@ object DummyData {
     val imageUrl_3 =
         "https://plus.unsplash.com/premium_photo-1673002094413-4c5141902505?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
     val selectedPhotos = listOf(PhotoSelected(imageUrl))
-
+    val comment1 = Comment(content = "테스트1", parentCommentId = null)
+    val comment2 = Comment(content = "테스트3", parentCommentId = 1)
+    val commentWithChild = Comment(content = "테스트2", childComments = listOf(comment2, comment2), parentCommentId = null)
     val dummyArticle = Article(
         articleId = 1,
         type = "FREE",
@@ -21,6 +24,11 @@ object DummyData {
         profileImg = imageUrl,
         commentCnt = 3,
         likes = 3,
-        recruitStatus = false
+        recruitStatus = false,
+        comments = listOf(
+            comment1,
+            commentWithChild,
+            comment1
+        )
     )
 }

@@ -4,7 +4,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -40,20 +39,8 @@ import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.theme.Black_100
 import com.bonobono.presentation.ui.theme.Red
 import com.bonobono.presentation.ui.theme.TextGray
+import com.bonobono.presentation.utils.DateUtils
 
-
-@Composable
-fun CommentListView(
-    modifier: Modifier = Modifier,
-    commentList: List<Comment>
-) {
-    Column {
-        commentList.forEach {
-            CommentView(comments = it)
-        }
-    }
-}
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun CommentView(
     modifier: Modifier = Modifier,
@@ -63,14 +50,15 @@ fun CommentView(
         modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .padding(top = 16.dp)
+            .padding(top = 16.dp, end = 16.dp, start = comments.parentCommentId?.run { 0.dp } ?: 16.dp )
     ) {
         AsyncImage(
             modifier = modifier
                 .size(40.dp)
                 .clip(CircleShape),
             model = ImageRequest.Builder(LocalContext.current)
-                .data(comments.profileUrl)
+                .data(comments.profileImg)
+                .error(R.drawable.default_profile)
                 .build(),
             contentDescription = "업로드 사진",
             contentScale = ContentScale.Crop
@@ -78,14 +66,14 @@ fun CommentView(
         Spacer(modifier = modifier.size(12.dp))
         Column {
             Text(
-                text = comments.nickname,
+                text = comments.nickname ?: "홍길동",
                 style = TextStyle(
                     fontSize = 12.sp,
                     color = Black_100,
                 )
             )
             Text(
-                text = "하루 전",
+                text = DateUtils.dateToString(comments.createdDate),
                 style = TextStyle(
                     fontSize = 10.sp,
                     color = TextGray,
@@ -99,7 +87,12 @@ fun CommentView(
                 )
             )
             CommentRow(comments = comments)
-            // 대댓글 리스트 TODO
+            // 대댓글 리스트
+            if (comments.childComments.isNotEmpty()) {
+                comments.childComments.forEach { reComment ->
+                    CommentView(comments = reComment)
+                }
+            }
         }
     }
 }
@@ -111,7 +104,8 @@ fun CommentRow(
 ) {
     var likeState by rememberSaveable { mutableStateOf(comments.liked) }
     var likeCntState by rememberSaveable { mutableStateOf(comments.likes) }
-    var commentCntState by rememberSaveable { mutableStateOf(comments.childComments?.size ?: 0) }
+    var commentCntState by rememberSaveable { mutableStateOf(comments.childComments.size) }
+    var reCommentState by rememberSaveable { mutableStateOf(comments.childComments) }
 
     Row(
         modifier = modifier
@@ -119,7 +113,7 @@ fun CommentRow(
             .wrapContentWidth()
             .padding(vertical = 4.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
-    ){
+    ) {
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
@@ -129,8 +123,7 @@ fun CommentRow(
                     interactionSource = MutableInteractionSource(),
                     indication = null
                 ) {
-                    /* TODO("서버에 좋아요 클릭 추가") */
-                    if (likeState) { likeCntState += 1 } else likeCntState -= 1
+                    if (likeState) { likeCntState -= 1 } else likeCntState += 1
                     likeState = !likeState
                 },
                 verticalAlignment = Alignment.CenterVertically
@@ -142,7 +135,10 @@ fun CommentRow(
                         checkedContentColor = Red,
                         contentColor = TextGray
                     ),
-                    onCheckedChange = { likeState = !likeState },
+                    onCheckedChange = {
+                        if (likeState) { likeCntState -= 1 } else likeCntState += 1
+                        likeState = !likeState
+                    },
                     interactionSource = MutableInteractionSource()
                 ) {
                     Icon(
@@ -186,12 +182,15 @@ fun CommentRow(
                 )
                 Spacer(modifier = modifier.size(4.dp))
                 Text(
-                    text = "댓글 쓰기",
+                    text = "답글 달기",
                     style = TextStyle(
                         fontSize = 10.sp,
                         color = TextGray,
                         textAlign = TextAlign.Center,
-                    )
+                    ),
+                    modifier = modifier.clickable {
+
+                    }
                 )
                 Spacer(modifier = modifier.size(4.dp))
                 if (0 < commentCntState) {
@@ -209,6 +208,7 @@ fun CommentRow(
     }
 
 }
+
 @Preview
 @Composable
 fun PreviewCommentRow() {

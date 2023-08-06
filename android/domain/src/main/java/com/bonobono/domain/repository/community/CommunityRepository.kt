@@ -16,7 +16,7 @@ interface CommunityRepository {
     // 게시글 수정
     suspend fun updateArticle(type: String, articleId: Int)
     // 댓글 작성
-    suspend fun writeComment(type: String, articleId: Int, comment: Comment)
+    suspend fun writeComment(type: String, articleId: Int, comment: Comment): NetworkResult<Comment>
     // 게시글 좋아요 클릭
     suspend fun updateArticleLike(type: String, articleId: Int)
     // 댓글 좋아요 클릭

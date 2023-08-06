@@ -1,6 +1,7 @@
 package com.bonobono.data.mapper
 
 import com.bonobono.data.BuildConfig
+import com.bonobono.data.model.community.request.CommentRequest
 import com.bonobono.data.model.community.response.ArticleDetailResponse
 import com.bonobono.data.model.community.response.ArticleResponse
 import com.bonobono.data.model.community.response.CommentResponse
@@ -54,24 +55,18 @@ fun CommentResponse.toDomain(): Comment {
         parentCommentId = parentCommentId,
         content = content,
         nickname = nickname,
-        profileUrl = profileUrl,
+        profileImg = profileImg,
         childComments = childComments.map { it.toDomain() },
         liked = liked,
         likes = likes,
-        createdAt = createdAt
+        createdDate = createdDate
     )
 }
 
-fun Comment.toModel(): CommentResponse {
-    return CommentResponse(
+fun Comment.toModel(): CommentRequest {
+    return CommentRequest(
         parentCommentId = parentCommentId,
-        content = content,
-        nickname = nickname,
-        profileUrl = profileUrl,
-        childComments = childComments.map { it.toModel() },
-        liked = liked,
-        likes = likes,
-        createdAt = createdAt
+        content = content
     )
 }
 

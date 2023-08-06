@@ -1,6 +1,7 @@
 package com.bonobono.data.repository.community
 
 import com.bonobono.data.mapper.toDomain
+import com.bonobono.data.mapper.toModel
 import com.bonobono.data.remote.CommunityService
 import com.bonobono.data.remote.handleApi
 import com.bonobono.domain.model.NetworkResult
@@ -32,8 +33,8 @@ class CommunityRepositoryImpl @Inject constructor(
         handleApi { communityService.updateArticle(type, articleId) }
     }
 
-    override suspend fun writeComment(type: String, articleId: Int, comment: Comment) {
-        TODO("Not yet implemented")
+    override suspend fun writeComment(type: String, articleId: Int, comment: Comment): NetworkResult<Comment> {
+        return handleApi { communityService.writeComment(type, articleId, comment.toModel()).toDomain() }
     }
 
     override suspend fun updateArticleLike(type: String, articleId: Int) {

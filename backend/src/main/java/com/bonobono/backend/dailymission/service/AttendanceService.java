@@ -5,7 +5,7 @@ import com.bonobono.backend.dailymission.domain.Attendance;
 import com.bonobono.backend.dailymission.dto.AttendanceDto;
 import com.bonobono.backend.dailymission.repository.AttendanceRepository;
 import com.bonobono.backend.global.exception.MainCharacterNotFoundException;
-import com.bonobono.backend.member.entity.Member;
+import com.bonobono.backend.member.domain.Member;
 import com.bonobono.backend.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

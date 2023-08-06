@@ -2,7 +2,6 @@ package com.bonobono.backend.dailymission.controller;
 
 import com.bonobono.backend.dailymission.dto.AttendanceDto;
 import com.bonobono.backend.dailymission.service.AttendanceService;
-import com.bonobono.backend.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

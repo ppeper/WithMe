@@ -1,6 +1,5 @@
 package com.bonobono.backend.dailymission.controller;
 
-import com.bonobono.backend.community.article.dto.res.ArticleFreeDetailResponseDto;
 import com.bonobono.backend.dailymission.dto.MiniGameRequestDto;
 import com.bonobono.backend.dailymission.dto.MiniGameResponseDto;
 import com.bonobono.backend.dailymission.service.MiniGameService;

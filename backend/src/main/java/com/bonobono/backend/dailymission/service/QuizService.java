@@ -12,13 +12,11 @@ import com.bonobono.backend.dailymission.repository.OXQuizRepository;
 import com.bonobono.backend.dailymission.repository.QuizProblemRepository;
 import com.bonobono.backend.dailymission.repository.QuizRepository;
 import com.bonobono.backend.global.exception.MainCharacterNotFoundException;
-import com.bonobono.backend.member.entity.Member;
+import com.bonobono.backend.member.domain.Member;
 import com.bonobono.backend.member.repository.MemberRepository;
 import io.github.flashvayne.chatgpt.service.ChatgptService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,8 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor

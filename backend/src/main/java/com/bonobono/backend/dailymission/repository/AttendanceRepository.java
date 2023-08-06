@@ -1,7 +1,7 @@
 package com.bonobono.backend.dailymission.repository;
 
 import com.bonobono.backend.dailymission.domain.Attendance;
-import com.bonobono.backend.member.entity.Member;
+import com.bonobono.backend.member.domain.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;

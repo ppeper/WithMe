@@ -1,16 +1,9 @@
 package com.bonobono.backend.character.dto;
 
 
-import com.bonobono.backend.character.domain.OurCharacter;
-import com.bonobono.backend.character.domain.UserCharacter;
-import com.bonobono.backend.community.article.entity.Article;
-import com.bonobono.backend.community.article.entity.ArticleComment;
-import com.bonobono.backend.member.entity.Member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
 
 
 @Getter

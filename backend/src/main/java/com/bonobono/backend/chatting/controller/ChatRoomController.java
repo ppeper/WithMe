@@ -1,19 +1,16 @@
 package com.bonobono.backend.chatting.controller;
 
-import com.bonobono.backend.chatting.domain.ChatMessage;
 import com.bonobono.backend.chatting.domain.ChatRoom;
 import com.bonobono.backend.chatting.dto.ChatMessageResponseDto;
 import com.bonobono.backend.chatting.dto.ChatRoomRequestDto;
 import com.bonobono.backend.chatting.dto.ChatRoomResponseDto;
 import com.bonobono.backend.chatting.dto.ChatRoomWithMessagesDto;
-import com.bonobono.backend.chatting.mongo.ChatMessageRepository;
 import com.bonobono.backend.chatting.repository.ChatRoomRepository;
 import com.bonobono.backend.chatting.service.ChatMessageService;
 import com.bonobono.backend.chatting.service.ChatRoomService;
-import com.bonobono.backend.member.entity.Member;
+import com.bonobono.backend.member.domain.Member;
 import com.bonobono.backend.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;

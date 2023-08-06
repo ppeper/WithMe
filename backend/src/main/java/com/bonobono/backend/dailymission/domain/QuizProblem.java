@@ -1,6 +1,5 @@
 package com.bonobono.backend.dailymission.domain;
 
-import com.bonobono.backend.member.entity.Member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

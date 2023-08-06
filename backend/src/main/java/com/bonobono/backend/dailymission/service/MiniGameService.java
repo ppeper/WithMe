@@ -9,7 +9,7 @@ import com.bonobono.backend.dailymission.dto.MiniGameResponseDto;
 import com.bonobono.backend.dailymission.repository.IsMiniGameRepository;
 import com.bonobono.backend.dailymission.repository.MiniGameRepository;
 import com.bonobono.backend.global.exception.MainCharacterNotFoundException;
-import com.bonobono.backend.member.entity.Member;
+import com.bonobono.backend.member.domain.Member;
 import com.bonobono.backend.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

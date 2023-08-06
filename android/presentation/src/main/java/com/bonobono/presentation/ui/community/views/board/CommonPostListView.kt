@@ -117,7 +117,7 @@ fun BoardItemView(
         ),
         shape = RoundedCornerShape(10.dp),
         onClick = {
-            navController.navigate("${BoardDetailNav.route}/$type/${article}")
+            navController.navigate("${BoardDetailNav.route}/$type/${article.articleId}")
         }
     ) {
         Row(

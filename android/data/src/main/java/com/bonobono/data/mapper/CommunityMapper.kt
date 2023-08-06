@@ -8,6 +8,7 @@ import com.bonobono.data.model.community.ImageResponse
 import com.bonobono.domain.model.community.Article
 import com.bonobono.domain.model.community.Comment
 import com.bonobono.domain.model.community.Image
+import java.util.Date
 
 fun ArticleResponse.toDomain(): Article {
     return Article(
@@ -19,11 +20,11 @@ fun ArticleResponse.toDomain(): Article {
         commentCnt = comments,
         likes = likes,
         nickname = nickname,
-        profileImg = profileImg,
+        profileImg = profileImg ?: "",
         recruitStatus = recruitStatus,
         url = url ?: "",
         urlTitle = urlTitle ?: "",
-        createdDate = createdDate,
+        createdDate = createdDate ?: Date(),
         views = views
     )
 }

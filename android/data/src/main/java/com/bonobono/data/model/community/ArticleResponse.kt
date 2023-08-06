@@ -15,10 +15,10 @@ data class ArticleResponse(
     val comments: Int,
     val likes: Int,
     val nickname: String,
-    val profileImg: String,
+    val profileImg: String?,
     val recruitStatus: Boolean,
     val url: String? = null,
     val urlTitle: String? = null,
     val views: Int = 0,
-    val createdDate: Date,
+    val createdDate: Date? = Date(),
 ): Parcelable

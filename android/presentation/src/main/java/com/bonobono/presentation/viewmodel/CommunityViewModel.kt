@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bonobono.domain.model.NetworkResult
 import com.bonobono.domain.model.community.Article
+import com.bonobono.domain.usecase.community.DeleteArticleUseCase
 import com.bonobono.domain.usecase.community.GetArticleByIdUseCase
 import com.bonobono.domain.usecase.community.GetArticleListUseCase
 import com.bonobono.domain.usecase.community.UpdateArticleLikeUseCase
@@ -17,7 +18,8 @@ import javax.inject.Inject
 class CommunityViewModel @Inject constructor(
     private val getArticleList: GetArticleListUseCase,
     private val getArticleById: GetArticleByIdUseCase,
-    private val updateArticleLike: UpdateArticleLikeUseCase
+    private val updateArticleLike: UpdateArticleLikeUseCase,
+    private val deleteArticle: DeleteArticleUseCase
 ): ViewModel() {
 
     private val _articleState = MutableStateFlow<NetworkResult<List<Article>>>(NetworkResult.Loading)
@@ -29,6 +31,9 @@ class CommunityViewModel @Inject constructor(
     private val _articleLikeState = MutableStateFlow(Unit)
     val articleLikeState = _articleLikeState.asStateFlow()
 
+    private val _deleteArticleState = MutableStateFlow(Unit)
+    val deleteArticleState = _deleteArticleState.asStateFlow()
+
     fun getArticleList(type: String) = viewModelScope.launch {
         _articleState.emit(getArticleList.invoke(type))
     }
@@ -39,5 +44,9 @@ class CommunityViewModel @Inject constructor(
 
     fun updateArticleLike(type: String, articleId: Int) = viewModelScope.launch {
         _articleLikeState.emit(updateArticleLike.invoke(type, articleId))
+    }
+
+    fun deleteArticle(type: String, articleId: Int) = viewModelScope.launch {
+        _deleteArticleState.emit(deleteArticle.invoke(type, articleId))
     }
 }

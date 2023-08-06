@@ -1,10 +1,10 @@
 package com.bonobono.data.mapper
 
 import com.bonobono.data.BuildConfig
-import com.bonobono.data.model.community.ArticleDetailResponse
-import com.bonobono.data.model.community.ArticleResponse
-import com.bonobono.data.model.community.CommentResponse
-import com.bonobono.data.model.community.ImageResponse
+import com.bonobono.data.model.community.response.ArticleDetailResponse
+import com.bonobono.data.model.community.response.ArticleResponse
+import com.bonobono.data.model.community.response.CommentResponse
+import com.bonobono.data.model.community.response.ImageResponse
 import com.bonobono.domain.model.community.Article
 import com.bonobono.domain.model.community.Comment
 import com.bonobono.domain.model.community.Image

@@ -2,10 +2,9 @@ package com.bonobono.data.remote
 
 import com.bonobono.domain.model.NetworkResult
 import com.bonobono.domain.model.community.Article
-import com.bonobono.data.model.community.ArticleResponse
-import com.bonobono.data.model.community.CommentResponse
+import com.bonobono.data.model.community.response.ArticleResponse
+import com.bonobono.data.model.community.response.CommentResponse
 import okhttp3.MultipartBody
-import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET

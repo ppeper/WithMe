@@ -1,4 +1,4 @@
-package com.bonobono.data.model.community
+package com.bonobono.data.model.community.response
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

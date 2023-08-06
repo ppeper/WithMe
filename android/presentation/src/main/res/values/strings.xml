@@ -7,4 +7,18 @@
     <string name="community_with_description">함께 바다가꾸기!</string>
     <string name="community_alert_title">신고게시판</string>
     <string name="community_alert_description">주변 쓰레기를 신고해요!</string>
+    <string name="login_login">로그인</string>
+    <string name="login_join">회원가입</string>
+    <string name="login_find_id">아이디 찾기</string>
+    <string name="login_find_password">비밀번호 찾기</string>
+    <string name="login_check_availability">중복확인</string>
+    <string name="login_resend">재전송</string>
+    <string name="login_require_availability">인증요청</string>
+    <string name="login_id">아이디</string>
+    <string name="login_password">비밀번호</string>
+    <string name="login_phone_number">휴대폰 번호</string>
+    <string name="login_name">이름</string>
+    <string name="login_authentic_code">인증번호</string>
+    <string name="edit_profile_done">확인</string>
+    <string name="edit_profile_change_password">비밀번호 변경하기</string>
 </resources>

@@ -1,0 +1,39 @@
+package com.bonobono.backend.community.article.dto.res;
+
+
+import com.bonobono.backend.community.article.entity.Article;
+import com.bonobono.backend.community.article.enumclass.ArticleType;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@NoArgsConstructor
+public class ArticleListResponseDto {
+
+    private ArticleType type;
+    private String title;
+    private String content;
+    private int views;
+    private boolean recruitStatus;
+    private ArticleImageResponseDto images;
+    private int imageSize;
+    private int likes;
+    private int comments;
+    private String nickname;
+
+    public ArticleListResponseDto(Article entity) {
+        this.type = entity.getType();
+        this.title = entity.getTitle();
+        this.content = entity.getContent();
+        this.views = entity.getViews();
+        this.recruitStatus = entity.isRecruitStatus();
+        this.images = entity.getImages().stream()
+                .map(ArticleImageResponseDto::new)
+                .findFirst().orElse(null);
+        this.imageSize = entity.getImages().size();
+        this.likes = entity.getArticleLikes().size();
+        this.comments = entity.getComments().size();
+        this.nickname = entity.getMember().getNickname();
+    }
+}
+

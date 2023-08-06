@@ -1,5 +1,6 @@
 package com.bonobono.presentation.ui.common.topbar
 
+import androidx.compose.foundation.background
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -18,6 +19,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.painterResource
 import com.bonobono.presentation.ui.common.topbar.item.ActionsMenu
+import com.bonobono.presentation.ui.theme.White
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -30,7 +32,9 @@ fun SharedTopAppBar(
     }
     if (appBarState.isCenterTopBar) {
         CenterAlignedTopAppBar(
-            modifier = modifier.graphicsLayer {
+            modifier = modifier
+                .background(color = White)
+                .graphicsLayer {
                 shadowElevation = 10f
             },
             navigationIcon = {
@@ -65,7 +69,9 @@ fun SharedTopAppBar(
         )
     } else {
         TopAppBar(
-            modifier = modifier.graphicsLayer {
+            modifier = modifier
+                .background(color = White)
+                .graphicsLayer {
                 shadowElevation = 5f
             },
             navigationIcon = {

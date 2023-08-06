@@ -1,46 +1,40 @@
 package com.bonobono.presentation.ui.mypage
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.navigation.NavController
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.bonobono.presentation.R
-import com.bonobono.presentation.ui.component.MyPageInfoCard
-import com.bonobono.presentation.ui.component.MyPageProfileImg
+import com.bonobono.presentation.ui.SettingNav
 import com.bonobono.presentation.ui.theme.WaveBlue
 import com.bonobono.presentation.ui.theme.White
 
@@ -55,7 +49,7 @@ fun MainMyPageScreen(navController: NavController) {
                 top.linkTo(parent.top)
                 linkTo(start = parent.start, end = parent.end)
             }) {
-            WaveBackGround()
+            WaveBackGround(navController)
         }
         // experience and money info box
         Surface(modifier = Modifier
@@ -65,7 +59,6 @@ fun MainMyPageScreen(navController: NavController) {
                 top.linkTo(waveBackground.bottom)
                 linkTo(start = parent.start, end = parent.end)
             }) {
-            MyPageInfoCard("1,000", "1,000")
         }
 
         // rest buttons
@@ -75,17 +68,16 @@ fun MainMyPageScreen(navController: NavController) {
                 linkTo(parent.start, parent.end)
                 top.linkTo(infoBox.bottom, margin = 16.dp)
             }) {
-            MyPageButton(imgUrl = "", buttonType = "포인트 상점")
-            MyPageButton(imgUrl = "", buttonType = "나의 글")
-            MyPageButton(imgUrl = "", buttonType = "회원정보 수정")
-            MyPageButton(imgUrl = "", buttonType = "로그아웃")
+            MyPageButton(buttonType = "포인트 상점", iconName = "ic_point_store", navController = navController)
+            MyPageButton(buttonType = "나의 글", iconName = "ic_feed_history", navController = navController)
+            MyPageButton(buttonType = "회원정보 수정", iconName = "ic_profile_edit",  navController = navController)
+            MyPageButton(buttonType = "로그아웃", iconName = "ic_logout", navController = navController)
         }
-
     }
 }
 
 @Composable
-fun WaveBackGround() {  // blue wave background, setting button, profile image, nickname
+fun WaveBackGround(navController: NavController) {  // blue wave background, setting button, profile image, nickname
     Box(modifier = Modifier.fillMaxWidth()) {
         Image(
             painter = painterResource(id = R.drawable.blue_wave_background),
@@ -99,7 +91,7 @@ fun WaveBackGround() {  // blue wave background, setting button, profile image, 
                 horizontalArrangement = Arrangement.End
             ) {
                 IconButton(
-                    onClick = { /*TODO*/ },
+                    onClick = { navController.navigate(SettingNav.route) },
                     modifier = Modifier.size(60.dp)
                 ) {
                     Icon(
@@ -108,6 +100,7 @@ fun WaveBackGround() {  // blue wave background, setting button, profile image, 
                         tint = WaveBlue
                     )
                 }
+
             }
             Column(
                 modifier = Modifier
@@ -115,7 +108,7 @@ fun WaveBackGround() {  // blue wave background, setting button, profile image, 
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 //                    Spacer(modifier = Modifier.height(32.dp))
-                MyPageProfileImg()
+
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(text = "test",
                     color = White,
@@ -126,14 +119,16 @@ fun WaveBackGround() {  // blue wave background, setting button, profile image, 
     }
 }
 @Composable
-fun MyPageButton(imgUrl: String, buttonType: String) {
+fun MyPageButton(buttonType: String, iconName: String, navController: NavController) {
     ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
         val (buttonIcon, buttonTypeStr, rightButton) = createRefs()
-//        if(imageBitmap != null) {
-//            Icon(painter = BitmapPainter(imageBitmap), contentDescription = "buttonIcon")
-//        }
-        Icon(painter = painterResource(id = R.drawable.ic_help),
+        val context = LocalContext.current
+        val drawableId = remember(iconName) {
+            context.resources.getIdentifier(iconName, "drawable", context.packageName)
+        }
+        Icon(painter = painterResource(id = drawableId),
             contentDescription = "buttonIcon",
+//            tint = WaveBlue,
             modifier = Modifier
                 .wrapContentSize(align = Alignment.Center)
                 .size(40.dp)

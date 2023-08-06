@@ -1,7 +1,7 @@
 package com.bonobono.backend.community.article.entity;
 
 import com.bonobono.backend.community.article.enumclass.ArticleType;
-import com.bonobono.backend.member.entity.Member;
+import com.bonobono.backend.member.domain.Member;
 import com.bonobono.backend.global.entity.BaseTimeEntity;
 import lombok.Builder;
 import lombok.Getter;
@@ -32,8 +32,6 @@ public class Article extends BaseTimeEntity {
 
     @Column(nullable = false)
     private String content;
-
-    private int likes;
 
     private int views;
 
@@ -67,8 +65,10 @@ public class Article extends BaseTimeEntity {
     }
 
     // 글 수정
-    public void updateFree(String title, String content){
+    public void updateArticle(String title, String content, String urlTitle, String url){
         this.title = title;
         this.content = content;
+        this.urlTitle = urlTitle;
+        this.url = url;
     }
 }

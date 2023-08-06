@@ -1,6 +1,6 @@
 package com.bonobono.backend.community.article.entity;
 
-import com.bonobono.backend.member.entity.Member;
+import com.bonobono.backend.member.domain.Member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,17 +17,18 @@ public class ArticleCommentLike {
     @Column(name = "article_comment_like_id")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name="article_comment_id")
-    private ArticleComment articleComment;
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="article_id")
     private Article article;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="member_id")
     private Member member;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="article_comment_id")
+    private ArticleComment articleComment;
+
 
     @Builder
     public ArticleCommentLike(ArticleComment articleComment, Article article, Member member){

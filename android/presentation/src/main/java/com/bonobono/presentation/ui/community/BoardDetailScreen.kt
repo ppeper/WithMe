@@ -146,7 +146,11 @@ fun BoardDetailScreen(
                             )
                         )
                     }
-                    LikeAndCommentView(article = article)
+                    // 게시글 좋아요 추가
+                    LikeAndCommentView(article = article) {
+                        communityViewModel.updateArticleLike(type, articleId)
+                    }
+
                     Column(
                         modifier = modifier.padding(horizontal = 16.dp)
                     ) {
@@ -198,6 +202,7 @@ fun ProfileView(
                 .clip(CircleShape),
             model = ImageRequest.Builder(LocalContext.current)
                 .data(article.profileImg)
+                .error(R.drawable.default_profile)
                 .build(),
             contentDescription = "업로드 사진",
             contentScale = ContentScale.Crop
@@ -226,6 +231,7 @@ fun ProfileView(
 fun LikeAndCommentView(
     modifier: Modifier = Modifier,
     article: Article,
+    onLikeClick: () -> Unit,
 ) {
     // TODO("유저가 게시글 좋아요 눌렀는지 기본 세팅값 필요")
     var likeState by rememberSaveable { mutableStateOf(article.liked) }
@@ -248,8 +254,13 @@ fun LikeAndCommentView(
                         interactionSource = MutableInteractionSource(),
                         indication = null
                     ) {
-                        /* TODO("서버에 좋아요 클릭 추가") */
-                          likeState = !likeState
+                        onLikeClick()
+                        if (likeState) {
+                            likeCntState -= 1
+                        } else {
+                            likeCntState += 1
+                        }
+                        likeState = !likeState
                     },
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -326,7 +337,8 @@ fun LikeAndCommentView(
 @Composable
 fun PreviewLikeAndCommentView() {
     LikeAndCommentView(
-        article = dummyArticle
+        article = dummyArticle,
+        onLikeClick = {}
     )
 }
 

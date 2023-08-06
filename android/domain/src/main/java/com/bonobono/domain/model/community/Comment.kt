@@ -7,7 +7,7 @@ data class Comment(
     val content: String,
     val nickname: String,
     val profileUrl: String,
-    val childComments: List<Comment>? = null,
+    val childComments: List<Comment>,
     val liked: Boolean,
     val likes: Int,
     val createdAt: Date

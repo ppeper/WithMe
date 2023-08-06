@@ -94,6 +94,7 @@ interface CommunityService {
 
     @GET("community/{type}/search/")
     suspend fun queryArticle(
+        @Path(value = "type") communityType: String,
         @Query("keyword") keyword: String
     ): NetworkResult<Unit>
 }

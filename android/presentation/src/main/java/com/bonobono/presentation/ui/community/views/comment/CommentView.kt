@@ -37,9 +37,6 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.bonobono.domain.model.community.Comment
 import com.bonobono.presentation.R
-import com.bonobono.presentation.ui.community.util.DummyData.commentList
-import com.bonobono.presentation.ui.community.util.DummyData.commentUser
-import com.bonobono.presentation.ui.community.util.DummyData.commentUserNotMe
 import com.bonobono.presentation.ui.theme.Black_100
 import com.bonobono.presentation.ui.theme.Red
 import com.bonobono.presentation.ui.theme.TextGray
@@ -215,20 +212,20 @@ fun CommentRow(
 @Preview
 @Composable
 fun PreviewCommentRow() {
-    CommentRow(comments = commentUser)
+//    CommentRow(comments = commentUser)
 }
 
 @Preview
 @Composable
 fun PreviewCommentList() {
-    CommentListView(commentList = commentList)
+//    CommentListView(commentList = commentList)
 }
 
 @Preview
 @Composable
 fun PreviewCommentView() {
     Column {
-        CommentView(comments = commentUser)
-        CommentView(comments = commentUserNotMe)
+//        CommentView(comments = commentUser)
+//        CommentView(comments = commentUserNotMe)
     }
 }

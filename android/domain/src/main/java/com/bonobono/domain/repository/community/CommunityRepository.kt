@@ -20,11 +20,11 @@ interface CommunityRepository {
     // 게시글 좋아요 클릭
     suspend fun updateArticleLike(type: String, articleId: Int)
     // 댓글 좋아요 클릭
-    suspend fun updateCommentLike(type: String, articleId: Int)
+    suspend fun updateCommentLike(type: String, articleId: Int, commentId: Int)
     // 댓글 수정
-    suspend fun updateComment(type: String, articleId: Int)
+    suspend fun updateComment(type: String, articleId: Int, commentId: Int)
     // 댓글 삭제
-    suspend fun deleteComment(type: String, articleId: Int)
+    suspend fun deleteComment(type: String, articleId: Int, commentId: Int)
     // 게시글 검색
-    suspend fun queryArticle(type: String, articleId: Int)
+    suspend fun queryArticle(type: String, keyword: String)
 }

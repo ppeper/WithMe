@@ -7,7 +7,6 @@ import com.bonobono.domain.model.NetworkResult
 import com.bonobono.domain.model.community.Article
 import com.bonobono.domain.model.community.Comment
 import com.bonobono.domain.repository.community.CommunityRepository
-import java.net.SocketTimeoutException
 import javax.inject.Inject
 
 class CommunityRepositoryImpl @Inject constructor(
@@ -26,11 +25,11 @@ class CommunityRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteArticle(type: String, articleId: Int) {
-        TODO("Not yet implemented")
+        handleApi { communityService.deleteArticle(type, articleId) }
     }
 
     override suspend fun updateArticle(type: String, articleId: Int) {
-        TODO("Not yet implemented")
+        handleApi { communityService.updateArticle(type, articleId) }
     }
 
     override suspend fun writeComment(type: String, articleId: Int, comment: Comment) {
@@ -38,23 +37,23 @@ class CommunityRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateArticleLike(type: String, articleId: Int) {
-        TODO("Not yet implemented")
+        handleApi { communityService.updateArticleLike(type, articleId) }
     }
 
-    override suspend fun updateCommentLike(type: String, articleId: Int) {
-        TODO("Not yet implemented")
+    override suspend fun updateCommentLike(type: String, articleId: Int, commentId: Int) {
+        handleApi { communityService.updateCommentLike(type, articleId, commentId) }
     }
 
-    override suspend fun updateComment(type: String, articleId: Int) {
-        TODO("Not yet implemented")
+    override suspend fun updateComment(type: String, articleId: Int, commentId: Int) {
+        handleApi { communityService.updateComment(type, articleId, commentId) }
     }
 
-    override suspend fun deleteComment(type: String, articleId: Int) {
-        TODO("Not yet implemented")
+    override suspend fun deleteComment(type: String, articleId: Int, commentId: Int) {
+        handleApi { communityService.deleteComment(type, articleId, commentId) }
     }
 
-    override suspend fun queryArticle(type: String, articleId: Int) {
-        TODO("Not yet implemented")
+    override suspend fun queryArticle(type: String, keyword: String) {
+        handleApi { communityService.queryArticle(type, keyword) }
     }
 
 }

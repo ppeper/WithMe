@@ -61,6 +61,19 @@ fun CommentResponse.toDomain(): Comment {
     )
 }
 
+fun Comment.toModel(): CommentResponse {
+    return CommentResponse(
+        parentCommentId = parentCommentId,
+        content = content,
+        nickname = nickname,
+        profileUrl = profileUrl,
+        childComments = childComments.map { it.toModel() },
+        liked = liked,
+        likes = likes,
+        createdAt = createdAt
+    )
+}
+
 fun ImageResponse.toDomain(): Image {
     return Image(
         imageName = imageName,

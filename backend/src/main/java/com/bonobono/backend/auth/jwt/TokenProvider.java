@@ -1,4 +1,4 @@
-package com.bonobono.backend.global.jwt;
+package com.bonobono.backend.auth.jwt;
 
 import com.bonobono.backend.member.dto.response.TokenDto;
 import com.bonobono.backend.member.repository.MemberRepository;

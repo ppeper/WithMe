@@ -76,6 +76,7 @@ public class Member extends BaseTimeEntity  {
     // 회원 정보 수정
     public void updateMember(MemberUpdateRequestDto dto, PasswordEncoder passwordEncoder) {
         if(dto.getPassword() != null) this.password = passwordEncoder.encode(dto.getPassword());
+        if(dto.getName() != null) this.name = dto.getName();
         if(dto.getNickname() != null) this.nickname = dto.getNickname();
         if(dto.getPhoneNumber() != null) this.phoneNumber = dto.getPhoneNumber();
     }

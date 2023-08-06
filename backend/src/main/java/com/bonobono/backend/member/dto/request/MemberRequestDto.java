@@ -4,20 +4,23 @@ import com.bonobono.backend.member.domain.Authority;
 import com.bonobono.backend.member.domain.Member;
 import com.bonobono.backend.member.domain.enumtype.Provider;
 import com.bonobono.backend.member.domain.enumtype.Role;
+
+import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import java.util.stream.Collectors;
+
+import lombok.*;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+@Builder
 @Data
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MemberRequestDto {
+public class MemberRequestDto implements Serializable {
 
     private Long memberId;
     private String username;
@@ -25,6 +28,7 @@ public class MemberRequestDto {
     private String name;
     private String nickname;
     private String phoneNumber;
+    private Set<Authority> role;
 
     @Builder
     public MemberRequestDto(Long memberId){
@@ -45,6 +49,25 @@ public class MemberRequestDto {
 
     public UsernamePasswordAuthenticationToken toAuthentication() {
         return new UsernamePasswordAuthenticationToken(username, password);
+    }
+
+    public static MemberRequestDto of(Member member) {
+
+
+        if (member == null) {
+            return null;
+        }
+
+        Set<Authority> role = member.getRole();
+
+        return new MemberRequestDtoBuilder()
+                .memberId(member.getId())
+                .username(member.getUsername())
+                .name(member.getName())
+                .nickname(member.getNickname())
+                .phoneNumber(member.getPhoneNumber())
+                .role(role)
+                .build();
     }
 
 }

@@ -1,4 +1,4 @@
-package com.bonobono.backend.global.jwt;
+package com.bonobono.backend.auth.jwt;
 
 import java.io.IOException;
 import javax.servlet.ServletException;

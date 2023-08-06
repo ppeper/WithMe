@@ -1,6 +1,6 @@
 package com.bonobono.backend.member.service;
 
-import com.bonobono.backend.global.jwt.TokenProvider;
+import com.bonobono.backend.auth.jwt.TokenProvider;
 import com.bonobono.backend.member.domain.Authority;
 import com.bonobono.backend.member.domain.Member;
 import com.bonobono.backend.member.domain.RefreshToken;
@@ -9,8 +9,8 @@ import com.bonobono.backend.member.dto.request.MemberRequestDto;
 import com.bonobono.backend.member.dto.request.TokenRequestDto;
 import com.bonobono.backend.member.dto.response.MemberResponseDto;
 import com.bonobono.backend.member.dto.response.TokenDto;
-import com.bonobono.backend.member.exception.AppException;
-import com.bonobono.backend.member.exception.ErrorCode;
+import com.bonobono.backend.global.exception.AppException;
+import com.bonobono.backend.global.exception.ErrorCode;
 import com.bonobono.backend.member.repository.AuthorityRepository;
 import com.bonobono.backend.member.repository.MemberRepository;
 import com.bonobono.backend.member.repository.RefreshTokenRepository;

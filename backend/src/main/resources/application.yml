@@ -19,10 +19,10 @@ spring:
         show_sql: true #show sql
     defer-datasource-initialization: true
 
-  sql:
-    init:
-      data-locations: classpath:data.sql
-      mode: always
+#  sql:
+#    init:
+#      data-locations: classpath:data.sql
+#      mode: always
 
   mvc: # swagger로 인해서 세팅
     pathmatch:

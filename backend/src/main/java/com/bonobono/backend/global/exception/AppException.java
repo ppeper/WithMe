@@ -1,4 +1,4 @@
-package com.bonobono.backend.member.exception;
+package com.bonobono.backend.global.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

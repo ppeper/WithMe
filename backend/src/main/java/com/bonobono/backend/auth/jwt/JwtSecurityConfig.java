@@ -1,4 +1,4 @@
-package com.bonobono.backend.global.jwt;
+package com.bonobono.backend.auth.jwt;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;

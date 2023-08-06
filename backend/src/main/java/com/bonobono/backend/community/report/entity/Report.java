@@ -1,9 +1,7 @@
 package com.bonobono.backend.community.report.entity;
 
-import com.bonobono.backend.community.article.entity.ArticleComment;
-import com.bonobono.backend.community.article.entity.ArticleImage;
-import com.bonobono.backend.community.article.entity.ArticleLike;
 import com.bonobono.backend.global.entity.BaseTimeEntity;
+import com.bonobono.backend.location.entity.Location;
 import com.bonobono.backend.member.domain.Member;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,7 +20,7 @@ public class Report extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "article_id")
+    @Column(name = "report_id")
     private Long id;
 
     @Column(nullable = false)
@@ -33,32 +31,48 @@ public class Report extends BaseTimeEntity {
 
     private int views;
 
-    private boolean adminCofirmStatus;
+    private double latitude;
 
+    private double longitude;
+
+    private boolean adminConfirmStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="member_id", nullable = false)
     private Member member;
 
-    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ArticleImage> images = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="location_id", nullable = false)
+    private Location location;
 
-    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ArticleComment> comments = new ArrayList<>();
+    @OneToMany(mappedBy = "report", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ReportImage> images = new ArrayList<>();
 
-    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<ArticleLike> articleLikes = new HashSet<>();
+    @OneToMany(mappedBy = "report", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ReportComment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "report", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ReportLike> reportLikes = new HashSet<>();
 
     @Builder
-    public Report(String title, String content, String urlTitle, String url, Member member) {
+    public Report(String title, String content, double latitude, double longitude, Member member) {
         this.title = title;
         this.content = content;
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.member = member;
     }
 
     // 글 수정
-    public void updateFree(String title, String content){
+    public void updateReport(String title, String content, double latitude, double longitude){
         this.title = title;
         this.content = content;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
+    // 관리자 신고게시글 처리
+    public void updateAdminConfirmStatus(){
+        this.adminConfirmStatus = true;
     }
 }

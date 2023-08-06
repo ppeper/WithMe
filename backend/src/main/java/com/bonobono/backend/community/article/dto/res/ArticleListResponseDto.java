@@ -6,10 +6,13 @@ import com.bonobono.backend.community.article.enumclass.ArticleType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Getter
 @NoArgsConstructor
 public class ArticleListResponseDto {
 
+    private Long articleId;
     private ArticleType type;
     private String title;
     private String content;
@@ -20,8 +23,11 @@ public class ArticleListResponseDto {
     private int likes;
     private int comments;
     private String nickname;
+    private String profileImg;
+    private LocalDateTime createdDate;
 
     public ArticleListResponseDto(Article entity) {
+        this.articleId = entity.getId();
         this.type = entity.getType();
         this.title = entity.getTitle();
         this.content = entity.getContent();
@@ -34,6 +40,8 @@ public class ArticleListResponseDto {
         this.likes = entity.getArticleLikes().size();
         this.comments = entity.getComments().size();
         this.nickname = entity.getMember().getNickname();
+        this.profileImg = entity.getMember().getProfileImg();
+        this.createdDate = entity.getCreatedDate();
     }
 }
 

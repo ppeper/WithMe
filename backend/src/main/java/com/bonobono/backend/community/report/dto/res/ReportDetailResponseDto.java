@@ -1,7 +1,6 @@
-package com.bonobono.backend.community.article.dto.res;
+package com.bonobono.backend.community.report.dto.res;
 
-import com.bonobono.backend.community.article.entity.Article;
-import com.bonobono.backend.community.article.enumclass.ArticleType;
+import com.bonobono.backend.community.report.entity.Report;
 import com.bonobono.backend.member.domain.Member;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,43 +13,41 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ArticleDetailResponseDto {
+public class ReportDetailResponseDto {
 
-    private ArticleType type;
     private String title;
     private String content;
     private Long memberId;
     private String nickname;
     private String profileImg;
     private int views;
-    private boolean recruitStatus;
-    private String urlTitle;
-    private String url;
-    private List<ArticleImageResponseDto> images;
+    private double latitude;
+    private double longitude;
+    private boolean adminConfirmStatus;
+    private List<ReportImageResponseDto> images;
     private int likes;
     private boolean isLiked;
-    private List<ArticleCommentResponseDto> comments;
+    private List<ReportCommentResponseDto> comments;
     private int commentCnt;
     private LocalDateTime createdDate;
 
 
 
-    public ArticleDetailResponseDto(Article entity, Member member, List<ArticleCommentResponseDto> comments){
-        this.type = entity.getType();
+    public ReportDetailResponseDto(Report entity, Member member, List<ReportCommentResponseDto> comments){
         this.title = entity.getTitle();
         this.content = entity.getContent();
         this.memberId = entity.getMember().getId();
         this.nickname = entity.getMember().getNickname();
         this.profileImg = entity.getMember().getProfileImg();
         this.views = entity.getViews();
-        this.recruitStatus = entity.isRecruitStatus();
-        this.urlTitle = entity.getUrlTitle();
-        this.url = entity.getUrl();
+        this.latitude = entity.getLatitude();
+        this.longitude = entity.getLongitude();
+        this.adminConfirmStatus = entity.isAdminConfirmStatus();
         this.images = entity.getImages().stream()
-                .map(ArticleImageResponseDto::new)
+                .map(ReportImageResponseDto::new)
                 .collect(Collectors.toList());
-        this.likes = entity.getArticleLikes().size();
-        this.isLiked =  entity.getArticleLikes().stream().anyMatch(like -> like.getMember().getId().equals(member.getId()));
+        this.likes = entity.getReportLikes().size();
+        this.isLiked =  entity.getReportLikes().stream().anyMatch(like -> like.getMember().getId().equals(member.getId()));
         this.comments = comments;
         this.commentCnt = entity.getComments().size();
         this.createdDate = entity.getCreatedDate();

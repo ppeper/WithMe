@@ -26,7 +26,6 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.IconToggleButton
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -38,7 +37,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -47,17 +45,21 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.bonobono.domain.model.NetworkResult
+import com.bonobono.domain.model.community.Article
+import com.bonobono.domain.model.community.Image
 import com.bonobono.presentation.R
-import com.bonobono.presentation.ui.community.util.DummyData.commentList
+import com.bonobono.presentation.ui.community.util.DummyData.dummyArticle
 import com.bonobono.presentation.ui.community.util.boardDetailLaunchEffect
 import com.bonobono.presentation.ui.community.views.board.DropDownMenuView
 import com.bonobono.presentation.ui.community.views.comment.CommentListView
 import com.bonobono.presentation.ui.community.views.comment.NoCommentView
-import com.bonobono.presentation.ui.community.views.comment.TestUser
 import com.bonobono.presentation.ui.theme.Black_100
 import com.bonobono.presentation.ui.theme.Black_70
 import com.bonobono.presentation.ui.theme.DividerGray
@@ -65,23 +67,15 @@ import com.bonobono.presentation.ui.theme.Red
 import com.bonobono.presentation.ui.theme.TextGray
 import com.bonobono.presentation.ui.theme.White
 import com.bonobono.presentation.utils.rememberImeState
-
-data class PostDetail(
-    val title: String,
-    val content: String,
-    val images: List<String>? = null,
-    val name: String,
-    val profile: String,
-    val time: Long,
-    val viewCount: Int = 0,
-    val commentList: List<TestUser> = emptyList()
-)
+import com.bonobono.presentation.viewmodel.CommunityViewModel
 
 @Composable
 fun BoardDetailScreen(
     modifier: Modifier = Modifier,
+    type: String,
+    articleId: Int,
     navController: NavController,
-    postDetail: PostDetail
+    communityViewModel: CommunityViewModel = hiltViewModel()
 ) {
     boardDetailLaunchEffect(navController = navController)
     val imeState = rememberImeState()
@@ -93,69 +87,85 @@ fun BoardDetailScreen(
         }
     }
 
-    Surface(
-        modifier = modifier.fillMaxSize()
-    ) {
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .verticalScroll(scrollState)
-        ) {
-            Column(
-                modifier = modifier
-                    .fillMaxSize()
-                    .then(modifier.padding(16.dp)),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
+    val state by communityViewModel.articleDetailState.collectAsStateWithLifecycle()
 
-                WriterView(postDetail = postDetail)
+    // 게시글 정보 불러오기
+    LaunchedEffect(Unit) {
+        communityViewModel.getArticleById(type, articleId)
+    }
+    when (state) {
+        is NetworkResult.Loading -> {
 
-                Text(
-                    text = postDetail.title,
-                    style = TextStyle(
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight(700),
-                        color = Black_100,
-                    )
-                )
-                Text(
-                    text = postDetail.content,
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight(400),
-                        color = Black_100,
-                    )
-                )
-                postDetail.images?.let {
-                    MultipleImageView(images = it)
-                }
-                Text(
-                    text = "조회수 ${postDetail.viewCount}",
-                    style = TextStyle(
-                        fontSize = 12.sp,
-                        color = TextGray,
-                        textAlign = TextAlign.Center,
-                    )
-                )
-            }
-            LikeAndCommentView(postDetail = postDetail)
-            Column(
-                modifier = modifier.padding(horizontal = 16.dp)
+        }
+        is NetworkResult.Success -> {
+            val article = (state as NetworkResult.Success<Article>).data
+            Box(
+                modifier = modifier.fillMaxSize()
+                    .background(color = White)
             ) {
-                if (postDetail.commentList.isEmpty()) {
-                    NoCommentView()
-                } else {
-                    CommentListView(commentList = postDetail.commentList)
+                Column(
+                    modifier = modifier
+                        .fillMaxSize()
+                        .verticalScroll(scrollState)
+                ) {
+                    Column(
+                        modifier = modifier
+                            .fillMaxSize()
+                            .then(modifier.padding(16.dp)),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+
+                        WriterView(article = article)
+
+                        Text(
+                            text = article.title,
+                            style = TextStyle(
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight(700),
+                                color = Black_100,
+                            )
+                        )
+                        Text(
+                            text = article.content,
+                            style = TextStyle(
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight(400),
+                                color = Black_100,
+                            )
+                        )
+                        if (article.images.isNotEmpty()) {
+                            MultipleImageView(images = article.images)
+                        }
+                        Text(
+                            text = "조회수 ${article.views}",
+                            style = TextStyle(
+                                fontSize = 12.sp,
+                                color = TextGray,
+                                textAlign = TextAlign.Center,
+                            )
+                        )
+                    }
+                    LikeAndCommentView(article = article)
+                    Column(
+                        modifier = modifier.padding(horizontal = 16.dp)
+                    ) {
+                        if (article.comments.isEmpty()) {
+                            NoCommentView()
+                        } else {
+                            CommentListView(commentList = article.comments)
+                        }
+                    }
                 }
             }
         }
+        is NetworkResult.Error -> {}
     }
 }
 
 @Composable
 fun WriterView(
     modifier: Modifier = Modifier,
-    postDetail: PostDetail,
+    article: Article,
 ) {
     Row(
         modifier = modifier
@@ -164,7 +174,7 @@ fun WriterView(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        ProfileView(postDetail = postDetail)
+        ProfileView(article = article)
         // TODO("내가 쓴 글만 DropDown 보이기 -> 로그인 완성되면 Token으로 확인)
         DropDownMenuView(
             onUpdateClick = {},
@@ -176,7 +186,7 @@ fun WriterView(
 @Composable
 fun ProfileView(
     modifier: Modifier = Modifier,
-    postDetail: PostDetail
+    article: Article
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically
@@ -186,7 +196,7 @@ fun ProfileView(
                 .size(48.dp)
                 .clip(CircleShape),
             model = ImageRequest.Builder(LocalContext.current)
-                .data(postDetail.profile)
+                .data(article.profileUrl)
                 .build(),
             contentDescription = "업로드 사진",
             contentScale = ContentScale.Crop
@@ -194,7 +204,7 @@ fun ProfileView(
         Spacer(modifier = modifier.size(12.dp))
         Column {
             Text(
-                text = postDetail.name,
+                text = article.nickname,
                 style = TextStyle(
                     fontSize = 14.sp,
                     color = Black_100,
@@ -214,10 +224,12 @@ fun ProfileView(
 @Composable
 fun LikeAndCommentView(
     modifier: Modifier = Modifier,
-    postDetail: PostDetail,
+    article: Article,
 ) {
     // TODO("유저가 게시글 좋아요 눌렀는지 기본 세팅값 필요")
-    var likeState by rememberSaveable { mutableStateOf(true) }
+    var likeState by rememberSaveable { mutableStateOf(article.liked) }
+    var likeCntState by rememberSaveable { mutableStateOf(article.likes) }
+    var commentCntState by rememberSaveable { mutableStateOf(article.commentCnt) }
 
     Column {
         Divider(color = DividerGray)
@@ -266,7 +278,7 @@ fun LikeAndCommentView(
                     )
                     Spacer(modifier = modifier.size(4.dp))
                     Text(
-                        text = "4",
+                        text = likeCntState.toString(),
                         style = TextStyle(
                             fontSize = 12.sp,
                             color = if (likeState) Red else TextGray,
@@ -294,6 +306,15 @@ fun LikeAndCommentView(
                         textAlign = TextAlign.Center,
                     )
                 )
+                Spacer(modifier = modifier.size(4.dp))
+                Text(
+                    text = commentCntState.toString(),
+                    style = TextStyle(
+                        fontSize = 12.sp,
+                        color = TextGray,
+                        textAlign = TextAlign.Center,
+                    )
+                )
             }
         }
         Divider(color = DividerGray)
@@ -304,17 +325,7 @@ fun LikeAndCommentView(
 @Composable
 fun PreviewLikeAndCommentView() {
     LikeAndCommentView(
-        postDetail = PostDetail(
-            title = "쓰레기들 위치 찍습니다",
-            content = "발견된 해수욕장 쓰레기 무단 투기",
-            name = "홍길동",
-            images = listOf(
-                "https://images.unsplash.com/photo-1689852484069-3e0fe82cc7c1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1887&q=80",
-                "https://images.unsplash.com/photo-1682685796063-d2604827f7b3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
-            ),
-            profile = "https://images.unsplash.com/photo-1689852484069-3e0fe82cc7c1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1887&q=80",
-            time = System.currentTimeMillis()
-        )
+        article = dummyArticle
     )
 }
 
@@ -322,13 +333,7 @@ fun PreviewLikeAndCommentView() {
 @Composable
 fun PreviewWriterView() {
     WriterView(
-        postDetail = PostDetail(
-            title = "쓰레기들 위치 찍습니다",
-            content = "발견된 해수욕장 쓰레기 무단 투기",
-            name = "홍길동",
-            profile = "https://images.unsplash.com/photo-1689852484069-3e0fe82cc7c1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1887&q=80",
-            time = System.currentTimeMillis()
-        )
+        article = dummyArticle
     )
 }
 
@@ -336,18 +341,8 @@ fun PreviewWriterView() {
 @Composable
 fun PreviewBoardDetail() {
     BoardDetailScreen(
-        postDetail = PostDetail(
-            title = "쓰레기들 위치 찍습니다",
-            content = "발견된 해수욕장 쓰레기 무단 투기",
-            name = "홍길동",
-            images = listOf(
-                "https://images.unsplash.com/photo-1689852484069-3e0fe82cc7c1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1887&q=80",
-                "https://images.unsplash.com/photo-1682685796063-d2604827f7b3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
-            ),
-            profile = "https://images.unsplash.com/photo-1689852484069-3e0fe82cc7c1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1887&q=80",
-            time = System.currentTimeMillis(),
-            commentList = commentList
-        ),
+        type = "free",
+        articleId = 1,
         navController = rememberNavController()
     )
 }
@@ -356,7 +351,7 @@ fun PreviewBoardDetail() {
 @Composable
 fun MultipleImageView(
     modifier: Modifier = Modifier,
-    images: List<String>
+    images: List<Image>
 ) {
     Box(
         modifier = modifier
@@ -406,11 +401,11 @@ fun MultipleImageView(
 fun ImageViewWithNumber(
     modifier: Modifier = Modifier,
     number: Int,
-    images: List<String>
+    images: List<Image>
 ) {
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
-            .data(images[number])
+            .data(images[number].imageUrl)
             .build(),
         contentDescription = "업로드 사진",
         contentScale = ContentScale.Crop,

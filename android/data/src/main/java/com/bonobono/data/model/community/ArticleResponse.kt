@@ -6,6 +6,7 @@ import java.util.Date
 
 @Parcelize
 data class ArticleResponse(
+    val id: String? = null,
     val type: String,
     val title: String,
     val content: String,

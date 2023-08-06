@@ -3,6 +3,7 @@ package com.bonobono.domain.model.community
 import java.util.Date
 
 data class Article(
+    val id: Int,
     val type: String,
     val title: String,
     val content: String,
@@ -10,7 +11,7 @@ data class Article(
     val mainImage: Image? = null,
     val images: List<Image> = emptyList(),
     val commentCnt: Int,
-    val comments: List<Comment>? = null,
+    val comments: List<Comment> = emptyList(),
     val liked: Boolean = false,
     val likes: Int,
     val nickname: String,

@@ -48,6 +48,7 @@ object DummyData {
         commentUserNotMe
     )
     val dummyArticle = Article(
+        id = 1,
         type = "FREE",
         title = "쓰레기 Article Title",
         content = "쓰레기 content Title",

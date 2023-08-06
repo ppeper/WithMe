@@ -11,6 +11,7 @@ import com.bonobono.domain.model.community.Image
 
 fun ArticleResponse.toDomain(): Article {
     return Article(
+        id = 1,
         type = type,
         title = title,
         content = content,
@@ -29,6 +30,7 @@ fun ArticleResponse.toDomain(): Article {
 
 fun ArticleDetailResponse.toDomain(): Article {
     return Article(
+        id = 1,
         type = type,
         title = title,
         content = content,

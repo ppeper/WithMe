@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -40,14 +39,10 @@ import com.bonobono.presentation.ui.NavigationRouteName.MAIN_COMMUNITY
 import com.bonobono.presentation.ui.chatting.MainChattingScreen
 import com.bonobono.presentation.ui.common.topbar.SharedTopAppBar
 import com.bonobono.presentation.ui.common.topbar.rememberAppBarState
-import com.bonobono.presentation.ui.common.topbar.screen.ProfileEditScreen
 import com.bonobono.presentation.ui.community.BoardDetailScreen
 import com.bonobono.presentation.ui.community.CommunityScreen
 import com.bonobono.presentation.ui.community.BoardWriteScreen
-import com.bonobono.presentation.ui.community.util.DummyData
 import com.bonobono.presentation.ui.community.GalleryScreen
-import com.bonobono.presentation.ui.community.PostDetail
-import com.bonobono.presentation.ui.community.util.DummyData.commentList
 import com.bonobono.presentation.ui.community.views.board.CommonPostListView
 import com.bonobono.presentation.ui.community.views.comment.WriteCommentView
 import com.bonobono.presentation.ui.common.button.CommunityFloatingActionButton
@@ -345,26 +340,30 @@ fun MainNavigationScreen(
         communityNavigation(navController = navController)
 
         composable(
-            route = BoardDetailNav.route,
-            deepLinks = BoardDetailNav.deepLinks
+            route = "${BoardDetailNav.route}/{type}/{articleId}",
         ) {
-            // TODO("실 구현시 서버에서 데이터 가져와서 bundle로 넘겨줌")
-            BoardDetailScreen(
-                postDetail = PostDetail(
-                    title = "쓰레기들 위치 찍습니다",
-                    content = "발견된 해수욕장 쓰레기 무단 투기",
-                    name = "홍길동",
-                    profile = "https://images.unsplash.com/photo-1689852484069-3e0fe82cc7c1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1887&q=80",
-                    time = System.currentTimeMillis(),
-                    images = listOf(
-                        DummyData.imageUrl_3,
-                        DummyData.imageUrl,
-                        DummyData.imageUrl_2
-                    ),
-                    commentList = commentList
-                ),
-                navController = navController
-            )
+            val type = it.arguments?.getString("type")
+            val articleId = it.arguments?.getInt("articleId")
+            if (articleId != null && type != null) {
+                BoardDetailScreen(
+                    type = type,
+                    articleId = articleId,
+        //                postDetail = PostDetail(
+        //                    title = "쓰레기들 위치 찍습니다",
+        //                    content = "발견된 해수욕장 쓰레기 무단 투기",
+        //                    name = "홍길동",
+        //                    profile = "https://images.unsplash.com/photo-1689852484069-3e0fe82cc7c1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1887&q=80",
+        //                    time = System.currentTimeMillis(),
+        //                    images = listOf(
+        //                        DummyData.imageUrl_3,
+        //                        DummyData.imageUrl,
+        //                        DummyData.imageUrl_2
+        //                    ),
+        //                    commentList = commentList
+        //                ),
+                    navController = navController
+                )
+            }
         }
         // 마이페이지
         composable(

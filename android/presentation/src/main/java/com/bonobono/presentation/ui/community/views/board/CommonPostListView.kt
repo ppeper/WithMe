@@ -79,22 +79,24 @@ fun CommonPostListView(
     }
     val state by communityViewModel.articleState.collectAsStateWithLifecycle()
 
-    if (state is NetworkResult.Loading) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-        }
-    } else if (state is NetworkResult.Success) {
-        val articleList = (state as NetworkResult.Success<List<Article>>).data
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            contentPadding = PaddingValues(16.dp),
-        ) {
-            items(articleList) { item ->
-                BoardItemView(article = item, navController = navController)
+    when (state) {
+        is NetworkResult.Loading -> {
+            Box(modifier = Modifier.fillMaxSize()) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             }
         }
-    } else {
-        Log.d("test", "CommonPostListView: ${state}")
+        is NetworkResult.Success -> {
+            val articleList = (state as NetworkResult.Success<List<Article>>).data
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                contentPadding = PaddingValues(16.dp),
+            ) {
+                items(articleList) { item ->
+                    BoardItemView(type = type, article = item, navController = navController)
+                }
+            }
+        }
+        is NetworkResult.Error -> {}
     }
 }
 
@@ -102,6 +104,7 @@ fun CommonPostListView(
 @Composable
 fun BoardItemView(
     modifier: Modifier = Modifier,
+    type: String,
     article: Article,
     navController: NavController
 ) {
@@ -114,7 +117,8 @@ fun BoardItemView(
         ),
         shape = RoundedCornerShape(10.dp),
         onClick = {
-            navController.navigate(BoardDetailNav.route)
+            // 해당 게시글로 이동 TODO("현재는 임의의 1번으로 이동")
+            navController.navigate("${BoardDetailNav.route}/$type/1")
         }
     ) {
         Row(
@@ -347,5 +351,5 @@ fun PreviewBoardList() {
 @Preview
 @Composable
 fun PreviewBoardItem() {
-    BoardItemView(article = dummyArticle, navController = rememberNavController())
+    BoardItemView(type = "free", article = dummyArticle, navController = rememberNavController())
 }

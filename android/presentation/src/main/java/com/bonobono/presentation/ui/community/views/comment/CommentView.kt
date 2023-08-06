@@ -5,7 +5,6 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowColumn
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,9 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
@@ -39,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.bonobono.domain.model.community.Comment
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.community.util.DummyData.commentList
 import com.bonobono.presentation.ui.community.util.DummyData.commentUser
@@ -47,20 +44,11 @@ import com.bonobono.presentation.ui.theme.Black_100
 import com.bonobono.presentation.ui.theme.Red
 import com.bonobono.presentation.ui.theme.TextGray
 
-// TODO("댓글 단 사람들 리스트")
-data class TestUser(
-    val type: Int? = null,
-    val profile: String,
-    val name: String,
-    val comment: String,
-    val userClickLike: Boolean = true,
-    val commentList: List<TestUser> = emptyList()
-)
 
 @Composable
 fun CommentListView(
     modifier: Modifier = Modifier,
-    commentList: List<TestUser>
+    commentList: List<Comment>
 ) {
     Column {
         commentList.forEach {
@@ -72,7 +60,7 @@ fun CommentListView(
 @Composable
 fun CommentView(
     modifier: Modifier = Modifier,
-    comments: TestUser
+    comments: Comment
 ) {
     Row(
         modifier = modifier
@@ -85,7 +73,7 @@ fun CommentView(
                 .size(40.dp)
                 .clip(CircleShape),
             model = ImageRequest.Builder(LocalContext.current)
-                .data(comments.profile)
+                .data(comments.profileUrl)
                 .build(),
             contentDescription = "업로드 사진",
             contentScale = ContentScale.Crop
@@ -93,7 +81,7 @@ fun CommentView(
         Spacer(modifier = modifier.size(12.dp))
         Column {
             Text(
-                text = comments.name,
+                text = comments.nickname,
                 style = TextStyle(
                     fontSize = 12.sp,
                     color = Black_100,
@@ -107,19 +95,14 @@ fun CommentView(
                 )
             )
             Text(
-                text = comments.comment,
+                text = comments.content,
                 style = TextStyle(
                     fontSize = 14.sp,
                     color = Black_100,
                 )
             )
             CommentRow(comments = comments)
-            // 대댓글 리스트
-            FlowColumn {
-                comments.commentList.forEach {
-                    CommentView(comments = it)
-                }
-            }
+            // 대댓글 리스트 TODO
         }
     }
 }
@@ -127,10 +110,11 @@ fun CommentView(
 @Composable
 fun CommentRow(
     modifier: Modifier = Modifier,
-    comments: TestUser
+    comments: Comment
 ) {
-    // TODO("유저가 댓글 좋아요 눌렀는지 기본 세팅값 필요")
-    var likeState by rememberSaveable { mutableStateOf(comments.userClickLike) }
+    var likeState by rememberSaveable { mutableStateOf(comments.liked) }
+    var likeCntState by rememberSaveable { mutableStateOf(comments.likes) }
+    var commentCntState by rememberSaveable { mutableStateOf(comments.childComments?.size ?: 0) }
 
     Row(
         modifier = modifier
@@ -149,6 +133,7 @@ fun CommentRow(
                     indication = null
                 ) {
                     /* TODO("서버에 좋아요 클릭 추가") */
+                    if (likeState) { likeCntState += 1 } else likeCntState -= 1
                     likeState = !likeState
                 },
                 verticalAlignment = Alignment.CenterVertically
@@ -179,16 +164,19 @@ fun CommentRow(
                 )
             }
             Spacer(modifier = modifier.size(4.dp))
-            Text(
-                text = "4",
-                style = TextStyle(
-                    fontSize = 10.sp,
-                    color = if (likeState) Red else TextGray,
-                    textAlign = TextAlign.Center,
+            if (0 < likeCntState) {
+                Text(
+                    text = likeCntState.toString(),
+                    style = TextStyle(
+                        fontSize = 10.sp,
+                        color = if (likeState) Red else TextGray,
+                        textAlign = TextAlign.Center,
+                    )
                 )
-            )
+            }
         }
-        if (comments.type != null) {
+        // 일반 댓글 -> 대댓글을 달 수 있다.
+        if (comments.parentCommentId == null) {
             Row(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
@@ -209,14 +197,16 @@ fun CommentRow(
                     )
                 )
                 Spacer(modifier = modifier.size(4.dp))
-                Text(
-                    text = "4",
-                    style = TextStyle(
-                        fontSize = 10.sp,
-                        color = TextGray,
-                        textAlign = TextAlign.Center,
+                if (0 < commentCntState) {
+                    Text(
+                        text = commentCntState.toString(),
+                        style = TextStyle(
+                            fontSize = 10.sp,
+                            color = TextGray,
+                            textAlign = TextAlign.Center,
+                        )
                     )
-                )
+                }
             }
         }
     }

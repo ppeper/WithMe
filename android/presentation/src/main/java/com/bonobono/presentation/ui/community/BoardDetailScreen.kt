@@ -84,6 +84,7 @@ import com.bonobono.presentation.utils.DateUtils
 import com.bonobono.presentation.utils.rememberImeState
 import com.bonobono.presentation.viewmodel.CommunityViewModel
 import kotlinx.coroutines.launch
+import kotlin.math.log
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -109,6 +110,7 @@ fun BoardDetailScreen(
 
     // 게시글 정보 불러오기
     LaunchedEffect(Unit) {
+        Log.d("TEST", "BoardDetailScreen: 게시글 데이터")
         communityViewModel.getArticleById(type, articleId)
     }
     when (articleState) {
@@ -120,7 +122,8 @@ fun BoardDetailScreen(
             val article = (articleState as NetworkResult.Success<Article>).data
             val comments by remember { mutableStateOf(article.comments) }
             Box(
-                modifier = modifier.fillMaxSize()
+                modifier = modifier
+                    .fillMaxSize()
                     .background(color = White)
             ) {
                 LazyColumn(
@@ -174,7 +177,7 @@ fun BoardDetailScreen(
                             NoCommentView()
                         }
                     } else {
-                        items(comments) {
+                        items(comments, key = { item -> item.hashCode() }) {
                             CommentView(comments = it)
                         }
                     }
@@ -194,13 +197,14 @@ fun BoardDetailScreen(
                         articleId = article.articleId,
                         onWriteCommentClicked = { comment ->
                             Log.d("게시글 댓글 작성", "BoardDetailScreen: $comment")
-                            comments = comments.toMutableList().apply { add(comment) }
+                            comments = comments.toMutableList().apply { add(comment) }.toList()
                         }
                     )
                 }
             ) {
                 Box(
-                    modifier = modifier.fillMaxSize()
+                    modifier = modifier
+                        .fillMaxSize()
                         .background(color = White)
                         .padding(it)
                         .pointerInput(Unit) {

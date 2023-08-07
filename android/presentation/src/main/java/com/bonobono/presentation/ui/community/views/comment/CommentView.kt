@@ -19,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -46,11 +47,15 @@ fun CommentView(
     modifier: Modifier = Modifier,
     comments: Comment
 ) {
+    val createDateState by rememberSaveable { mutableStateOf(DateUtils.dateToString(comments.createdDate)) }
     Row(
         modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .padding(top = 16.dp, end = 16.dp, start = comments.parentCommentId?.run { 0.dp } ?: 16.dp )
+            .padding(
+                top = 16.dp,
+                end = 16.dp,
+                start = comments.parentCommentId?.run { 0.dp } ?: 16.dp)
     ) {
         AsyncImage(
             modifier = modifier
@@ -73,7 +78,7 @@ fun CommentView(
                 )
             )
             Text(
-                text = DateUtils.dateToString(comments.createdDate),
+                text = createDateState,
                 style = TextStyle(
                     fontSize = 10.sp,
                     color = TextGray,

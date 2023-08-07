@@ -163,13 +163,8 @@ public class MemberService {
      */
     @Transactional
     public void logout(HttpServletRequest request) {
-
-        // accessToken
-//        String jwt = request.getHeader("Authorization").substring(7);
-//        try(Connection conn = dataSource.getConnection();
-//            PreparedStatement pstmt = conn.prepareStatement())
-//        ValueOperations<String, String> logoutValueOperations = redisTemplate.opsForValue();
-//        logoutValueOperations.set(jwt, jwt);
+        
+        // accessToken을 다른 Table에 등록해서 검사해도되지만 굳이...? 안해도 될듯해서 넣지않음
 
         // refreshToken 삭제
         tokenRepository.deleteByKey(String.valueOf(SecurityUtil.getLoginMemberId()))

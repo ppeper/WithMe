@@ -1,10 +1,15 @@
 package com.bonobono.backend.member.controller;
 
+import com.bonobono.backend.global.exception.AppException;
+import com.bonobono.backend.global.exception.ErrorCode;
+import com.bonobono.backend.member.dto.request.MemberNicknameRequestDto;
 import com.bonobono.backend.member.dto.request.MemberRequestDto;
 import com.bonobono.backend.member.dto.request.MemberUpdateRequestDto;
+import com.bonobono.backend.member.dto.request.MemberUsernameRequestDto;
 import com.bonobono.backend.member.dto.request.TokenRequestDto;
 import com.bonobono.backend.member.dto.response.MemberResponseDto;
 import com.bonobono.backend.member.dto.response.TokenDto;
+import com.bonobono.backend.member.repository.MemberRepository;
 import com.bonobono.backend.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,10 +24,31 @@ import javax.servlet.http.HttpServletRequest;
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberService memberService;
+    private final MemberRepository memberRepository;
 
     @PostMapping("/signup")
     public ResponseEntity<MemberResponseDto> signup(@RequestBody MemberRequestDto memberRequestDto) {
         return ResponseEntity.ok(memberService.signup(memberRequestDto));
+    }
+
+    @PostMapping("/username")
+    public String username(@RequestBody MemberUsernameRequestDto request) {
+        memberRepository.findByUsername(request.getUsername())
+            .ifPresent(member -> {
+                throw new AppException(ErrorCode.USERNAME_DUPLICATED, "이미 존재하는 아이디입니다.");
+            });
+
+        return "SUCCESS";
+    }
+
+    @PostMapping("/nickname")
+    public String nickname(@RequestBody MemberNicknameRequestDto request) {
+        memberRepository.findByNickname(request.getNickname())
+            .ifPresent(member -> {
+                throw new AppException(ErrorCode.NICKNAME_DUPLICATED, "이미 존재하는 닉네임입니다.");
+            });
+
+        return "SUCCESS";
     }
 
     @PostMapping("/login")

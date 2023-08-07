@@ -45,13 +45,13 @@ public class Article extends BaseTimeEntity {
     @JoinColumn(name="member_id", nullable = false)
     private Member member;
 
-    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL,  orphanRemoval = true)
     private List<ArticleImage> images = new ArrayList<>();
 
-    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL,  orphanRemoval = true)
     private List<ArticleComment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL,  orphanRemoval = true)
     private Set<ArticleLike> articleLikes = new HashSet<>();
 
     @Builder
@@ -70,5 +70,10 @@ public class Article extends BaseTimeEntity {
         this.content = content;
         this.urlTitle = urlTitle;
         this.url = url;
+    }
+
+    // 모집 완료
+    public void updateRecruitStatus(){
+        this.recruitStatus = true;
     }
 }

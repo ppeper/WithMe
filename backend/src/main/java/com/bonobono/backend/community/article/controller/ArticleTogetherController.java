@@ -3,17 +3,20 @@ package com.bonobono.backend.community.article.controller;
 import com.bonobono.backend.community.article.dto.req.ArticleCommentRequestDto;
 import com.bonobono.backend.community.article.dto.req.ArticleSaveRequestDto;
 import com.bonobono.backend.community.article.dto.req.ArticleUpdateRequestDto;
-import com.bonobono.backend.community.article.dto.res.*;
+import com.bonobono.backend.community.article.dto.res.ArticleCommentResponseDto;
+import com.bonobono.backend.community.article.dto.res.ArticleDetailResponseDto;
+import com.bonobono.backend.community.article.dto.res.ArticleListResponseDto;
 import com.bonobono.backend.community.article.enumclass.ArticleType;
 import com.bonobono.backend.community.article.service.ArticleCommentLikeService;
 import com.bonobono.backend.community.article.service.ArticleCommentService;
 import com.bonobono.backend.community.article.service.ArticleLikeService;
 import com.bonobono.backend.community.article.service.ArticleService;
-import com.bonobono.backend.member.dto.MemberRequestDto;
+import com.bonobono.backend.member.domain.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -36,8 +39,10 @@ public class ArticleTogetherController {
 
     // 함께게시판 글쓰기
     @PostMapping(value = "",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> save(@RequestPart ArticleSaveRequestDto requestDto, @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles){
-        articleService.save(type, requestDto, imageFiles);
+    public ResponseEntity<Void> save(@AuthenticationPrincipal Member member,
+                                     @RequestPart ArticleSaveRequestDto requestDto,
+                                     @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles){
+        articleService.save(type, member, requestDto, imageFiles);
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
@@ -50,9 +55,10 @@ public class ArticleTogetherController {
 
     // 함께게시판 특정 글, 글에 관한 댓글 조회하기
     @GetMapping("/{articleId}")
-    public ResponseEntity<ArticleDetailResponseDto> findById(@PathVariable Long articleId, @RequestBody MemberRequestDto memberRequestDto) {
+    public ResponseEntity<ArticleDetailResponseDto> findById(@AuthenticationPrincipal Member member,
+                                                             @PathVariable Long articleId) {
         // @AuthenticationPrincipa 사용하기
-        ArticleDetailResponseDto responseDto = articleService.findById(type, articleId, memberRequestDto.getMemberId());
+        ArticleDetailResponseDto responseDto = articleService.findById(type, member, articleId);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
@@ -66,17 +72,27 @@ public class ArticleTogetherController {
 
     // 함께게시판 특정 글 수정
     @PatchMapping(value = "/{articleId}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> update(@PathVariable Long articleId,
+    public ResponseEntity<Void> update(@AuthenticationPrincipal Member member,
+                                       @PathVariable Long articleId,
                                        @RequestPart ArticleUpdateRequestDto requestDto,
                                        @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles){
-        articleService.update(articleId , requestDto, imageFiles);
+        articleService.update(member, articleId , requestDto, imageFiles);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    // 함께게시판 모집 완료
+    @PatchMapping("/{articleId}/recruit-complete")
+    public ResponseEntity<Void> updateRecruitStatus(@AuthenticationPrincipal Member member,
+                                                    @PathVariable Long articleId){
+        articleService.updateRecruitStatus(member, articleId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     // 함께게시판 특정 글 삭제
     @DeleteMapping("/{articleId}")
-    public ResponseEntity<Void> delete(@PathVariable Long articleId){
-        articleService.delete(articleId);
+    public ResponseEntity<Void> delete(@AuthenticationPrincipal Member member,
+                                       @PathVariable Long articleId){
+        articleService.delete(member, articleId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -84,41 +100,47 @@ public class ArticleTogetherController {
     // ----------댓글---------
     // 함께게시판 글에 댓글 쓰기
     @PostMapping("/{articleId}/comment")
-    public ResponseEntity<Void> saveComment(@PathVariable Long articleId, @RequestBody ArticleCommentRequestDto requestDto){
-        articleCommentService.save(articleId, requestDto);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public ResponseEntity<ArticleCommentResponseDto> saveComment(@AuthenticationPrincipal Member member,
+                                            @PathVariable Long articleId,
+                                            @RequestBody ArticleCommentRequestDto requestDto){
+        ArticleCommentResponseDto responseDto = articleCommentService.save(member, articleId, requestDto);
+        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
     // 함께게시판 댓글 삭제
     @DeleteMapping("/{articleId}/comment/{commentId}")
-    public ResponseEntity<Void> deleteComment(@PathVariable Long articleId, @PathVariable Long commentId){
-        articleCommentService.delete(articleId, commentId);
+    public ResponseEntity<Void> deleteComment(@AuthenticationPrincipal Member member,
+                                              @PathVariable Long articleId,
+                                              @PathVariable Long commentId){
+        articleCommentService.delete(member, articleId, commentId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     // 함께게시판 댓글 수정
     @PatchMapping("/{articleId}/comment/{commentId}")
-    public ResponseEntity<Void> updateComment(@PathVariable Long articleId, @PathVariable Long commentId, @RequestBody ArticleCommentRequestDto requestDto){
-        articleCommentService.update(articleId, commentId, requestDto);
+    public ResponseEntity<Void> updateComment(@AuthenticationPrincipal Member member,
+                                              @PathVariable Long articleId,
+                                              @PathVariable Long commentId,
+                                              @RequestBody ArticleCommentRequestDto requestDto){
+        articleCommentService.update(member, articleId, commentId, requestDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     // 함께게시판 좋아요
     @PatchMapping("/{articleId}/like")
-    public ResponseEntity<Void> like(@PathVariable Long articleId, @RequestBody MemberRequestDto requestDto) {
-        articleLikeService.like(articleId, requestDto.getMemberId());
+    public ResponseEntity<Void> like(@AuthenticationPrincipal Member member,
+                                     @PathVariable Long articleId) {
+        articleLikeService.like(member, articleId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     // 함께게시판 댓글 좋아요
     @PatchMapping("/{articleId}/comment/{commentId}/like")
-    public ResponseEntity<Void> like(@PathVariable Long articleId, @PathVariable Long commentId, @RequestBody MemberRequestDto requestDto) {
-        articleCommentLikeService.like(articleId, commentId, requestDto.getMemberId());
+    public ResponseEntity<Void> like(@AuthenticationPrincipal Member member,
+                                     @PathVariable Long articleId,
+                                     @PathVariable Long commentId) {
+        articleCommentLikeService.like(member, articleId, commentId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-
-    // ----------관리자 영역 -----------
-
-    // 함께게시판 관리자 확인 처리
 }

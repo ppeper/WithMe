@@ -130,29 +130,57 @@ object FindIdNav : Destination {
     override val route: String = NavigationRouteName.FIND_ID
     override val title: String = NavigationTitle.FIND_ID
     override val deepLinks: List<NavDeepLink> = listOf(
-        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${FindIdNav.route}" })
+        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${LoginNav.route}" })
 }
 
 object FindPasswordNav : Destination {
     override val route: String = NavigationRouteName.FIND_PASSWORD
     override val title: String = NavigationTitle.FIND_PASSWORD
     override val deepLinks: List<NavDeepLink> = listOf(
-        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${FindPasswordNav.route}" })
+        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${LoginNav.route}" })
+}
+
+object LoginNav : Destination {
+    override val route: String = NavigationRouteName.LOGIN
+    override val title: String = NavigationTitle.LOGIN
+    override val deepLinks: List<NavDeepLink> = listOf(
+        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME.$route" })
+}
+object JoinNav : Destination {
+    override val route: String = NavigationRouteName.JOIN
+    override val title: String = NavigationTitle.JOIN
+    override val deepLinks: List<NavDeepLink> = listOf(
+        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${LoginNav.route}" })
 }
 
 object ChattingEditNav : Destination {
     override val route: String = NavigationRouteName.CHATTING_EDIT
     override val title: String = NavigationTitle.CHATTING_EDIT
     override val deepLinks: List<NavDeepLink> = listOf(
-        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${ChattingEditNav.route}" })
+        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${MainNav.Chatting.route}" })
 }
 
 object ChattingNav : Destination {
     override val route: String = NavigationRouteName.CHATTING
     override val title: String = NavigationTitle.CHATTING
     override val deepLinks: List<NavDeepLink> = listOf(
-        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${ChattingNav.route}" })
+        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${MainNav.Chatting.route}" })
 }
+
+object QuizNav : Destination {
+    override val route: String = NavigationRouteName.QUIZ
+    override val title: String = NavigationTitle.QUIZ
+    override val deepLinks: List<NavDeepLink> = listOf(
+        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${QuizNav.route}" })
+}
+
+object GameNav : Destination {
+    override val route: String = NavigationRouteName.GAME
+    override val title: String = NavigationTitle.GAME
+    override val deepLinks: List<NavDeepLink> = listOf(
+        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${GameNav.route}" })
+}
+
 
 interface Destination {
     val route: String
@@ -168,14 +196,19 @@ object NavigationRouteName {
     const val MAIN_CHATTING = "main_chat"
     const val MAIN_MAP = "main_map"
 
+    // Mission
     const val MISSION = "mission"
+    const val QUIZ = "quiz"
+    const val GAME = "game"
+
     const val ENCYCLOPEDIA = "encyclopedia"
     const val NOTICE = "notice"
 
     // Community
-    const val COMMUNITY_FREE = "free_community"
-    const val COMMUNITY_WITH = "with_community"
-    const val COMMUNITY_REPORT = "report_community"
+    const val COMMUNITY_GRAPH = "community_graph"
+    const val COMMUNITY_FREE = "free"
+    const val COMMUNITY_WITH = "together"
+    const val COMMUNITY_REPORT = "report"
     // FAB Route
     const val COMMUNITY_POST = "write_free"
     const val COMMUNITY_POST_WITH = "write_with"
@@ -214,6 +247,8 @@ object NavigationTitle {
     const val COMMUNITY_REPORT = "신고게시판"
 
     const val MISSION = "미션"
+    const val QUIZ = "퀴즈"
+    const val GAME = "게임"
     const val ENCYCLOPEDIA = "도감"
     const val NOTICE = "공지"
 

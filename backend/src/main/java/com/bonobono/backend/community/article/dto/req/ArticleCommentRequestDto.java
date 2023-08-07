@@ -12,13 +12,11 @@ import lombok.NoArgsConstructor;
 public class ArticleCommentRequestDto {
 
     private String content;
-    private Long memberId; // User 나중에 변경
     private Long parentCommentId;
 
     @Builder
-    public ArticleCommentRequestDto(String content, Long memberId, Long parentCommentId){
+    public ArticleCommentRequestDto(String content, Long parentCommentId){
         this.content = content;
-        this.memberId = memberId;
         this.parentCommentId = parentCommentId;
     }
     public ArticleComment toEntity(Article article, Member member, ArticleComment parentComment) {

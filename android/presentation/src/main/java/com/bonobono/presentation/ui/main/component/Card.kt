@@ -30,7 +30,7 @@ import com.bonobono.presentation.ui.theme.White
 
 
 @Composable
-fun LargeSquareCardWithAnimation(source: Int, content: String) {
+fun LargeSquareCardWithAnimation(source: Int, content: String, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth(),
@@ -60,7 +60,7 @@ fun LargeSquareCardWithAnimation(source: Int, content: String) {
             )
 
             PrimaryButton(content = "미션 해결하기", modifier = Modifier.align(Alignment.BottomEnd)) {
-
+                onClick()
             }
         }
     }

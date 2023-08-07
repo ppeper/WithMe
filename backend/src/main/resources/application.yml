@@ -1,3 +1,6 @@
+server:
+  port: 8081
+
 spring:
   profiles:
     include:
@@ -23,10 +26,10 @@ spring:
     defer-datasource-initialization: true
 
 ## Spring Boot 실행시 SQL문 자동실행
-  sql:
-    init:
-      data-locations: classpath:data.sql
-      mode: always
+#  sql:
+#    init:
+#      data-locations: classpath:data.sql
+#      mode: always
 
   mvc: # swagger로 인해서 세팅
     pathmatch:

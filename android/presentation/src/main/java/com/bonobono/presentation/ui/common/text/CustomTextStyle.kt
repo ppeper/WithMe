@@ -5,14 +5,19 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.theme.Black_100
 import com.bonobono.presentation.ui.theme.DarkGray
+import com.bonobono.presentation.ui.theme.PrimaryBlue
 import com.bonobono.presentation.ui.theme.TextGray
 import com.bonobono.presentation.ui.theme.White
+import com.bonobono.presentation.ui.theme.wanju_daedunsan
 
 object CustomTextStyle {
 
@@ -38,43 +43,37 @@ object CustomTextStyle {
         fontSize = 12.sp,
         color = TextGray,
     )
-}
 
-@Composable
-fun HeaderTwoText(text: String) {
-    Text(
-        text = text,
-        fontSize = 18.sp,
-        fontWeight = FontWeight.Bold,
-        color = Black_100
+    val quizTitleStyle = TextStyle(
+        fontFamily = FontFamily(Font(R.font.ramche)),
+        fontSize = 24.sp
     )
-}
 
-@Composable
-fun BasicButtonText(text: String) {
-    Text(
-        text = text,
+    val quizContentStyle = TextStyle(
+        fontFamily = FontFamily(Font(R.font.ramche)),
+        fontSize = 14.sp
+    )
+
+    val primaryColorBtnText = TextStyle(
         fontSize = 14.sp,
         fontWeight = FontWeight.Bold,
-        color = White,
-        modifier = Modifier.padding(vertical = 6.dp)
+        color = White
     )
-}
 
-@Composable
-fun TextFieldText(text: String) {
-    Text(
-        text = text,
+    val bonobonoTFText = TextStyle(
         fontSize = 16.sp,
         color = TextGray
     )
-}
 
-@Composable
-fun LoginDarkGrayText(text: String) {
-    Text(
-        text = text,
+    val loginDarkGrayText = TextStyle(
         fontSize = 12.sp,
         color = DarkGray
+    )
+
+    val appNameText = TextStyle(
+        fontSize = 48.sp,
+        fontFamily = wanju_daedunsan,
+        fontWeight = FontWeight.Bold,
+        color = PrimaryBlue
     )
 }

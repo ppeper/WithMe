@@ -16,12 +16,17 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.common.topbar.screen.SettingScreen
+import com.bonobono.presentation.ui.mypage.view.SettingOptions
+import com.bonobono.presentation.ui.theme.Black_100
 import com.bonobono.presentation.ui.theme.LightGray
 import com.bonobono.presentation.ui.theme.LightGray_50
 import com.bonobono.presentation.ui.theme.Red
@@ -50,15 +55,15 @@ fun SettingScreen(
         verticalArrangement = Arrangement.Top
     ) {
         SettingTitle(title = "계정 관리")
-        SettingOptions(option = "권한설정", color = LightGray)
-        SettingOptions(option = "비밀번호", color = LightGray)
+        SettingOptions(option = "권한설정", color = Black_100)
+        SettingOptions(option = "비밀번호", color = Black_100)
         SettingOptions(option = "회원탈퇴", color = Red)
         Spacer(modifier = Modifier.height(4.dp))
         SettingDivider()
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(8.dp))
         SettingTitle(title = "앱 정보")
         SettingVersionOption(version = "1.00")
-        SettingOptions(option = "라이선스", color = LightGray)
+        SettingOptions(option = "라이선스", color = Black_100)
         Spacer(modifier = Modifier.height(4.dp))
         SettingDivider()
         Spacer(modifier = Modifier.height(4.dp))
@@ -67,48 +72,37 @@ fun SettingScreen(
 @Composable
 fun SettingTitle(title: String) {
     Text(title,
-        color = TextGray,
-        modifier = Modifier.fillMaxWidth().padding(bottom = 4.dp))
-}
-
-
-@Composable
-fun SettingOptions(
-    option: String,
-    color : Color) {
-    ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
-        val (optionStr, rightButton) = createRefs()
-        Text(option,
-            modifier = Modifier.constrainAs(optionStr) {
-                linkTo(parent.top, parent.bottom)
-                start.linkTo(parent.start)
-            })
-        IconButton(onClick = { /*TODO*/ },
-            modifier = Modifier.constrainAs(rightButton) {
-                linkTo(parent.top, parent.bottom)
-                end.linkTo(parent.end)
-            },) {
-            Icon(
-                modifier = Modifier.size(20.dp, 20.dp),
-                painter = painterResource(id = R.drawable.ic_right),
-                contentDescription = "rightBtn"
-            )
-        }
-    }
+        style = TextStyle(
+            color = TextGray,
+            fontSize = 12.sp
+        ),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 4.dp))
 }
 
 @Composable
 fun SettingVersionOption(
     version:String
 ) {
-    ConstraintLayout(modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp)) {
+    ConstraintLayout(modifier = Modifier
+        .fillMaxWidth()
+        .padding(vertical = 10.dp)) {
         val (versionStr, versionInfoStr) = createRefs()
         Text("버전정보",
+            style = TextStyle(
+                color = Black_100,
+                fontSize = 14.sp
+            ),
             modifier = Modifier.constrainAs(versionStr) {
                 linkTo(parent.top, parent.bottom)
                 start.linkTo(parent.start)
             })
         Text(version,
+            style = TextStyle(
+                color = Black_100,
+                fontSize = 14.sp
+            ),
             modifier = Modifier.constrainAs(versionInfoStr) {
                 linkTo(parent.top, parent.bottom)
                 end.linkTo(parent.end)

@@ -185,15 +185,15 @@ fun BoardWriteScreen(
                             innerTextField()
                         }
                     )
+                    PhotoSelectedListView(
+                        photoViewModel = photoViewModel
+                    )
                     // 커뮤니티 별 추가 UI
                     if (route == CommunityFab.WITH.route) {
                         LinkView()
                     } else if (route == CommunityFab.REPORT.route) {
 
                     }
-                    PhotoSelectedListView(
-                        photoViewModel = photoViewModel
-                    )
                 }
             }
         }

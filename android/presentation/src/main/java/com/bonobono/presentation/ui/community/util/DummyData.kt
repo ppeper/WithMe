@@ -12,9 +12,10 @@ object DummyData {
     val imageUrl_3 =
         "https://plus.unsplash.com/premium_photo-1673002094413-4c5141902505?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
     val selectedPhotos = listOf(PhotoSelected(imageUrl))
-    val comment1 = Comment(content = "테스트1", parentCommentId = null)
-    val comment2 = Comment(content = "테스트3", parentCommentId = 1)
-    val commentWithChild = Comment(content = "테스트2", childComments = listOf(comment2, comment2), parentCommentId = null)
+    val comment1 = Comment(id = 1, content = "테스트1", parentCommentId = null)
+    val comment2 = Comment(id = 2, content = "테스트3", parentCommentId = 3)
+    val comment3 = Comment(id = 4, content = "테스트4", parentCommentId = null)
+    val commentWithChild = Comment(id = 3, content = "테스트2", childComments = listOf(comment2, comment2), parentCommentId = null)
     val dummyArticle = Article(
         articleId = 1,
         type = "FREE",
@@ -28,7 +29,7 @@ object DummyData {
         comments = listOf(
             comment1,
             commentWithChild,
-            comment1
+            comment3
         )
     )
 }

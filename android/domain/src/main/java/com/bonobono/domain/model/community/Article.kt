@@ -1,6 +1,6 @@
 package com.bonobono.domain.model.community
 
-import java.util.Date
+import java.time.LocalDateTime
 
 data class Article(
     val articleId: Int,
@@ -20,5 +20,5 @@ data class Article(
     val url: String = "",
     val urlTitle: String = "",
     val views: Int = 0,
-    val createdDate: Date = Date(),
+    val createdDate: LocalDateTime = LocalDateTime.now(),
 )

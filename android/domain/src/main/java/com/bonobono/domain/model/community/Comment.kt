@@ -1,14 +1,15 @@
 package com.bonobono.domain.model.community
 
-import java.util.Date
+import java.time.LocalDateTime
 
 data class Comment(
+    val id: Int? = null,
     val parentCommentId: Int? = null,
     val content: String,
     val nickname: String? = null,
     val profileImg: String? = null,
-    val childComments: List<Comment> = emptyList(),
+    var childComments: List<Comment> = emptyList(),
     val liked: Boolean = false,
     val likes: Int = 0,
-    val createdDate: Date = Date()
+    val createdDate: LocalDateTime = LocalDateTime.now()
 )

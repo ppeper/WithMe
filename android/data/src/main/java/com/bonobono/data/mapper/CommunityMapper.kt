@@ -9,6 +9,7 @@ import com.bonobono.data.model.community.response.ImageResponse
 import com.bonobono.domain.model.community.Article
 import com.bonobono.domain.model.community.Comment
 import com.bonobono.domain.model.community.Image
+import java.time.LocalDateTime
 import java.util.Date
 
 fun ArticleResponse.toDomain(): Article {
@@ -25,7 +26,7 @@ fun ArticleResponse.toDomain(): Article {
         recruitStatus = recruitStatus,
         url = url ?: "",
         urlTitle = urlTitle ?: "",
-        createdDate = createdDate ?: Date(),
+        createdDate = createdDate ?: LocalDateTime.now(),
         views = views
     )
 }
@@ -52,6 +53,7 @@ fun ArticleDetailResponse.toDomain(): Article {
 
 fun CommentResponse.toDomain(): Comment {
     return Comment(
+        id = id,
         parentCommentId = parentCommentId,
         content = content,
         nickname = nickname,
@@ -65,7 +67,7 @@ fun CommentResponse.toDomain(): Comment {
 
 fun Comment.toModel(): CommentRequest {
     return CommentRequest(
-        parentCommentId = parentCommentId,
+        parentCommentId = id,
         content = content
     )
 }

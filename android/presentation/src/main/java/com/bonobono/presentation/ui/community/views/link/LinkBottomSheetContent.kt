@@ -59,7 +59,8 @@ fun LinkBottomSheetContent(
                 ),
                 singleLine = true,
                 hint = "링크 제목",
-                onValueChange = onTitleChange
+                onValueChange = onTitleChange,
+                onFocusChange = {}
             )
             Spacer(modifier = modifier.size(8.dp))
             LinkHeader()
@@ -73,7 +74,8 @@ fun LinkBottomSheetContent(
                 ),
                 singleLine = true,
                 hint = "링크 주소를 입력해주세요",
-                onValueChange = onLinkChange
+                onValueChange = onLinkChange,
+                onFocusChange = {}
             )
             Spacer(modifier = modifier.size(32.dp))
             Row(

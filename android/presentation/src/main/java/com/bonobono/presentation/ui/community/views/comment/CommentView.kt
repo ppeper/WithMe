@@ -19,20 +19,22 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.bonobono.domain.model.community.Comment
@@ -41,6 +43,7 @@ import com.bonobono.presentation.ui.theme.Black_100
 import com.bonobono.presentation.ui.theme.Red
 import com.bonobono.presentation.ui.theme.TextGray
 import com.bonobono.presentation.utils.DateUtils
+import com.bonobono.presentation.viewmodel.CommentViewModel
 
 @Composable
 fun CommentView(
@@ -102,15 +105,18 @@ fun CommentView(
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CommentRow(
     modifier: Modifier = Modifier,
-    comments: Comment
+    comments: Comment,
+    commentViewModel: CommentViewModel = hiltViewModel()
 ) {
     var likeState by rememberSaveable { mutableStateOf(comments.liked) }
     var likeCntState by rememberSaveable { mutableStateOf(comments.likes) }
     var commentCntState by rememberSaveable { mutableStateOf(comments.childComments.size) }
     var reCommentState by rememberSaveable { mutableStateOf(comments.childComments) }
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     Row(
         modifier = modifier
@@ -194,7 +200,9 @@ fun CommentRow(
                         textAlign = TextAlign.Center,
                     ),
                     modifier = modifier.clickable {
-
+                        // 대 댓글의 부모 id 값 viewmodel에 저장
+                        comments.id?.let { commentViewModel.setCommentId(it) }
+                        keyboardController?.show()
                     }
                 )
                 Spacer(modifier = modifier.size(4.dp))

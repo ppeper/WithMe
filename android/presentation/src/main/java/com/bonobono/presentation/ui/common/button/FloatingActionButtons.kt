@@ -36,12 +36,8 @@ fun CommunityFloatingActionButton(
     FloatingActionButton(
         containerColor = PrimaryBlue,
         contentColor = White,
-        shape = CircleShape,
         onClick = {
-            NavigationUtils.navigate(
-                navController, item.route,
-                navController.graph.startDestinationRoute
-            )
+            navController.navigate(item.route)
         }
     ) {
         Icon(

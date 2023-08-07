@@ -1,10 +1,8 @@
 package com.bonobono.domain.model.mission
 
-import java.net.IDN
-
-data class OXQuiz(
-    val id: Int,
+data class Mission (
     val problem: String,
     val answer: String,
+    val choices: List<Choice>,
     val commentary: String
 )

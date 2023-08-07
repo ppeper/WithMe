@@ -38,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
 import com.bonobono.domain.model.map.Campaign
 import com.bonobono.domain.model.map.Location
@@ -290,7 +291,7 @@ fun BottomSheetCampaignContent() {
         Text(text = "진행중", style = CustomTextStyle.mapTitleTextStyle)
         LazyRow() {
             items(items) {
-                CampaignCard(campaign = it)
+                CampaignCard(modifier = Modifier.zIndex(1f),campaign = it)
             }
         }
         Spacer(modifier = Modifier.size(4.dp))

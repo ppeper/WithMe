@@ -1,7 +1,10 @@
 package com.bonobono.di
 
 import com.bonobono.data.remote.CommunityService
+import com.bonobono.data.remote.MissionService
+import com.bonobono.data.repository.MissionRepositoryImpl
 import com.bonobono.data.repository.community.CommunityRepositoryImpl
+import com.bonobono.domain.repository.MissionRepository
 import com.bonobono.domain.repository.community.CommunityRepository
 import dagger.Module
 import dagger.Provides
@@ -16,5 +19,11 @@ object RepositoryModule {
     @Singleton
     fun provideCommunityRepository(communityService: CommunityService): CommunityRepository {
         return CommunityRepositoryImpl(communityService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideMissionRepository(missionService: MissionService): MissionRepository {
+        return MissionRepositoryImpl(missionService = missionService)
     }
 }

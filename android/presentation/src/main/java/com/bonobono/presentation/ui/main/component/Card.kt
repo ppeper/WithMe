@@ -22,6 +22,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.bonobono.domain.model.map.Campaign
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.common.button.PrimaryButton
@@ -118,11 +119,12 @@ fun RankingCard(profileImage: Int, nickName: String, count: Int, ranking: Int) {
 }
 
 @Composable
-fun CampaignCard(campaign: Campaign) {
+fun CampaignCard(modifier: Modifier = Modifier, campaign: Campaign) {
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .padding(4.dp),
+            .padding(4.dp)
+            .zIndex(1f),
         elevation = CardDefaults.cardElevation(4.dp),
         colors = CardDefaults.cardColors(White)
     ) {

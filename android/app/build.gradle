@@ -7,8 +7,6 @@ plugins {
 
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
-def google_map_key = properties.getProperty('google_map_key')
-
 android {
     namespace 'com.bonobono'
     compileSdk 33
@@ -20,7 +18,6 @@ android {
         versionCode 1
         versionName "1.0"
 
-        manifestPlaceholders= [googleMapKey: google_map_key]
         // 서버 API KEY
         buildConfigField "String", "API_KEY", properties['api_key']
 

@@ -4,7 +4,7 @@ import com.bonobono.backend.auth.jwt.TokenProvider;
 import com.bonobono.backend.global.util.SecurityUtil;
 import com.bonobono.backend.member.domain.Authority;
 import com.bonobono.backend.member.domain.Member;
-import com.bonobono.backend.member.domain.RefreshToken;
+import com.bonobono.backend.member.domain.Token;
 import com.bonobono.backend.member.domain.enumtype.Role;
 import com.bonobono.backend.member.dto.request.MemberRequestDto;
 import com.bonobono.backend.member.dto.request.MemberUpdateRequestDto;
@@ -15,7 +15,9 @@ import com.bonobono.backend.global.exception.AppException;
 import com.bonobono.backend.global.exception.ErrorCode;
 import com.bonobono.backend.member.repository.AuthorityRepository;
 import com.bonobono.backend.member.repository.MemberRepository;
-import com.bonobono.backend.member.repository.RefreshTokenRepository;
+import com.bonobono.backend.member.repository.TokenRepository;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +40,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final TokenProvider tokenProvider;
-    private final RefreshTokenRepository refreshTokenRepository;
+    private final TokenRepository tokenRepository;
     private final StringRedisTemplate redisTemplate;
 
     /**
@@ -73,6 +75,16 @@ public class MemberService {
      */
     @Transactional
     public TokenDto login(MemberRequestDto request) {
+
+        Member member = memberRepository.findByUsername(request.getUsername())
+            .orElseThrow(() -> {
+                throw new AppException(ErrorCode.USERNAME_NOTFOUND, "존재하지 않는 아이디입니다.");
+            });
+
+        if (!bCryptPasswordEncoder.matches(request.getPassword(), member.getPassword())) {
+            throw new AppException(ErrorCode.INVALID_PASSWORD, "잘못된 비밀번호입니다.");
+        }
+
         UsernamePasswordAuthenticationToken authenticationToken = request.toAuthentication();
 
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
@@ -81,12 +93,12 @@ public class MemberService {
         TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
 
         // refreshToken 저장
-        RefreshToken refreshToken = RefreshToken.builder()
+        Token refreshToken = Token.builder()
             .key(authentication.getName())
             .value(tokenDto.getRefreshToken())
             .build();
 
-        refreshTokenRepository.save(refreshToken);
+        tokenRepository.save(refreshToken);
 
         return tokenDto;
     }
@@ -105,7 +117,7 @@ public class MemberService {
         Authentication authentication = tokenProvider.getAuthentication(request.getAccessToken());
 
         // DB에서 member_id를 기반으로 Refresh Token 값 가져옴
-        RefreshToken refreshToken = refreshTokenRepository.findByKey(authentication.getName())
+        Token refreshToken = tokenRepository.findByKey(authentication.getName())
             .orElseThrow(() -> new RuntimeException("로그아웃 된 사용자입니다."));
 
         // refresh token이 다르면
@@ -117,8 +129,8 @@ public class MemberService {
         TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
 
         // refreshToken 업데이트
-        RefreshToken newRefreshToken = refreshToken.updateValue(tokenDto.getRefreshToken());
-        refreshTokenRepository.save(newRefreshToken);
+        Token newRefreshToken = refreshToken.updateValue(tokenDto.getRefreshToken());
+        tokenRepository.save(newRefreshToken);
 
         // 토큰 발급
         return tokenDto;
@@ -153,12 +165,14 @@ public class MemberService {
     public void logout(HttpServletRequest request) {
 
         // accessToken
-        String jwt = request.getHeader("Authorization").substring(7);
-        ValueOperations<String, String> logoutValueOperations = redisTemplate.opsForValue();
-        logoutValueOperations.set(jwt, jwt);
+//        String jwt = request.getHeader("Authorization").substring(7);
+//        try(Connection conn = dataSource.getConnection();
+//            PreparedStatement pstmt = conn.prepareStatement())
+//        ValueOperations<String, String> logoutValueOperations = redisTemplate.opsForValue();
+//        logoutValueOperations.set(jwt, jwt);
 
         // refreshToken 삭제
-        refreshTokenRepository.deleteByKey(String.valueOf(SecurityUtil.getLoginMemberId()))
+        tokenRepository.deleteByKey(String.valueOf(SecurityUtil.getLoginMemberId()))
                 .orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다."));
     }
 

@@ -1,5 +1,6 @@
 package com.bonobono.backend.auth.jwt;
 
+import com.bonobono.backend.member.repository.TokenRepository;
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -8,14 +9,11 @@ import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-
-import static org.hibernate.hql.internal.antlr.HqlTokenTypes.ORDER;
 
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -26,7 +24,8 @@ public class JwtFilter extends OncePerRequestFilter {
     public static final String BEARER_PREFIX = "Bearer ";
 
     private final TokenProvider tokenProvider;
-    private final StringRedisTemplate redisTemplate;
+//    private final JdbcTemplate jdbcTemplate;
+    private final TokenRepository tokenRepository;
 
     // 토큰의 인증 정보를 현재 쓰레드의 SecurityContext에 저장하는 역할 수행
     @Override
@@ -40,9 +39,11 @@ public class JwtFilter extends OncePerRequestFilter {
         // 유효한 토큰이면 Authentication을 SecurityContext에 저장
         if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
             // logout 체크
-            if (redisTemplate.opsForValue().get(jwt) != null) {
-                throw new RuntimeException("로그아웃 된 사용자입니다.");
+            long count = tokenRepository.countByValue(jwt);
+            if(count>0) {
+                throw new RuntimeException("로그아웃된 사용자");
             }
+
             Authentication authentication = tokenProvider.getAuthentication(jwt);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }

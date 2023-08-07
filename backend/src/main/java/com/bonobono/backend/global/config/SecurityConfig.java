@@ -6,14 +6,10 @@ import com.bonobono.backend.auth.oauth.OAuthSuccessHandler;
 import com.bonobono.backend.auth.oauth.validate.GoogleTokenValidate;
 import com.bonobono.backend.auth.oauth.validate.KakaoTokenValidate;
 import com.bonobono.backend.auth.oauth.validate.NaverTokenValidator;
-import io.jsonwebtoken.Jwt;
+import com.bonobono.backend.member.repository.TokenRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -33,7 +29,8 @@ public class SecurityConfig {
     private final TokenProvider tokenProvider;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
-    private final StringRedisTemplate redisTemplate;
+//    private final JdbcTemplate jdbcTemplate;
+    private final TokenRepository tokenRepository;
     private final OAuth2UserService oAuth2UserService;
     private final OAuthSuccessHandler successHandler;
     private final GoogleTokenValidate googleTokenValidate;
@@ -58,10 +55,10 @@ public class SecurityConfig {
             .authenticationEntryPoint(jwtAuthenticationEntryPoint)
             .accessDeniedHandler(jwtAccessDeniedHandler)
             .and()
-            .addFilterBefore(new JwtFilter(tokenProvider, redisTemplate), UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(new JwtFilter(tokenProvider, tokenRepository), UsernamePasswordAuthenticationFilter.class)
             .addFilterBefore(new CustomOAuthLoginValidateFilter(googleTokenValidate, kakaoTokenValidate, naverTokenValidator, successHandler),
                     JwtFilter.class)
-            .apply(new JwtSecurityConfig(tokenProvider, redisTemplate));
+            .apply(new JwtSecurityConfig(tokenProvider, tokenRepository));
 
         return http.build();
     }

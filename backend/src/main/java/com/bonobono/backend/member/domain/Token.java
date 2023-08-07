@@ -12,7 +12,7 @@ import javax.persistence.Id;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class RefreshToken {
+public class Token {
 
     @Id
     @Column(name = "rt_key")
@@ -22,12 +22,12 @@ public class RefreshToken {
     private String value;
 
     @Builder
-    public RefreshToken(String key, String value) {
+    public Token(String key, String value) {
         this.key = key;
         this.value = value;
     }
 
-    public RefreshToken updateValue(String token) {
+    public Token updateValue(String token) {
         this.value = token;
         return this;
     }

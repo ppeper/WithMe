@@ -30,7 +30,7 @@ fun QuizScreen() {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(360.dp)
-                .align(Alignment.TopCenter), source = R.raw.fairy
+                .align(Alignment.TopCenter), source = R.raw.animation_fairy
         )
         QuizTextBox(
             name = "클로버 요정",

@@ -11,9 +11,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,13 +26,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.common.GameTextFieldWithButton
+import com.bonobono.presentation.ui.common.SubmitButton
 import com.bonobono.presentation.ui.common.text.CustomTextStyle
 import com.bonobono.presentation.ui.main.component.GifLoader
 import com.bonobono.presentation.ui.main.component.LottieLoader
+import com.bonobono.presentation.ui.theme.Green
+import com.bonobono.presentation.ui.theme.Red
 import com.bonobono.presentation.ui.theme.White
 import kotlinx.coroutines.delay
 
@@ -66,7 +73,7 @@ fun GameTextBox(name: String, content: String, modifier: Modifier) {
         colors = CardDefaults.cardColors(containerColor = White)
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
-            GifLoader(modifier = Modifier, source = R.raw.fairy)
+            GifLoader(modifier = Modifier, source = R.raw.animation_fairy)
             Column(modifier = Modifier.fillMaxWidth()) {
                 Text(
                     text = name,
@@ -89,7 +96,7 @@ fun ARTextBox(
     name: String,
     content: String,
     modifier: Modifier,
-    bottomRow: @Composable (() -> Unit),
+    bottomRow: @Composable () -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -105,12 +112,19 @@ fun ARTextBox(
         Divider(thickness = 1.dp, modifier = Modifier.padding(4.dp))
         Text(text = content, style = CustomTextStyle.quizContentStyle.copy(fontSize = 18.sp))
         Spacer(modifier = Modifier.weight(1f))
-
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Spacer(modifier = Modifier.weight(1f))
+            bottomRow()
+        }
     }
 }
 
 @Composable
-fun ARBottomTwoButtonRow(modifier: Modifier, leftButton: @Composable () -> Unit, rightButton: @Composable () -> Unit) {
+fun PromptTwoButtonRow(
+    modifier: Modifier,
+    leftButton: @Composable () -> Unit,
+    rightButton: @Composable () -> Unit
+) {
     Row(
         modifier = modifier
     ) {
@@ -121,8 +135,71 @@ fun ARBottomTwoButtonRow(modifier: Modifier, leftButton: @Composable () -> Unit,
 }
 
 @Composable
-fun PromptBottomInputRow(modifier: Modifier, submitButton: @Composable () -> Unit) {
+fun PromptOXButtonRow(
+    modifier: Modifier,
+    textStyle: TextStyle = CustomTextStyle.quizContentStyle,
+    onClickX: () -> Unit,
+    onClickO: () -> Unit
+) {
+    Row(
+        modifier = modifier
+    ) {
+        Button(
+            onClick = onClickX,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Red,
+                contentColor = White,
+            ),
+            shape = RoundedCornerShape(10.dp)
+        ) {
+            Text(text = "X", style = textStyle.copy(color = White))
+        }
+        Spacer(modifier = Modifier.size(4.dp))
+        Button(
+            modifier = modifier,
+            onClick = onClickO,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Green,
+                contentColor = White,
+            ),
+            shape = RoundedCornerShape(10.dp)
+        ) {
+            Text(text = "O", style = textStyle.copy(color = White))
+        }
+    }
+}
 
+@Composable
+fun PromptInputRow(
+    modifier: Modifier,
+    value: String,
+    onValueChange: (String) -> Unit,
+    submitButton: String
+) {
+
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        OutlinedTextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(0.dp, 0.dp, 16.dp, 0.dp)
+                .weight(0.7f),
+            value = value,
+            onValueChange = onValueChange,
+            placeholder = {
+                Text(text = value, style = CustomTextStyle.quizContentStyle)
+            },
+            textStyle = CustomTextStyle.quizContentStyle
+        )
+
+        Spacer(modifier = Modifier.size(4.dp))
+        SubmitButton(modifier = Modifier.weight(0.3f), text = submitButton, CustomTextStyle.quizContentStyle) {
+            
+        }
+    }
 }
 
 @Composable

@@ -68,18 +68,22 @@ public class CustomOAuthLoginValidateFilter extends GenericFilter {
         }
 
         log.info("Oauth token 검증 시작");
-        String registrationId = uri.substring(uri.lastIndexOf("/") + 1);
+        int startIndex = uri.indexOf("login/") + "login/".length();
+        int endIndex = uri.indexOf("/callback");
+        String registrationId = uri.substring(startIndex, endIndex);
         SecurityContextHolder.getContext().getAuthentication();
 
         Map<String, Object> memberMap = null;
 
         try {
+            log.info(registrationId);
             switch (registrationId) {
                 // 클라이언트에게 받은 토큰을 통해 이메일 계정을 받아 맵에 채워서 반환
                 case "google":
                     memberMap = googleTokenValidate.validate(idToken);
                     break;
                 case "kakao":
+                    log.info("카카오들어왔나?");
                     memberMap = kakaoTokenValidate.validate(idToken);
                     break;
                 case "naver":

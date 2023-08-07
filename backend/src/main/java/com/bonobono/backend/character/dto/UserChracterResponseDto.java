@@ -2,8 +2,10 @@ package com.bonobono.backend.character.dto;
 
 import com.bonobono.backend.character.domain.OurCharacter;
 import com.bonobono.backend.character.domain.UserCharacter;
+import com.bonobono.backend.character.enumClass.CharacterLevelEnum;
 import com.bonobono.backend.chatting.domain.ChatRoom;
 import com.bonobono.backend.community.article.entity.ArticleComment;
+import com.bonobono.backend.member.domain.Member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,21 +20,19 @@ public class UserChracterResponseDto {
     private Boolean is_main;
     private Integer experience;
     private LocalDateTime createdDate;
-    private int level;
-    private String ImageUrl;
-    private String ImageName;
+    private CharacterLevelEnum level;
     private String description;
+    private Member member;
 
 
-    public UserChracterResponseDto(UserCharacter userCharacter) {
+    public UserChracterResponseDto(UserCharacter userCharacter, Member member) {
         this.custom_name = userCharacter.getCustom_name();
         this.is_main=userCharacter.getIs_main();
         this.experience=userCharacter.getExperience();
         this.createdDate=userCharacter.getCreateDate();
         //ourcharacter에서 가져온 정보
         this.level = userCharacter.getOurCharacter().getLevel();
-        this.ImageUrl = userCharacter.getOurCharacter().getImageUrl();
-        this.ImageName = userCharacter.getOurCharacter().getImageName();
         this.description = userCharacter.getOurCharacter().getDescription();
+        this.member=member;
             }
 }

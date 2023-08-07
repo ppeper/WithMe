@@ -1,5 +1,6 @@
 package com.bonobono.backend.character.domain;
 
+import com.bonobono.backend.character.enumClass.CharacterLevelEnum;
 import lombok.Getter;
 
 import javax.persistence.*;
@@ -13,15 +14,10 @@ public class OurCharacter {
 
     private String name;
 
-    //하나의 사진만 올라감
-
-    private String imageName; // 원본 파일명
-
-    private String imageUrl; // 이미지 url
-
     //캐릭터 설명
     private String description;
 
-    private int level;
+    @Enumerated(EnumType.STRING)
+    private CharacterLevelEnum level;
 
 }

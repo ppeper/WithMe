@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -18,6 +19,7 @@ import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.common.BasicTextField
 import com.bonobono.presentation.ui.common.TextFieldWithButton
 import com.bonobono.presentation.ui.common.button.PrimaryColorButton
+import com.bonobono.presentation.ui.common.text.CustomTextStyle
 import com.bonobono.presentation.ui.common.topbar.screen.SettingScreen
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -42,21 +44,28 @@ fun FindPWDScreen(
             .padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.Center
     ) {
-        BasicTextField(value = stringResource(id = R.string.login_name), onValueChange = {})
+        Text(
+            text = stringResource(id = R.string.bonobono_app_name),
+            style = CustomTextStyle.appNameText
+        )
+        Spacer(modifier = Modifier.height(32.dp))
+        BasicTextField(value = stringResource(id = R.string.login_name), hint = "이름", onValueChange = {})
         Spacer(modifier = Modifier.height(8.dp))
-        BasicTextField(value = stringResource(id = R.string.login_id), onValueChange = {})
+        BasicTextField(value = stringResource(id = R.string.login_id), hint = "아이디", onValueChange = {})
         Spacer(modifier = Modifier.height(8.dp))
         TextFieldWithButton(
             value = stringResource(id = R.string.login_phone_number),
             onValueChange = {},
-            buttonTxt = R.string.login_require_availability
+            buttonTxt = R.string.login_require_availability,
+            hint = "휴대폰 번호"
         ) {
 
         }
         Spacer(modifier = Modifier.height(8.dp))
         BasicTextField(
             value = stringResource(id = R.string.login_authentic_code),
-            onValueChange = {})
+            onValueChange = {},
+            hint = "인증번호")
         Spacer(modifier = Modifier.height(16.dp))
         PrimaryColorButton(text = R.string.login_find_password) {
 

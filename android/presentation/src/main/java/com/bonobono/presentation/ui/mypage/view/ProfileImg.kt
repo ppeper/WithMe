@@ -43,7 +43,6 @@ fun MyPageProfileImg() {
             .size(130.dp)
             .clip(CircleShape)
     ) {
-
         Box(
             modifier = Modifier
                 .size(128.dp)

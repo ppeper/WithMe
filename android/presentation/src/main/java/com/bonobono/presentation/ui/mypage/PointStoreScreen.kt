@@ -3,7 +3,9 @@ package com.bonobono.presentation.ui.mypage
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -11,7 +13,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.airbnb.lottie.compose.LottieAnimation
@@ -43,7 +49,13 @@ fun PointStoreScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally){
         PointStoreAnimation()
-        Text(text = "포인트 상점은 아직 오픈되지 않았습니다!")
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(text = "포인트 상점은 아직 오픈되지 않았습니다!",
+            fontSize = 14.sp,
+            style = TextStyle(
+                fontWeight = FontWeight.Bold
+            )
+        )
     }
 }
 @Preview(showBackground = true)

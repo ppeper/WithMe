@@ -10,32 +10,23 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.LottieConstants
-import com.airbnb.lottie.compose.animateLottieCompositionAsState
-import com.airbnb.lottie.compose.rememberLottieComposition
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.SettingNav
 import com.bonobono.presentation.ui.mypage.view.MyPageButton
+import com.bonobono.presentation.ui.mypage.view.MyPageProfileImg
 import com.bonobono.presentation.ui.mypage.view.WaveAnimation
 import com.bonobono.presentation.ui.theme.WaveBlue
 import com.bonobono.presentation.ui.theme.White
@@ -102,15 +93,14 @@ fun WaveBackGround(navController: NavController) {  // blue wave background, set
                         tint = WaveBlue
                     )
                 }
-
             }
             Column(
                 modifier = Modifier
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-//                    Spacer(modifier = Modifier.height(32.dp))
-
+                Spacer(modifier = Modifier.height(32.dp))
+                MyPageProfileImg()
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(text = "test",
                     color = White,

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -17,6 +18,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.common.button.PrimaryColorButton
+import com.bonobono.presentation.ui.common.text.CustomTextStyle
 import com.bonobono.presentation.ui.common.topbar.screen.SettingScreen
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -41,6 +43,11 @@ fun FindIDScreen(
             .padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.Center
     ) {
+        Text(
+            text = stringResource(id = R.string.bonobono_app_name),
+            style = CustomTextStyle.appNameText
+        )
+        Spacer(modifier = Modifier.height(32.dp))
         BasicTextField(value = stringResource(id = R.string.login_name), onValueChange = {})
         Spacer(modifier = Modifier.height(8.dp))
 //        TextFieldWithButton(

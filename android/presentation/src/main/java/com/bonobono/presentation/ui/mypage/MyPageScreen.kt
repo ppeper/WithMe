@@ -42,7 +42,7 @@ fun MainMyPageScreen(navController: NavController) {
             // blue wave background
             WaveBackGround(navController)
             // experience and money info box
-            MyPageInfoCard(seaAnimalExp = "1,000", rewardMoney = "1,000")
+            MyPageInfoCard(seaAnimalExp = 1000, rewardMoney = 1000)
             // rest buttons
             Spacer(modifier = Modifier.height(16.dp))
             Column(

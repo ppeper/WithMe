@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -31,9 +30,6 @@ import com.bonobono.presentation.ui.common.topbar.screen.ProfileEditScreen
 import com.bonobono.presentation.ui.mypage.view.ProfileEdit
 import com.bonobono.presentation.ui.theme.Black_100
 import com.bonobono.presentation.ui.theme.Black_70
-import com.bonobono.presentation.ui.theme.LightGray
-import com.bonobono.presentation.ui.theme.LightGray_50
-import com.bonobono.presentation.ui.theme.White
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 

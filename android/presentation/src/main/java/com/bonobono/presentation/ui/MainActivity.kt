@@ -6,10 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.compose.rememberNavController
-import com.bonobono.presentation.ui.login.JoinScreen
-import com.bonobono.presentation.ui.login.LoginScreen
+import com.bonobono.presentation.ui.login.StartScreen
 import com.bonobono.presentation.ui.theme.AndroidTheme
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,9 +21,10 @@ class MainActivity : ComponentActivity() {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                 ) {
-                    MainScreen()
+//                    MainScreen()
 //                    LoginScreen(rememberNavController())
 //                    JoinScreen(navController = rememberNavController())
+                    StartScreen()
                 }
             }
         }

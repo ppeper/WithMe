@@ -21,9 +21,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bonobono.presentation.ui.theme.ChatLightGray
 import com.bonobono.presentation.ui.theme.LightGray
+import com.bonobono.presentation.utils.NumberUtils
 
 @Composable
-fun MyPageInfoCard(seaAnimalExp: String, rewardMoney: String) {
+fun MyPageInfoCard(seaAnimalExp: Int, rewardMoney: Int) {
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(
@@ -51,7 +52,7 @@ fun MyPageInfoCard(seaAnimalExp: String, rewardMoney: String) {
                     )
                 )
                 Spacer(modifier = Modifier.height(12.dp))
-                Text(text = "$seaAnimalExp Exp",
+                Text(text = NumberUtils.makeCommaExp(seaAnimalExp),
                     style = TextStyle(
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp
@@ -74,7 +75,7 @@ fun MyPageInfoCard(seaAnimalExp: String, rewardMoney: String) {
                         fontSize = 12.sp
                     ))
                 Spacer(modifier = Modifier.height(12.dp))
-                Text(text = "$rewardMoney P",
+                Text(text = NumberUtils.makeCommaP(rewardMoney),
                     style = TextStyle(
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp

@@ -46,7 +46,7 @@ import java.time.format.DateTimeFormatter
 
 private const val TAG = "ChattingCard"
 @Composable
-fun ChattingCard( chat : Chat) {
+fun ChattingCard(chat: Chat) {
     val currentDate = LocalDateTime.now()
     var radioBtnCheck by remember { mutableStateOf(false) }
 //    Log.d(TAG, "ChattingCard: ${currentDate} and latestTime is ${latestTime} ")
@@ -63,6 +63,7 @@ fun ChattingCard( chat : Chat) {
         ),
         modifier = Modifier
             .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -162,6 +163,6 @@ fun ChattingCardPreview() {
         latestChatStr = "이번에 언제 만나나요?",
         latestTime = LocalDateTime.now(),
         latestCnt = 3,
-        cardType = "edit")
+        cardType = "normal")
     )
 }

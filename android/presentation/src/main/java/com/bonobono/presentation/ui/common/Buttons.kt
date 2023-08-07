@@ -8,10 +8,12 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.bonobono.presentation.ui.common.text.CustomTextStyle
 import com.bonobono.presentation.ui.theme.Black_100
 import com.bonobono.presentation.ui.theme.DividerGray
 import com.bonobono.presentation.ui.theme.LightGray
@@ -22,6 +24,7 @@ import com.bonobono.presentation.ui.theme.White
 fun SubmitButton(
     modifier: Modifier,
     text: String,
+    textStyle: TextStyle = CustomTextStyle.gameGuideTextStyle,
     onClick: () -> Unit
 ) {
     Button(
@@ -33,7 +36,7 @@ fun SubmitButton(
         ),
         shape = RoundedCornerShape(10.dp)
     ) {
-        Text(text = text, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+        Text(text = text, style = textStyle)
     }
 }
 
@@ -41,6 +44,7 @@ fun SubmitButton(
 fun CancelButton(
     modifier: Modifier,
     text: String,
+    textStyle: TextStyle = CustomTextStyle.gameGuideTextStyle,
     onClick: () -> Unit
 ) {
     Button(
@@ -52,7 +56,7 @@ fun CancelButton(
         ),
         shape = RoundedCornerShape(10.dp),
     ) {
-        Text(text = text, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+        Text(text = text, style = textStyle)
     }
 }
 

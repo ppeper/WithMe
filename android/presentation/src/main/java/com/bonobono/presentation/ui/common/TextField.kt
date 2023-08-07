@@ -23,6 +23,7 @@ import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.common.text.BasicButtonText
 import com.bonobono.presentation.ui.common.text.CustomTextStyle
 import com.bonobono.presentation.ui.theme.PrimaryBlue
+import com.bonobono.presentation.ui.theme.TextGray
 
 @Composable
 fun CommonTextField(

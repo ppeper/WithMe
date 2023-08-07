@@ -6,6 +6,7 @@ import com.bonobono.backend.community.article.dto.res.ArticleCommentResponseDto;
 import com.bonobono.backend.community.article.dto.res.ArticleDetailResponseDto;
 import com.bonobono.backend.community.article.dto.res.ArticleListResponseDto;
 import com.bonobono.backend.community.article.entity.Article;
+import com.bonobono.backend.community.article.entity.ArticleImage;
 import com.bonobono.backend.community.article.enumclass.ArticleType;
 import com.bonobono.backend.community.article.repository.ArticleImageRepository;
 import com.bonobono.backend.community.article.repository.ArticleRepository;
@@ -34,6 +35,7 @@ public class ArticleService {
 
     private final AwsS3Service awsS3Service;
 
+    private final String imageDirName = "article_images"; // S3 폴더이름
 
     // 게시글 글 저장
     @Transactional
@@ -41,8 +43,7 @@ public class ArticleService {
         Article article  = articleRepository.save(requestDto.toEntity(type, member));
         if (imageFiles != null) {
             for (MultipartFile imageFile : imageFiles) {
-                String imageUrl = awsS3Service.upload(imageFile, "article_images").getPath();
-                articleImageService.saveImage(article, imageFile.getOriginalFilename(), imageUrl);
+                articleImageService.saveImage(article, imageFile, imageDirName);
             }
         }
     }
@@ -83,8 +84,7 @@ public class ArticleService {
             article.updateArticle(requestDto.getTitle(), requestDto.getContent(), requestDto.getUrlTitle(), requestDto.getUrl());
             if (imageFiles != null) {
                 for (MultipartFile imageFile : imageFiles) {
-                    String imageUrl = awsS3Service.upload(imageFile, "article_images").getPath();
-                    articleImageService.saveImage(article, imageFile.getOriginalFilename(), imageUrl);
+                    articleImageService.saveImage(article, imageFile, imageDirName);
                 }
             }
         } else {
@@ -110,6 +110,10 @@ public class ArticleService {
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + articleId));
         if(member.getId() == article.getMember().getId()) {
+            List<ArticleImage> articleImages = article.getImages();
+            for (ArticleImage articleImage : articleImages) {
+                articleImageService.deleteImage(articleImage, articleImage.getImageUrl(), imageDirName);
+            }
             articleRepository.delete(article);
         } else {
             throw new UserNotAuthorizedException("해당 멤버는 게시글 작성자가 아닙니다.");

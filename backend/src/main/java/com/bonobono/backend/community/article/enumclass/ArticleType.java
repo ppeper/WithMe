@@ -7,7 +7,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ArticleType {
     FREE("자유"),
-    TOGETHER("함께")
+    TOGETHER("함께"),
+    NOTICE("공지사항")
     ;
 
     private final String name;

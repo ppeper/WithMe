@@ -26,24 +26,26 @@ public class ReportCommentService {
 
     // 신고게시글 댓글, 대댓글 작성하기
     @Transactional
-    public void save(Member member, Long reportId, ReportCommentRequestDto requestDto) {
+    public ReportCommentResponseDto save(Member member, Long reportId, ReportCommentRequestDto requestDto) {
         Report report = reportRepository.findById(reportId)
-                .orElseThrow(()-> new IllegalArgumentException("해당 게시글이 없습니다. id=" + reportId));
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + reportId));
 
-        if (member.getId() == report.getMember().getId() || member.getRole() == Role.ADMIN){
-            ReportComment parentComment = null;
-            if (requestDto.getParentCommentId() != null) {
-                parentComment = reportCommentRepository.findById(requestDto.getParentCommentId())
-                        .orElseThrow(()-> new IllegalArgumentException("해당 댓글이 없습니다. id=" + requestDto.getParentCommentId()));
-            }
-            ReportComment reportComment = reportCommentRepository.save(requestDto.toEntity(report, member, parentComment));
-            if (parentComment != null){
-                parentComment.addChildComment(reportComment);
-            }
-        } else {
+        if (member.getId() != report.getMember().getId() || member.getRole() != Role.ADMIN) {
             throw new UserNotAuthorizedException("해당 멤버는 게시글 작성자 또는 관리자가 아니기에 댓글을 작성할 수 없습니다.");
         }
+
+        ReportComment parentComment = null;
+        if (requestDto.getParentCommentId() != null) {
+            parentComment = reportCommentRepository.findById(requestDto.getParentCommentId())
+                    .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 없습니다. id=" + requestDto.getParentCommentId()));
+        }
+        ReportComment reportComment = reportCommentRepository.save(requestDto.toEntity(report, member, parentComment));
+        if (parentComment != null) {
+            parentComment.addChildComment(reportComment);
+        }
+        return new ReportCommentResponseDto(reportComment, member);
     }
+
 
     // 신고게시글 댓글 조회하기
     @Transactional

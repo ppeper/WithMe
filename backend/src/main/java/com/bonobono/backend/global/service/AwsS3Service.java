@@ -62,4 +62,18 @@ public class AwsS3Service {
     }
 
 
+    public void delete(String dirName, String imageUrl) {
+        try {
+            String keyName = dirName + "/" + imageUrl;
+            boolean isFileExist = amazonS3.doesObjectExist(bucket, keyName);
+            if (isFileExist) {
+                amazonS3.deleteObject(bucket, keyName);
+            } else {
+                throw new IllegalArgumentException("해당 이미지 파일이 없습니다.");
+            }
+        } catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 파일 삭제를 실패하였습니다.");
+        }
+
+    }
 }

@@ -3,6 +3,7 @@ package com.bonobono.backend.community.article.controller;
 import com.bonobono.backend.community.article.dto.req.ArticleCommentRequestDto;
 import com.bonobono.backend.community.article.dto.req.ArticleSaveRequestDto;
 import com.bonobono.backend.community.article.dto.req.ArticleUpdateRequestDto;
+import com.bonobono.backend.community.article.dto.res.ArticleCommentResponseDto;
 import com.bonobono.backend.community.article.dto.res.ArticleDetailResponseDto;
 import com.bonobono.backend.community.article.dto.res.ArticleListResponseDto;
 import com.bonobono.backend.community.article.enumclass.ArticleType;
@@ -99,11 +100,11 @@ public class ArticleTogetherController {
     // ----------댓글---------
     // 함께게시판 글에 댓글 쓰기
     @PostMapping("/{articleId}/comment")
-    public ResponseEntity<Void> saveComment(@AuthenticationPrincipal Member member,
+    public ResponseEntity<ArticleCommentResponseDto> saveComment(@AuthenticationPrincipal Member member,
                                             @PathVariable Long articleId,
                                             @RequestBody ArticleCommentRequestDto requestDto){
-        articleCommentService.save(member, articleId, requestDto);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        ArticleCommentResponseDto responseDto = articleCommentService.save(member, articleId, requestDto);
+        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
     // 함께게시판 댓글 삭제

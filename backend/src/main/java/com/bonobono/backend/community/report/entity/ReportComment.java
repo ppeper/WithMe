@@ -34,7 +34,7 @@ public class ReportComment extends BaseTimeEntity {
     @JoinColumn(name="parent_comment_id")
     private ReportComment parentComment;
 
-    @OneToMany(mappedBy = "parentComment", orphanRemoval = true)
+    @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL,  orphanRemoval = true)
     private List<ReportComment> childComments = new ArrayList<>();
 
     @Builder

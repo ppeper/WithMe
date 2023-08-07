@@ -6,6 +6,7 @@ import com.bonobono.backend.community.report.dto.res.ReportCommentResponseDto;
 import com.bonobono.backend.community.report.dto.res.ReportDetailResponseDto;
 import com.bonobono.backend.community.report.dto.res.ReportListResponseDto;
 import com.bonobono.backend.community.report.entity.Report;
+import com.bonobono.backend.community.report.entity.ReportImage;
 import com.bonobono.backend.community.report.repository.ReportRepository;
 import com.bonobono.backend.global.exception.UserNotAuthorizedException;
 import com.bonobono.backend.global.service.AwsS3Service;
@@ -28,6 +29,7 @@ public class ReportService {
     private final ReportCommentService reportCommentService;
     private final AwsS3Service awsS3Service;
 
+    private final String imageDirName = "report_images"; // S3 폴더이름
 
     // 신고 게시글 저장
     @Transactional
@@ -35,8 +37,7 @@ public class ReportService {
         Report report  = reportRepository.save(requestDto.toEntity(member));
         if (imageFiles != null) {
             for (MultipartFile imageFile : imageFiles) {
-                String imageUrl = awsS3Service.upload(imageFile, "report_images").getPath();
-                reportImageService.saveImage(report, imageFile.getOriginalFilename(), imageUrl);
+                reportImageService.saveImage(report, imageFile, imageDirName);
             }
         }
     }
@@ -76,10 +77,8 @@ public class ReportService {
             report.updateReport(requestDto.getTitle(), requestDto.getContent(), requestDto.getLatitude(), requestDto.getLongitude());
             if (imageFiles != null) {
                 for (MultipartFile imageFile : imageFiles) {
-                    String imageUrl = awsS3Service.upload(imageFile, "report_images").getPath();
-                    reportImageService.saveImage(report, imageFile.getOriginalFilename(), imageUrl);
+                    reportImageService.saveImage(report, imageFile, imageDirName);
                 }
-
             }
         } else {
             throw new UserNotAuthorizedException("해당 멤버는 게시글 작성자가 아닙니다.");
@@ -104,6 +103,10 @@ public class ReportService {
         Report report = reportRepository.findById(reportId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + reportId));
         if(member.getId() == report.getMember().getId()) {
+            List<ReportImage> reportImages = report.getImages();
+            for (ReportImage reportImage : reportImages) {
+                reportImageService.deleteImage(reportImage, reportImage.getImageUrl(), imageDirName);
+            }
             reportRepository.delete(report);
         } else {
             throw new UserNotAuthorizedException("해당 멤버는 게시글 작성자가 아닙니다.");

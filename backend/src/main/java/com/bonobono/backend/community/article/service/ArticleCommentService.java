@@ -25,7 +25,7 @@ public class ArticleCommentService {
 
     // 댓글, 대댓글 작성하기
     @Transactional
-    public void save(Member member, Long articleId, ArticleCommentRequestDto requestDto) {
+    public ArticleCommentResponseDto save(Member member, Long articleId, ArticleCommentRequestDto requestDto) {
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(()-> new IllegalArgumentException("해당 게시글이 없습니다. id=" + articleId));
 
@@ -38,6 +38,7 @@ public class ArticleCommentService {
         if (parentComment != null){
             parentComment.addChildComment(articleComment);
         }
+        return new ArticleCommentResponseDto(articleComment, member);
     }
 
     // 댓글 조회하기

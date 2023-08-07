@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -36,6 +37,7 @@ import com.bonobono.presentation.ui.main.component.ProfilePhoto
 import com.bonobono.presentation.ui.theme.DarkGray
 import com.bonobono.presentation.ui.theme.LightGray
 import com.bonobono.presentation.ui.theme.White
+import com.bonobono.presentation.utils.Character
 
 @Composable
 fun EncyclopediaScreen() {
@@ -82,28 +84,40 @@ fun Characters() {
     val temp = listOf<Int>(
         1, 2, 3, 4, 5, 6, 7, 8, 9, 10
     )
+    val characterList = listOf<Character>(
+        Character.AMMONITE,
+        Character.BELUGA,
+        Character.HIPPOCAMPUS,
+        Character.KILLER_WHALE,
+        Character.NEMO,
+        Character.OTTER,
+        Character.SEA_LION,
+        Character.SEA_GULL,
+        Character.SHRIMP,
+        Character.TURTLE
+    )
     Card(
         modifier = Modifier.padding(12.dp),
         elevation = CardDefaults.cardElevation(4.dp),
         colors = CardDefaults.cardColors(containerColor = White)
     ) {
         LazyVerticalGrid(
-            columns = GridCells.Adaptive(64.dp),
+            columns = GridCells.Adaptive(80.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(8.dp)
         ) {
-            items(temp.size) {
-                if (it == 1 || it == 4 || it >= 8) {
-                    BlindProfilePhoto(image = R.drawable.beluga_whale)
-                } else {
-                    ProfilePhoto(
-                        profileImage = R.drawable.beluga_whale, modifier = Modifier
-                            .clip(CircleShape)
-                            .background(LightGray)
-                            .border(BorderStroke(1.dp, DarkGray), shape = CircleShape)
-                    )
-                }
+            items(characterList) {
+//                if (it == 1 || it == 4 || it >= 8) {
+//                    BlindProfilePhoto(image = R.drawable.beluga_whale)
+//                } else {
+                ProfilePhoto(
+                    profileImage = it.icon, modifier = Modifier.size(64.dp)
+                        .clip(CircleShape)
+                        .background(LightGray)
+                        .border(BorderStroke(1.dp, DarkGray), shape = CircleShape)
+                )
+
             }
         }
     }

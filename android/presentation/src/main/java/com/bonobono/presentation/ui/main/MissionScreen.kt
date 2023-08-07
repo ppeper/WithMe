@@ -22,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.bonobono.presentation.R
@@ -65,7 +64,7 @@ fun MissionScreen(navController: NavHostController) {
             )
         }
         Spacer(modifier = Modifier.size(12.dp))
-        LargeSquareCardWithAnimation(R.raw.daily_quiz_two, "O/X 퀴즈 풀고\n경험치 얻기") {
+        LargeSquareCardWithAnimation(R.raw.animation_four_quiz_card, "O/X 퀴즈 풀고\n경험치 얻기") {
             NavigationUtils.navigate(
                 navController, QuizNav.route,
                 navController.graph.startDestinationRoute

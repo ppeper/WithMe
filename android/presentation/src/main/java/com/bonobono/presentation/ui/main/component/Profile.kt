@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.bonobono.presentation.ui.theme.DarkGray
@@ -24,7 +25,8 @@ fun ProfilePhoto(profileImage: Int, modifier: Modifier) {
     Image(
         modifier = modifier,
         painter = painterResource(id = profileImage),
-        contentDescription = "프로필 사진"
+        contentDescription = "프로필 사진",
+        contentScale = ContentScale.Fit
     )
 }
 

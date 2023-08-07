@@ -2,10 +2,12 @@ package com.bonobono.presentation.ui.map
 
 import android.util.Log
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -62,8 +64,8 @@ fun CameraScreen() {
     val promptsList = listOf(
         Prompt(PromptString.chapterOneTitle, PromptString.chapterOneContent, "", 0, "거절", "수락"),
         Prompt(PromptString.chapterTwoTitle, PromptString.chapterTwoContent, "", 0, "뒤로", "다음"),
-        Prompt(PromptString.chapterThreeTitle, PromptString.chapterThreeContent, "", 0, "X", "O"),
-        Prompt(PromptString.chapterFourTitle, PromptString.chapterFourContent, "", 0, "이름..", "확인"),
+        Prompt(PromptString.chapterThreeTitle, PromptString.chapterThreeContent, "", R.raw.animation_devil, "X", "O"),
+        Prompt(PromptString.chapterFourTitle, PromptString.chapterFourContent, "", R.raw.whale_lv2_happy, "이름..", "확인"),
     )
 
     var chapter by remember { mutableStateOf(0) }
@@ -77,7 +79,7 @@ fun CameraScreen() {
                 mutableStateOf("egg")
             }
             if(chapter >= 2) {
-                AnimationScreen(modifier = Modifier.fillMaxSize())
+                AnimationScreen(modifier = Modifier.fillMaxSize(), prompt.animation)
             } else {
                 ARScreen(currentModel.value)
             }
@@ -97,7 +99,10 @@ fun CameraScreen() {
                         prompt.rightButtonContent
                     )
                 } else if (chapter == 2) {
-                    PromptOXButtonRow(modifier = Modifier, onClickX = {}, onClickO = {})
+                    PromptOXButtonRow(modifier = Modifier, onClickX = {}, onClickO = {
+                        chapter = (chapter + 1) % 4
+                        prompt = promptsList[chapter]
+                    })
                 } else {
                     PromptTwoButtonRow(
                         modifier = Modifier.align(alignment = Alignment.BottomEnd),
@@ -177,7 +182,7 @@ fun ARScreen(model: String) {
 
 // gif 파일
 @Composable
-fun AnimationScreen(modifier: Modifier) {
+fun AnimationScreen(modifier: Modifier, source: Int) {
     Box(modifier = Modifier.fillMaxSize()) {
         val cameraState = rememberCameraState()
         var camSelector by remember { mutableStateOf(CamSelector.Back) }
@@ -188,8 +193,8 @@ fun AnimationScreen(modifier: Modifier) {
         ) {
             GifLoader(modifier = Modifier
                 .fillMaxWidth()
-                .height(360.dp)
-                .align(Alignment.TopCenter), source = R.raw.animation_devil)
+                .height(270.dp).padding(bottom = 64.dp)
+                .align(Alignment.Center), source = source)
         }
     }
 }

@@ -27,22 +27,24 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bonobono.presentation.R
-import com.bonobono.presentation.ui.common.GameTextFieldWithButton
 import com.bonobono.presentation.ui.common.SubmitButton
 import com.bonobono.presentation.ui.common.text.CustomTextStyle
 import com.bonobono.presentation.ui.main.component.GifLoader
 import com.bonobono.presentation.ui.main.component.LottieLoader
 import com.bonobono.presentation.ui.theme.Green
+import com.bonobono.presentation.ui.theme.LightGray
 import com.bonobono.presentation.ui.theme.Red
 import com.bonobono.presentation.ui.theme.White
 import kotlinx.coroutines.delay
 
 
 @Composable
-fun QuizTextBox(name: String, content: String, modifier: Modifier) {
+fun QuizPromptBox(name: String, content: String, modifier: Modifier, bottomRow: @Composable () -> Unit) {
+    var inputValue by remember { mutableStateOf("") }
     Card(
         modifier = modifier,
         colors = CardDefaults.cardColors(containerColor = White)
@@ -50,41 +52,40 @@ fun QuizTextBox(name: String, content: String, modifier: Modifier) {
         Text(
             text = name,
             modifier = Modifier.padding(12.dp),
-            style = CustomTextStyle.quizTitleStyle
+            style = CustomTextStyle.quizTitleStyle,
+            textAlign = TextAlign.Center
         )
-        Divider(thickness = 1.dp, modifier = Modifier.padding(12.dp))
+        Divider(thickness = 1.dp, modifier = Modifier.padding(horizontal = 12.dp))
         Text(
             text = content,
             modifier = Modifier.padding(12.dp),
             style = CustomTextStyle.quizContentStyle
         )
 
-        GameTextFieldWithButton(value = "정답을 입력하세요..", onValueChange = {}, buttonTxt = "확인") {
-
-        }
+        bottomRow()
     }
 }
 
 @Composable
-fun GameTextBox(name: String, content: String, modifier: Modifier) {
+fun GamePromptBox(name: String, content: String, modifier: Modifier) {
     Card(
         modifier = modifier.padding(12.dp),
         elevation = CardDefaults.cardElevation(4.dp),
         colors = CardDefaults.cardColors(containerColor = White)
     ) {
-        Row(modifier = Modifier.fillMaxWidth()) {
-            GifLoader(modifier = Modifier, source = R.raw.animation_fairy)
+        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            GifLoader(modifier = Modifier.size(100.dp), source = R.raw.animation_fairy)
             Column(modifier = Modifier.fillMaxWidth()) {
                 Text(
                     text = name,
                     modifier = Modifier.padding(12.dp),
-                    style = CustomTextStyle.quizContentStyle
+                    style = CustomTextStyle.quizContentStyle.copy(fontSize = 18.sp)
                 )
                 Divider(thickness = 1.dp, modifier = Modifier.padding(4.dp))
                 Text(
                     text = content,
                     modifier = Modifier.padding(12.dp),
-                    style = CustomTextStyle.quizContentStyle
+                    style = CustomTextStyle.quizContentStyle.copy(fontSize = 18.sp)
                 )
             }
         }
@@ -142,9 +143,11 @@ fun PromptOXButtonRow(
     onClickO: () -> Unit
 ) {
     Row(
-        modifier = modifier
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Button(
+            modifier = Modifier.weight(0.3f),
             onClick = onClickX,
             colors = ButtonDefaults.buttonColors(
                 containerColor = Red,
@@ -154,9 +157,9 @@ fun PromptOXButtonRow(
         ) {
             Text(text = "X", style = textStyle.copy(color = White))
         }
-        Spacer(modifier = Modifier.size(4.dp))
+        Spacer(modifier = Modifier.weight(0.1f))
         Button(
-            modifier = modifier,
+            modifier = Modifier.weight(0.3f),
             onClick = onClickO,
             colors = ButtonDefaults.buttonColors(
                 containerColor = Green,
@@ -190,14 +193,18 @@ fun PromptInputRow(
             value = value,
             onValueChange = onValueChange,
             placeholder = {
-                Text(text = value, style = CustomTextStyle.quizContentStyle)
+                Text(text = "정답을 입력하세요..", style = CustomTextStyle.quizContentStyle.copy(color = LightGray))
             },
             textStyle = CustomTextStyle.quizContentStyle
         )
 
         Spacer(modifier = Modifier.size(4.dp))
-        SubmitButton(modifier = Modifier.weight(0.3f), text = submitButton, CustomTextStyle.quizContentStyle) {
-            
+        SubmitButton(
+            modifier = Modifier.weight(0.3f),
+            text = submitButton,
+            CustomTextStyle.quizContentStyle
+        ) {
+
         }
     }
 }

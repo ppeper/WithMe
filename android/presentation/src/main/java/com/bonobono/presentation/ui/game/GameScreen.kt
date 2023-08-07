@@ -36,7 +36,7 @@ import com.bonobono.presentation.ui.common.text.CustomTextStyle
 import com.bonobono.presentation.ui.game.component.CountdownTimer
 import com.bonobono.presentation.ui.game.component.DragTarget
 import com.bonobono.presentation.ui.game.component.DropTarget
-import com.bonobono.presentation.ui.game.component.GameTextBox
+import com.bonobono.presentation.ui.game.component.GamePromptBox
 import com.bonobono.presentation.ui.game.component.LongPressDraggable
 import com.bonobono.presentation.ui.main.component.LottieLoader
 
@@ -64,7 +64,7 @@ fun GameScreen() {
                     .fillMaxWidth()
                     .align(alignment = Alignment.TopCenter)
             ) {
-                GameTextBox(
+                GamePromptBox(
                     name = "클로버 요정",
                     content = "분리수거를 하지 않으면 바다가 계속 아플거야!\n이 쓰레기를 버리려면 어떻게 버려야할까?",
                     modifier = Modifier

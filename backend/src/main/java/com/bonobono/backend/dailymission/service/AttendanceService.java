@@ -28,7 +28,6 @@ public class AttendanceService {
                 .orElseThrow(()->new IllegalArgumentException("해당 멤버가 존재하지 않습니다 +id"+memberId));
         if (attendanceRepository.existsByMemberIdAndCheckDate(memberId, checkDate)) {
             log.trace("이미 출석했습니다");
-            System.out.println("이미 출석했습니다");
             return false;
         }
         else {
@@ -41,7 +40,7 @@ public class AttendanceService {
             UserCharacter mainChracter = member.getMainCharacter();
             if (mainChracter != null) {
                 int currentExp = mainChracter.getExperience();
-                mainChracter.updateExperience(currentExp + 5); //경험치 5씩 증가
+                mainChracter.updateExperience(currentExp + 92); //경험치 5씩 증가
             } else {
                 throw new MainCharacterNotFoundException("대표캐릭터가 존재하지 않습니다. 멤버ID:" + member.getId());
             }

@@ -8,13 +8,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MiniGameRequestDto {
 
-    private String problem;
     private String answer;
+    private Long problemId;
     private Long memberId;
 
-    public MiniGameRequestDto(String problem, String answer,  Long memberId) {
-        this.problem=problem;
+    public MiniGameRequestDto(String answer, Long problemId, Long memberId) {
         this.answer=answer;
+        this.problemId=problemId;
         this.memberId=memberId;
     }
 

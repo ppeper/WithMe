@@ -6,6 +6,7 @@ import com.bonobono.backend.dailymission.domain.IsMiniGame;
 import com.bonobono.backend.dailymission.domain.MiniGame;
 import com.bonobono.backend.dailymission.dto.MiniGameRequestDto;
 import com.bonobono.backend.dailymission.dto.MiniGameResponseDto;
+import com.bonobono.backend.dailymission.exception.AlreadyParticipatedException;
 import com.bonobono.backend.dailymission.repository.IsMiniGameRepository;
 import com.bonobono.backend.dailymission.repository.MiniGameRepository;
 import com.bonobono.backend.global.exception.MainCharacterNotFoundException;
@@ -39,8 +40,7 @@ public class MiniGameService {
 
         if (isMiniGameRepository.existsByMemberIdAndCheckDate(memberId,checkDate)) {
             log.trace("이미 게임에 참여했습니다");
-            System.out.println("이미 게임에 참여했습니다");
-            return new MiniGameResponseDto(null,null);
+            throw new AlreadyParticipatedException("이미 게임에 참여했습니다.");
         }
 
         // 미니게임랜덤 생성
@@ -51,19 +51,11 @@ public class MiniGameService {
         if (miniGamePage.hasContent()) {miniGame = miniGamePage.getContent().get(0);}
         else {throw new IllegalStateException("미니게임을 찾을 수 없습니다");}
 
-        //미니게임 참여여부 저장(참여날짜 저장)
-        IsMiniGame isMiniGame= IsMiniGame.builder()
-                .miniGame(miniGame)
-                .member(member)
-                .checkDate(checkDate)
-                .build();
-
-        isMiniGameRepository.save(isMiniGame);
-
         //랜덤으로 생성한 게임 반환
-        return new MiniGameResponseDto(miniGame.getProblem(), miniGame.getAnswer());
+        return new MiniGameResponseDto(miniGame.getProblem(), miniGame.getAnswer(), miniGame.getId());
 
     }
+
 
     // 문제와 답을 주면 맞는지 여부를 넘겨주고, 맞으면 경험치 UP
     @Transactional
@@ -71,11 +63,11 @@ public class MiniGameService {
         Member member = memberRepository.findById(miniGameRequestDto.getMemberId())
                 .orElseThrow(()->new IllegalArgumentException("해당 멤버가 존재하지 않습니다 +id"+miniGameRequestDto.getMemberId()));
 
-        String problem = miniGameRequestDto.getProblem();
         String answer = miniGameRequestDto.getAnswer();
+        Long problemId = miniGameRequestDto.getProblemId();
 
-        MiniGame miniGame = miniGameRepository.findByProblem(problem)
-                .orElseThrow(()-> new IllegalArgumentException("잘못된 문제입니다. problem="+problem));
+        MiniGame miniGame = miniGameRepository.findById(problemId)
+                .orElseThrow(()-> new IllegalArgumentException("잘못된 문제입니다. problem="+problemId));
 
         boolean isCorrect = miniGame.checkAnswer(answer);
         //맞는지 여부 체크후
@@ -90,6 +82,14 @@ public class MiniGameService {
                 throw new MainCharacterNotFoundException("대표캐릭터가 존재하지 않습니다. 멤버ID:" + member.getId());
             }
         }
+
+        //미니게임 참여여부 저장(참여날짜 저장)
+        IsMiniGame isMiniGame= IsMiniGame.builder()
+            .member(member)
+            .checkDate(checkDate)
+            .build();
+
+        isMiniGameRepository.save(isMiniGame);
 
         return isCorrect;
     }

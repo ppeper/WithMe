@@ -80,7 +80,7 @@ public class CharacterService {
         userCharacter.updateMain(memberRequestDto.getIs_main());
     }
 
-    //채팅도 사용자id넘겨줘서 구현하기
+    //캐릭터의 레벨 올리기
 
 
 }

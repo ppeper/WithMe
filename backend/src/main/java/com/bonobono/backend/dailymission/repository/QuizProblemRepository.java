@@ -7,5 +7,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface QuizProblemRepository  extends JpaRepository<QuizProblem, Long> {
-    Optional<QuizProblem> findByProblem(String problem);
 }

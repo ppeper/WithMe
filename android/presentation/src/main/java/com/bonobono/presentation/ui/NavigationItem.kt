@@ -130,28 +130,41 @@ object FindIdNav : Destination {
     override val route: String = NavigationRouteName.FIND_ID
     override val title: String = NavigationTitle.FIND_ID
     override val deepLinks: List<NavDeepLink> = listOf(
-        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${FindIdNav.route}" })
+        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${LoginNav.route}" })
 }
 
 object FindPasswordNav : Destination {
     override val route: String = NavigationRouteName.FIND_PASSWORD
     override val title: String = NavigationTitle.FIND_PASSWORD
     override val deepLinks: List<NavDeepLink> = listOf(
-        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${FindPasswordNav.route}" })
+        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${LoginNav.route}" })
+}
+
+object LoginNav : Destination {
+    override val route: String = NavigationRouteName.LOGIN
+    override val title: String = NavigationTitle.LOGIN
+    override val deepLinks: List<NavDeepLink> = listOf(
+        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME.$route" })
+}
+object JoinNav : Destination {
+    override val route: String = NavigationRouteName.JOIN
+    override val title: String = NavigationTitle.JOIN
+    override val deepLinks: List<NavDeepLink> = listOf(
+        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${LoginNav.route}" })
 }
 
 object ChattingEditNav : Destination {
     override val route: String = NavigationRouteName.CHATTING_EDIT
     override val title: String = NavigationTitle.CHATTING_EDIT
     override val deepLinks: List<NavDeepLink> = listOf(
-        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${ChattingEditNav.route}" })
+        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${MainNav.Chatting.route}" })
 }
 
 object ChattingNav : Destination {
     override val route: String = NavigationRouteName.CHATTING
     override val title: String = NavigationTitle.CHATTING
     override val deepLinks: List<NavDeepLink> = listOf(
-        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${ChattingNav.route}" })
+        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${MainNav.Chatting.route}" })
 }
 
 object QuizNav : Destination {

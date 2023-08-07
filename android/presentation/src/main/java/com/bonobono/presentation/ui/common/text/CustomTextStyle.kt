@@ -14,8 +14,10 @@ import androidx.compose.ui.unit.sp
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.theme.Black_100
 import com.bonobono.presentation.ui.theme.DarkGray
+import com.bonobono.presentation.ui.theme.PrimaryBlue
 import com.bonobono.presentation.ui.theme.TextGray
 import com.bonobono.presentation.ui.theme.White
+import com.bonobono.presentation.ui.theme.wanju_daedunsan
 
 object CustomTextStyle {
 
@@ -53,41 +55,26 @@ object CustomTextStyle {
     )
 }
 
-@Composable
-fun HeaderTwoText(text: String) {
-    Text(
-        text = text,
-        fontSize = 18.sp,
-        fontWeight = FontWeight.Bold,
-        color = Black_100
-    )
-}
-
-@Composable
-fun BasicButtonText(text: String) {
-    Text(
-        text = text,
+    val primaryColorBtnText = TextStyle(
         fontSize = 14.sp,
         fontWeight = FontWeight.Bold,
-        color = White,
-        modifier = Modifier.padding(vertical = 6.dp)
+        color = White
     )
-}
 
-@Composable
-fun TextFieldText(text: String) {
-    Text(
-        text = text,
+    val bonobonoTFText = TextStyle(
         fontSize = 16.sp,
         color = TextGray
     )
-}
 
-@Composable
-fun LoginDarkGrayText(text: String) {
-    Text(
-        text = text,
+    val loginDarkGrayText = TextStyle(
         fontSize = 12.sp,
         color = DarkGray
+    )
+
+    val appNameText = TextStyle(
+        fontSize = 48.sp,
+        fontFamily = wanju_daedunsan,
+        fontWeight = FontWeight.Bold,
+        color = PrimaryBlue
     )
 }

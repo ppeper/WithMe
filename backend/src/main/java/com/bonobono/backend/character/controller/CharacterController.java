@@ -1,13 +1,11 @@
 package com.bonobono.backend.character.controller;
 
 
-import com.bonobono.backend.character.domain.OurCharacter;
-import com.bonobono.backend.character.domain.UserCharacter;
+import com.bonobono.backend.character.dto.CharacterMainUpdateRequestDto;
 import com.bonobono.backend.character.dto.OurCharacterResponseDto;
+import com.bonobono.backend.character.dto.CharacterNameUpdateRequestDto;
 import com.bonobono.backend.character.dto.UserChracterResponseDto;
 import com.bonobono.backend.character.service.CharacterService;
-import com.bonobono.backend.chatting.dto.ChatRoomResponseDto;
-import com.bonobono.backend.community.article.dto.res.ArticleDetailResponseDto;
 import com.bonobono.backend.member.dto.MemberRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -47,12 +45,22 @@ public class CharacterController {
     }
 
     // 커스텀 이름 바꿀 수 있도록 하기(put)
+    @PatchMapping("/user/name/{character_id}")
+    public ResponseEntity<Void> updateName(@PathVariable Long character_id, @RequestBody CharacterNameUpdateRequestDto memberRequestDto) {
+        characterService.updateName(character_id, memberRequestDto);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
     //대표캐릭터로 지정하기(put)
+    //제일 처음 캐릭터는 default로 제공
+    @PatchMapping("/user/main/{character_id}")
+    public ResponseEntity<Void> updateMain(@PathVariable Long character_id, @RequestBody CharacterMainUpdateRequestDto memberRequestDto) {
+        characterService.updateMain(character_id, memberRequestDto);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
-    //우리 제일 처음 캐릭터는 default로 제공
 
-    //전체 미션달성률도 계산
+
 
     //캐릭터의 레벨별로 진화할 수 있도록??10개 캐릭터?? 1인 애들만 잡을 수 있고, 레벨 업은 캐릭터하면 바뀌는 걸로(수정되는것)(PUT)
     //OX퀴즈는 캐릭터를 잡을 때 하는 거 아닌지? 똑같이 가져다 씀

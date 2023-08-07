@@ -27,7 +27,7 @@ public class UserChracterResponseDto {
 
     public UserChracterResponseDto(UserCharacter userCharacter, Member member) {
         this.custom_name = userCharacter.getCustom_name();
-        this.is_main=userCharacter.getIs_main();
+        this.is_main=userCharacter.getMain();
         this.experience=userCharacter.getExperience();
         this.createdDate=userCharacter.getCreateDate();
         //ourcharacter에서 가져온 정보

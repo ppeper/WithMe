@@ -45,6 +45,8 @@ public class ChatRoomController {
 //        }
 //    }
 
+    /**
+     * 맴버정보도 들고오기*/
     @GetMapping("/")
     public ResponseEntity<ChatRoomWithMessagesDto> makeRoom(@RequestBody ChatRoomRequestDto chatRoomRequestDto) {
         Optional<ChatRoom> optionalChatRoom = chatRoomRepository.findByRoomNumber(chatRoomRequestDto.getRoomNumber());

@@ -6,13 +6,13 @@ import com.bonobono.backend.member.domain.Member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
 @NoArgsConstructor
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"member_id","main"})})
 public class UserCharacter extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,11 +34,11 @@ public class UserCharacter extends BaseTimeEntity {
     private Integer experience;
 
     @Column(columnDefinition = "boolean default false")
-    private Boolean is_main;
+    private Boolean main;
 
     @Builder
-    public UserCharacter(OurCharacter ourCharacter, Member member, boolean is_main, String custom_name){
-        this.is_main = is_main;
+    public UserCharacter(OurCharacter ourCharacter, Member member, boolean main, String custom_name){
+        this.main = main;
         this.ourCharacter = ourCharacter;
         this.member = member;
         this.custom_name = custom_name;
@@ -53,8 +53,17 @@ public class UserCharacter extends BaseTimeEntity {
     public void setCustomNameDefaultValue() {
         this.custom_name=this.custom_name == null ?  ourCharacter.getName():this.custom_name;
         this.experience=this.experience==null? 0:this.experience;
-        this.is_main = this.is_main ==null? false: this.is_main;
+        this.main = this.main ==null? false: this.main;
     }
 
+    // 글 수정
+    public void updateName(String custom_name){
+        this.custom_name=custom_name;
+    }
+
+
+    public void updateMain(Boolean main) {
+        this.main=main;
+    }
 
 }

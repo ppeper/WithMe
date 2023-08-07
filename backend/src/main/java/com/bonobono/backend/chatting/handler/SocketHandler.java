@@ -104,7 +104,7 @@ public class SocketHandler extends TextWebSocketHandler {
         String contentType = "image/jpeg";
 
         ByteArrayMultipartFile multipartFile = new ByteArrayMultipartFile(bytes, contentType, fileName);
-        String dirName = "article_images";
+        String dirName = "chatting_images";
         URL uploadedFileUrl = awsS3Service.upload(multipartFile, dirName);
 
 

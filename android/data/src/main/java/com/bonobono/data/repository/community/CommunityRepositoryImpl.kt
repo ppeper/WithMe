@@ -1,5 +1,8 @@
 package com.bonobono.data.repository.community
 
+import android.net.Uri
+import android.util.Log
+import com.bonobono.data.mapper.Converter
 import com.bonobono.data.mapper.toDomain
 import com.bonobono.data.mapper.toModel
 import com.bonobono.data.remote.CommunityService
@@ -8,7 +11,10 @@ import com.bonobono.domain.model.NetworkResult
 import com.bonobono.domain.model.community.Article
 import com.bonobono.domain.model.community.Comment
 import com.bonobono.domain.repository.community.CommunityRepository
+import okhttp3.MultipartBody
+import java.io.File
 import javax.inject.Inject
+import kotlin.math.log
 
 class CommunityRepositoryImpl @Inject constructor(
     private val communityService: CommunityService
@@ -21,8 +27,12 @@ class CommunityRepositoryImpl @Inject constructor(
         return handleApi { communityService.getArticleById(type, articleId).toDomain() }
     }
 
-    override suspend fun writeArticle(type: String, article: Article, images: String) {
-        TODO("Not yet implemented")
+    override suspend fun writeArticle(type: String, images: List<String>?, article: Article): NetworkResult<Unit> {
+        // MultiPart.Body 형태로 변경
+        val imageFiles = images?.let { images ->
+            images.map { Converter.createMultipartBodyPart(it) }
+        }
+        return handleApi { communityService.writeArticle(type, images = imageFiles, article = article) }
     }
 
     override suspend fun deleteArticle(type: String, articleId: Int) {

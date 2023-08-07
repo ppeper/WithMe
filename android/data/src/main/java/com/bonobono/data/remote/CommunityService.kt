@@ -35,9 +35,9 @@ interface CommunityService {
     @POST("community/{type}")
     suspend fun writeArticle(
         @Path(value = "type") communityType: String,
-        article: Article,
-        @Part images: MultipartBody.Part
-    ): Unit
+        @Part("imageFiles") images: List<MultipartBody.Part>?,
+        @Part("requestDto") article: Article,
+    ): NetworkResult<Unit>
 
     // 게시글 삭제
     @DELETE("community/{type}/{articleId}")

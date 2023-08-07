@@ -321,17 +321,17 @@ fun MainNavigationScreen(
         composable(
             route = CommunityFab.FREE.route
         ) {
-            BoardWriteScreen(navController = navController)
+            BoardWriteScreen(type = COMMUNITY_FREE, navController = navController)
         }
         composable(
             route = CommunityFab.WITH.route
         ) {
-            BoardWriteScreen(navController = navController)
+            BoardWriteScreen(type = COMMUNITY_WITH, navController = navController)
         }
         composable(
             route = CommunityFab.REPORT.route
         ) {
-            BoardWriteScreen(navController = navController)
+            BoardWriteScreen(type = COMMUNITY_REPORT, navController = navController)
         }
 
         communityNavigation(navController = navController)

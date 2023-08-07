@@ -13,6 +13,4 @@ public class MemberNicknameRequestDto {
 
     private String nickname;
 
-
-
 }

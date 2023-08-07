@@ -3,12 +3,9 @@ package com.bonobono.backend.member.dto.request;
 import com.bonobono.backend.member.domain.Authority;
 import com.bonobono.backend.member.domain.Member;
 import com.bonobono.backend.member.domain.enumtype.Provider;
-import com.bonobono.backend.member.domain.enumtype.Role;
 
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import lombok.*;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,14 +22,16 @@ public class MemberRequestDto implements Serializable {
     private Long memberId;
     private String username;
     private String password;
+    private String passwordCheck; // 비밀번호 확인 -> 제대로 작동하지 못함
     private String name;
     private String nickname;
     private String phoneNumber;
     private Set<Authority> role;
 
     @Builder
-    public MemberRequestDto(Long memberId){
+    public MemberRequestDto(Long memberId, String passwordCheck){
         this.memberId = memberId;
+        this.passwordCheck = passwordCheck;
     }
 
     public Member toMember(BCryptPasswordEncoder passwordEncoder, Set<Authority> role) {
@@ -52,8 +51,7 @@ public class MemberRequestDto implements Serializable {
     }
 
     public static MemberRequestDto of(Member member) {
-
-
+        
         if (member == null) {
             return null;
         }

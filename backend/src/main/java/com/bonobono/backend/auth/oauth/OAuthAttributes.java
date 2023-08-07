@@ -83,7 +83,7 @@ public class OAuthAttributes {
         map.put("key", nameAttributesKey);
         map.put("name", name);
         map.put("nickname", nickname);
-        map.put("username", email);
+        map.put("email", email);
         map.put("profileImg", profileImg);
         map.put("phoneNumber", phoneNumber);
 

@@ -5,16 +5,16 @@ import com.bonobono.backend.global.entity.BaseTimeEntity;
 import com.bonobono.backend.community.article.entity.Article;
 import com.bonobono.backend.community.article.entity.ArticleComment;
 import com.bonobono.backend.member.domain.enumtype.Provider;
-import com.bonobono.backend.member.domain.enumtype.Role;
 import com.bonobono.backend.member.dto.request.MemberUpdateRequestDto;
+import com.bonobono.backend.member.dto.request.PasswordChangeRequestDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import java.sql.Ref;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.*;
 import lombok.*;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Entity
 @AllArgsConstructor
@@ -74,11 +74,17 @@ public class Member extends BaseTimeEntity  {
     }
 
     // 회원 정보 수정
-    public void updateMember(MemberUpdateRequestDto dto, PasswordEncoder passwordEncoder) {
-        if(dto.getPassword() != null) this.password = passwordEncoder.encode(dto.getPassword());
+    public void updateMember(MemberUpdateRequestDto dto) {
         if(dto.getName() != null) this.name = dto.getName();
         if(dto.getNickname() != null) this.nickname = dto.getNickname();
         if(dto.getPhoneNumber() != null) this.phoneNumber = dto.getPhoneNumber();
+    }
+
+    // 비밀번호 수정
+    public void changePassword(PasswordChangeRequestDto dto, BCryptPasswordEncoder passwordEncoder) {
+
+        if((passwordEncoder.matches(dto.getPassword(), this.password)) && dto.getNewPassword() != null)
+            this.password = passwordEncoder.encode(dto.getNewPassword());
     }
 
 }

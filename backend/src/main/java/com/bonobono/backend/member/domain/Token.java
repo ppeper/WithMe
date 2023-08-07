@@ -13,7 +13,6 @@ import javax.persistence.Id;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Token {
-
     @Id
     @Column(name = "rt_key")
     private String key;

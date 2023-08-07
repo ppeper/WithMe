@@ -46,7 +46,7 @@ public class OAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
         // 토큰에 담을 정보
         response.setCharacterEncoding("UTF-8");
-        response.setContentType("application/json,charset=utf-8");
+        response.setContentType("application/json;charset=utf-8");
 
         PrintWriter writer = response.getWriter();
         MemberRequestDto memberDto = null;

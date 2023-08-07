@@ -70,7 +70,7 @@ public class CustomOAuthLoginValidateFilter extends GenericFilter {
         log.info("Oauth token 검증 시작");
         int startIndex = uri.indexOf("login/") + "login/".length();
         int endIndex = uri.indexOf("/callback");
-        String registrationId = uri.substring(startIndex, endIndex);
+        String registrationId = uri.substring(startIndex, endIndex); // google, kakao, naver
         SecurityContextHolder.getContext().getAuthentication();
 
         Map<String, Object> memberMap = null;
@@ -83,7 +83,6 @@ public class CustomOAuthLoginValidateFilter extends GenericFilter {
                     memberMap = googleTokenValidate.validate(idToken);
                     break;
                 case "kakao":
-                    log.info("카카오들어왔나?");
                     memberMap = kakaoTokenValidate.validate(idToken);
                     break;
                 case "naver":

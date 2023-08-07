@@ -8,6 +8,7 @@ import com.bonobono.backend.member.domain.Token;
 import com.bonobono.backend.member.domain.enumtype.Role;
 import com.bonobono.backend.member.dto.request.MemberRequestDto;
 import com.bonobono.backend.member.dto.request.MemberUpdateRequestDto;
+import com.bonobono.backend.member.dto.request.PasswordChangeRequestDto;
 import com.bonobono.backend.member.dto.request.TokenRequestDto;
 import com.bonobono.backend.member.dto.response.MemberResponseDto;
 import com.bonobono.backend.member.dto.response.TokenDto;
@@ -16,13 +17,10 @@ import com.bonobono.backend.global.exception.ErrorCode;
 import com.bonobono.backend.member.repository.AuthorityRepository;
 import com.bonobono.backend.member.repository.MemberRepository;
 import com.bonobono.backend.member.repository.TokenRepository;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
+
 import java.util.HashSet;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -35,29 +33,35 @@ import javax.servlet.http.HttpServletRequest;
 @Service
 @RequiredArgsConstructor
 public class MemberService {
+
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final AuthorityRepository authorityRepository;
     private final MemberRepository memberRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final TokenProvider tokenProvider;
     private final TokenRepository tokenRepository;
-    private final StringRedisTemplate redisTemplate;
 
     /**
      * 회원가입
      */
     @Transactional
     public MemberResponseDto signup(MemberRequestDto request) {
-        // 아이디 중복 회원 검증
+        // 아이디 중복 검증
         memberRepository.findByUsername(request.getUsername())
             .ifPresent(member -> {
                 throw new AppException(ErrorCode.USERNAME_DUPLICATED, "이미 존재하는 아이디입니다.");
             });
-
+        
+        // 닉네임 중복 검증
         memberRepository.findByNickname(request.getNickname())
             .ifPresent(member -> {
                 throw new AppException(ErrorCode.NICKNAME_DUPLICATED, "이미 존재하는 닉네임입니다.");
             });
+
+//        // 비밀번호 체크 -> 제대로 작동 못함 수정해야 할 필요가 있음
+//        if (!(bCryptPasswordEncoder.matches(request.getPassword(), request.getPasswordCheck()))) {
+//            throw new AppException(ErrorCode.PASSWORD_MISMATCH, "비밀번호와 비밀번호확인이 일치하지 않습니다.");
+//        }
 
         Authority authority = authorityRepository
             .findByRole(Role.USER)
@@ -75,12 +79,13 @@ public class MemberService {
      */
     @Transactional
     public TokenDto login(MemberRequestDto request) {
-
+        // 아이디가 틀렸을 때
         Member member = memberRepository.findByUsername(request.getUsername())
             .orElseThrow(() -> {
                 throw new AppException(ErrorCode.USERNAME_NOTFOUND, "존재하지 않는 아이디입니다.");
             });
-
+        
+        // 비밀번호를 틀렸을 때
         if (!bCryptPasswordEncoder.matches(request.getPassword(), member.getPassword())) {
             throw new AppException(ErrorCode.INVALID_PASSWORD, "잘못된 비밀번호입니다.");
         }
@@ -155,7 +160,19 @@ public class MemberService {
                 .findById(SecurityUtil.getLoginMemberId())
                 .orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다."));
 
-        member.updateMember(dto, bCryptPasswordEncoder);
+        member.updateMember(dto);
+    }
+
+    /**
+     * 비밀번호 수정
+     */
+    @Transactional
+    public void passwordChange(PasswordChangeRequestDto request) {
+        Member member = memberRepository
+                .findById(SecurityUtil.getLoginMemberId())
+                .orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다."));
+
+        member.changePassword(request, bCryptPasswordEncoder);
     }
 
     /**
@@ -163,8 +180,8 @@ public class MemberService {
      */
     @Transactional
     public void logout(HttpServletRequest request) {
-        
-        // accessToken을 다른 Table에 등록해서 검사해도되지만 굳이...? 안해도 될듯해서 넣지않음
+        // accessToken을 다른 Table에 등록해서 해당 테이블에 accessToken이 존재하면 로그아웃된 사용자로 인식
+        // 나중에 구현해야할 필요가 있음
 
         // refreshToken 삭제
         tokenRepository.deleteByKey(String.valueOf(SecurityUtil.getLoginMemberId()))
@@ -182,6 +199,5 @@ public class MemberService {
         }
         memberRepository.deleteById(loginMemberId);
     }
-
 
 }

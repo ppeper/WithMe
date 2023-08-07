@@ -8,6 +8,6 @@ public interface TokenRepository extends JpaRepository<Token, String> {
 
     Optional<Token> findByKey(String key);
     Optional<Token> deleteByKey(String key);
-
     long countByValue(String jwt);
+
 }

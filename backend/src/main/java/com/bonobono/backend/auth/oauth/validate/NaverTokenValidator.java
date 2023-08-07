@@ -3,6 +3,7 @@ package com.bonobono.backend.auth.oauth.validate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -22,6 +23,7 @@ import java.util.Map;
 @Setter
 @RequiredArgsConstructor
 @Component
+@Slf4j
 public class NaverTokenValidator implements CustomTokenValidator {
 
     private final ObjectMapper mapper;
@@ -32,48 +34,56 @@ public class NaverTokenValidator implements CustomTokenValidator {
     @Value("${spring.oauth2.naver.client-secret}")
     private String CLIENT_SECRET;
 
+    @Value("${spring.provider.naver.token_uri}")
+    private String TOKEN_URL;
+
     @Value("${spring.provider.naver.user-info-uri}")
     private String USER_INFO_URL;
 
     @Override
     public Map<String, Object> validate(String idTokenString) throws GeneralSecurityException, IOException {
 
-//        RestTemplate restTemplate = new RestTemplate();
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.add("Content-Type", "application/x-www-form-urlencoded");
-//
-//        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-//        params.add("grant_type", "authorization_code");
-//        params.add("client_id", CLIENT_ID);
-//        params.add("client_secret", CLIENT_SECRET);
-//        params.add("code", idTokenString);
-//
-//        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
-//
-//        ResponseEntity<String> response = restTemplate.exchange("https://nid.naver.com/oauth2.0/token",
-//                HttpMethod.POST, request, String.class);
-//
-//        Map<String, Object> map = new HashMap<String, Object>();
+        RestTemplate restTemplate_1 = new RestTemplate();
+//        HttpHeaders headers_1 = new HttpHeaders();
+//        headers_1.add("Content-Type", "application/x-www-form-urlencoded");
 
-        RestTemplate restTemplate = new RestTemplate();
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("grant_type", "authorization_code");
+        params.add("client_id", CLIENT_ID);
+        params.add("client_secret", CLIENT_SECRET);
+        params.add("code", idTokenString);
+        params.add("state", "state");
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params);
+
+        ResponseEntity<String> response = restTemplate_1.exchange(TOKEN_URL,
+                HttpMethod.POST, request, String.class);
+
+        RestTemplate restTemplate_2 = new RestTemplate();
 
         ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, Object> accessTokenAndRefreshToken = objectMapper.readValue(response.getBody(), HashMap.class);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + idTokenString);
-        headers.add("X-Naver-Client-Id", "CLIENT_ID");
-        headers.add("X-Naver-Client-Secret", "USER_INFO_URL");
+        String accessToken = (String) accessTokenAndRefreshToken.get("access_token");
+        String refreshToken = (String) accessTokenAndRefreshToken.get("refresh_token");
 
-        HttpEntity<HttpHeaders> entity = new HttpEntity<>(headers);
+        log.info(accessToken + " " + refreshToken);
 
-        ResponseEntity<LinkedHashMap> response = restTemplate.exchange(
+        HttpHeaders headers_2 = new HttpHeaders();
+        headers_2.add("Authorization", "Bearer " + accessToken);
+//        headers_2.add("X-Naver-Client-Id", "CLIENT_ID");
+//        headers_2.add("X-Naver-Client-Secret", "USER_INFO_URL");
+
+        HttpEntity<HttpHeaders> entity = new HttpEntity<>(headers_2);
+
+        ResponseEntity<LinkedHashMap> response_2 = restTemplate_2.exchange(
                 USER_INFO_URL,
                 HttpMethod.GET,
                 entity,
                 LinkedHashMap.class
         );
 
-        Map<String, HashMap> map = response.getBody();
+        Map<String, HashMap> map = response_2.getBody();
         String naver_id = (String) map.get("response").get("id");
 
         System.out.println(map);

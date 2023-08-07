@@ -11,7 +11,8 @@ public enum ErrorCode {
     USERNAME_DUPLICATED(HttpStatus.CONFLICT, ""),
     NICKNAME_DUPLICATED(HttpStatus.CONFLICT, ""),
     USERNAME_NOTFOUND(HttpStatus.NOT_FOUND, ""),
-    INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "");
+    INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, ""),
+    PASSWORD_MISMATCH(HttpStatus.CONFLICT, "");
 
     private HttpStatus httpStatus;
     private String message;

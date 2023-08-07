@@ -23,7 +23,7 @@ public class ChatRoomResponseDto {
     public ChatRoomResponseDto(ChatRoom chatRoom) {
         this.roomNumber = chatRoom.getRoomNumber();
         this.other = chatRoom.getOther();
-        this.createdDate = chatRoom.getCreateDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
+        this.createdDate = chatRoom.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
         this.updatedDate = chatRoom.getModifiedDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
 //        this.messages = chatRoom.getChatMessageList().stream().map(ChatMessageResponseDto::new).collect(Collectors.toList());
     }

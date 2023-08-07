@@ -53,7 +53,6 @@ object CustomTextStyle {
         fontFamily = FontFamily(Font(R.font.ramche)),
         fontSize = 14.sp
     )
-}
 
     val primaryColorBtnText = TextStyle(
         fontSize = 14.sp,

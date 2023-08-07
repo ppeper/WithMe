@@ -192,9 +192,10 @@ object NavigationRouteName {
     const val NOTICE = "notice"
 
     // Community
-    const val COMMUNITY_FREE = "free_community"
-    const val COMMUNITY_WITH = "with_community"
-    const val COMMUNITY_REPORT = "report_community"
+    const val COMMUNITY_GRAPH = "community_graph"
+    const val COMMUNITY_FREE = "free"
+    const val COMMUNITY_WITH = "together"
+    const val COMMUNITY_REPORT = "report"
     // FAB Route
     const val COMMUNITY_POST = "write_free"
     const val COMMUNITY_POST_WITH = "write_with"

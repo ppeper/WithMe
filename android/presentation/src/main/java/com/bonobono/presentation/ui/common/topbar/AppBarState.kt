@@ -8,6 +8,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavController
+import com.bonobono.presentation.ui.BoardDetailNav
 import com.bonobono.presentation.ui.common.topbar.item.ActionMenuItem
 import com.bonobono.presentation.ui.common.topbar.screen.Screen
 import com.bonobono.presentation.ui.common.topbar.utils.getScreen
@@ -28,7 +29,7 @@ class AppBarState(
             .onEach { backStackEntry ->
                 // 4
                 val route = backStackEntry.destination.route
-                currentScreen = getScreen(route)
+                currentScreen = if (route?.contains(BoardDetailNav.route) == true) getScreen(BoardDetailNav.route) else getScreen(route)
             }
             .launchIn(scope)
     }

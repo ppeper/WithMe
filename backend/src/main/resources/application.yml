@@ -1,14 +1,20 @@
+server:
+  port: 8081
+
 spring:
   profiles:
-    include: oauth
-  datasource:
-    url: jdbc:mariadb://localhost:3306/bonobono
-    driver-class-name: org.mariadb.jdbc.Driver
-    username: root
-    password: 1234
-  data:
-    mongodb:
-      uri: mongodb://localhost:27017/websocket
+    include:
+      - oauth
+      - cloud
+
+#  datasource:
+#    url: jdbc:mariadb://localhost:3306/bonobono
+#    driver-class-name: org.mariadb.jdbc.Driver
+#    username: root
+#    password: 1234
+#  data:
+#    mongodb:
+#      uri: mongodb://localhost:27017/websocket
 
   jpa:
     hibernate:
@@ -19,10 +25,11 @@ spring:
         show_sql: true #show sql
     defer-datasource-initialization: true
 
-  sql:
-    init:
-      data-locations: classpath:data.sql
-      mode: always
+## Spring Boot 실행시 SQL문 자동실행
+#  sql:
+#    init:
+#      data-locations: classpath:data.sql
+#      mode: always
 
   mvc: # swagger로 인해서 세팅
     pathmatch:
@@ -34,21 +41,14 @@ spring:
 
 jwt:
   token:
-    secret-key: ${JWT_SECRET_KEY} # q1w2e3r4
+    secret-key: q1w2e3r4 #${JWT_SECRET_KEY} #
 
 logging.level:
   org.hibernate.SQL: DEBUG
 
-# S3 image upload setting
-cloud:
-  aws:
-    credentials:
-      accessKey: AKIARNYJE4X55QI7TB6F
-      secretKey: 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
-    s3:
-      bucket: bonobono
-    region:
-      static: ap-northeast-2
-      auto: false
-    stack:
-      auto: false
+springdoc:
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  swagger-ui:
+    path: /swagger-ui.html
+    disable-swagger-default-url: true

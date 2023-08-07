@@ -15,20 +15,17 @@ public class ArticleSaveRequestDto {
     private String content;
     private String urlTitle;
     private String url;
-    private Long memberId; // 후에 user 현재 정보로 바꾸기
 
 
     @Builder
     public ArticleSaveRequestDto(String title,
                                  String content,
                                  String urlTitle,
-                                 String url,
-                                 Long memberId){
+                                 String url){
         this.title = title;
         this.content = content;
         this.urlTitle = urlTitle;
         this.url = url;
-        this.memberId = memberId;
     }
 
     public Article toEntity(ArticleType type, Member member){

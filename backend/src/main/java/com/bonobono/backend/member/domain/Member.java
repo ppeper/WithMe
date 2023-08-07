@@ -1,5 +1,6 @@
 package com.bonobono.backend.member.domain;
 
+import com.bonobono.backend.character.domain.UserCharacter;
 import com.bonobono.backend.chatting.domain.ChatRoom;
 import com.bonobono.backend.global.entity.BaseTimeEntity;
 import com.bonobono.backend.community.article.entity.Article;
@@ -55,7 +56,18 @@ public class Member extends BaseTimeEntity  {
     private Set<Article> articleLikes;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL) //주인은 외래키를 가지는 order, map을 당하는 member
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL) //주인은 외래키를 가지는 chatting, map을 당하는 member
     private List<ChatRoom> chatRooms = new ArrayList<>();
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "member")
+    private List<UserCharacter> userCharacters = new ArrayList<>();
+
+    public UserCharacter getMainCharacter() {
+        for (UserCharacter character : this.userCharacters) {
+            if (character.is_main()) {
+                return character;
+            }
+        }
+        return null;
+    }
 }

@@ -71,4 +71,9 @@ public class Article extends BaseTimeEntity {
         this.urlTitle = urlTitle;
         this.url = url;
     }
+
+    // 모집 완료
+    public void updateRecruitStatus(){
+        this.recruitStatus = true;
+    }
 }

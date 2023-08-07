@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,6 +19,9 @@ public class ArticleDetailResponseDto {
     private ArticleType type;
     private String title;
     private String content;
+    private Long memberId;
+    private String nickname;
+    private String profileImg;
     private int views;
     private boolean recruitStatus;
     private String urlTitle;
@@ -27,13 +31,17 @@ public class ArticleDetailResponseDto {
     private boolean isLiked;
     private List<ArticleCommentResponseDto> comments;
     private int commentCnt;
-    private String nickname;
+    private LocalDateTime createdDate;
+
 
 
     public ArticleDetailResponseDto(Article entity, Member member, List<ArticleCommentResponseDto> comments){
         this.type = entity.getType();
         this.title = entity.getTitle();
         this.content = entity.getContent();
+        this.memberId = entity.getMember().getId();
+        this.nickname = entity.getMember().getNickname();
+        this.profileImg = entity.getMember().getProfileImg();
         this.views = entity.getViews();
         this.recruitStatus = entity.isRecruitStatus();
         this.urlTitle = entity.getUrlTitle();
@@ -45,7 +53,7 @@ public class ArticleDetailResponseDto {
         this.isLiked =  entity.getArticleLikes().stream().anyMatch(like -> like.getMember().getId().equals(member.getId()));
         this.comments = comments;
         this.commentCnt = entity.getComments().size();
-        this.nickname = entity.getMember().getNickname();
+        this.createdDate = entity.getCreatedDate();
 
     }
 

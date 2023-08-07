@@ -9,10 +9,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CharacterNameUpdateRequestDto {
     private String custom_name;
+    private Long memberId;
 
     @Builder
-    public CharacterNameUpdateRequestDto(String custom_name) {
+    public CharacterNameUpdateRequestDto(String custom_name, Long memberId) {
         this.custom_name = custom_name;
+        this.memberId = memberId;
     }
 
 

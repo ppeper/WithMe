@@ -22,17 +22,17 @@ public class UserChracterResponseDto {
     private LocalDateTime createdDate;
     private CharacterLevelEnum level;
     private String description;
-    private Member member;
+    private Long memberId;
 
 
-    public UserChracterResponseDto(UserCharacter userCharacter, Member member) {
+    public UserChracterResponseDto(UserCharacter userCharacter) {
         this.custom_name = userCharacter.getCustom_name();
         this.is_main=userCharacter.getMain();
         this.experience=userCharacter.getExperience();
-        this.createdDate=userCharacter.getCreateDate();
+        this.createdDate=LocalDateTime.now();
         //ourcharacter에서 가져온 정보
         this.level = userCharacter.getOurCharacter().getLevel();
         this.description = userCharacter.getOurCharacter().getDescription();
-        this.member=member;
+        this.memberId=userCharacter.getMember().getId();
             }
 }

@@ -12,7 +12,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor
-@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"member_id","main"})})
+//@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"member_id","main"})})
 public class UserCharacter extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -8,9 +8,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CharacterMainUpdateRequestDto {
     private Boolean is_main;
+    private Long memberId;
 
     @Builder
-    public CharacterMainUpdateRequestDto(Boolean is_main) {
+    public CharacterMainUpdateRequestDto(Boolean is_main, Long memberId) {
         this.is_main = is_main;
+        this.memberId=memberId;
     }
 }

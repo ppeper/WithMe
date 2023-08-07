@@ -29,9 +29,9 @@ public class CharacterService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(()-> new IllegalArgumentException("해당 멤버가 없습니다. id =" + memberId));
 
-        return userCharacterRepository.findByMemberId(memberId)
+        return userCharacterRepository.findByMemberId(member.getId())
                     .stream()
-                    .map(userCharacter->new UserChracterResponseDto(userCharacter,member))
+                    .map(UserChracterResponseDto::new)
                     .collect(Collectors.toList());
     }
 
@@ -40,7 +40,7 @@ public class CharacterService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(()-> new IllegalArgumentException("해당 멤버가 없습니다. id =" + memberId));
 
-        return ourCharacterRepository.findNotLinkedOurCharactersByMember(memberId)
+        return ourCharacterRepository.findNotLinkedOurCharactersByMember(member.getId())
                 .stream()
                 .map(OurCharacterResponseDto::new)
                 .collect(Collectors.toList());
@@ -48,24 +48,23 @@ public class CharacterService {
 
     @Transactional(readOnly = true)
     public UserChracterResponseDto findById(Long character_id, Long memberId) {
-        UserCharacter userCharacter = userCharacterRepository.findById(character_id)
-                .orElseThrow(() -> new IllegalArgumentException("캐릭터가 없습니다 id ="+character_id));
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(()-> new IllegalArgumentException("해당 멤버가 없습니다. id =" + memberId));
-        return new UserChracterResponseDto(userCharacter, member);
+        UserCharacter userCharacter = userCharacterRepository.findByMemberIdAndId(memberId,character_id)
+                .orElseThrow(() -> new IllegalArgumentException("유저에게 캐릭터가 없습니다 id ="+character_id));
+        return new UserChracterResponseDto(userCharacter);
     }
 
     @Transactional
     public void updateName(Long character_id, CharacterNameUpdateRequestDto memberRequestDto) {
-        UserCharacter userCharacter = userCharacterRepository.findById(character_id)
+        UserCharacter userCharacter = userCharacterRepository.findByMemberIdAndId(memberRequestDto.getMemberId(),character_id)
                 .orElseThrow(()-> new IllegalArgumentException("해당 유저 캐릭터가 없습니다 id:"+character_id));
         userCharacter.updateName(memberRequestDto.getCustom_name());
     }
 
     @Transactional
     public void updateMain(Long character_id, CharacterMainUpdateRequestDto memberRequestDto) {
-        UserCharacter userCharacter = userCharacterRepository.findById(character_id)
+        UserCharacter userCharacter = userCharacterRepository.findByMemberIdAndId(memberRequestDto.getMemberId(),character_id)
                 .orElseThrow(()-> new IllegalArgumentException("해당 유저 캐릭터가 없습니다. id"+character_id));
+
         //다른 main캐릭터가 있으면, 다른 캐릭터는 false로 지정
         if (Boolean.TRUE.equals(memberRequestDto.getIs_main())) {
             List<UserCharacter> mainCharacters = userCharacterRepository.findByMemberIdAndMain(userCharacter.getMember().getId(), Boolean.TRUE);

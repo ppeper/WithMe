@@ -20,4 +20,5 @@ public class OurCharacter {
     @Enumerated(EnumType.STRING)
     private CharacterLevelEnum level;
 
+
 }

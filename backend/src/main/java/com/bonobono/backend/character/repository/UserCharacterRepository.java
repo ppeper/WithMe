@@ -10,4 +10,6 @@ public interface UserCharacterRepository extends JpaRepository<UserCharacter, Lo
     List<UserCharacter> findByMemberId(Long memberId);
 
     List<UserCharacter> findByMemberIdAndMain(Long id, Boolean main);
+
+    Optional<UserCharacter> findByMemberIdAndId(Long memberId, Long characterId);
 }

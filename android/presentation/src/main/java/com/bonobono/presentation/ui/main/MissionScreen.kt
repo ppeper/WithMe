@@ -23,8 +23,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.bonobono.presentation.R
+import com.bonobono.presentation.ui.GameNav
+import com.bonobono.presentation.ui.QuizNav
 import com.bonobono.presentation.ui.common.button.PrimaryButton
 import com.bonobono.presentation.ui.common.text.CustomTextStyle
 import com.bonobono.presentation.ui.main.component.CircularProgressBar
@@ -34,9 +37,10 @@ import com.bonobono.presentation.ui.main.component.LottieLoader
 import com.bonobono.presentation.ui.main.component.ProfilePhoto
 import com.bonobono.presentation.ui.theme.LightGray
 import com.bonobono.presentation.ui.theme.White
+import com.bonobono.presentation.utils.NavigationUtils
 
 @Composable
-fun MissionScreen(navController: NavController) {
+fun MissionScreen(navController: NavHostController) {
     Column(
         Modifier
             .verticalScroll(rememberScrollState())
@@ -45,31 +49,34 @@ fun MissionScreen(navController: NavController) {
         ;
         UserInformationItem()
         Spacer(modifier = Modifier.size(12.dp))
-        DailyGameItem(R.raw.animation_check, "출석체크하고 경험치 받기\nExp.5", "출석하기")
-        Spacer(modifier = Modifier.size(12.dp))
-        DailyGameItem(R.raw.game, "게임 클리어하고 경험치 받기\nExp.10", "게임하기")
-        Spacer(modifier = Modifier.size(12.dp))
-        DailyMission()
-    }
-}
+        DailyGameItem(
+            R.raw.animation_check,
+            "출석체크하고 경험치 받기\nExp.5",
+            "출석하기",
+            navController = navController
+        ) {
 
-@Composable
-fun DailyMission() {
-    val items = listOf<String>(
-        "1", "2", " 3"
-    )
-    Column(
-        Modifier.padding(vertical = 4.dp)
-    ) {
-        items.take(1).forEach {
-            LargeSquareCardWithAnimation(R.raw.daily_quiz_two, "O/X 퀴즈 풀고\n경험치 얻기")
-            Spacer(modifier = Modifier.size(12.dp))
+        }
+        Spacer(modifier = Modifier.size(12.dp))
+        DailyGameItem(R.raw.game, "게임 클리어하고 경험치 받기\nExp.10", "게임하기", navController = navController) {
+            NavigationUtils.navigate(
+                navController, GameNav.route,
+                navController.graph.startDestinationRoute
+            )
+        }
+        Spacer(modifier = Modifier.size(12.dp))
+        LargeSquareCardWithAnimation(R.raw.daily_quiz_two, "O/X 퀴즈 풀고\n경험치 얻기") {
+            NavigationUtils.navigate(
+                navController, QuizNav.route,
+                navController.graph.startDestinationRoute
+            )
         }
     }
 }
 
+
 @Composable
-fun DailyGameItem(source: Int, content: String, buttonText: String) {
+fun DailyGameItem(source: Int, content: String, buttonText: String, navController: NavHostController, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth(),
@@ -93,7 +100,7 @@ fun DailyGameItem(source: Int, content: String, buttonText: String) {
             )
 
             PrimaryButton(buttonText, Modifier) {
-
+                onClick()
             }
         }
     }

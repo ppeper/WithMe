@@ -7,6 +7,7 @@ import com.bonobono.backend.dailymission.domain.Quiz;
 import com.bonobono.backend.dailymission.domain.QuizProblem;
 import com.bonobono.backend.dailymission.dto.QuizRequestDto;
 import com.bonobono.backend.dailymission.dto.QuizeResponseDto;
+import com.bonobono.backend.dailymission.exception.AlreadyParticipatedException;
 import com.bonobono.backend.dailymission.repository.OXQuizProblemRepository;
 import com.bonobono.backend.dailymission.repository.OXQuizRepository;
 import com.bonobono.backend.dailymission.repository.QuizProblemRepository;
@@ -37,8 +38,6 @@ public class QuizService {
     private final QuizProblemRepository quizProblemRepository;
     private final OXQuizProblemRepository oxQuizProblemRepository;
 
-//    Map<String, String> map = new HashMap<>();
-//    Map<String, String> oxmap = new HashMap<>();
     LocalDate checkDate = LocalDate.now();
 
     @Transactional
@@ -48,30 +47,9 @@ public class QuizService {
 
         if (quizRepository.existsByMemberIdAndCheckDate(memberId, checkDate)) {
             log.trace("이미 게임에 참여했습니다");
-            return new QuizeResponseDto(null, null, null, null);
+            throw new AlreadyParticipatedException("이미 게임에 참여했습니다");
         }
 
-//        //문제 생성
-//        String prompt = "어린이와 함께 해결할 수 있는 해양 환경오염 1 문제를 추천해줘. question, 4지선다(choices)와, 답변(answer), 해설(commentary)을 json형태로 만들어줘";
-//        String responseMessage = chatgptService.sendMessage(prompt);
-//        responseMessage.replaceAll("\n", "\\n").replace("+", "");
-//        System.out.println(responseMessage);
-//        JSONParser jsonParser = new JSONParser();
-//        Object obj = jsonParser.parse(responseMessage);
-//
-//        JSONObject jsonObject = (JSONObject) obj;
-//
-//        if (jsonObject.containsKey("question") && jsonObject.containsKey("choices") && jsonObject.containsKey("answer") && jsonObject.containsKey("commentary")) {
-//            map.put("question", String.valueOf(jsonObject.get("question")));
-//            map.put("choices", String.valueOf(jsonObject.get("choices")));
-//            map.put("answer", String.valueOf(jsonObject.get("answer")));
-//            map.put("commentary", String.valueOf(jsonObject.get("commentary")));
-//            QuizeResponseDto quizeResponseDto = new QuizeResponseDto(map.get("answer"), map.get("question"), map.get("choices"), map.get("commentary"));
-//
-//            Quiz quiz = Quiz.builder()
-//                    .checkDate(checkDate)
-//                    .member(member)
-//                    .build();
         long qty = quizProblemRepository.findAll().size();
         int idx = (int) (Math.random()*qty);
 
@@ -84,14 +62,7 @@ public class QuizService {
             throw new IllegalStateException("4지선다 퀴즈를 찾을 수 없습니다");
         }
 
-        Quiz quiz = Quiz.builder()
-        .checkDate(checkDate)
-        .member(member)
-        .build();
-
-        quizRepository.save(quiz);
-
-        return new QuizeResponseDto(quizProblem.getAnswer(), quizProblem.getProblem(), quizProblem.getChoices(), quizProblem.getCommentary());
+        return new QuizeResponseDto(quizProblem.getAnswer(), quizProblem.getProblem(), quizProblem.getId(), quizProblem.getChoices(), quizProblem.getCommentary());
 
     }
 
@@ -103,32 +74,9 @@ public class QuizService {
 
         if (oxQuizRepository.existsByMemberIdAndCheckDate(memberId, checkDate)) {
             log.trace("이미 게임에 참여했습니다");
-            return new QuizeResponseDto(null, null, null, null);
+            throw new AlreadyParticipatedException("이미 게임에 참여했습니다");
         }
 
-//        String prompt = "어린이와 함께 해결할 수 있는 해양 환경오염 1 문제를 추천해줘. question, o/x 답변(answer), 해설(commentary)을 json형태로 만들어줘";
-//        String responseMessage = chatgptService.sendMessage(prompt);
-//        JSONParser jsonParser = new JSONParser();
-//        Object obj = jsonParser.parse(responseMessage);
-//        JSONObject jsonObject = (JSONObject) obj;
-//
-//        if (jsonObject.containsKey("question") && jsonObject.containsKey("answer") && jsonObject.containsKey("commentary")) {
-//            oxmap.put("question", String.valueOf(jsonObject.get("question")));
-//            oxmap.put("answer", String.valueOf(jsonObject.get("answer")));
-//            oxmap.put("commentary", String.valueOf(jsonObject.get("commentary")));
-//            QuizeResponseDto quizeResponseDto = new QuizeResponseDto(map.get("answer"), map.get("question"), null, map.get("commentary"));
-//
-//            OXQuiz quiz = OXQuiz.builder()
-//                    .checkDate(checkDate)
-//                    .member(member)
-//                    .build();
-//
-//            oxQuizRepository.save(quiz);
-//            return quizeResponseDto;
-//        }
-//        else {
-//            throw new IllegalStateException("ox퀴즈를 찾을 수 없습니다");
-//        }
         long qty = oxQuizProblemRepository.findAll().size();
         int idx = (int) (Math.random()*qty);
 
@@ -141,14 +89,8 @@ public class QuizService {
             throw new IllegalStateException("ox퀴즈를 찾을 수 없습니다");
         }
 
-        OXQuiz oxQuiz = OXQuiz.builder()
-                .checkDate(checkDate)
-                .member(member)
-                .build();
 
-        oxQuizRepository.save(oxQuiz);
-
-        return new QuizeResponseDto(oxQuizProblem.getAnswer(), oxQuizProblem.getProblem(), null, oxQuizProblem.getCommentary());
+        return new QuizeResponseDto(oxQuizProblem.getAnswer(), oxQuizProblem.getProblem(), oxQuizProblem.getId(), null,oxQuizProblem.getCommentary());
 
     }
 
@@ -158,15 +100,11 @@ public class QuizService {
         Member member = memberRepository.findById(quizRequestDto.getMemberId())
                 .orElseThrow(()->new IllegalArgumentException("해당 멤버가 존재하지 않습니다 +id"+quizRequestDto.getMemberId()));
 
-        String problem = quizRequestDto.getProblem();
         String answer = quizRequestDto.getAnswer();
+        Long problemId = quizRequestDto.getProblemId();
 
-//        boolean isCorrect = false;
-//        if (map.get("problem").equals(problem) && map.get("answer").equals(answer)) {
-//            isCorrect=true;
-//        }
-        QuizProblem quizProblem = quizProblemRepository.findByProblem(problem)
-                .orElseThrow(()-> new IllegalArgumentException("잘못된 문제입니다 problem="+problem));
+        QuizProblem quizProblem = quizProblemRepository.findById(problemId)
+                .orElseThrow(()-> new IllegalArgumentException("잘못된 문제입니다 problem="+problemId));
 
         boolean isCorrect = quizProblem.checkAnswer(answer);
 
@@ -179,6 +117,14 @@ public class QuizService {
                 throw new MainCharacterNotFoundException("대표캐릭터가 존재하지 않습니다. 멤버ID:" + member.getId());
             }
         }
+
+        Quiz quiz = Quiz.builder()
+                .checkDate(checkDate)
+                .member(member)
+                .build();
+
+        quizRepository.save(quiz);
+
         return isCorrect;
     }
 
@@ -187,16 +133,11 @@ public class QuizService {
         Member member = memberRepository.findById(quizRequestDto.getMemberId())
                 .orElseThrow(()->new IllegalArgumentException("해당 멤버가 존재하지 않습니다 +id"+quizRequestDto.getMemberId()));
 
-        String problem = quizRequestDto.getProblem();
         String answer = quizRequestDto.getAnswer();
+        Long problemId = quizRequestDto.getProblemId();
 
-//        boolean isCorrect = false;
-//        if (oxmap.get("problem").equals(problem) && map.get("answer").equals(answer)) {
-//            isCorrect=true;
-//        }
-
-        OXQuizProblem oxQuizProblem = oxQuizProblemRepository.findByProblem(problem)
-                .orElseThrow(()-> new IllegalArgumentException("잘못된 문제입니다 problem="+problem));
+        OXQuizProblem oxQuizProblem = oxQuizProblemRepository.findById(problemId)
+                .orElseThrow(()-> new IllegalArgumentException("잘못된 문제입니다 problem="+problemId));
 
         boolean isCorrect = oxQuizProblem.checkAnswer(answer);
 
@@ -209,6 +150,14 @@ public class QuizService {
                 throw new MainCharacterNotFoundException("대표캐릭터가 존재하지 않습니다. 멤버ID:" + member.getId());
             }
         }
+
+        OXQuiz oxQuiz = OXQuiz.builder()
+                .checkDate(checkDate)
+                .member(member)
+                .build();
+
+        oxQuizRepository.save(oxQuiz);
+
         return isCorrect;
     }
 

@@ -7,5 +7,4 @@ import java.util.Optional;
 
 public interface MiniGameRepository extends JpaRepository<MiniGame, Long> {
 
-    Optional<MiniGame> findByProblem(String problem);
 }

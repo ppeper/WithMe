@@ -11,6 +11,8 @@ import com.bonobono.backend.chatting.service.ChatRoomService;
 import com.bonobono.backend.member.domain.Member;
 import com.bonobono.backend.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -43,21 +45,28 @@ public class ChatRoomController {
 //        }
 //    }
 
-    @GetMapping("/{roomNumber}/{other}")
-    public ChatRoomWithMessagesDto makeRoom(@PathVariable String roomNumber, @PathVariable String other, @RequestParam("member") Long memberId) {
-        Optional<ChatRoom> optionalChatRoom = chatRoomRepository.findByRoomNumber(roomNumber);
+    /**
+     * 맴버정보도 들고오기*/
+    @GetMapping("/")
+    public ResponseEntity<ChatRoomWithMessagesDto> makeRoom(@RequestBody ChatRoomRequestDto chatRoomRequestDto) {
+        Optional<ChatRoom> optionalChatRoom = chatRoomRepository.findByRoomNumber(chatRoomRequestDto.getRoomNumber());
+
+        //채팅방이 이미있으면, 반환
         if (optionalChatRoom.isPresent()) {
-            List<ChatMessageResponseDto> chatMessage = chatMessageService.findByRoomNumber(roomNumber);
+            List<ChatMessageResponseDto> chatMessage = chatMessageService.findByRoomNumber(chatRoomRequestDto.getRoomNumber());
             ChatRoom chatRoom = optionalChatRoom.get();
-            return new ChatRoomWithMessagesDto(chatRoom,chatMessage);
+           ChatRoomWithMessagesDto chatRoomWithMessagesDto = new ChatRoomWithMessagesDto(chatRoom,chatMessage);
+            return ResponseEntity.ok(chatRoomWithMessagesDto);
+        //없으면 새로 만들기
         } else {
-            Optional<Member> optionalMember = memberRepository.findById(memberId);
+            Optional<Member> optionalMember = memberRepository.findById(chatRoomRequestDto.getMember().getId());
             if (optionalMember.isPresent()) {
-                ChatRoomRequestDto requestDto = new ChatRoomRequestDto(other, roomNumber, optionalMember.get());
+                ChatRoomRequestDto requestDto = new ChatRoomRequestDto(chatRoomRequestDto.getOther(), chatRoomRequestDto.getRoomNumber(), optionalMember.get());
                 ChatRoom newChatRoom=chatRoomService.save(requestDto);
-                return new ChatRoomWithMessagesDto(newChatRoom, new ArrayList<>());
+                ChatRoomWithMessagesDto chatRoomWithMessagesDto = new ChatRoomWithMessagesDto(newChatRoom, new ArrayList<>());
+                return ResponseEntity.ok(chatRoomWithMessagesDto);
             } else {
-                throw new IllegalArgumentException("invalid memberId: " + memberId);
+                throw new IllegalArgumentException("사용자를 찾을 수 없습니다 memberId: " + chatRoomRequestDto.getMember().getId());
             }
         }
     }
@@ -65,11 +74,12 @@ public class ChatRoomController {
 
     //전체 조회
     @GetMapping("/list")
-    public List<ChatRoomResponseDto> findAll() {
-        return chatRoomService.findByList();
+    public ResponseEntity<List<ChatRoomResponseDto>> findAll() {
+        List<ChatRoomResponseDto> roomResponseDtos = chatRoomService.findByList();
+        return ResponseEntity.ok(roomResponseDtos);
     }
 
-    //채팅방 일부 검색으로 조회
+    //채팅방 일부 검색으로 조회(쿼리 dsl 사용)
     @GetMapping("/search")
     public List<ChatRoomResponseDto> findByOther(@RequestParam("other") String other) {
         return chatRoomService.findByOther(other);
@@ -78,9 +88,9 @@ public class ChatRoomController {
     //채팅방 삭제
     //채팅방 삭제하면 채팅도 삭제되는지 확인 필요
     @DeleteMapping("/{roomNumber}")
-    public void DeleteChat(@PathVariable String roomNumber) {
+    public ResponseEntity<Void> DeleteChat(@PathVariable String roomNumber) {
         chatRoomService.delete(roomNumber);
-
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }

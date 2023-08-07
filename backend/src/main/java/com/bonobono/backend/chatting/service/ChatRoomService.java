@@ -33,14 +33,9 @@ public class ChatRoomService {
     //전체 채팅방 목록 조회
     @Transactional(readOnly = true)
     public List<ChatRoomResponseDto> findByList() {
-        List<ChatRoom> lst = chatRoomRepository.findAll();
-        List<ChatRoomResponseDto> dtolist = new ArrayList<>();
-
-        for (ChatRoom chatRoom : lst) {
-            ChatRoomResponseDto responseDto = new ChatRoomResponseDto(chatRoom);
-            dtolist.add(responseDto);
-        }
-        return dtolist;
+        return chatRoomRepository.findAll(Sort.by("id")).stream()
+                .map(ChatRoomResponseDto::new)
+                .collect(Collectors.toList());
     }
 
     //채팅방 개설

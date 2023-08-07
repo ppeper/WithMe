@@ -1,6 +1,7 @@
 package com.bonobono.backend.chatting.dto;
 
 import com.bonobono.backend.chatting.domain.ChatRoom;
+import com.bonobono.backend.member.domain.Member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +14,7 @@ import java.util.stream.Collectors;
 @Getter
 public class ChatRoomResponseDto {
     private String roomNumber;
-    private String other;
+    private Member other;
     private String createdDate;
     private String updatedDate;
 //    private List<ChatMessageResponseDto> messages;

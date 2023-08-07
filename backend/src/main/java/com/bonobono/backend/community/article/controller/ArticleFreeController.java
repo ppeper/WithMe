@@ -50,7 +50,7 @@ public class ArticleFreeController {
     // 자유게시판 특정 글, 글에 관한 댓글 조회하기
     @GetMapping("/{articleId}")
     public ResponseEntity<ArticleDetailResponseDto> findById(@PathVariable Long articleId, @RequestBody MemberRequestDto memberRequestDto) {
-        // @AuthenticationPrincipa 사용하기
+        // @AuthenticationPrincipal 사용하기
         ArticleDetailResponseDto responseDto = articleService.findById(type, articleId, memberRequestDto.getMemberId());
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }

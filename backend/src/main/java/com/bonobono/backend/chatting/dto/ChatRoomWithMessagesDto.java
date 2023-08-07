@@ -13,7 +13,7 @@ import java.util.List;
 public class ChatRoomWithMessagesDto {
     private Long id;
     private Member member;
-    private String other;
+    private Member other;
     private String roomNumber;
     private List<ChatMessageResponseDto> messages;
 

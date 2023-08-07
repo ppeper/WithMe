@@ -18,15 +18,17 @@ public class ChatRoom extends BaseTimeEntity { //생성시각 상속
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name="member_id")
+    @JoinColumn(name="my_id")
     private Member member; //방을 만든 사람
 
-    private String other; //대화상대
+    @ManyToOne
+    @JoinColumn(name="other_id")
+    private Member other; //대화상대
 
     private String roomNumber; //메시지의 room번호와 연결위해(클라이언트에게 받아야함..)
 
     @Builder
-    public ChatRoom(String other, String roomNumber, Member member) {
+    public ChatRoom(Member other, String roomNumber, Member member) {
         this.other=other;
         this.roomNumber=roomNumber;
         this.member=member;

@@ -4,18 +4,18 @@ spring:
       - oauth
       - cloud
 
-#  datasource:
-#    url: jdbc:mariadb://localhost:3306/bonobono
-#    driver-class-name: org.mariadb.jdbc.Driver
-#    username: root
-#    password: 1234
-#  data:
-#    mongodb:
-#      uri: mongodb://localhost:27017/websocket
+  datasource:
+    url: jdbc:mariadb://localhost:3306/websocket
+    driver-class-name: org.mariadb.jdbc.Driver
+    username: root
+    password: 1234
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/websocket
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     properties:
       hibernate:
         format_sql: true

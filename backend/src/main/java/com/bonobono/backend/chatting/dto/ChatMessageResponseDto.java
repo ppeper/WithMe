@@ -13,7 +13,7 @@ import java.util.List;
 public class ChatMessageResponseDto {
     private String userName;
     private String msg;
-    private String file;
+    private String imageUrl;
     private String roomNumber;
     private String sessionId;
     private LocalDateTime createdDate;
@@ -24,7 +24,7 @@ public class ChatMessageResponseDto {
     public ChatMessageResponseDto(ChatMessage chatMessage) {
         this.userName = chatMessage.getUserName();
         this.msg = chatMessage.getMsg();
-        this.file = chatMessage.getFile();
+        this.imageUrl = chatMessage.getImageUrl();
         this.roomNumber=chatMessage.getRoomNumber();
         this.sessionId=chatMessage.getSessionId();
         this.createdDate=chatMessage.getCreatedTime();

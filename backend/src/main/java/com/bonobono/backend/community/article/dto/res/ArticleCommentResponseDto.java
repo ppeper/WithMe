@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
 @Getter
 @NoArgsConstructor
 public class ArticleCommentResponseDto {
+
+    private Long id;
     private String content;
     private Long memberId;
     private String nickname;
@@ -23,8 +25,8 @@ public class ArticleCommentResponseDto {
     private Long parentCommentId;
     private LocalDateTime createdDate;
 
-
     public ArticleCommentResponseDto(ArticleComment entity, Member member){
+        this.id = entity.getId();
         this.content = entity.getContent();
         this.memberId = entity.getMember().getId();
         this.nickname = entity.getMember().getNickname();

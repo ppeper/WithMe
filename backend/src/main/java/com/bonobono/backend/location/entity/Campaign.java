@@ -1,5 +1,6 @@
 package com.bonobono.backend.location.entity;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -25,9 +26,17 @@ public class Campaign {
 
     private String authority;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="location_id", nullable = false)
     private Location location;
+
+    @Builder
+    public Campaign(String name, LocalDateTime startDate, LocalDateTime endDate, String authority){
+        this.name = name;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.authority = authority;
+    }
 
 
 }

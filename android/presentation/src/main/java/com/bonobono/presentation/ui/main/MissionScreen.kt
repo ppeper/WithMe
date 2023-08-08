@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.bonobono.presentation.R
@@ -37,9 +38,10 @@ import com.bonobono.presentation.ui.main.component.ProfilePhoto
 import com.bonobono.presentation.ui.theme.LightGray
 import com.bonobono.presentation.ui.theme.White
 import com.bonobono.presentation.utils.NavigationUtils
+import com.bonobono.presentation.viewmodel.MissionViewModel
 
 @Composable
-fun MissionScreen(navController: NavHostController) {
+fun MissionScreen(navController: NavHostController, viewModel: MissionViewModel = hiltViewModel()) {
     Column(
         Modifier
             .verticalScroll(rememberScrollState())
@@ -54,21 +56,15 @@ fun MissionScreen(navController: NavHostController) {
             "출석하기",
             navController = navController
         ) {
-
+            viewModel.postAttendance(1)
         }
         Spacer(modifier = Modifier.size(12.dp))
         DailyGameItem(R.raw.game, "게임 클리어하고 경험치 받기\nExp.10", "게임하기", navController = navController) {
-            NavigationUtils.navigate(
-                navController, GameNav.route,
-                navController.graph.startDestinationRoute
-            )
+            navController.navigate(GameNav.route)
         }
         Spacer(modifier = Modifier.size(12.dp))
         LargeSquareCardWithAnimation(R.raw.animation_four_quiz_card, "O/X 퀴즈 풀고\n경험치 얻기") {
-            NavigationUtils.navigate(
-                navController, QuizNav.route,
-                navController.graph.startDestinationRoute
-            )
+            navController.navigate(QuizNav.route)
         }
     }
 }

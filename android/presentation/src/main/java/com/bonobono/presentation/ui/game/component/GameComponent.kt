@@ -43,8 +43,13 @@ import kotlinx.coroutines.delay
 
 
 @Composable
-fun QuizPromptBox(name: String, content: String, modifier: Modifier, bottomRow: @Composable () -> Unit) {
-    var inputValue by remember { mutableStateOf("") }
+fun QuizPromptBox(
+    name: String,
+    content: String,
+    problem: String,
+    modifier: Modifier,
+    bottomRow: @Composable () -> Unit
+) {
     Card(
         modifier = modifier,
         colors = CardDefaults.cardColors(containerColor = White)
@@ -62,7 +67,16 @@ fun QuizPromptBox(name: String, content: String, modifier: Modifier, bottomRow: 
             style = CustomTextStyle.quizContentStyle
         )
 
-        bottomRow()
+        Text(
+            text = problem,
+            modifier = Modifier.padding(12.dp),
+            style = CustomTextStyle.quizContentStyle
+        )
+
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Spacer(modifier = Modifier.weight(1f))
+            bottomRow()
+        }
     }
 }
 
@@ -193,7 +207,10 @@ fun PromptInputRow(
             value = value,
             onValueChange = onValueChange,
             placeholder = {
-                Text(text = "정답을 입력하세요..", style = CustomTextStyle.quizContentStyle.copy(color = LightGray))
+                Text(
+                    text = "정답을 입력하세요..",
+                    style = CustomTextStyle.quizContentStyle.copy(color = LightGray)
+                )
             },
             textStyle = CustomTextStyle.quizContentStyle
         )
@@ -210,15 +227,7 @@ fun PromptInputRow(
 }
 
 @Composable
-fun CountdownTimer(modifier: Modifier = Modifier) {
-    var timeLeft by remember { mutableStateOf(30) }
-
-    LaunchedEffect(Unit) {
-        while (timeLeft > 0) {
-            delay(1000)
-            timeLeft--
-        }
-    }
+fun CountdownTimer(modifier: Modifier = Modifier, timeLeft: Int) {
 
     Card(
         modifier = modifier.padding(12.dp),

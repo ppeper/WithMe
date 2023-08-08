@@ -3,6 +3,7 @@ package com.bonobono.presentation.ui.game
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,8 +20,12 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,14 +36,23 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.bonobono.presentation.R
+import com.bonobono.presentation.ui.common.CancelButton
+import com.bonobono.presentation.ui.common.SubmitButton
 import com.bonobono.presentation.ui.common.text.CustomTextStyle
 import com.bonobono.presentation.ui.game.component.CountdownTimer
 import com.bonobono.presentation.ui.game.component.DragTarget
 import com.bonobono.presentation.ui.game.component.DropTarget
 import com.bonobono.presentation.ui.game.component.GamePromptBox
 import com.bonobono.presentation.ui.game.component.LongPressDraggable
+import com.bonobono.presentation.ui.game.component.PromptTwoButtonRow
+import com.bonobono.presentation.ui.game.component.QuizPromptBox
+import com.bonobono.presentation.ui.main.component.GifLoader
 import com.bonobono.presentation.ui.main.component.LottieLoader
+import com.bonobono.presentation.ui.theme.White
+import kotlinx.coroutines.delay
 
 data class Trash(
     val name: String,
@@ -52,9 +66,16 @@ data class TrashCan(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GameScreen() {
+fun GameScreen(navController: NavHostController) {
     val trash = Trash("계란", R.drawable.image_egg)
-    Surface(
+    var timeLeft by remember { mutableStateOf(10) }
+    LaunchedEffect(Unit) {
+        while (timeLeft > 0) {
+            delay(1000)
+            timeLeft--
+        }
+    }
+    Box(
         modifier = Modifier.fillMaxSize()
     ) {
         LottieLoader(source = R.raw.animation_game_background, modifier = Modifier.fillMaxSize())
@@ -69,10 +90,26 @@ fun GameScreen() {
                     content = "분리수거를 하지 않으면 바다가 계속 아플거야!\n이 쓰레기를 버리려면 어떻게 버려야할까?",
                     modifier = Modifier
                 )
-                CountdownTimer(modifier = Modifier.align(alignment = Alignment.End))
+                CountdownTimer(modifier = Modifier.align(alignment = Alignment.End), timeLeft)
             }
             TrashItemCard(trashItem = trash, Modifier.align(alignment = Alignment.Center))
             TrashCanScreen(Modifier.align(alignment = Alignment.BottomCenter))
+        }
+        if(timeLeft < 7) {
+            GifLoader(modifier = Modifier.fillMaxSize(), source = R.raw.animation_devil)
+            QuizPromptBox(name = "쓰레기 마왕", content = "GAME OVER...", problem = "", modifier = Modifier.align(Alignment.BottomCenter)) {
+                PromptTwoButtonRow(modifier = Modifier.align(Alignment.BottomEnd).padding(12.dp),
+                    leftButton = {
+                        CancelButton(modifier = Modifier, text = "나가기", textStyle = CustomTextStyle.quizContentStyle.copy(color = White)) {
+                            navController.popBackStack()
+                        }
+                    },
+                    rightButton ={
+                        SubmitButton(modifier = Modifier, text = "다시하기", textStyle = CustomTextStyle.quizContentStyle.copy(color = White)) {
+
+                        }
+                    })
+            }
         }
     }
 }

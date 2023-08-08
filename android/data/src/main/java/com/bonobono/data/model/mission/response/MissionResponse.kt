@@ -5,8 +5,9 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class MissionResponse(
+    val problemId: Int,
     val answer: String,
-    val choices: List<ChoiceResponse>,
+    val choices: List<ChoiceResponse>?,
     val commentary: String,
     val problem: String
 ) : Parcelable

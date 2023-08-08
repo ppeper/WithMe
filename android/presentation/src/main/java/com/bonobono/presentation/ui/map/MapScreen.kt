@@ -185,12 +185,7 @@ fun ChipAR(navController: NavHostController) {
             containerColor = PrimaryBlue
         ),
         selected = false,
-        onClick = {
-            NavigationUtils.navigate(
-                navController, CameraNav.route,
-                navController.graph.startDestinationRoute
-            )
-        },
+        onClick = { navController.navigate(CameraNav.route) },
         label = {
             Text(
                 text = "AR",

@@ -378,7 +378,7 @@ fun MainNavigationScreen(
             route = GameNav.route,
             deepLinks = QuizNav.deepLinks
         ) {
-            GameScreen()
+            GameScreen(navController)
         }
     }
 }

@@ -62,6 +62,7 @@ import com.bonobono.presentation.ui.theme.DarkGray
 import com.bonobono.presentation.ui.theme.Green
 import com.bonobono.presentation.ui.theme.TextGray
 import com.bonobono.presentation.ui.theme.White
+import com.bonobono.presentation.utils.Constants
 import com.bonobono.presentation.utils.DateUtils
 import com.bonobono.presentation.viewmodel.CommunityViewModel
 
@@ -136,7 +137,7 @@ fun BoardItemView(
                     .padding(top = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                if (article.type != "FREE") {
+                if (article.type != Constants.FREE) {
                     ProceedingView(type = article.type, isProceeding = article.recruitStatus)
                 } else {
                     Spacer(modifier = modifier.size(8.dp))
@@ -288,7 +289,7 @@ fun ProceedingView(
             )
         )
         Text(
-            text = if (type == "TOGETHER") {
+            text = if (type == Constants.TOGETHER) {
                 // 함께게시판
                 if (isProceeding) "모집 중" else "모집 마감"
             } else {

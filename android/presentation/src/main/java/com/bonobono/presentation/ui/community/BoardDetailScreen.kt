@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -66,6 +65,7 @@ import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.community.util.DummyData.dummyArticle
 import com.bonobono.presentation.ui.community.util.boardDetailLaunchEffect
 import com.bonobono.presentation.ui.community.views.board.DropDownMenuView
+import com.bonobono.presentation.ui.community.views.board.ProceedingView
 import com.bonobono.presentation.ui.community.views.comment.CommentView
 import com.bonobono.presentation.ui.community.views.comment.NoCommentView
 import com.bonobono.presentation.ui.community.views.comment.WriteCommentView
@@ -75,6 +75,7 @@ import com.bonobono.presentation.ui.theme.DividerGray
 import com.bonobono.presentation.ui.theme.Red
 import com.bonobono.presentation.ui.theme.TextGray
 import com.bonobono.presentation.ui.theme.White
+import com.bonobono.presentation.utils.Constants
 import com.bonobono.presentation.utils.DateUtils
 import com.bonobono.presentation.utils.rememberImeState
 import com.bonobono.presentation.viewmodel.CommentViewModel
@@ -237,10 +238,16 @@ fun WriterView(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         ProfileView(article = article)
+        Spacer(modifier = modifier.weight(1f))
+        if (article.type != Constants.FREE) {
+            ProceedingView(type = article.type, isProceeding = article.recruitStatus)
+        }
         // TODO("내가 쓴 글만 DropDown 보이기 -> 로그인 완성되면 Token으로 확인)
         DropDownMenuView(
             onUpdateClick = {},
             onDeleteClick = { communityViewModel.deleteArticle(type, article.articleId)},
+            onFinishClick = {},
+            article = article
         )
     }
 }

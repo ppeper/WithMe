@@ -7,7 +7,6 @@ import com.bonobono.backend.character.dto.CharacterNameUpdateRequestDto;
 import com.bonobono.backend.character.dto.UserChracterResponseDto;
 import com.bonobono.backend.character.service.OurCharacterService;
 import com.bonobono.backend.character.service.UserCharacterService;
-import com.bonobono.backend.member.dto.MemberRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,9 +39,9 @@ public class CharacterController {
 
     // 각 상세 캐릭터들을 보여줌(잡은 해변위치나 이런건 나중에)
     @PostMapping("/user/{character_id}")
-    public ResponseEntity<UserChracterResponseDto> findById(@PathVariable Long character_id, @RequestBody MemberRequestDto memberRequestDto) {
+    public ResponseEntity<UserChracterResponseDto> findById(@PathVariable Long character_id, @RequestParam Long memberId) {
         // @AuthenticationPrincipal 사용하기
-        UserChracterResponseDto responseDto = userCharacterService.findById(character_id, memberRequestDto.getMemberId());
+        UserChracterResponseDto responseDto = userCharacterService.findById(character_id, memberId);
         return ResponseEntity.ok(responseDto);
     }
 
@@ -61,11 +60,5 @@ public class CharacterController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-
-    //캐릭터의 레벨별로 진화할 수 있도록??10개 캐릭터?? 1인 애들만 잡을 수 있고, 레벨 업은 캐릭터하면 바뀌는 걸로(수정되는것)(PUT)
-
-
-    //OX퀴즈는 캐릭터를 잡을 때 하는 거 아닌지? 똑같이 가져다 씀(다른 로직)
-    
 
 }

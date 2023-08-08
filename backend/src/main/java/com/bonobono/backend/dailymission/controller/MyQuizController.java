@@ -16,27 +16,27 @@ public class MyQuizController {
     private final QuizService quizService;
 
     //4지선다 문제(참여했다면, 다시 참여못하게)
-    @PostMapping("/four_quiz")
+    @GetMapping("/four_quiz")
     public ResponseEntity<QuizeResponseDto> fourQuiz(@RequestParam Long memberId) throws ParseException {
         QuizeResponseDto quizResponseDto = quizService.checkfourQuiz(memberId);
         return ResponseEntity.ok(quizResponseDto);
     }
     //ox 문제(참여했다면, 다시 참여못하게)
-    @PostMapping("/ox")
+    @GetMapping("/ox")
     public ResponseEntity<QuizeResponseDto> oxQuiz(@RequestParam Long memberId) throws ParseException {
         QuizeResponseDto quizResponseDto = quizService.checkoxQuiz(memberId);
         return ResponseEntity.ok(quizResponseDto);
     }
 
     // 버튼을 누르고 정답 넣으면 체크(MAP에 넣고 체크하기) 경험치 UP
-    @GetMapping("/four_quiz/IsSuccess")
+    @PostMapping("/four_quiz/IsSuccess")
     public ResponseEntity<Boolean> fourcheckAnswer(@RequestBody QuizRequestDto quizRequestDto) {
         boolean result = quizService.FourIsSuccess(quizRequestDto);
         return ResponseEntity.ok(result);
     }
 
     // 버튼을 누르고 정답 넣으면 체크(MAP에 넣고 체크하기) 경험치 UP
-    @GetMapping("/ox/IsSuccess")
+    @PostMapping("/ox/IsSuccess")
     public ResponseEntity<Boolean> oxcheckAnswer(@RequestBody QuizRequestDto quizRequestDto) {
         boolean result = quizService.oxIsSuccess(quizRequestDto);
         return ResponseEntity.ok(result);

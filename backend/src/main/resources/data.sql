@@ -6,7 +6,10 @@ INSERT INTO minigame (problem, answer)
 VALUES ('계란껍데기', '일반쓰레기'),
        ('치킨 뼈', '일반쓰레기'),
        ('생수병','플라스틱'),
-       ('우유곽','종이');
+       ('미니퀴즈1','답1'),
+       ('미니퀴즈2','답2'),
+       ('미니퀴즈3','답3'),
+       ('미니퀴즈4','답4');
 
 INSERT INTO our_character (name, description, level)
 VALUES ('망나뇽','짱 귀여워', 'LEVEL_1'),
@@ -34,8 +37,41 @@ VALUES ('화학 물질 누출',1);
 INSERT INTO quiz_problem_choice (content, quizproblem_id)
 VALUES ('금속 오염',1);
 
+INSERT INTO quiz_problem (problem, answer, commentary)
+VALUES ('퀴즈2', '1','퀴즈2답');
+
+INSERT INTO quiz_problem_choice (content, quizproblem_id)
+VALUES ('플라스틱 쓰레기',2);
+INSERT INTO quiz_problem_choice (content, quizproblem_id)
+VALUES ('유기적 노출물',2);
+INSERT INTO quiz_problem_choice (content, quizproblem_id)
+VALUES ('화학 물질 누출',2);
+INSERT INTO quiz_problem_choice (content, quizproblem_id)
+VALUES ('금속 오염',2);
+
+INSERT INTO quiz_problem (problem, answer, commentary)
+VALUES ('퀴즈3', '1','퀴즈3답');
+
+INSERT INTO quiz_problem_choice (content, quizproblem_id)
+VALUES ('플라스틱 쓰레기',3);
+INSERT INTO quiz_problem_choice (content, quizproblem_id)
+VALUES ('유기적 노출물',3);
+INSERT INTO quiz_problem_choice (content, quizproblem_id)
+VALUES ('화학 물질 누출',3);
+INSERT INTO quiz_problem_choice (content, quizproblem_id)
+VALUES ('금속 오염',3);
+
+
 INSERT INTO ox_quiz_problem (problem, answer, commentary)
 VALUES ('해변에서 작은 플라스틱 조각들을 주울 때, 어떤 일을 할 수 있을까요? (O/X)', 'O','해변에서 작은 플라스틱 조각들을 주우는 것은 매우 중요한 일입니다. 작은 플라스틱 조각들은 해양 생태계에 해를 끼칠 수 있으며 해양 동물들에게 위험을 초래할 수 있습니다. 따라서 우리는 해변을 깨끗하게 유지하기 위해 플라스틱 조각들을 주워서 버려야 합니다. 이렇게 함으로써 우리는 작은 노력으로도 바다의 건강을 지킬 수 있습니다.');
+INSERT INTO ox_quiz_problem (problem, answer, commentary)
+VALUES ('ox문제1', 'O','답1');
+INSERT INTO ox_quiz_problem (problem, answer, commentary)
+VALUES ('ox문제2', 'O','답2');
+INSERT INTO ox_quiz_problem (problem, answer, commentary)
+VALUES ('ox문제3', 'O','답3');
+
+
 
 INSERT INTO article (article_id, type, title, content, views, recruit_status, url_title, url, member_id) VALUES (1, 'FREE', '더미 데이터 제목 1', '더미 데이터 내용 1', 0, false, '더미 URL 제목 1', 'http://example.com/1', 1);
 INSERT INTO article (article_id, type, title, content, views, recruit_status, url_title, url, member_id) VALUES (2, 'FREE', '더미 데이터 제목 2', '더미 데이터 내용 2', 0, false, '더미 URL 제목 2', 'http://example.com/2', 1);

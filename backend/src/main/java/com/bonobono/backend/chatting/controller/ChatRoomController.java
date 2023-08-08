@@ -47,7 +47,7 @@ public class ChatRoomController {
 
     /**
      * 맴버정보도 들고오기*/
-    @GetMapping("/")
+    @PostMapping("/")
     public ResponseEntity<ChatRoomWithMessagesDto> makeRoom(@RequestBody ChatRoomRequestDto chatRoomRequestDto) {
         Optional<ChatRoom> optionalChatRoom = chatRoomRepository.findByRoomNumber(chatRoomRequestDto.getRoomNumber());
 
@@ -79,11 +79,11 @@ public class ChatRoomController {
         return ResponseEntity.ok(roomResponseDtos);
     }
 
-    //채팅방 일부 검색으로 조회(쿼리 dsl 사용)
-    @GetMapping("/search")
-    public List<ChatRoomResponseDto> findByOther(@RequestParam("other") String other) {
-        return chatRoomService.findByOther(other);
-    }
+//    //채팅방 일부 검색으로 조회(쿼리 dsl 사용)
+//    @GetMapping("/search")
+//    public List<ChatRoomResponseDto> findByOther(@RequestParam("other") String other) {
+//        return chatRoomService.findByOther(other);
+//    }
 
     //채팅방 삭제
     //채팅방 삭제하면 채팅도 삭제되는지 확인 필요

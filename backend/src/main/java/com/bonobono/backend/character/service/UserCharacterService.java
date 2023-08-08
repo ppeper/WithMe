@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
-public class CharacterService {
+public class UserCharacterService {
 
     private final UserCharacterRepository userCharacterRepository;
     private final OurCharacterRepository ourCharacterRepository;
@@ -33,17 +33,6 @@ public class CharacterService {
                     .stream()
                     .map(UserChracterResponseDto::new)
                     .collect(Collectors.toList());
-    }
-
-    @Transactional(readOnly = true)
-    public List<OurCharacterResponseDto> OurfindByList(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(()-> new IllegalArgumentException("해당 멤버가 없습니다. id =" + memberId));
-
-        return ourCharacterRepository.findNotLinkedOurCharactersByMember(member.getId())
-                .stream()
-                .map(OurCharacterResponseDto::new)
-                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)

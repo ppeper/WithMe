@@ -2,6 +2,7 @@ package com.bonobono.backend.dailymission.service;
 
 
 import com.bonobono.backend.character.domain.UserCharacter;
+import com.bonobono.backend.character.service.UpgradeCharacterLevelService;
 import com.bonobono.backend.dailymission.domain.IsMiniGame;
 import com.bonobono.backend.dailymission.domain.MiniGame;
 import com.bonobono.backend.dailymission.dto.MiniGameRequestDto;
@@ -29,6 +30,7 @@ public class MiniGameService {
     private final MemberRepository memberRepository;
     private final MiniGameRepository miniGameRepository;
     private final IsMiniGameRepository isMiniGameRepository;
+    private final UpgradeCharacterLevelService upgradeCharacterLevelService;
 
     LocalDate checkDate = LocalDate.now();
 
@@ -78,6 +80,8 @@ public class MiniGameService {
             if (mainChracter != null) {
                 int currentExp = mainChracter.getExperience();
                 mainChracter.updateExperience(currentExp + 5); //경험치 5씩 증가
+                upgradeCharacterLevelService.upgradeCharacter(mainChracter,mainChracter.getExperience());
+
             } else {
                 throw new MainCharacterNotFoundException("대표캐릭터가 존재하지 않습니다. 멤버ID:" + member.getId());
             }

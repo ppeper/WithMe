@@ -60,32 +60,8 @@ fun PointStoreAnimation() {
         )
     }
 }
-
-@Composable
-fun WithdrawAnimation() {
-    val composition by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.dolphin_sad_withdraw))
-    val progress by animateLottieCompositionAsState(
-        composition = composition,
-        iterations = LottieConstants.IterateForever
-    )
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(100.dp)
-    ) {
-        LottieAnimation(
-            composition = composition,
-            progress = { progress },
-            contentScale = ContentScale.FillWidth,
-            modifier = Modifier
-                .height(100.dp)
-        )
-    }
-}
-
 @Preview(showBackground = true)
 @Composable
 fun AnimationPreview() {
-    WithdrawAnimation()
 //    PointStoreAnimation()
 }

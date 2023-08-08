@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -24,11 +25,24 @@ import com.bonobono.presentation.ui.common.BasicTextField
 import com.bonobono.presentation.ui.common.TextFieldWithButton
 import com.bonobono.presentation.ui.common.button.PrimaryColorButton
 import com.bonobono.presentation.ui.common.text.CustomTextStyle
+import com.bonobono.presentation.ui.common.topbar.screen.SettingScreen
 import com.bonobono.presentation.ui.theme.PrimaryBlue
 import com.bonobono.presentation.ui.theme.wanju_daedunsan
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 @Composable
 fun JoinScreen(navController: NavController) {
+    LaunchedEffect(key1 = Unit) {
+        SettingScreen.buttons
+            .onEach { button ->
+                when (button) {
+                    SettingScreen.AppBarIcons.NavigationIcon -> {
+                        navController.popBackStack()
+                    }
+                }
+            }.launchIn(this)
+    }
     LazyColumn(
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Top,

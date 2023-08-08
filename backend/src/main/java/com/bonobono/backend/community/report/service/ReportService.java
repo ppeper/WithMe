@@ -10,9 +10,13 @@ import com.bonobono.backend.community.report.entity.ReportImage;
 import com.bonobono.backend.community.report.repository.ReportRepository;
 import com.bonobono.backend.global.exception.UserNotAuthorizedException;
 import com.bonobono.backend.global.service.AwsS3Service;
+import com.bonobono.backend.member.domain.Authority;
 import com.bonobono.backend.member.domain.Member;
 import com.bonobono.backend.member.domain.enumtype.Role;
+import java.util.Collection;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -90,7 +94,9 @@ public class ReportService {
     public void updateRecruitStatus(Member member, Long reportId){
         Report report = reportRepository.findById(reportId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + reportId));
-        if(member.getRole() == Role.ADMIN) {
+
+
+        if(member.getRole().stream().anyMatch(authority -> authority.getRole().equals(Role.ADMIN))) {
             report.updateAdminConfirmStatus();
         } else {
             throw new UserNotAuthorizedException("해당 멤버는 관리자가 아닙니다.");

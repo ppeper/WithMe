@@ -11,6 +11,7 @@ import com.bonobono.presentation.ui.common.topbar.screen.CommunityWithScreen
 import com.bonobono.presentation.ui.common.topbar.screen.FindIDScreen
 import com.bonobono.presentation.ui.common.topbar.screen.FindPasswordScreen
 import com.bonobono.presentation.ui.common.topbar.screen.EncyclopediaScreen
+import com.bonobono.presentation.ui.common.topbar.screen.JoinScreen
 import com.bonobono.presentation.ui.common.topbar.screen.ManyOptionsRoute
 import com.bonobono.presentation.ui.common.topbar.screen.ManyOptionsScreen
 import com.bonobono.presentation.ui.common.topbar.screen.PointStoreScreen
@@ -32,6 +33,7 @@ fun getScreen(route: String?): Screen? = when (route) {
     BoardDetailNav.route -> BoardDetailScreen
     NavigationRouteName.MISSION -> MissionScreen
     NavigationRouteName.ENCYCLOPEDIA -> EncyclopediaScreen
+    NavigationRouteName.JOIN -> JoinScreen
     ManyOptionsRoute -> ManyOptionsScreen
     else -> null
 }

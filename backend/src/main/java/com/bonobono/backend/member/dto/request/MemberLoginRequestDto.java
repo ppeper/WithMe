@@ -1,4 +1,4 @@
-package com.bonobono.backend.member.dto;
+package com.bonobono.backend.member.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

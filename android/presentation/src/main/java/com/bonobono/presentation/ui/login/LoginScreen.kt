@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -56,14 +57,16 @@ fun LoginScreen(navController: NavController) {
         )
         Spacer(modifier = Modifier.height(32.dp))
         BasicTextField(
-            value = stringResource(id = R.string.login_id),
+            value = "",
             hint = "아이디",
-            onValueChange = {})
+            keyboardType = KeyboardType.Text
+        ) {}
         Spacer(modifier = Modifier.height(8.dp))
         BasicTextField(
-            value = stringResource(id = R.string.login_password),
+            value = "",
             hint = "비밀번호",
-            onValueChange = {})
+            keyboardType = KeyboardType.Password
+        ) {}
         Spacer(modifier = Modifier.height(16.dp))
         AutoLogin()
         Spacer(modifier = Modifier.height(32.dp))

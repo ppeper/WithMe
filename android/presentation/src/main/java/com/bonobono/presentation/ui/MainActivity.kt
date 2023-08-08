@@ -21,8 +21,8 @@ class MainActivity : ComponentActivity() {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                 ) {
-                    MainScreen()
-//                    StartScreen()
+//                    MainScreen()
+                    StartScreen()
                 }
             }
         }

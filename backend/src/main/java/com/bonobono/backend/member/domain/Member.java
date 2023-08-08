@@ -7,15 +7,17 @@ import com.bonobono.backend.community.article.entity.Article;
 import com.bonobono.backend.community.article.entity.ArticleComment;
 import com.bonobono.backend.location.entity.Reward;
 import com.bonobono.backend.member.domain.enumtype.Provider;
-import com.bonobono.backend.member.domain.enumtype.Role;
+import com.bonobono.backend.member.dto.request.MemberUpdateRequestDto;
+import com.bonobono.backend.member.dto.request.PasswordChangeRequestDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.*;
 import lombok.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-@Builder
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -40,12 +42,14 @@ public class Member extends BaseTimeEntity  {
     private String profileImg;
 
     @Enumerated(EnumType.STRING)
-    private Role role;
-
-    @Enumerated(EnumType.STRING)
     private Provider provider;
 
-    private String refreshToken;
+    @ManyToMany
+    @JoinTable(
+        name = "role",
+        joinColumns = {@JoinColumn(name="member_id", referencedColumnName = "member_id")},
+        inverseJoinColumns = {@JoinColumn(name = "role", referencedColumnName = "role")})
+    private Set<Authority> role = new HashSet<>();
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL,  orphanRemoval = true)
     private List<Article> articles = new ArrayList<>();
@@ -74,4 +78,29 @@ public class Member extends BaseTimeEntity  {
         }
         return null;
     }
+    @Builder
+    public Member(String username, String password, String name, String nickname, String phoneNumber, Provider provider, Set<Authority> role) {
+        this.username = username;
+        this.password = password;
+        this.name = name;
+        this.nickname = nickname;
+        this.phoneNumber = phoneNumber;
+        this.provider = provider;
+        this.role = role;
+    }
+
+    // 회원 정보 수정
+    public void updateMember(MemberUpdateRequestDto dto) {
+        if(dto.getName() != null) this.name = dto.getName();
+        if(dto.getNickname() != null) this.nickname = dto.getNickname();
+        if(dto.getPhoneNumber() != null) this.phoneNumber = dto.getPhoneNumber();
+    }
+
+    // 비밀번호 수정
+    public void changePassword(PasswordChangeRequestDto dto, BCryptPasswordEncoder passwordEncoder) {
+
+        if((passwordEncoder.matches(dto.getPassword(), this.password)) && dto.getNewPassword() != null)
+            this.password = passwordEncoder.encode(dto.getNewPassword());
+    }
+
 }

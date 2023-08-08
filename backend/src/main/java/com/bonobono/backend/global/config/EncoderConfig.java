@@ -1,4 +1,4 @@
-package com.bonobono.backend.member.config;
+package com.bonobono.backend.global.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

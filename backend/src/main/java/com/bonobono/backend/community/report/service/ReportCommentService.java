@@ -30,7 +30,7 @@ public class ReportCommentService {
         Report report = reportRepository.findById(reportId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + reportId));
 
-        if (member.getId() != report.getMember().getId() || member.getRole() != Role.ADMIN) {
+        if (member.getId() != report.getMember().getId() || !member.getRole().stream().anyMatch(authority -> authority.getRole().equals(Role.ADMIN))) {
             throw new UserNotAuthorizedException("해당 멤버는 게시글 작성자 또는 관리자가 아니기에 댓글을 작성할 수 없습니다.");
         }
 

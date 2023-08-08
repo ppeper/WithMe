@@ -12,14 +12,14 @@ INSERT INTO our_character (name, description, level)
 VALUES ('망나뇽','짱 귀여워', 'LEVEL_1'),
        ('망나뇽','짱 귀여워', 'LEVEL_2'),
        ('망나뇽','짱 귀여워', 'LEVEL_3'),
-        ('망뇽','짱 귀여워', 'LEVEL_1');
+       ('망뇽','짱 귀여워', 'LEVEL_1');
 
 
 INSERT INTO user_character (custom_name, experience, main, member_id)
 VALUES ('망냐망냐',10, true, 1, 1),
        ('망냐2',10, false, 1, 2),
-        ('망냐2',10, false, 1, 3),
-        ('망냐2',10, false, 1, 4);
+       ('망냐2',10, false, 1, 3),
+       ('망냐2',10, false, 1, 4);
 
 
 INSERT INTO quiz_problem (problem, answer, commentary)

@@ -6,7 +6,7 @@ import com.bonobono.backend.character.dto.OurCharacterResponseDto;
 import com.bonobono.backend.character.dto.CharacterNameUpdateRequestDto;
 import com.bonobono.backend.character.dto.UserChracterResponseDto;
 import com.bonobono.backend.character.service.CharacterService;
-import com.bonobono.backend.member.dto.MemberRequestDto;
+import com.bonobono.backend.member.dto.request.MemberRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

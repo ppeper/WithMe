@@ -25,7 +25,7 @@ spring:
         show_sql: true #show sql
     defer-datasource-initialization: true
 
-## Spring Boot 실행시 SQL문 자동실행
+# Spring Boot 실행시 SQL문 자동실행
 #  sql:
 #    init:
 #      data-locations: classpath:data.sql
@@ -40,8 +40,8 @@ spring:
       max-request-size: 50MB
 
 jwt:
-  token:
-    secret-key: q1w2e3r4 #${JWT_SECRET_KEY} #
+  header: Authorization
+  secret-key: q1w2e3r4 #${JWT_SECRET_KEY} #
 
 logging.level:
   org.hibernate.SQL: DEBUG

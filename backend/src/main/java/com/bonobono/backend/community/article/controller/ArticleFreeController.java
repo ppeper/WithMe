@@ -39,8 +39,8 @@ public class ArticleFreeController {
     // 자유게시판 글쓰기
     @PostMapping(value = "",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> save(@AuthenticationPrincipal Member member,
-                                  @RequestPart ArticleSaveRequestDto requestDto,
-                                  @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles){
+        @RequestPart ArticleSaveRequestDto requestDto,
+        @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles){
         articleService.save(type, member, requestDto, imageFiles);
         return new ResponseEntity(HttpStatus.CREATED);
     }
@@ -55,7 +55,7 @@ public class ArticleFreeController {
     // 자유게시판 특정 글, 글에 관한 댓글 조회하기
     @GetMapping("/{articleId}")
     public ResponseEntity<ArticleDetailResponseDto> findById(@AuthenticationPrincipal Member member,
-                                                             @PathVariable Long articleId) {
+        @PathVariable Long articleId) {
         ArticleDetailResponseDto responseDto = articleService.findById(type, member, articleId);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
@@ -71,9 +71,9 @@ public class ArticleFreeController {
     // 자유게시판 특정 글 수정
     @PatchMapping(value = "/{articleId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> update(@AuthenticationPrincipal Member member,
-                                       @PathVariable Long articleId,
-                                       @RequestPart ArticleUpdateRequestDto requestDto,
-                                       @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles){
+        @PathVariable Long articleId,
+        @RequestPart ArticleUpdateRequestDto requestDto,
+        @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles){
         articleService.update(member, articleId , requestDto, imageFiles);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -81,7 +81,7 @@ public class ArticleFreeController {
     // 자유게시판 특정 글 삭제
     @DeleteMapping("/{articleId}")
     public ResponseEntity<Void> delete(@AuthenticationPrincipal Member member,
-                                       @PathVariable Long articleId){
+        @PathVariable Long articleId){
         articleService.delete(member, articleId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -91,9 +91,9 @@ public class ArticleFreeController {
     // 자유게시판 글에 댓글 쓰기
     @PostMapping("/{articleId}/comment")
     public ResponseEntity<ArticleCommentResponseDto> saveComment(@AuthenticationPrincipal Member member,
-                                                                 @PathVariable Long articleId,
-                                                                 @RequestBody ArticleCommentRequestDto requestDto
-                                            ){
+        @PathVariable Long articleId,
+        @RequestBody ArticleCommentRequestDto requestDto
+    ){
         ArticleCommentResponseDto responseDto = articleCommentService.save(member, articleId, requestDto);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
@@ -101,8 +101,8 @@ public class ArticleFreeController {
     // 자유게시판 댓글 삭제
     @DeleteMapping("/{articleId}/comment/{commentId}")
     public ResponseEntity<Void> deleteComment(@AuthenticationPrincipal Member member,
-                                              @PathVariable Long articleId,
-                                              @PathVariable Long commentId){
+        @PathVariable Long articleId,
+        @PathVariable Long commentId){
         articleCommentService.delete(member, articleId, commentId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -110,9 +110,9 @@ public class ArticleFreeController {
     // 자유게시판 댓글 수정
     @PatchMapping("/{articleId}/comment/{commentId}")
     public ResponseEntity<Void> updateComment(@AuthenticationPrincipal Member member,
-                                              @PathVariable Long articleId,
-                                              @PathVariable Long commentId,
-                                              @RequestBody ArticleCommentRequestDto requestDto){
+        @PathVariable Long articleId,
+        @PathVariable Long commentId,
+        @RequestBody ArticleCommentRequestDto requestDto){
         articleCommentService.update(member, articleId, commentId, requestDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -120,7 +120,7 @@ public class ArticleFreeController {
     // 자유게시판 좋아요
     @PatchMapping("/{articleId}/like")
     public ResponseEntity<Void> like(@AuthenticationPrincipal Member member,
-                                     @PathVariable Long articleId) {
+        @PathVariable Long articleId) {
         articleLikeService.like(member, articleId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -128,10 +128,11 @@ public class ArticleFreeController {
     // 자유게시판 댓글 좋아요
     @PatchMapping("/{articleId}/comment/{commentId}/like")
     public ResponseEntity<Void> like(@AuthenticationPrincipal Member member,
-                                     @PathVariable Long articleId,
-                                     @PathVariable Long commentId) {
+        @PathVariable Long articleId,
+        @PathVariable Long commentId) {
         articleCommentLikeService.like(member, articleId, commentId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }
+

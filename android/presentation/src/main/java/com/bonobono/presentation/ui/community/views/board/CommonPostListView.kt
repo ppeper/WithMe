@@ -53,6 +53,7 @@ import com.bonobono.domain.model.NetworkResult
 import com.bonobono.domain.model.community.Article
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.BoardDetailNav
+import com.bonobono.presentation.ui.common.LoadingView
 import com.bonobono.presentation.ui.community.util.DummyData.dummyArticle
 import com.bonobono.presentation.ui.community.util.freeLaunchEffect
 import com.bonobono.presentation.ui.community.util.reportLaunchEffect
@@ -84,9 +85,7 @@ fun CommonPostListView(
 
     when (state) {
         is NetworkResult.Loading -> {
-            Box(modifier = Modifier.fillMaxSize()) {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-            }
+            LoadingView()
         }
         is NetworkResult.Success -> {
             val articleList = (state as NetworkResult.Success<List<Article>>).data

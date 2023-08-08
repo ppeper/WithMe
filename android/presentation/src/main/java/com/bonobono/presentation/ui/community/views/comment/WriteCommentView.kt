@@ -65,13 +65,13 @@ fun WriteCommentView(
         Row(
             modifier = modifier
                 .wrapContentHeight()
-                .padding(vertical = 4.dp),
+                .padding(top = 8.dp, bottom = 8.dp, start = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Row(
                 modifier = modifier
                     .weight(1f)
-                    .height(36.dp)
+                    .height(44.dp)
                     .clip(RoundedCornerShape(size = 12.dp))
                     .background(color = BackgroundLightGray)
                     .padding(vertical = 4.dp, horizontal = 16.dp),
@@ -91,22 +91,22 @@ fun WriteCommentView(
                 )
             }
             IconButton(
-                modifier = modifier.size(44.dp),
+                modifier = modifier.size(48.dp),
                 onClick = {
                     if (postContentState.isNotBlank()) {
-                        /* TODO("댓글 달기") */
-//                        commentViewModel.writeComment(type, articleId, comment = comment)
-//                        if (commentState is NetworkResult.Success<Comment>) {
-//                            // TODO("댓글 작성 완료 -> 리스트에 넣어주기")
-//                            val comment = (commentState as NetworkResult.Success<Comment>).data
-//                            commentList.add(comment)
-//                        }
                         // 대댓글
                         val comment = if (commentId != -1) {
                             Comment(parentCommentId = commentId, content = postContentState)
                         } else {
                             Comment(content = postContentState)
                         }
+                        Log.d("TEST", "WriteCommentView: 댓글 $comment")
+                        commentViewModel.writeComment(type, articleId, comment = comment)
+                        if (commentState is NetworkResult.Success<Comment>) {
+                            val comment = (commentState as NetworkResult.Success<Comment>).data
+                            onWriteCommentClicked(comment)
+                        }
+                        // TODO("테스트")
                         onWriteCommentClicked(comment)
                     }
                     keyboardController?.hide()

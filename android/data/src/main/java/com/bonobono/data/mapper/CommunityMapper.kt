@@ -77,7 +77,7 @@ fun CommentResponse.toDomain(): Comment {
 
 fun Comment.toModel(): CommentRequest {
     return CommentRequest(
-        parentCommentId = id,
+        parentCommentId = parentCommentId,
         content = content
     )
 }

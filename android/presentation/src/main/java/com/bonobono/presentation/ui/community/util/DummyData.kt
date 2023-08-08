@@ -2,6 +2,7 @@ package com.bonobono.presentation.ui.community.util
 
 import com.bonobono.domain.model.community.Article
 import com.bonobono.domain.model.community.Comment
+import com.bonobono.domain.model.community.Image
 import com.bonobono.presentation.ui.community.views.gallery.PhotoSelected
 
 object DummyData {
@@ -18,18 +19,20 @@ object DummyData {
     val commentWithChild = Comment(id = 3, content = "테스트2", childComments = listOf(comment2, comment2), parentCommentId = null)
     val dummyArticle = Article(
         articleId = 1,
-        type = "FREE",
+        type = "TOGETHER",
         title = "쓰레기 Article Title",
         content = "쓰레기 content Title",
         nickname = "홍길동",
         profileImg = imageUrl,
+        images = listOf(Image("asd", imageUrl_2), Image("asd", imageUrl_3)),
         commentCnt = 3,
         likes = 3,
-        recruitStatus = false,
+        recruitStatus = true,
         comments = listOf(
             comment1,
             commentWithChild,
             comment3
-        )
+        ),
+        url = "https://op.gg"
     )
 }

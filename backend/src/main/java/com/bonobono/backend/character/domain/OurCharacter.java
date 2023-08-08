@@ -4,8 +4,6 @@ import com.bonobono.backend.character.enumClass.CharacterLevelEnum;
 import lombok.Getter;
 
 import javax.persistence.*;
-import java.util.HashMap;
-import java.util.Map;
 
 @Entity
 @Getter
@@ -14,6 +12,9 @@ public class OurCharacter {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "char_ord_id", nullable = false)
+    private Long charOrdId;
+
     private String name;
 
     //캐릭터 설명
@@ -21,19 +22,5 @@ public class OurCharacter {
 
     @Enumerated(EnumType.STRING)
     private CharacterLevelEnum level;
-
-    @Transient
-    private static Map<CharacterLevelEnum, OurCharacter> levelToCharacterMap;
-
-    @PostLoad
-    public void initLevelMapping() {
-        levelToCharacterMap = levelToCharacterMap == null ? new HashMap<>() : levelToCharacterMap;
-        levelToCharacterMap.put(this.level, this);
-    }
-
-    public static OurCharacter getCharacterByLevel(CharacterLevelEnum newLevel) {
-        return levelToCharacterMap.get(newLevel);
-    }
-
 
 }

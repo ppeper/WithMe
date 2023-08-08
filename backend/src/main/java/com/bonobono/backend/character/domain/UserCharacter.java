@@ -1,13 +1,10 @@
 package com.bonobono.backend.character.domain;
 
 
-import com.bonobono.backend.character.enumClass.CharacterLevelEnum;
-import com.bonobono.backend.character.repository.UserCharacterRepository;
 import com.bonobono.backend.global.entity.BaseTimeEntity;
 import com.bonobono.backend.member.domain.Member;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
@@ -26,7 +23,7 @@ public class UserCharacter extends BaseTimeEntity {
     private Member member; //유저 정보(한 유저가 여러개의 캐릭터를 가짐)
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="character_id")
+    @JoinColumn(name = "character_id")
     private OurCharacter ourCharacter; //캐릭터id(정보를가지고 있음)
 
 
@@ -51,18 +48,13 @@ public class UserCharacter extends BaseTimeEntity {
     //경험치 수정
     public void updateExperience(int experience){
         this.experience=experience;
-        //각 레벨별로 100경험치이상이되면, 레벨을 올리고 경험치 갱신
-//
     }
 
 
-
-//    private void upgradeLevel(CharacterLevelEnum newLevel) {
-//        OurCharacter upgradedCharacter = OurCharacter.getCharacterByLevel(newLevel);
-//        if (upgradedCharacter != null) {
-//            this.ourCharacter = upgradedCharacter;
-//        }
-//    }
+    public void upgradeCharacter(OurCharacter upgradedCharacter) {
+        this.ourCharacter = upgradedCharacter;
+        this.experience= this.getExperience()-100;
+    }
 
     @PrePersist
     public void setCustomNameDefaultValue() {

@@ -3,7 +3,7 @@ package com.bonobono.backend.character.service;
 import com.bonobono.backend.character.domain.OurCharacter;
 import com.bonobono.backend.character.domain.UserCharacter;
 import com.bonobono.backend.character.enumClass.CharacterLevelEnum;
-import com.bonobono.backend.character.repository.UserCharacterRepository;
+import com.bonobono.backend.character.repository.OurCharacterRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,20 +11,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class UpgradeCharacterLevelService {
 
-    private final UserCharacterRepository userCharacterRepository;
+    private final OurCharacterRepository ourCharacterRepository;
 
+    //메인케릭터와 메인케릭터의 경험치를 가져옴
     public void upgradeCharacter(UserCharacter userCharacter, Integer experience) {
         if (experience>=100) {
-            //경험치가 100이상이면 다음 레벨로 넘어가기
+            //경험치가 100이상이면 다음 레벨로 진화
             CharacterLevelEnum newLevel = getNextLevel(userCharacter.getOurCharacter().getLevel());
             //해당 레벨의 ourCharacter뽑기
-            OurCharacter upgradedCharacter = OurCharacter.getCharacterByLevel(newLevel);
+            OurCharacter upgradedCharacter = ourCharacterRepository.findByCharOrdIdAndLevel(userCharacter.getOurCharacter().getCharOrdId(), newLevel);
+
             if (upgradedCharacter!=null) {
-                //이름과 level이 같은 걸 조회해서 바꾼다(update한다)
-                userCharacterRepository.upgradeCharacter(userCharacter.getId(), upgradedCharacter.getName(), upgradedCharacter.getLevel());
-//                userCharacter.
+                //이름과 level이 같은 캐릭터가 있다면 usercharacter에 ourcharacter를 update한다
+                userCharacter.upgradeCharacter(upgradedCharacter);
             }
-//            this.experience-=100;
+
         }
     }
 

@@ -17,8 +17,4 @@ public interface UserCharacterRepository extends JpaRepository<UserCharacter, Lo
 
     Optional<UserCharacter> findByMemberIdAndId(Long memberId, Long characterId);
 
-    @Modifying(clearAutomatically = true)
-    @Query("UPDATE UserCharacter uc SET uc.ourCharacter = (SELECT oc FROM OurCharacter oc WHERE oc.name = :name AND oc.level = :level) WHERE uc.id = :id")
-    void upgradeCharacter(@Param("id") Long id, @Param("name") String name, @Param("level") CharacterLevelEnum level);
-
 }

@@ -2,9 +2,9 @@ package com.bonobono.presentation.ui.login
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -26,20 +26,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.FindIdNav
 import com.bonobono.presentation.ui.FindPasswordNav
 import com.bonobono.presentation.ui.JoinNav
-import com.bonobono.presentation.ui.LoginNav
 import com.bonobono.presentation.ui.common.BasicTextField
 import com.bonobono.presentation.ui.common.button.PrimaryColorButton
 import com.bonobono.presentation.ui.common.text.CustomTextStyle.appNameText
 import com.bonobono.presentation.ui.common.text.CustomTextStyle.loginDarkGrayText
-import com.bonobono.presentation.ui.common.topbar.screen.FindIDScreen
 import com.bonobono.presentation.ui.login.view.LoginTextButton
 import com.bonobono.presentation.ui.login.view.SNSButton
 import com.bonobono.presentation.ui.theme.LightGray
@@ -47,13 +42,12 @@ import com.bonobono.presentation.ui.theme.PrimaryBlue
 
 @Composable
 fun LoginScreen(navController: NavController) {
-    val navController = rememberNavController()
-
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxWidth()
+            .fillMaxHeight()
             .padding(horizontal = 16.dp)
     ) {
         Text(
@@ -120,17 +114,11 @@ fun LoginHelpOptions(navController: NavController) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
-        LoginTextButton(text = "아이디 찾기") {
-            navController.navigate(FindIDScreen.route)
-        }
+        LoginTextButton(text = "아이디 찾기", FindIdNav.route ,navController)
         LoginHelpOptionDivider()
-        LoginTextButton(text = "비밀번호 찾기") {
-
-        }
+        LoginTextButton(text = "비밀번호 찾기", FindPasswordNav.route, navController)
         LoginHelpOptionDivider()
-        LoginTextButton(text = "회원가입") {
-
-        }
+        LoginTextButton(text = "회원가입", JoinNav.route, navController)
     }
 }
 
@@ -197,44 +185,6 @@ fun SNSLoginButtons() {
         Spacer(modifier = Modifier.width(20.dp))
         SNSButton(img = R.drawable.ic_naver, contentDescription = "naver") {
 
-        }
-    }
-}
-
-
-@Composable
-fun LoginNavigationScreen(
-    innerPaddings: PaddingValues,
-    navController: NavHostController,
-) {
-    NavHost(
-        modifier = Modifier.padding(innerPaddings),
-        navController = navController,
-        startDestination = LoginNav.route
-    ) {
-        composable(
-            route = LoginNav.route,
-            deepLinks = LoginNav.deepLinks
-        ) {
-            LoginScreen(navController)
-        }
-        composable(
-            route = JoinNav.route,
-            deepLinks = JoinNav.deepLinks
-        ) {
-            JoinScreen(navController)
-        }
-        composable(
-            route = FindIdNav.route,
-            deepLinks = FindIdNav.deepLinks
-        ) {
-            FindIDScreen(navController)
-        }
-        composable(
-            route = FindPasswordNav.route,
-            deepLinks = FindPasswordNav.deepLinks
-        ) {
-            FindPWDScreen(navController)
         }
     }
 }

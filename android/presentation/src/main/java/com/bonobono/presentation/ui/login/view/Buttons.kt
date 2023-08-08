@@ -11,8 +11,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.bonobono.presentation.ui.common.text.CustomTextStyle.loginDarkGrayText
 
+private const val TAG = "싸피"
 @Composable
 fun SNSButton(
     @DrawableRes img : Int,
@@ -30,10 +32,14 @@ fun SNSButton(
 
 @Composable
 fun LoginTextButton(
-    text : String,
-    action : () -> Unit
+    text: String,
+    route: String,
+    navController: NavController
 ) {
-    TextButton(onClick = { action }) {
+
+    TextButton(onClick = {
+        navController.navigate(route = route)
+    }) {
         Text(text = text,
             style = loginDarkGrayText)
     }

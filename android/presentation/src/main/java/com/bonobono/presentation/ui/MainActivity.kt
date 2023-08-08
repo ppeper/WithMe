@@ -21,10 +21,8 @@ class MainActivity : ComponentActivity() {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                 ) {
-//                    MainScreen()
-//                    LoginScreen(rememberNavController())
-//                    JoinScreen(navController = rememberNavController())
-                    StartScreen()
+                    MainScreen()
+//                    StartScreen()
                 }
             }
         }

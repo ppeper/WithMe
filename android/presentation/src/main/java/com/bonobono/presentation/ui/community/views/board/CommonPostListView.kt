@@ -112,8 +112,6 @@ fun BoardItemView(
 ) {
     val createDateState by rememberSaveable { mutableStateOf(DateUtils.dateToString(article.createdDate)) }
     Card(
-        modifier = modifier
-            .fillMaxWidth(),
         elevation = CardDefaults.cardElevation(4.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.White
@@ -125,9 +123,10 @@ fun BoardItemView(
     ) {
         Row(
             modifier = modifier
-                .padding(horizontal = 16.dp)
                 .fillMaxWidth()
-                .height(136.dp),
+                .height(136.dp)
+                .background(White)
+                .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {

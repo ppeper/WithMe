@@ -1,4 +1,4 @@
-package com.bonobono.domain.model.register
+package com.bonobono.domain.model.registration
 
 data class MemberSignup(
     val name: String,

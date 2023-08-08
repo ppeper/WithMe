@@ -26,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.bonobono.presentation.R
@@ -40,9 +41,11 @@ import com.bonobono.presentation.ui.login.view.LoginTextButton
 import com.bonobono.presentation.ui.login.view.SNSButton
 import com.bonobono.presentation.ui.theme.LightGray
 import com.bonobono.presentation.ui.theme.PrimaryBlue
+import com.bonobono.presentation.viewmodel.LoginViewModel
 
 @Composable
 fun LoginScreen(navController: NavController) {
+    val viewModel: LoginViewModel = viewModel()
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -70,7 +73,7 @@ fun LoginScreen(navController: NavController) {
         Spacer(modifier = Modifier.height(16.dp))
         AutoLogin()
         Spacer(modifier = Modifier.height(32.dp))
-        PrimaryColorButton(text = R.string.login_login) {
+        PrimaryColorButton(text = R.string.login_login, enabled = true, backgroundColor = PrimaryBlue) {
 
         }
         Spacer(modifier = Modifier.height(16.dp))

@@ -41,6 +41,9 @@ import kotlinx.coroutines.flow.onEach
 @Composable
 fun JoinScreen(navController: NavController) {
     val viewModel: SignUpViewModel = viewModel()
+    val buttonEnabled = viewModel.checkAllAllowed
+    val buttonColor = if (buttonEnabled) PrimaryBlue else viewModel.buttonColor
+
     LaunchedEffect(key1 = Unit) {
         SettingScreen.buttons
             .onEach { button ->
@@ -107,7 +110,7 @@ fun JoinScreen(navController: NavController) {
                 keyboardType = KeyboardType.Text,
                 buttonTxt = R.string.login_check_availability
             ) {
-
+                viewModel.checkUserName()
             }
             Spacer(modifier = Modifier.height(8.dp))
             BasicTextField(
@@ -140,7 +143,7 @@ fun JoinScreen(navController: NavController) {
                 keyboardType = KeyboardType.Number,
             )
             Spacer(modifier = Modifier.height(32.dp))
-            PrimaryColorButton(text = R.string.login_join) {
+            PrimaryColorButton(text = R.string.login_join, enabled = buttonEnabled, backgroundColor = buttonColor) {
 
             }
         }

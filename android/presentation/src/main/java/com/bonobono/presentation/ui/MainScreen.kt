@@ -169,6 +169,7 @@ fun MainBottomNavigationBar(navController: NavHostController, currentRoute: Stri
     }
 
     NavigationBar(
+        tonalElevation = 0.dp,
         modifier = Modifier.graphicsLayer {
             shape = RoundedCornerShape(
                 topStart = 16.dp,
@@ -177,7 +178,6 @@ fun MainBottomNavigationBar(navController: NavHostController, currentRoute: Stri
             clip = true
             shadowElevation = 20f
         },
-        containerColor = White,
     ) {
         bottomNavigationItems.forEach { item ->
             NavigationBarItem(

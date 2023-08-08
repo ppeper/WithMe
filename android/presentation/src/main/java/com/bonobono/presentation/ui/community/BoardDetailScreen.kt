@@ -245,7 +245,7 @@ fun BoardDetailScreen(
                                 item { NoCommentView() }
                             } else {
                                 items(comments, key = { comment -> comment.hashCode()}) { item ->
-                                    CommentView(comments = item)
+                                    CommentView(type = type, articleId = articleId, comments = item)
                                 }
                             }
                         }

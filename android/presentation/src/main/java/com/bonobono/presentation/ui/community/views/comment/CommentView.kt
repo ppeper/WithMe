@@ -1,5 +1,6 @@
 package com.bonobono.presentation.ui.community.views.comment
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -48,6 +49,8 @@ import com.bonobono.presentation.viewmodel.CommentViewModel
 @Composable
 fun CommentView(
     modifier: Modifier = Modifier,
+    type: String,
+    articleId: Int,
     comments: Comment
 ) {
     val createDateState by rememberSaveable { mutableStateOf(DateUtils.dateToString(comments.createdDate)) }
@@ -94,11 +97,11 @@ fun CommentView(
                     color = Black_100,
                 )
             )
-            CommentRow(comments = comments)
+            CommentRow(type = type, articleId = articleId, comments = comments)
             // 대댓글 리스트
             if (comments.childComments.isNotEmpty()) {
                 comments.childComments.forEach { reComment ->
-                    CommentView(comments = reComment)
+                    CommentView(type = type, articleId = articleId, comments = reComment)
                 }
             }
         }
@@ -109,13 +112,14 @@ fun CommentView(
 @Composable
 fun CommentRow(
     modifier: Modifier = Modifier,
+    type: String,
+    articleId: Int,
     comments: Comment,
     commentViewModel: CommentViewModel = hiltViewModel()
 ) {
     var likeState by rememberSaveable { mutableStateOf(comments.liked) }
     var likeCntState by rememberSaveable { mutableStateOf(comments.likes) }
-    var commentCntState by rememberSaveable { mutableStateOf(comments.childComments.size) }
-    var reCommentState by rememberSaveable { mutableStateOf(comments.childComments) }
+    val commentCntState by rememberSaveable { mutableStateOf(comments.childComments.size) }
     val keyboardController = LocalSoftwareKeyboardController.current
 
     Row(
@@ -134,7 +138,12 @@ fun CommentRow(
                     interactionSource = MutableInteractionSource(),
                     indication = null
                 ) {
-                    if (likeState) { likeCntState -= 1 } else likeCntState += 1
+                    // 댓글 좋아요 클릭
+                    commentViewModel.updateCommentLike(type, articleId, comments.id)
+                    Log.d("TEST", "댓글 좋아요(${comments.id})")
+                    if (likeState) {
+                        likeCntState -= 1
+                    } else likeCntState += 1
                     likeState = !likeState
                 },
                 verticalAlignment = Alignment.CenterVertically
@@ -147,12 +156,18 @@ fun CommentRow(
                         contentColor = TextGray
                     ),
                     onCheckedChange = {
-                        if (likeState) { likeCntState -= 1 } else likeCntState += 1
+                        // 댓글 좋아요 클릭
+                        commentViewModel.updateCommentLike(type, articleId, comments.id)
+                        Log.d("TEST", "댓글 좋아요(${comments.id})")
+                        if (likeState) {
+                            likeCntState -= 1
+                        } else likeCntState += 1
                         likeState = !likeState
                     },
                     interactionSource = MutableInteractionSource()
                 ) {
                     Icon(
+                        modifier = modifier.size(20.dp),
                         painter = painterResource(if (likeState) R.drawable.ic_like_filled else R.drawable.ic_like),
                         contentDescription = "좋아요 아이콘",
                     )
@@ -218,27 +233,5 @@ fun CommentRow(
                 }
             }
         }
-    }
-
-}
-
-@Preview
-@Composable
-fun PreviewCommentRow() {
-//    CommentRow(comments = commentUser)
-}
-
-@Preview
-@Composable
-fun PreviewCommentList() {
-//    CommentListView(commentList = commentList)
-}
-
-@Preview
-@Composable
-fun PreviewCommentView() {
-    Column {
-//        CommentView(comments = commentUser)
-//        CommentView(comments = commentUserNotMe)
     }
 }

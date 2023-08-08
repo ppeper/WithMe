@@ -21,14 +21,14 @@ public class MiniGameController {
     // minigame responseDto로 미니게임 문제와 답 넘겨주기(랜덤)
     //참여하기 버튼 누르면, 미니게임 이미 참여하면 참여하셨습니다를 반환
     // 미니게임 참여하지 않았으면, 미니게임 객체를 반환
-    @PostMapping
+    @GetMapping
     public ResponseEntity<MiniGameResponseDto> checkMiniGame(@RequestParam Long memberId) {
         MiniGameResponseDto miniGameResponseDto = miniGameService.checkMiniGame(memberId);
         return ResponseEntity.ok(miniGameResponseDto);
     }
 
     // 문제와 답을 주면 맞는지 여부를 넘겨주고, 경험치 UP
-    @GetMapping("/IsSuccess")
+    @PostMapping("/IsSuccess")
     public ResponseEntity<Boolean> checkAnswer(@RequestBody MiniGameRequestDto miniGameRequestDto) {
         boolean result = miniGameService.IsSuccess(miniGameRequestDto);
         return ResponseEntity.ok(result);

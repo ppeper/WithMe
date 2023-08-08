@@ -1,6 +1,7 @@
 package com.bonobono.backend.dailymission.service;
 
 import com.bonobono.backend.character.domain.UserCharacter;
+import com.bonobono.backend.character.service.UpgradeCharacterLevelService;
 import com.bonobono.backend.dailymission.domain.OXQuiz;
 import com.bonobono.backend.dailymission.domain.OXQuizProblem;
 import com.bonobono.backend.dailymission.domain.Quiz;
@@ -37,6 +38,7 @@ public class QuizService {
     private final OXQuizRepository oxQuizRepository;
     private final QuizProblemRepository quizProblemRepository;
     private final OXQuizProblemRepository oxQuizProblemRepository;
+    private final UpgradeCharacterLevelService upgradeCharacterLevelService;
 
     LocalDate checkDate = LocalDate.now();
 
@@ -113,6 +115,8 @@ public class QuizService {
             if (mainChracter != null) {
                 int currentExp = mainChracter.getExperience();
                 mainChracter.updateExperience(currentExp + 5); //경험치 5씩 증가
+                upgradeCharacterLevelService.upgradeCharacter(mainChracter,mainChracter.getExperience()); //레벨업 체크
+
             } else {
                 throw new MainCharacterNotFoundException("대표캐릭터가 존재하지 않습니다. 멤버ID:" + member.getId());
             }
@@ -146,6 +150,7 @@ public class QuizService {
             if (mainChracter != null) {
                 int currentExp = mainChracter.getExperience();
                 mainChracter.updateExperience(currentExp + 5); //경험치 5씩 증가
+                upgradeCharacterLevelService.upgradeCharacter(mainChracter,mainChracter.getExperience());
             } else {
                 throw new MainCharacterNotFoundException("대표캐릭터가 존재하지 않습니다. 멤버ID:" + member.getId());
             }

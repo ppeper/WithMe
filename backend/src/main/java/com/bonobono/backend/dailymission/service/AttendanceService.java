@@ -1,6 +1,7 @@
 package com.bonobono.backend.dailymission.service;
 
 import com.bonobono.backend.character.domain.UserCharacter;
+import com.bonobono.backend.character.service.UpgradeCharacterLevelService;
 import com.bonobono.backend.dailymission.domain.Attendance;
 import com.bonobono.backend.dailymission.repository.AttendanceRepository;
 import com.bonobono.backend.global.exception.MainCharacterNotFoundException;
@@ -20,6 +21,7 @@ public class AttendanceService {
     //들어온 시간(request dto)가 누른 최근시간과 같은지 비교해서 오류를 반환한다.
     private final AttendanceRepository attendanceRepository;
     private final MemberRepository memberRepository;
+    private final UpgradeCharacterLevelService upgradeCharacterLevelService;
     LocalDate checkDate = LocalDate.now();
 
     @Transactional
@@ -40,7 +42,8 @@ public class AttendanceService {
             UserCharacter mainChracter = member.getMainCharacter();
             if (mainChracter != null) {
                 int currentExp = mainChracter.getExperience();
-                mainChracter.updateExperience(currentExp + 92); //경험치 5씩 증가
+                mainChracter.updateExperience(currentExp + 5); //경험치 5씩 증가
+                upgradeCharacterLevelService.upgradeCharacter(mainChracter,mainChracter.getExperience());
             } else {
                 throw new MainCharacterNotFoundException("대표캐릭터가 존재하지 않습니다. 멤버ID:" + member.getId());
             }

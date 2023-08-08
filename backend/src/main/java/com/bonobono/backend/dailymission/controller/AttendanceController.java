@@ -16,7 +16,7 @@ public class AttendanceController {
     private final AttendanceService attendanceService;
 
     //이미 출석했는지 확인
-    @PostMapping
+    @GetMapping
     public ResponseEntity<Void> check(@RequestParam Long memberId) {
         //시큐리티를 사용한다는 가정 @AuthenticationPrincipal Member member
         Boolean IsCheck = attendanceService.check(memberId);

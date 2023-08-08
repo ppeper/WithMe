@@ -1,19 +1,16 @@
 package com.bonobono.backend.character.dto;
 
-import com.bonobono.backend.character.domain.OurCharacter;
 import com.bonobono.backend.character.domain.UserCharacter;
 import com.bonobono.backend.character.enumClass.CharacterLevelEnum;
-import com.bonobono.backend.chatting.domain.ChatRoom;
-import com.bonobono.backend.community.article.entity.ArticleComment;
-import com.bonobono.backend.member.domain.Member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Getter
+@Setter
 @NoArgsConstructor
 public class UserChracterResponseDto {
     private String custom_name;
@@ -30,6 +27,7 @@ public class UserChracterResponseDto {
         this.is_main=userCharacter.getMain();
         this.experience=userCharacter.getExperience();
         this.createdDate=LocalDateTime.now();
+
         //ourcharacter에서 가져온 정보
         this.level = userCharacter.getOurCharacter().getLevel();
         this.description = userCharacter.getOurCharacter().getDescription();

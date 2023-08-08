@@ -35,6 +35,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -61,6 +62,7 @@ import coil.request.ImageRequest
 import com.bonobono.domain.model.NetworkResult
 import com.bonobono.domain.model.community.Article
 import com.bonobono.domain.model.community.Image
+import com.bonobono.domain.model.community.Link
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.community.util.DummyData.dummyArticle
 import com.bonobono.presentation.ui.community.util.boardDetailLaunchEffect
@@ -69,6 +71,9 @@ import com.bonobono.presentation.ui.community.views.board.ProceedingView
 import com.bonobono.presentation.ui.community.views.comment.CommentView
 import com.bonobono.presentation.ui.community.views.comment.NoCommentView
 import com.bonobono.presentation.ui.community.views.comment.WriteCommentView
+import com.bonobono.presentation.ui.community.views.link.LinkImageTitle
+import com.bonobono.presentation.ui.community.views.link.WebView
+import com.bonobono.presentation.ui.community.views.link.getMetaData
 import com.bonobono.presentation.ui.theme.Black_100
 import com.bonobono.presentation.ui.theme.Black_70
 import com.bonobono.presentation.ui.theme.DividerGray
@@ -80,6 +85,7 @@ import com.bonobono.presentation.utils.DateUtils
 import com.bonobono.presentation.utils.rememberImeState
 import com.bonobono.presentation.viewmodel.CommentViewModel
 import com.bonobono.presentation.viewmodel.CommunityViewModel
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -92,6 +98,7 @@ fun BoardDetailScreen(
 ) {
     boardDetailLaunchEffect(navController = navController)
     val imeState = rememberImeState()
+    var isWebViewOn by remember { mutableStateOf(false) }
     val keyboardController = LocalSoftwareKeyboardController.current
     val scrollState = rememberLazyListState()
     val articleState by communityViewModel.articleDetailState.collectAsStateWithLifecycle()
@@ -122,98 +129,124 @@ fun BoardDetailScreen(
             val article = dummyArticle
             var comments by remember { mutableStateOf(article.comments) }
             var isTextFieldFocused by remember { mutableStateOf(false) }
+            var commentCnt by remember { mutableStateOf(article.commentCnt) }
             val commentViewModel: CommentViewModel = hiltViewModel()
-            Scaffold(
-                bottomBar = {
-                    WriteCommentView(
-                        modifier = modifier,
-                        type = type,
-                        articleId = article.articleId,
-                        onWriteCommentClicked = { comment ->
-                            // 대 댓글 작성
-                            if (comment.parentCommentId != null) {
-                                val index = comments.indexOfFirst { it.id == comment.parentCommentId }
-                                if (index != -1) {
-                                    comments = comments.apply {
-                                        comments[index].childComments = comments[index].childComments.toMutableList().apply { add(comment) }.toList()
-                                    }.toList()
-                                }
-                            } else {
-                                comments = comments.toMutableList().apply { add(comment) }.toList()
-                            }
-                        },
-                        onFocusChanged = {
-                            isTextFieldFocused = !isTextFieldFocused
-                        }
-                    )
+            val scope = rememberCoroutineScope()
+            var metaLink by remember { mutableStateOf(Link()) }
+            LaunchedEffect(Unit) {
+                scope.launch {
+                    metaLink = getMetaData(Link(article.url, article.urlTitle))
                 }
-            ) {
-                Box(
-                    modifier = modifier
-                        .fillMaxSize()
-                        .background(color = White)
-                        .padding(it)
-                        .pointerInput(Unit) {
-                            detectTapGestures {
-                                keyboardController?.hide()
-                                isTextFieldFocused = !isTextFieldFocused
-                                commentViewModel.setCommentId(-1)
-                            }
-                        }
-                ) {
-                    LazyColumn(
-                        modifier = modifier.fillMaxSize(),
-                        state = scrollState
-                    ) {
-                        item {
-                            Column(
-                                modifier = modifier
-                                    .fillMaxSize()
-                                    .then(modifier.padding(16.dp)),
-                                verticalArrangement = Arrangement.spacedBy(16.dp)
-                            ) {
+            }
+            // Meta Url 파싱 완료
+            if (metaLink.isSuccess) {
 
-                                WriterView(type = type, communityViewModel = communityViewModel, article = article)
+                if (isWebViewOn) {
+                    WebView(url = metaLink.url)
+                }
 
-                                Text(
-                                    text = article.title,
-                                    style = TextStyle(
-                                        fontSize = 20.sp,
-                                        fontWeight = FontWeight(700),
-                                        color = Black_100,
-                                    )
-                                )
-                                Text(
-                                    text = article.content,
-                                    style = TextStyle(
-                                        fontSize = 16.sp,
-                                        fontWeight = FontWeight(400),
-                                        color = Black_100,
-                                    )
-                                )
-                                if (article.images.isNotEmpty()) {
-                                    MultipleImageView(images = article.images)
+                Scaffold(
+                    bottomBar = {
+                        WriteCommentView(
+                            modifier = modifier,
+                            type = type,
+                            articleId = article.articleId,
+                            onWriteCommentClicked = { comment ->
+                                // 대 댓글 작성
+                                if (comment.parentCommentId != null) {
+                                    val index = comments.indexOfFirst { it.id == comment.parentCommentId }
+                                    if (index != -1) {
+                                        comments = comments.apply {
+                                            comments[index].childComments = comments[index].childComments.toMutableList().apply { add(comment) }.toList()
+                                        }.toList()
+                                    }
+                                } else {
+                                    comments = comments.toMutableList().apply { add(comment) }.toList()
                                 }
-                                Text(
-                                    text = "조회수 ${article.views}",
-                                    style = TextStyle(
-                                        fontSize = 12.sp,
-                                        color = TextGray,
-                                        textAlign = TextAlign.Center,
-                                    )
-                                )
+                                // 댓글 수 증가
+                                commentCnt++
+                            },
+                            onFocusChanged = {
+                                isTextFieldFocused = !isTextFieldFocused
                             }
-                            // 게시글 좋아요 추가
-                            LikeAndCommentView(article = article) {
-                                communityViewModel.updateArticleLike(type, articleId)
+                        )
+                    }
+                ) {
+                    Box(
+                        modifier = modifier
+                            .fillMaxSize()
+                            .background(color = White)
+                            .padding(it)
+                            .pointerInput(Unit) {
+                                detectTapGestures {
+                                    keyboardController?.hide()
+                                    isTextFieldFocused = !isTextFieldFocused
+                                    commentViewModel.setCommentId(-1)
+                                }
                             }
-                        }
+                    ) {
+                        LazyColumn(
+                            modifier = modifier.fillMaxSize(),
+                            state = scrollState
+                        ) {
+                            item {
+                                Column(
+                                    modifier = modifier
+                                        .fillMaxSize()
+                                        .then(modifier.padding(16.dp)),
+                                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                                ) {
 
-                        if (article.comments.isEmpty()) {
-                            item { NoCommentView() }
-                        } else {
-                            items(comments, key = { comment -> comment.hashCode()}) { item ->
-                                CommentView(comments = item)
+                                    WriterView(type = type, communityViewModel = communityViewModel, article = article)
+
+                                    Text(
+                                        text = article.title,
+                                        style = TextStyle(
+                                            fontSize = 20.sp,
+                                            fontWeight = FontWeight(700),
+                                            color = Black_100,
+                                        )
+                                    )
+                                    Text(
+                                        text = article.content,
+                                        style = TextStyle(
+                                            fontSize = 16.sp,
+                                            fontWeight = FontWeight(400),
+                                            color = Black_100,
+                                        )
+                                    )
+                                    if (article.images.isNotEmpty()) {
+                                        MultipleImageView(images = article.images)
+                                    }
+                                    if (article.url.isNotEmpty()) {
+                                        LinkImageTitle(
+                                            link = metaLink,
+                                            R.drawable.ic_go
+                                        ) {
+                                            isWebViewOn = true
+                                        }
+                                    }
+                                    Text(
+                                        text = "조회수 ${article.views}",
+                                        style = TextStyle(
+                                            fontSize = 12.sp,
+                                            color = TextGray,
+                                            textAlign = TextAlign.Center,
+                                        )
+                                    )
+                                }
+                                // 게시글 좋아요 추가
+                                LikeAndCommentView(article = article, commentCnt = commentCnt) {
+                                    communityViewModel.updateArticleLike(type, articleId)
+                                }
+                            }
+
+                            if (article.comments.isEmpty()) {
+                                item { NoCommentView() }
+                            } else {
+                                items(comments, key = { comment -> comment.hashCode()}) { item ->
+                                    CommentView(comments = item)
+                                }
                             }
                         }
                     }
@@ -295,11 +328,11 @@ fun ProfileView(
 fun LikeAndCommentView(
     modifier: Modifier = Modifier,
     article: Article,
+    commentCnt: Int,
     onLikeClick: () -> Unit,
 ) {
     var likeState by rememberSaveable { mutableStateOf(article.liked) }
     var likeCntState by rememberSaveable { mutableStateOf(article.likes) }
-    var commentCntState by rememberSaveable { mutableStateOf(article.commentCnt) }
 
     Column {
         Divider(color = DividerGray)
@@ -391,7 +424,7 @@ fun LikeAndCommentView(
                 )
                 Spacer(modifier = modifier.size(4.dp))
                 Text(
-                    text = commentCntState.toString(),
+                    text = commentCnt.toString(),
                     style = TextStyle(
                         fontSize = 12.sp,
                         color = TextGray,
@@ -409,6 +442,7 @@ fun LikeAndCommentView(
 fun PreviewLikeAndCommentView() {
     LikeAndCommentView(
         article = dummyArticle,
+        commentCnt = 5,
         onLikeClick = {}
     )
 }

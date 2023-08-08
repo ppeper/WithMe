@@ -1,6 +1,5 @@
 package com.bonobono.presentation.viewmodel
 
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -36,7 +35,7 @@ class CommunityViewModel @Inject constructor(
     private val _writeArticleState = MutableStateFlow<NetworkResult<Unit>>(NetworkResult.Loading)
     val writeArticleState = _writeArticleState.asStateFlow()
 
-    private val _articleLikeState = MutableStateFlow(Unit)
+    private val _articleLikeState = MutableStateFlow<NetworkResult<Unit>>(NetworkResult.Loading)
     val articleLikeState = _articleLikeState.asStateFlow()
 
     private val _deleteArticleState = MutableStateFlow(Unit)

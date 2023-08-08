@@ -1,7 +1,7 @@
 package com.bonobono.presentation.viewmodel
 
-import android.system.Os.remove
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bonobono.domain.model.NetworkResult
@@ -43,16 +43,8 @@ class CommunityViewModel @Inject constructor(
     val deleteArticleState = _deleteArticleState.asStateFlow()
 
     // 링크 리스트
-    private val _linkList = mutableStateListOf<Link>()
-    val linkList = _linkList
-
-    fun addLink(link: Link) {
-        _linkList.add(link)
-    }
-
-    fun removeLink(link: Link) {
-        _linkList.remove(link)
-    }
+    private val _link = mutableStateOf(Link())
+    val link = _link
 
     fun getArticleList(type: String) = viewModelScope.launch {
         _articleState.emit(getArticleList.invoke(type))

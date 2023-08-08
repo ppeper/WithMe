@@ -32,7 +32,7 @@ class CommunityRepositoryImpl @Inject constructor(
         val imageFiles = images?.let { images ->
             images.map { Converter.createMultipartBodyPart(it) }
         }
-        return handleApi { communityService.writeArticle(type, images = imageFiles, article = article) }
+        return handleApi { communityService.writeArticle(type, images = imageFiles, article = article.toModel()) }
     }
 
     override suspend fun deleteArticle(type: String, articleId: Int) {

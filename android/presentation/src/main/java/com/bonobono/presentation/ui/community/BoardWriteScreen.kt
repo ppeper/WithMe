@@ -1,7 +1,13 @@
 package com.bonobono.presentation.ui.community
 
+import android.Manifest
+import android.content.Intent
 import android.net.Uri
+import android.os.Build
+import android.provider.Settings
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -37,6 +43,7 @@ import com.bonobono.domain.model.NetworkResult
 import com.bonobono.domain.model.community.Article
 import com.bonobono.presentation.ui.CommunityFab
 import com.bonobono.presentation.ui.common.CheckCountDialog
+import com.bonobono.presentation.ui.common.PermissionDialog
 import com.bonobono.presentation.ui.community.util.routeMapper
 import com.bonobono.presentation.ui.community.util.textMapper
 import com.bonobono.presentation.ui.community.views.board.BoardWriteBottomView
@@ -48,7 +55,10 @@ import com.bonobono.presentation.ui.theme.TextGray
 import com.bonobono.presentation.utils.Converter
 import com.bonobono.presentation.viewmodel.CommunityViewModel
 import com.bonobono.presentation.viewmodel.PhotoViewModel
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun BoardWriteScreen(
     modifier: Modifier = Modifier,
@@ -65,6 +75,18 @@ fun BoardWriteScreen(
     val previousCount = photoViewModel.selectedPhoto.size
     val writeArticleState by communityViewModel.writeArticleState.collectAsStateWithLifecycle()
 
+    val GALLERY_PERMISSIONS = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        listOf(
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.READ_MEDIA_IMAGES,
+        )
+    } else {
+        listOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+    }
+
+    val multiplePermissionsState =
+        rememberMultiplePermissionsState(permissions = GALLERY_PERMISSIONS)
+
     Scaffold(
         topBar = {
             TopContentWrite(
@@ -72,21 +94,24 @@ fun BoardWriteScreen(
                 navController = navController,
                 completeButtonState = titleTextState.isNotBlank() && contentTextState.isNotBlank(),
                 onCompleteClick = { /* TODO("서버로 게시글 등록") */
+                    val link = communityViewModel.link.value
                     // 갤러리 이미지 목록 Real Path로 변경
-                    val article = Article(
+                    var article = Article(
                         title = titleTextState,
                         content = contentTextState,
                     )
+                    if (link.url.isNotBlank()) {
+                        article = article.copy(
+                            url = link.url,
+                            urlTitle = link.urlTitle
+                        )
+                    }
                     val photoList = photoViewModel.selectedPhoto.mapNotNull {
                         Converter.getRealPathFromUriOrNull(context, Uri.parse(it.url))
-                    }
-                    Log.d("TEST", "BoardWriteScreen: $photoList")
-                    if (photoList.isEmpty()) {
-                        communityViewModel.writeArticle(type, null, article = article)
-                    } else {
-                        communityViewModel.writeArticle(type, photoList, article = article)
-                    }
-
+                    }.ifEmpty { null }
+                    Log.d("TEST", "BoardWriteScreen(photoList): $photoList")
+                    communityViewModel.writeArticle(type, photoList, article = article)
+                    Log.d("TEST", "BoardWriteScreen(article): $article")
                     when (writeArticleState) {
                         is NetworkResult.Success -> {
                             navController.popBackStack()
@@ -105,9 +130,20 @@ fun BoardWriteScreen(
             BoardWriteBottomView(
                 route = route,
                 onPhotoClick = {
-                    if (previousCount == 10) {
-                        showDialog = true
-                    } else navController.navigate(routeMapper(navController))
+                    multiplePermissionsState.launchMultiplePermissionRequest()
+                    if (multiplePermissionsState.allPermissionsGranted) {
+                        if (previousCount == 10) {
+                            showDialog = true
+                        } else navController.navigate(routeMapper(navController))
+                    } else {
+//                        PermissionDialog(content = "사진권한이 필요한 작업입니다. 이동하시겠습니까?") {
+//                            val intent = Intent().apply {
+//                                action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+//                                data = Uri.fromParts("package", context.packageName, null)
+//                            }
+//                            context.startActivity(intent)
+//                        }
+                    }
                 },
                 onMapClick = { /* TODO("지도 맵 선택 화면 이동") */ }
             )

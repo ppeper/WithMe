@@ -1,5 +1,7 @@
 package com.bonobono.presentation.ui.community.views.link
 
+import android.webkit.WebView
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -7,14 +9,15 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -31,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -40,15 +44,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.bonobono.domain.model.community.Link
 import com.bonobono.presentation.R
-import com.bonobono.presentation.ui.theme.BackgroundLightGray
 import com.bonobono.presentation.ui.theme.Black_100
 import com.bonobono.presentation.ui.theme.DividerGray
-import com.bonobono.presentation.ui.theme.LightGray_50
+import com.bonobono.presentation.ui.theme.LightGray
 import com.bonobono.presentation.ui.theme.TextGray
 import com.bonobono.presentation.ui.theme.White
 import com.bonobono.presentation.viewmodel.CommunityViewModel
@@ -68,7 +72,8 @@ fun LinkView(
     var titleState by rememberSaveable { mutableStateOf("") }
     var linkState by rememberSaveable { mutableStateOf("") }
     var showSheet by remember { mutableStateOf(false) }
-    val linkList = communityViewModel.linkList
+    var currentLink by communityViewModel.link
+    var webLinkState by remember { mutableStateOf(false) }
 
     Column(
         modifier = modifier.wrapContentHeight(),
@@ -109,7 +114,7 @@ fun LinkView(
                                     linkState = "https://$linkState"
                                 }
                                 val link = Link(url = linkState, urlTitle = titleState)
-                                communityViewModel.addLink(getMetaData(link))
+                                currentLink = getMetaData(link)
                                 linkState = ""
                                 titleState = ""
                                 showSheet = false
@@ -122,7 +127,7 @@ fun LinkView(
         Divider(color = DividerGray)
         Spacer(modifier = modifier.size(16.dp))
 
-        if (linkList.isEmpty()) {
+        if (currentLink == Link()) {
             Text(
                 text = "같이 하고 싶은 캠페인 혹은 오픈카톡방\n링크를 추가해주세요.",
                 style = TextStyle(
@@ -132,26 +137,23 @@ fun LinkView(
                 )
             )
         } else {
-            LinkListView(linkList = linkList, communityViewModel = communityViewModel)
+            LinkImageTitle(link = currentLink) {
+                currentLink = Link()
+            }
         }
     }
 }
 
 @Composable
-fun LinkListView(
-    linkList: List<Link>,
-    communityViewModel: CommunityViewModel
-) {
-    LazyRow {
-        items(linkList) {
-            LinkImageTitle(
-                link = it,
-                onLinkDeleteClicked = {
-                    communityViewModel.removeLink(it)
-                }
-            )
+fun WebView(url: String) {
+    AndroidView(
+        modifier = Modifier.fillMaxSize(),
+        factory = { context ->
+            WebView(context).apply {
+                loadUrl(url)
+            }
         }
-    }
+    )
 }
 
 @Composable
@@ -159,73 +161,76 @@ fun LinkImageTitle(
     link: Link,
     onLinkDeleteClicked: () -> Unit
 ) {
-    Box(
-        modifier = Modifier.size(160.dp)
+    Card (
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight(),
+        shape = RoundedCornerShape(10.dp),
+        border = BorderStroke(1.dp, color = DividerGray),
+        colors = CardDefaults.cardColors(containerColor = White),
     ) {
-        AsyncImage(
-            modifier = Modifier
-                .size(152.dp, 100.dp)
-                .padding(top = 16.dp)
-                .clip(RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp))
-                .align(Alignment.TopStart),
-            model = ImageRequest.Builder(LocalContext.current)
-                .error(R.drawable.no_link_image)
-                .data(link.imageUrl)
-                .build(),
-            contentDescription = "선택된 사진",
-            contentScale = ContentScale.Crop
-        )
-        Box(
-            modifier = Modifier
-                .size(32.dp)
-                .border(
-                    width = 1.dp,
-                    color = White,
-                    shape = CircleShape
-                )
-                .clip(CircleShape)
-                .background(color = Black_100)
-                .align(Alignment.TopEnd)
+        Row(modifier = Modifier.padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton(
-                onClick = { onLinkDeleteClicked() },
+            AsyncImage(
+                modifier = Modifier
+                    .size(72.dp)
+                    .clip(RoundedCornerShape(10.dp)),
+                model = ImageRequest.Builder(LocalContext.current)
+                    .error(R.drawable.no_link_image)
+                    .data(link.imageUrl)
+                    .build(),
+                contentDescription = "선택된 사진",
+                contentScale = ContentScale.Crop
+            )
+            Column(
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .weight(1f)
             ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_delete),
-                    contentDescription = "삭제",
-                    tint = White
+                Text(
+                    text = link.urlTitle,
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight(700),
+                        color = Black_100,
+                    ),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Spacer(modifier = Modifier.size(8.dp))
+                Text(
+                    text = link.content,
+                    style = TextStyle(
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight(400),
+                        color = TextGray,
+                    ),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
-        }
-        Column(
-            modifier = Modifier
-                .size(152.dp, 60.dp)
-                .align(Alignment.BottomStart)
-                .clip(RoundedCornerShape(bottomStart = 10.dp, bottomEnd = 10.dp))
-                .background(BackgroundLightGray)
-        ) {
-            Text(
-                modifier = Modifier.padding(8.dp),
-                text = link.urlTitle,
-                style = TextStyle(
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight(700),
-                    color = Black_100,
-                ),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            Text(
-                modifier = Modifier.padding(horizontal = 8.dp),
-                text = link.content,
-                style = TextStyle(
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight(400),
-                    color = TextGray,
-                ),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+            Box(
+                modifier = Modifier
+                    .size(32.dp)
+                    .border(
+                        width = 1.dp,
+                        color = White,
+                        shape = CircleShape
+                    )
+                    .clip(CircleShape)
+                    .background(color = Black_100)
+            ) {
+                IconButton(
+                    onClick = { onLinkDeleteClicked() },
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_delete),
+                        contentDescription = "삭제",
+                        tint = White
+                    )
+                }
+            }
         }
     }
 }

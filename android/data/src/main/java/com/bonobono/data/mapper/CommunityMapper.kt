@@ -1,6 +1,7 @@
 package com.bonobono.data.mapper
 
 import com.bonobono.data.BuildConfig
+import com.bonobono.data.model.community.request.ArticleRequest
 import com.bonobono.data.model.community.request.CommentRequest
 import com.bonobono.data.model.community.response.ArticleDetailResponse
 import com.bonobono.data.model.community.response.ArticleResponse
@@ -48,6 +49,15 @@ fun ArticleDetailResponse.toDomain(): Article {
         urlTitle = urlTitle,
         createdDate = createdDate,
         views = views
+    )
+}
+
+fun Article.toModel(): ArticleRequest {
+    return ArticleRequest(
+        title = title,
+        content = content,
+        urlTitle = urlTitle.ifBlank { "" },
+        url = url.ifBlank { "" }
     )
 }
 

@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,12 +37,14 @@ fun CheckCountDialog(
         onDismissRequest = { onDismiss() },
         properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
     ) {
-        Surface(
+        Card(
             modifier = modifier
                 .width(300.dp)
                 .wrapContentHeight(),
             shape = RoundedCornerShape(16.dp),
-            color = White
+            colors = CardDefaults.cardColors(
+                containerColor = White
+            )
         ) {
             Column(
                 modifier = modifier
@@ -65,8 +69,9 @@ fun CheckCountDialog(
                     modifier = modifier.fillMaxWidth(),
                     text = "사진은 최대 ${count}장까지 업로드 가능합니다.",
                     style = TextStyle(
-                        fontSize = 18.sp,
-                        color = Black_100
+                        fontSize = 16.sp,
+                        color = Black_100,
+                        fontWeight = FontWeight(400)
                     )
                 )
                 SubmitButton(modifier = modifier
@@ -79,8 +84,66 @@ fun CheckCountDialog(
     }
 }
 
+@Composable
+fun PermissionDialog(
+    modifier: Modifier = Modifier,
+    content: String,
+    onClicked: () -> Unit
+) {
+    Dialog(
+        onDismissRequest = { }
+    ) {
+        Card(
+            modifier = modifier
+                .width(300.dp)
+                .wrapContentHeight(),
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = White
+            )
+        ) {
+            Column(
+                modifier = modifier
+                    .padding(18.dp)
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Text(
+                    modifier = modifier.fillMaxWidth(),
+                    text = "권한 설정",
+                    style = TextStyle(
+                        fontSize = 20.sp,
+                        color = Black_100,
+                        fontWeight = FontWeight(700)
+                    ),
+                    textAlign = TextAlign.Center
+                )
+                Text(
+                    modifier = modifier.fillMaxWidth(),
+                    text = content,
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        color = Black_100
+                    )
+                )
+                SubmitButton(modifier = modifier
+                    .fillMaxWidth()
+                    .height(48.dp), text = "권한 설정하러 가기") {
+                    onClicked()
+                }
+            }
+        }
+    }
+}
+
 @Preview
 @Composable
 fun PreviewDialog() {
     CheckCountDialog(title = "사진 선택", count = 4) {}
+}
+@Preview
+@Composable
+fun PreviewPermissionDialog() {
+    PermissionDialog(content = "사진 권한이 필요한 작업입니다.") {}
 }

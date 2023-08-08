@@ -40,10 +40,10 @@ public class MiniGameService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(()->new IllegalArgumentException("해당 멤버가 존재하지 않습니다 +id"+memberId));
 
-        if (isMiniGameRepository.existsByMemberIdAndCheckDate(memberId,checkDate)) {
-            log.trace("이미 게임에 참여했습니다");
-            throw new AlreadyParticipatedException("이미 게임에 참여했습니다.");
-        }
+//        if (isMiniGameRepository.existsByMemberIdAndCheckDate(memberId,checkDate)) {
+//            log.trace("이미 게임에 참여했습니다");
+//            throw new AlreadyParticipatedException("이미 게임에 참여했습니다.");
+//        }
 
         // 미니게임랜덤 생성
         long qty = miniGameRepository.findAll().size();

@@ -28,11 +28,11 @@ public class AttendanceService {
     public boolean check(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(()->new IllegalArgumentException("해당 멤버가 존재하지 않습니다 +id"+memberId));
-        if (attendanceRepository.existsByMemberIdAndCheckDate(memberId, checkDate)) {
-            log.trace("이미 출석했습니다");
-            return false;
-        }
-        else {
+//        if (attendanceRepository.existsByMemberIdAndCheckDate(memberId, checkDate)) {
+//            log.trace("이미 출석했습니다");
+//            return false;
+//        }
+//        else {
             Attendance attendance = Attendance.builder()
                     .checkDate(checkDate)
                     .member(member)
@@ -49,7 +49,7 @@ public class AttendanceService {
             }
             attendanceRepository.save(attendance);
             return true;
-        }
+//        }
     }
 
 

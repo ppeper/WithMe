@@ -16,7 +16,6 @@ import com.bonobono.backend.dailymission.repository.QuizRepository;
 import com.bonobono.backend.global.exception.MainCharacterNotFoundException;
 import com.bonobono.backend.member.domain.Member;
 import com.bonobono.backend.member.repository.MemberRepository;
-import io.github.flashvayne.chatgpt.service.ChatgptService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.parser.ParseException;
@@ -32,7 +31,6 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 @Slf4j
 public class QuizService {
-    private final ChatgptService chatgptService;
     private final QuizRepository quizRepository;
     private final MemberRepository memberRepository;
     private final OXQuizRepository oxQuizRepository;
@@ -47,10 +45,10 @@ public class QuizService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("해당멤버가 존재하지 않습니다+id" + memberId));
 
-        if (quizRepository.existsByMemberIdAndCheckDate(memberId, checkDate)) {
-            log.trace("이미 게임에 참여했습니다");
-            throw new AlreadyParticipatedException("이미 게임에 참여했습니다");
-        }
+//        if (quizRepository.existsByMemberIdAndCheckDate(memberId, checkDate)) {
+//            log.trace("이미 게임에 참여했습니다");
+//            throw new AlreadyParticipatedException("이미 게임에 참여했습니다");
+//        }
 
         long qty = quizProblemRepository.findAll().size();
         int idx = (int) (Math.random()*qty);
@@ -74,10 +72,10 @@ public class QuizService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("해당멤버가 존재하지 않습니다+id" + memberId));
 
-        if (oxQuizRepository.existsByMemberIdAndCheckDate(memberId, checkDate)) {
-            log.trace("이미 게임에 참여했습니다");
-            throw new AlreadyParticipatedException("이미 게임에 참여했습니다");
-        }
+//        if (oxQuizRepository.existsByMemberIdAndCheckDate(memberId, checkDate)) {
+//            log.trace("이미 게임에 참여했습니다");
+//            throw new AlreadyParticipatedException("이미 게임에 참여했습니다");
+//        }
 
         long qty = oxQuizProblemRepository.findAll().size();
         int idx = (int) (Math.random()*qty);

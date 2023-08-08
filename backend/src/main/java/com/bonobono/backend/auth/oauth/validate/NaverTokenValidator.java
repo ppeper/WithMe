@@ -43,55 +43,78 @@ public class NaverTokenValidator implements CustomTokenValidator {
     @Override
     public Map<String, Object> validate(String idTokenString) throws GeneralSecurityException, IOException {
 
-        RestTemplate restTemplate_1 = new RestTemplate();
-//        HttpHeaders headers_1 = new HttpHeaders();
-//        headers_1.add("Content-Type", "application/x-www-form-urlencoded");
+        RestTemplate restTemplate = new RestTemplate();
 
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("grant_type", "authorization_code");
-        params.add("client_id", CLIENT_ID);
-        params.add("client_secret", CLIENT_SECRET);
-        params.add("code", idTokenString);
-        params.add("state", "state");
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/x-www-form-urlencoded");
+        headers.add("Authorization", "Bearer " + idTokenString);
 
-        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
 
-        ResponseEntity<String> response = restTemplate_1.exchange(TOKEN_URL,
-                HttpMethod.POST, request, String.class);
-
-        RestTemplate restTemplate_2 = new RestTemplate();
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        Map<String, Object> accessTokenAndRefreshToken = objectMapper.readValue(response.getBody(), HashMap.class);
-
-        String accessToken = (String) accessTokenAndRefreshToken.get("access_token");
-        String refreshToken = (String) accessTokenAndRefreshToken.get("refresh_token");
-
-        log.info(accessToken + " " + refreshToken);
-
-        HttpHeaders headers_2 = new HttpHeaders();
-        headers_2.add("Authorization", "Bearer " + accessToken);
-//        headers_2.add("X-Naver-Client-Id", "CLIENT_ID");
-//        headers_2.add("X-Naver-Client-Secret", "USER_INFO_URL");
-
-        HttpEntity<HttpHeaders> entity = new HttpEntity<>(headers_2);
-
-        ResponseEntity<LinkedHashMap> response_2 = restTemplate_2.exchange(
-                USER_INFO_URL,
-                HttpMethod.GET,
-                entity,
-                LinkedHashMap.class
+        ResponseEntity<HashMap> response = restTemplate.exchange(
+            "https://openapi.naver.com/v1/nid/me",
+            HttpMethod.GET,
+            entity,
+            HashMap.class
         );
 
-        Map<String, HashMap> map = response_2.getBody();
-        String naver_id = (String) map.get("response").get("id");
+        Map<String, Object> resultMap = new HashMap<>();
+        Map<String, Object> responseMap = (Map<String, Object>)response.getBody().get("response");
 
-        System.out.println(map);
-
-        Map<String, Object> resultMap = new HashMap<String, Object>();
-        resultMap.put("email", naver_id);
+        resultMap.put("email", responseMap.get("email"));
 
         return resultMap;
+
+//        RestTemplate restTemplate_1 = new RestTemplate();
+//        HttpHeaders headers_1 = new HttpHeaders();
+//        headers_1.add("Content-Type", "application/x-www-form-urlencoded");
+//
+//        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+//        params.add("grant_type", "authorization_code");
+//        params.add("client_id", CLIENT_ID);
+//        params.add("client_secret", CLIENT_SECRET);
+//        params.add("code", idTokenString);
+//        params.add("state", "state");
+//
+//        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params);
+//
+//        ResponseEntity<String> response = restTemplate_1.exchange(TOKEN_URL,
+//                HttpMethod.POST, request, String.class);
+//
+//        RestTemplate restTemplate_2 = new RestTemplate();
+//
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        Map<String, Object> accessTokenAndRefreshToken = objectMapper.readValue(response.getBody(), HashMap.class);
+//
+//        String accessToken = (String) accessTokenAndRefreshToken.get("access_token");
+//        String refreshToken = (String) accessTokenAndRefreshToken.get("refresh_token");
+//
+//        log.info(idTokenString);
+//        log.info(accessToken + " " + refreshToken);
+//
+//        HttpHeaders headers_2 = new HttpHeaders();
+//        headers_2.add("Authorization", "Bearer " + accessToken);
+//        headers_2.add("X-Naver-Client-Id", "CLIENT_ID");
+//        headers_2.add("X-Naver-Client-Secret", "USER_INFO_URL");
+//
+//        HttpEntity<HttpHeaders> entity = new HttpEntity<>(headers_2);
+//
+//        ResponseEntity<LinkedHashMap> response_2 = restTemplate_2.exchange(
+//                USER_INFO_URL,
+//                HttpMethod.GET,
+//                entity,
+//                LinkedHashMap.class
+//        );
+//
+//        Map<String, HashMap> map = response_2.getBody();
+//        String naver_id = (String) map.get("response").get("id");
+//
+//        System.out.println(map);
+//
+//        Map<String, Object> resultMap = new HashMap<String, Object>();
+//        resultMap.put("email", naver_id);
+//
+//        return resultMap;
 
     }
 }

@@ -1,6 +1,7 @@
 package com.bonobono.presentation.ui.community.views.board
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -16,6 +17,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,6 +35,7 @@ import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.NavigationRouteName
 import com.bonobono.presentation.ui.theme.Black_100
 import com.bonobono.presentation.ui.theme.TextGray
+import com.bonobono.presentation.ui.theme.White
 
 data class BoardInfo(
     val route: String,
@@ -86,20 +89,16 @@ fun BoardView(
     navController: NavController
 ) {
     Card(
-        modifier = modifier
-            .fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(4.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White
-        ),
         shape = RoundedCornerShape(10.dp),
+        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp),
         onClick = { navController.navigate(item.route) }
     ) {
         Row(
             modifier = modifier
-                .padding(horizontal = 16.dp)
                 .fillMaxWidth()
-                .height(128.dp),
+                .height(128.dp)
+                .background(White)
+                .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {

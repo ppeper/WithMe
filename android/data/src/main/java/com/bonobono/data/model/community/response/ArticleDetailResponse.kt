@@ -2,6 +2,7 @@ package com.bonobono.data.model.community.response
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
+import java.time.LocalDateTime
 import java.util.Date
 
 @Parcelize
@@ -21,5 +22,5 @@ data class ArticleDetailResponse(
     val url: String,
     val urlTitle: String,
     val views: Int,
-    val createdDate: Date,
+    val createdDate: LocalDateTime,
 ): Parcelable

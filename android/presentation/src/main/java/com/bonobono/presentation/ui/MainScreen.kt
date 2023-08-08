@@ -37,16 +37,15 @@ import com.bonobono.presentation.ui.NavigationRouteName.COMMUNITY_REPORT
 import com.bonobono.presentation.ui.NavigationRouteName.COMMUNITY_WITH
 import com.bonobono.presentation.ui.NavigationRouteName.MAIN_COMMUNITY
 import com.bonobono.presentation.ui.chatting.MainChattingScreen
+import com.bonobono.presentation.ui.common.button.CommunityFloatingActionButton
+import com.bonobono.presentation.ui.common.button.HomeFloatingActionButton
 import com.bonobono.presentation.ui.common.topbar.SharedTopAppBar
 import com.bonobono.presentation.ui.common.topbar.rememberAppBarState
 import com.bonobono.presentation.ui.community.BoardDetailScreen
-import com.bonobono.presentation.ui.community.CommunityScreen
 import com.bonobono.presentation.ui.community.BoardWriteScreen
+import com.bonobono.presentation.ui.community.CommunityScreen
 import com.bonobono.presentation.ui.community.GalleryScreen
 import com.bonobono.presentation.ui.community.views.board.CommonPostListView
-import com.bonobono.presentation.ui.community.views.comment.WriteCommentView
-import com.bonobono.presentation.ui.common.button.CommunityFloatingActionButton
-import com.bonobono.presentation.ui.common.button.HomeFloatingActionButton
 import com.bonobono.presentation.ui.game.GameScreen
 import com.bonobono.presentation.ui.game.QuizScreen
 import com.bonobono.presentation.ui.main.EncyclopediaScreen
@@ -87,10 +86,7 @@ fun MainScreen() {
         floatingActionButton = {
             when (currentRoute) {
                 NavigationRouteName.MAIN_HOME -> {
-                    MainFloatingActionButtons(
-                        navController = navController,
-                        currentRoute = currentRoute
-                    )
+                    MainFloatingActionButtons(navController)
                 }
 
                 NavigationRouteName.COMMUNITY_FREE -> {
@@ -124,7 +120,7 @@ fun MainScreen() {
 }
 
 @Composable
-fun MainFloatingActionButtons(navController: NavHostController, currentRoute: String?) {
+fun MainFloatingActionButtons(navController: NavController) {
     val fabItems = listOf(
         MainFab.MISSION,
         MainFab.ENCYCLOPEDIA,
@@ -135,12 +131,7 @@ fun MainFloatingActionButtons(navController: NavHostController, currentRoute: St
         verticalArrangement = Arrangement.Bottom
     ) {
         fabItems.forEach { item ->
-            HomeFloatingActionButton(icon = item.icon, title = item.title) {
-                NavigationUtils.navigate(
-                    navController, item.route,
-                    navController.graph.startDestinationRoute
-                )
-            }
+            HomeFloatingActionButton(navController = navController, item = item)
             Spacer(modifier = Modifier.height(16.dp))
         }
     }
@@ -178,6 +169,7 @@ fun MainBottomNavigationBar(navController: NavHostController, currentRoute: Stri
     }
 
     NavigationBar(
+        tonalElevation = 0.dp,
         modifier = Modifier.graphicsLayer {
             shape = RoundedCornerShape(
                 topStart = 16.dp,
@@ -186,7 +178,6 @@ fun MainBottomNavigationBar(navController: NavHostController, currentRoute: Stri
             clip = true
             shadowElevation = 20f
         },
-        containerColor = White,
     ) {
         bottomNavigationItems.forEach { item ->
             NavigationBarItem(
@@ -219,7 +210,6 @@ fun parseCommunityRoute(route: String): String {
 }
 
 
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun MainNavigationScreen(
     innerPaddings: PaddingValues,
@@ -284,7 +274,6 @@ fun MainNavigationScreen(
         ) {
             CameraScreen()
         }
-        // TODO("커뮤니티 글쓰기 TEST")
         composable(
             route = NavigationRouteName.GALLERY
         ) {
@@ -321,17 +310,17 @@ fun MainNavigationScreen(
         composable(
             route = CommunityFab.FREE.route
         ) {
-            BoardWriteScreen(navController = navController)
+            BoardWriteScreen(type = COMMUNITY_FREE, navController = navController)
         }
         composable(
             route = CommunityFab.WITH.route
         ) {
-            BoardWriteScreen(navController = navController)
+            BoardWriteScreen(type = COMMUNITY_WITH, navController = navController)
         }
         composable(
             route = CommunityFab.REPORT.route
         ) {
-            BoardWriteScreen(navController = navController)
+            BoardWriteScreen(type = COMMUNITY_REPORT, navController = navController)
         }
 
         communityNavigation(navController = navController)

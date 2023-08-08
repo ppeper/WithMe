@@ -3,6 +3,7 @@ package com.bonobono.domain.repository.community
 import com.bonobono.domain.model.NetworkResult
 import com.bonobono.domain.model.community.Article
 import com.bonobono.domain.model.community.Comment
+import java.io.File
 
 interface CommunityRepository {
     // 게시글 전체 목록 가져오기
@@ -10,7 +11,7 @@ interface CommunityRepository {
     // 해당 게시글 가져오기
     suspend fun getArticleById(type: String, articleId: Int): NetworkResult<Article>
     // 일반 게시글 작성
-    suspend fun writeArticle(type: String, article: Article, images: String)
+    suspend fun writeArticle(type: String, images: List<String>?, article: Article): NetworkResult<Unit>
     // 게시글 삭제
     suspend fun deleteArticle(type: String, articleId: Int)
     // 게시글 수정

@@ -1,5 +1,6 @@
 package com.bonobono.data.remote
 
+import com.bonobono.data.model.community.request.ArticleRequest
 import com.bonobono.data.model.community.request.CommentRequest
 import com.bonobono.domain.model.NetworkResult
 import com.bonobono.domain.model.community.Article
@@ -35,9 +36,9 @@ interface CommunityService {
     @POST("community/{type}")
     suspend fun writeArticle(
         @Path(value = "type") communityType: String,
-        article: Article,
-        @Part images: MultipartBody.Part
-    ): Unit
+        @Part images: List<MultipartBody.Part>?,
+        @Part("requestDto") article: ArticleRequest,
+    ): NetworkResult<Unit>
 
     // 게시글 삭제
     @DELETE("community/{type}/{articleId}")

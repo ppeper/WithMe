@@ -1,7 +1,6 @@
 package com.bonobono.presentation.ui.community
 
 import android.util.Log
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,13 +19,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
@@ -35,14 +33,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -82,8 +77,8 @@ import com.bonobono.presentation.ui.theme.TextGray
 import com.bonobono.presentation.ui.theme.White
 import com.bonobono.presentation.utils.DateUtils
 import com.bonobono.presentation.utils.rememberImeState
+import com.bonobono.presentation.viewmodel.CommentViewModel
 import com.bonobono.presentation.viewmodel.CommunityViewModel
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -100,15 +95,16 @@ fun BoardDetailScreen(
     val scrollState = rememberLazyListState()
     val articleState by communityViewModel.articleDetailState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(key1 = imeState.value) {
-        if (imeState.value) {
-            scrollState.animateScrollToItem(scrollState.layoutInfo.totalItemsCount - 1)
-        }
-    }
+//    LaunchedEffect(key1 = imeState.value) {
+//        if (imeState.value) {
+//            scrollState.animateScrollToItem(scrollState.layoutInfo.totalItemsCount - 1)
+//        }
+//    }
 
 
     // 게시글 정보 불러오기
     LaunchedEffect(Unit) {
+        Log.d("TEST", "BoardDetailScreen: 게시글 데이터")
         communityViewModel.getArticleById(type, articleId)
     }
     when (articleState) {
@@ -117,75 +113,15 @@ fun BoardDetailScreen(
         }
 
         is NetworkResult.Success -> {
-            val article = (articleState as NetworkResult.Success<Article>).data
-            val comments by remember { mutableStateOf(article.comments) }
-            Box(
-                modifier = modifier.fillMaxSize()
-                    .background(color = White)
-            ) {
-                LazyColumn(
-                    modifier = modifier.fillMaxSize()
-                ) {
-                    item {
-                        Column(
-                            modifier = modifier
-                                .fillMaxSize()
-                                .then(modifier.padding(16.dp)),
-                            verticalArrangement = Arrangement.spacedBy(16.dp)
-                        ) {
 
-                            WriterView(type = type, communityViewModel = communityViewModel, article = article)
-
-                            Text(
-                                text = article.title,
-                                style = TextStyle(
-                                    fontSize = 20.sp,
-                                    fontWeight = FontWeight(700),
-                                    color = Black_100,
-                                )
-                            )
-                            Text(
-                                text = article.content,
-                                style = TextStyle(
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight(400),
-                                    color = Black_100,
-                                )
-                            )
-                            if (article.images.isNotEmpty()) {
-                                MultipleImageView(images = article.images)
-                            }
-                            Text(
-                                text = "조회수 ${article.views}",
-                                style = TextStyle(
-                                    fontSize = 12.sp,
-                                    color = TextGray,
-                                    textAlign = TextAlign.Center,
-                                )
-                            )
-                        }
-                        // 게시글 좋아요 추가
-                        LikeAndCommentView(article = article) {
-                            communityViewModel.updateArticleLike(type, articleId)
-                        }
-                    }
-                    if (article.comments.isEmpty()) {
-                        item {
-                            NoCommentView()
-                        }
-                    } else {
-                        items(comments) {
-                            CommentView(comments = it)
-                        }
-                    }
-                }
-            }
         }
 
         is NetworkResult.Error -> {
             // TODO("테스트 용")
             val article = dummyArticle
             var comments by remember { mutableStateOf(article.comments) }
+            var isTextFieldFocused by remember { mutableStateOf(false) }
+            val commentViewModel: CommentViewModel = hiltViewModel()
             Scaffold(
                 bottomBar = {
                     WriteCommentView(
@@ -193,21 +129,34 @@ fun BoardDetailScreen(
                         type = type,
                         articleId = article.articleId,
                         onWriteCommentClicked = { comment ->
-                            Log.d("게시글 댓글 작성", "BoardDetailScreen: $comment")
-                            comments = comments.toMutableList().apply { add(comment) }
+                            // 대 댓글 작성
+                            if (comment.parentCommentId != null) {
+                                val index = comments.indexOfFirst { it.id == comment.parentCommentId }
+                                if (index != -1) {
+                                    comments = comments.apply {
+                                        comments[index].childComments = comments[index].childComments.toMutableList().apply { add(comment) }.toList()
+                                    }.toList()
+                                }
+                            } else {
+                                comments = comments.toMutableList().apply { add(comment) }.toList()
+                            }
+                        },
+                        onFocusChanged = {
+                            isTextFieldFocused = !isTextFieldFocused
                         }
                     )
                 }
             ) {
                 Box(
-                    modifier = modifier.fillMaxSize()
+                    modifier = modifier
+                        .fillMaxSize()
                         .background(color = White)
                         .padding(it)
                         .pointerInput(Unit) {
                             detectTapGestures {
-                                if (imeState.value) {
-                                    keyboardController?.hide()
-                                }
+                                keyboardController?.hide()
+                                isTextFieldFocused = !isTextFieldFocused
+                                commentViewModel.setCommentId(-1)
                             }
                         }
                 ) {
@@ -262,9 +211,8 @@ fun BoardDetailScreen(
                         if (article.comments.isEmpty()) {
                             item { NoCommentView() }
                         } else {
-                            Log.d("댓글 리스트 뷰", "$comments")
-                            items(comments) {
-                                CommentView(comments = it)
+                            items(comments, key = { comment -> comment.hashCode()}) { item ->
+                                CommentView(comments = item)
                             }
                         }
                     }
@@ -342,7 +290,6 @@ fun LikeAndCommentView(
     article: Article,
     onLikeClick: () -> Unit,
 ) {
-    // TODO("유저가 게시글 좋아요 눌렀는지 기본 세팅값 필요")
     var likeState by rememberSaveable { mutableStateOf(article.liked) }
     var likeCntState by rememberSaveable { mutableStateOf(article.likes) }
     var commentCntState by rememberSaveable { mutableStateOf(article.commentCnt) }

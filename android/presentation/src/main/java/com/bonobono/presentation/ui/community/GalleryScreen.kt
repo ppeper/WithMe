@@ -1,7 +1,7 @@
 package com.bonobono.presentation.ui.community
 
+import android.content.ContentUris
 import android.provider.MediaStore
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -17,7 +17,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -59,7 +58,6 @@ data class Photo(
     val isVisible: Boolean = true
 )
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GalleryScreen(
     modifier: Modifier = Modifier,
@@ -244,16 +242,12 @@ private fun loadPhotos(): List<Photo> {
     )
 
     cursor?.use { cursor ->
-        val nameColumnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME)
-        val dataColumnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
-
+        val idColumnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
         while (cursor.moveToNext()) {
-            val imageName = cursor.getString(nameColumnIndex)
-            val imageData = cursor.getString(dataColumnIndex)
-            Log.d(TAG, "loadPhotos: $imageName")
-            // 이미지 데이터를 사용하여 필요한 작업 수행
+            val imageId = cursor.getLong(idColumnIndex)
+            val contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, imageId)
             photos.add(Photo().apply {
-                url = imageData
+                url = contentUri.toString()
             })
         }
     }

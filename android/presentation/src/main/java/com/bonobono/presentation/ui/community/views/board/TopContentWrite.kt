@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.theme.Black_100
+import com.bonobono.presentation.ui.theme.PrimaryBlue
 import com.bonobono.presentation.ui.theme.TextGray
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -24,6 +25,7 @@ import com.bonobono.presentation.ui.theme.TextGray
 fun TopContentWrite(
     title: String = "",
     navController: NavController,
+    completeButtonState: Boolean,
     onCompleteClick: () -> Unit
 ) {
     CenterAlignedTopAppBar(
@@ -48,19 +50,19 @@ fun TopContentWrite(
         },
         actions = {
             TextButton(
-                // TODO("서버로 게시글 등록하기")
                 onClick = { onCompleteClick() },
                 colors = ButtonDefaults.textButtonColors(
-                    contentColor = Black_100,
+                    contentColor = PrimaryBlue,
                     disabledContentColor = TextGray
-                )
+                ),
+                enabled = completeButtonState
             ) {
                 Text(
                     text = "완료",
                     style = TextStyle(
                         fontSize = 14.sp,
                         lineHeight = 18.sp,
-                        fontWeight = FontWeight(400),
+                        fontWeight = FontWeight(700),
                     ),
                 )
             }

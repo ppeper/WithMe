@@ -16,8 +16,15 @@ class CommentViewModel @Inject constructor(
     private val writeComment: WriteCommentUseCase
 ): ViewModel() {
 
+    private val _commentId = MutableStateFlow(-1)
+    val commentId = _commentId.asStateFlow()
+
     private val _commentState = MutableStateFlow<NetworkResult<Comment>>(NetworkResult.Loading)
     val commentState = _commentState.asStateFlow()
+
+    fun setCommentId(id: Int) = viewModelScope.launch {
+        _commentId.value = id
+    }
 
     fun writeComment(type: String, articleId: Int, comment: Comment) = viewModelScope.launch {
         _commentState.value = NetworkResult.Loading

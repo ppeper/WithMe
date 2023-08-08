@@ -28,6 +28,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -108,9 +110,8 @@ fun BoardItemView(
     article: Article,
     navController: NavController
 ) {
+    val createDateState by rememberSaveable { mutableStateOf(DateUtils.dateToString(article.createdDate)) }
     Card(
-        modifier = modifier
-            .fillMaxWidth(),
         elevation = CardDefaults.cardElevation(4.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.White
@@ -122,9 +123,10 @@ fun BoardItemView(
     ) {
         Row(
             modifier = modifier
-                .padding(horizontal = 16.dp)
                 .fillMaxWidth()
-                .height(136.dp),
+                .height(136.dp)
+                .background(White)
+                .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -194,7 +196,7 @@ fun BoardItemView(
                     )
                     // 업로드 시간
                     Text(
-                        text = DateUtils.dateToString(article.createdDate),
+                        text = createDateState,
                         style = TextStyle(
                             fontSize = 10.sp,
                             fontWeight = FontWeight(400),

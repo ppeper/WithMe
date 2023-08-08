@@ -1,6 +1,7 @@
 package com.bonobono.data.mapper
 
 import com.bonobono.data.BuildConfig
+import com.bonobono.data.model.community.request.ArticleRequest
 import com.bonobono.data.model.community.request.CommentRequest
 import com.bonobono.data.model.community.response.ArticleDetailResponse
 import com.bonobono.data.model.community.response.ArticleResponse
@@ -9,6 +10,7 @@ import com.bonobono.data.model.community.response.ImageResponse
 import com.bonobono.domain.model.community.Article
 import com.bonobono.domain.model.community.Comment
 import com.bonobono.domain.model.community.Image
+import java.time.LocalDateTime
 import java.util.Date
 
 fun ArticleResponse.toDomain(): Article {
@@ -25,7 +27,7 @@ fun ArticleResponse.toDomain(): Article {
         recruitStatus = recruitStatus,
         url = url ?: "",
         urlTitle = urlTitle ?: "",
-        createdDate = createdDate ?: Date(),
+        createdDate = createdDate ?: LocalDateTime.now(),
         views = views
     )
 }
@@ -50,8 +52,18 @@ fun ArticleDetailResponse.toDomain(): Article {
     )
 }
 
+fun Article.toModel(): ArticleRequest {
+    return ArticleRequest(
+        title = title,
+        content = content,
+        urlTitle = urlTitle.ifBlank { "" },
+        url = url.ifBlank { "" }
+    )
+}
+
 fun CommentResponse.toDomain(): Comment {
     return Comment(
+        id = id,
         parentCommentId = parentCommentId,
         content = content,
         nickname = nickname,
@@ -65,7 +77,7 @@ fun CommentResponse.toDomain(): Comment {
 
 fun Comment.toModel(): CommentRequest {
     return CommentRequest(
-        parentCommentId = parentCommentId,
+        parentCommentId = id,
         content = content
     )
 }

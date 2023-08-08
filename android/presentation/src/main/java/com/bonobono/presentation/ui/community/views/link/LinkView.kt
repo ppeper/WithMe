@@ -1,10 +1,12 @@
 package com.bonobono.presentation.ui.community.views.link
 
 import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -47,6 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.bonobono.domain.model.community.Link
@@ -146,11 +150,14 @@ fun LinkView(
 }
 
 @Composable
-fun WebView(url: String) {
+fun WebView(
+    url: String,
+) {
     AndroidView(
         modifier = Modifier.fillMaxSize(),
         factory = { context ->
             WebView(context).apply {
+                webViewClient = WebViewClient()
                 loadUrl(url)
             }
         }
@@ -171,7 +178,10 @@ fun LinkImageTitle(
         border = BorderStroke(1.dp, color = DividerGray),
         colors = CardDefaults.cardColors(containerColor = White),
     ) {
-        Row(modifier = Modifier.padding(8.dp),
+        Row(modifier = Modifier.padding(8.dp)
+            .clickable {
+                onIconClicked()
+            },
             verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(

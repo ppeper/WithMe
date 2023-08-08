@@ -209,6 +209,7 @@ object NavigationRouteName {
     const val COMMUNITY_FREE = "free"
     const val COMMUNITY_WITH = "together"
     const val COMMUNITY_REPORT = "report"
+    const val LINK_WEB_VIEW = "link_view"
     // FAB Route
     const val COMMUNITY_POST = "write_free"
     const val COMMUNITY_POST_WITH = "write_with"

@@ -64,6 +64,7 @@ import com.bonobono.domain.model.community.Article
 import com.bonobono.domain.model.community.Image
 import com.bonobono.domain.model.community.Link
 import com.bonobono.presentation.R
+import com.bonobono.presentation.ui.NavigationRouteName
 import com.bonobono.presentation.ui.community.util.DummyData.dummyArticle
 import com.bonobono.presentation.ui.community.util.boardDetailLaunchEffect
 import com.bonobono.presentation.ui.community.views.board.DropDownMenuView
@@ -86,6 +87,8 @@ import com.bonobono.presentation.utils.rememberImeState
 import com.bonobono.presentation.viewmodel.CommentViewModel
 import com.bonobono.presentation.viewmodel.CommunityViewModel
 import kotlinx.coroutines.launch
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -98,7 +101,6 @@ fun BoardDetailScreen(
 ) {
     boardDetailLaunchEffect(navController = navController)
     val imeState = rememberImeState()
-    var isWebViewOn by remember { mutableStateOf(false) }
     val keyboardController = LocalSoftwareKeyboardController.current
     val scrollState = rememberLazyListState()
     val articleState by communityViewModel.articleDetailState.collectAsStateWithLifecycle()
@@ -140,10 +142,6 @@ fun BoardDetailScreen(
             }
             // Meta Url 파싱 완료
             if (metaLink.isSuccess) {
-
-                if (isWebViewOn) {
-                    WebView(url = metaLink.url)
-                }
 
                 Scaffold(
                     bottomBar = {
@@ -223,7 +221,8 @@ fun BoardDetailScreen(
                                             link = metaLink,
                                             R.drawable.ic_go
                                         ) {
-                                            isWebViewOn = true
+                                            val encodedUrl = URLEncoder.encode(metaLink.url, StandardCharsets.UTF_8.toString())
+                                            navController.navigate("${NavigationRouteName.LINK_WEB_VIEW}/$encodedUrl")
                                         }
                                     }
                                     Text(

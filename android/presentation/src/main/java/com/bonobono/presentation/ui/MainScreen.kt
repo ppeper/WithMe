@@ -46,6 +46,7 @@ import com.bonobono.presentation.ui.community.BoardWriteScreen
 import com.bonobono.presentation.ui.community.CommunityScreen
 import com.bonobono.presentation.ui.community.GalleryScreen
 import com.bonobono.presentation.ui.community.views.board.CommonPostListView
+import com.bonobono.presentation.ui.community.views.link.WebView
 import com.bonobono.presentation.ui.game.GameScreen
 import com.bonobono.presentation.ui.game.QuizScreen
 import com.bonobono.presentation.ui.main.EncyclopediaScreen
@@ -326,7 +327,7 @@ fun MainNavigationScreen(
         communityNavigation(navController = navController)
 
         composable(
-            route = "${BoardDetailNav.route}/{type}/{articleId}",
+            route = "${BoardDetailNav.route}/{type}/{articleId}"
         ) {
             val type = it.arguments?.getString("type")
             val articleId = it.arguments?.getString("articleId")
@@ -336,6 +337,14 @@ fun MainNavigationScreen(
                     articleId = articleId.toInt(),
                     navController = navController
                 )
+            }
+        }
+        composable(
+            route = "${NavigationRouteName.LINK_WEB_VIEW}/{url}"
+        ) {
+            val linkUrl = it.arguments?.getString("url")
+            linkUrl?.let { url ->
+                WebView(url = url)
             }
         }
         // 마이페이지

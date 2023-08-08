@@ -33,11 +33,10 @@ import com.bonobono.presentation.ui.common.text.CustomTextStyle
 import com.bonobono.presentation.ui.main.component.CircularProgressBar
 import com.bonobono.presentation.ui.main.component.LargeSquareCardWithAnimation
 import com.bonobono.presentation.ui.main.component.LinearProgressBar
-import com.bonobono.presentation.ui.main.component.LottieLoader
+import com.bonobono.presentation.ui.common.LottieLoader
 import com.bonobono.presentation.ui.main.component.ProfilePhoto
 import com.bonobono.presentation.ui.theme.LightGray
 import com.bonobono.presentation.ui.theme.White
-import com.bonobono.presentation.utils.NavigationUtils
 import com.bonobono.presentation.viewmodel.MissionViewModel
 
 @Composable

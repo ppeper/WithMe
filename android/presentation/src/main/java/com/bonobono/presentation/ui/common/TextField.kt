@@ -136,38 +136,3 @@ fun ProfileEditTextField(
 //        readOnly = readOnly,
 //        onValueChange = onValueChange)
 }
-
-@Composable
-fun GameTextFieldWithButton(
-    value: String,
-    onValueChange: (String) -> Unit,
-    buttonTxt: String,
-    action: () -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(12.dp),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        OutlinedTextField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(0.dp, 0.dp, 16.dp, 0.dp)
-                .weight(3f),
-            value = value,
-            onValueChange = onValueChange,
-            textStyle = CustomTextStyle.quizContentStyle
-        )
-        Button(modifier = Modifier
-            .fillMaxWidth()
-            .weight(1f),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = PrimaryBlue
-            ),
-            onClick = { action }) {
-            Text(text = "확인", style = CustomTextStyle.quizContentStyle)
-        }
-    }
-}

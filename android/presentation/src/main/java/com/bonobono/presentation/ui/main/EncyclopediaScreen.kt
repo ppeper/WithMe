@@ -45,6 +45,7 @@ fun EncyclopediaScreen() {
         Modifier
 
     ) {
+        // 현재 대표 동물 이미지로 
         AnimatedProfile(profileImage = R.drawable.beluga_whale, source = R.raw.animation_card)
         CurInformation()
         Spacer(modifier = Modifier.size(12.dp))
@@ -81,9 +82,6 @@ fun CurInformation() {
 
 @Composable
 fun Characters() {
-    val temp = listOf<Int>(
-        1, 2, 3, 4, 5, 6, 7, 8, 9, 10
-    )
     val characterList = listOf<Character>(
         Character.AMMONITE,
         Character.BELUGA,

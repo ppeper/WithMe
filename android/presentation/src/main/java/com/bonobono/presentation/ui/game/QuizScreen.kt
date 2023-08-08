@@ -28,9 +28,8 @@ import com.bonobono.domain.model.mission.Mission
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.game.component.PromptOXButtonRow
 import com.bonobono.presentation.ui.game.component.QuizPromptBox
-import com.bonobono.presentation.ui.main.component.GifLoader
+import com.bonobono.presentation.ui.common.GifLoader
 import com.bonobono.presentation.viewmodel.MissionViewModel
-import kotlin.math.log
 
 private const val TAG = "QuizScreen"
 

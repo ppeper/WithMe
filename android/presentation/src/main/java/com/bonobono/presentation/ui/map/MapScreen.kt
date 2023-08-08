@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.BottomSheetScaffoldState
 import androidx.compose.material3.Button
@@ -60,6 +61,7 @@ import com.naver.maps.map.compose.Marker
 import com.naver.maps.map.compose.MarkerState
 import com.naver.maps.map.compose.NaverMap
 import com.naver.maps.map.compose.rememberCameraPositionState
+import com.naver.maps.map.compose.rememberFusedLocationSource
 import com.naver.maps.map.overlay.OverlayImage
 import kotlinx.coroutines.launch
 import java.util.Date
@@ -73,6 +75,9 @@ fun MainMapScreen(navController: NavHostController) {
     BottomSheetScaffold(
         scaffoldState = scaffoldState,
         sheetPeekHeight = 60.dp,
+        containerColor = White,
+        sheetShadowElevation = 0.dp,
+        sheetTonalElevation = 0.dp,
         sheetContent = {
             Box(
                 Modifier
@@ -153,14 +158,17 @@ fun MapScreen(
         )
     }
 
+    val locationSource = rememberFusedLocationSource()
+
     Box(Modifier.fillMaxSize()) {
-        NaverMap(cameraPositionState = cameraPositionState, uiSettings = mapUiSettings) {
+        NaverMap(cameraPositionState = cameraPositionState, uiSettings = mapUiSettings, locationSource = locationSource) {
             MapMarkers(
                 locations = locations,
                 scaffoldState = scaffoldState,
                 cameraPositionState = cameraPositionState,
                 locationTitle = locationTitle
             )
+
         }
         Column {
             MapChips(locations = locations, cameraPositionState = cameraPositionState, locationName = locationTitle)
@@ -231,6 +239,7 @@ fun MapChips(locations: List<Location>, cameraPositionState: CameraPositionState
             ElevatedFilterChip(
                 modifier = Modifier.padding(4.dp),
                 selected = false,
+                elevation = FilterChipDefaults.elevatedFilterChipElevation(1.dp),
                 onClick = {
                     locationName.value = item.locationName
                     cameraPositionState.position =
@@ -245,7 +254,6 @@ fun MapChips(locations: List<Location>, cameraPositionState: CameraPositionState
         }
     }
 }
-
 
 @Composable
 fun BottomSheetRankingContent() {

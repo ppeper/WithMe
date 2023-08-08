@@ -2,12 +2,10 @@ package com.bonobono.presentation.ui.map
 
 import android.util.Log
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,7 +24,7 @@ import com.bonobono.presentation.ui.game.component.ARTextBox
 import com.bonobono.presentation.ui.game.component.PromptInputRow
 import com.bonobono.presentation.ui.game.component.PromptOXButtonRow
 import com.bonobono.presentation.ui.game.component.PromptTwoButtonRow
-import com.bonobono.presentation.ui.main.component.GifLoader
+import com.bonobono.presentation.ui.common.GifLoader
 import com.google.ar.core.Config
 import com.ujizin.camposer.CameraPreview
 import com.ujizin.camposer.state.CamSelector
@@ -70,13 +68,16 @@ fun CameraScreen() {
 
     var chapter by remember { mutableStateOf(0) }
     var prompt by remember { mutableStateOf(promptsList[0]) }
+    var inputName by remember {
+        mutableStateOf("")
+    }
 
     Surface(
         modifier = Modifier.fillMaxSize(),
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             val currentModel = remember {
-                mutableStateOf("egg")
+                mutableStateOf("dolphin_animated")
             }
             if(chapter >= 2) {
                 AnimationScreen(modifier = Modifier.fillMaxSize(), prompt.animation)
@@ -94,8 +95,11 @@ fun CameraScreen() {
                 if (chapter == 3) {
                     PromptInputRow(
                         modifier = Modifier.padding(4.dp),
-                        value = "이름을 입력해주세요.",
-                        onValueChange = {},
+                        value = inputName,
+                        hint = "이름을 입력하세요..",
+                        onValueChange = { newValue ->
+                            inputName = newValue
+                        },
                         prompt.rightButtonContent
                     )
                 } else if (chapter == 2) {
@@ -193,7 +197,8 @@ fun AnimationScreen(modifier: Modifier, source: Int) {
         ) {
             GifLoader(modifier = Modifier
                 .fillMaxWidth()
-                .height(270.dp).padding(bottom = 64.dp)
+                .height(270.dp)
+                .padding(bottom = 64.dp)
                 .align(Alignment.Center), source = source)
         }
     }

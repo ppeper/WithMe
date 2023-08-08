@@ -17,7 +17,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -36,7 +35,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.common.CancelButton
@@ -49,8 +47,8 @@ import com.bonobono.presentation.ui.game.component.GamePromptBox
 import com.bonobono.presentation.ui.game.component.LongPressDraggable
 import com.bonobono.presentation.ui.game.component.PromptTwoButtonRow
 import com.bonobono.presentation.ui.game.component.QuizPromptBox
-import com.bonobono.presentation.ui.main.component.GifLoader
-import com.bonobono.presentation.ui.main.component.LottieLoader
+import com.bonobono.presentation.ui.common.GifLoader
+import com.bonobono.presentation.ui.common.LottieLoader
 import com.bonobono.presentation.ui.theme.White
 import kotlinx.coroutines.delay
 

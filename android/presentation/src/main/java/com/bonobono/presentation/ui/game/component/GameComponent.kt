@@ -19,11 +19,6 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
@@ -33,13 +28,12 @@ import androidx.compose.ui.unit.sp
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.common.SubmitButton
 import com.bonobono.presentation.ui.common.text.CustomTextStyle
-import com.bonobono.presentation.ui.main.component.GifLoader
-import com.bonobono.presentation.ui.main.component.LottieLoader
+import com.bonobono.presentation.ui.common.GifLoader
+import com.bonobono.presentation.ui.common.LottieLoader
 import com.bonobono.presentation.ui.theme.Green
 import com.bonobono.presentation.ui.theme.LightGray
 import com.bonobono.presentation.ui.theme.Red
 import com.bonobono.presentation.ui.theme.White
-import kotlinx.coroutines.delay
 
 
 @Composable
@@ -120,7 +114,7 @@ fun ARTextBox(
                 shape = RoundedCornerShape(topEnd = 10.dp, topStart = 10.dp)
             )
             .fillMaxWidth()
-            .fillMaxHeight(0.3f)
+            .fillMaxHeight(0.4f)
             .padding(12.dp),
     ) {
         Text(text = name, style = CustomTextStyle.quizTitleStyle)
@@ -190,6 +184,7 @@ fun PromptOXButtonRow(
 fun PromptInputRow(
     modifier: Modifier,
     value: String,
+    hint: String,
     onValueChange: (String) -> Unit,
     submitButton: String
 ) {
@@ -211,6 +206,7 @@ fun PromptInputRow(
                     text = "정답을 입력하세요..",
                     style = CustomTextStyle.quizContentStyle.copy(color = LightGray)
                 )
+                Text(text = hint, style = CustomTextStyle.quizContentStyle.copy(color = LightGray))
             },
             textStyle = CustomTextStyle.quizContentStyle
         )

@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.bonobono.domain.model.map.Campaign
 import com.bonobono.presentation.R
+import com.bonobono.presentation.ui.common.LottieLoader
 import com.bonobono.presentation.ui.common.button.PrimaryButton
 import com.bonobono.presentation.ui.common.text.CustomTextStyle
 import com.bonobono.presentation.ui.theme.White
@@ -123,8 +124,7 @@ fun CampaignCard(modifier: Modifier = Modifier, campaign: Campaign) {
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(4.dp)
-            .zIndex(1f),
+            .padding(4.dp),
         elevation = CardDefaults.cardElevation(4.dp),
         colors = CardDefaults.cardColors(White)
     ) {

@@ -4,6 +4,6 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class MemberNicknameRequest (
-    val nickname : String
-) : Parcelable
+data class RoleRequest(
+    val role: String
+) :Parcelable

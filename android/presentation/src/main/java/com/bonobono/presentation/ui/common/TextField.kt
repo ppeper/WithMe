@@ -103,11 +103,12 @@ fun BasicTextField(
 }
 
 @Composable
-fun PasswordTextField(
+fun SupportTxtTextField(
     value: String,
     hint: String,
     keyboardType: KeyboardType,
     supportingText : String,
+    enable : Boolean,
     onValueChange: (String) -> Unit
 ) {
     val visualTransformation = if (keyboardType == KeyboardType.Password) {
@@ -141,7 +142,7 @@ fun PasswordTextField(
         supportingText = { Text(text = supportingText,
             style = TextStyle(
                 fontSize = 10.sp,
-                color = if(supportingText == "일치하지 않습니다") Red else Green
+                color = if(enable) Green else Red
             )
         )},
         visualTransformation = visualTransformation
@@ -155,6 +156,7 @@ fun TextFieldWithButton(
     @StringRes buttonTxt: Int,
     hint: String,
     keyboardType : KeyboardType,
+    enable : Boolean,
     action: () -> Unit
 ) {
     Row(
@@ -193,9 +195,10 @@ fun TextFieldWithButton(
             .fillMaxWidth()
             .weight(1f),
             colors = ButtonDefaults.buttonColors(
-                containerColor = PrimaryBlue
+                containerColor = if(enable) PrimaryBlue else LightGray
             ),
             shape = RoundedCornerShape(6.dp),
+            enabled = enable,
             onClick = { action }) {
             Text(
                 text = stringResource(buttonTxt),

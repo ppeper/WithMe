@@ -26,7 +26,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.common.BasicTextField
-import com.bonobono.presentation.ui.common.PasswordTextField
+import com.bonobono.presentation.ui.common.SupportTxtTextField
 import com.bonobono.presentation.ui.common.TextFieldWithButton
 import com.bonobono.presentation.ui.common.button.PrimaryColorButton
 import com.bonobono.presentation.ui.common.text.CustomTextStyle
@@ -43,6 +43,8 @@ fun JoinScreen(navController: NavController) {
     val viewModel: SignUpViewModel = viewModel()
     val buttonEnabled = viewModel.checkAllAllowed
     val buttonColor = if (buttonEnabled) PrimaryBlue else viewModel.buttonColor
+    val userNameBtnEnabled = viewModel.checkUserNameValid
+    val passwordEnabled = viewModel.checkPwdValid
 
     LaunchedEffect(key1 = Unit) {
         SettingScreen.buttons
@@ -108,6 +110,7 @@ fun JoinScreen(navController: NavController) {
                 onValueChange = { userName -> viewModel.updateUserName(userName) },
                 hint = "아이디",
                 keyboardType = KeyboardType.Text,
+                enable = !userNameBtnEnabled,
                 buttonTxt = R.string.login_check_availability
             ) {
                 viewModel.checkUserName()
@@ -119,10 +122,11 @@ fun JoinScreen(navController: NavController) {
                 keyboardType = KeyboardType.Password
             ) { password -> viewModel.updatePassword(password) }
             Spacer(modifier = Modifier.height(8.dp))
-            PasswordTextField(
+            SupportTxtTextField(
                 value = viewModel.passwordCheck,
                 hint = "비밀번호 확인",
-                supportingText = "",
+                supportingText = viewModel.passwordSupportTxt,
+                enable = passwordEnabled,
                 keyboardType = KeyboardType.Password
             ) { passwordChk -> viewModel.updatePasswordCheck(passwordChk) }
             Spacer(modifier = Modifier.height(8.dp))
@@ -131,20 +135,23 @@ fun JoinScreen(navController: NavController) {
                 onValueChange = { phoneNum -> viewModel.updatePhoneNum(phoneNum) },
                 buttonTxt = R.string.login_phonenum_check_send,
                 keyboardType = KeyboardType.Phone,
+                enable = true,
                 hint = "휴대폰 번호"
             ) {
-
+                viewModel.checkPhoneValidation()
             }
             Spacer(modifier = Modifier.height(8.dp))
-            BasicTextField(
+            SupportTxtTextField(
                 value = viewModel.validationCode,
                 hint = "인증번호",
                 onValueChange = { validationCode -> viewModel.updateValidationCode(validationCode) },
+                supportingText = "",
+                enable = true,
                 keyboardType = KeyboardType.Number,
             )
             Spacer(modifier = Modifier.height(32.dp))
             PrimaryColorButton(text = R.string.login_join, enabled = buttonEnabled, backgroundColor = buttonColor) {
-
+                viewModel.doSignUP()
             }
         }
     }

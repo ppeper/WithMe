@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class MemberLoginRequest (
-    val username : String,
-    val password : String
+data class TokenRequest(
+    val accessToken: String,
+    val refreshToken: String
 ) : Parcelable

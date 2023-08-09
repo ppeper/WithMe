@@ -46,7 +46,7 @@ fun PrimaryColorButton(
         ),
         shape = RoundedCornerShape(6.dp),
         enabled = enabled,
-        onClick = { action }) {
+        onClick = action) {
         Text(text = stringResource(text),
             style = primaryColorBtnText,
             modifier = Modifier.padding(vertical = 6.dp))

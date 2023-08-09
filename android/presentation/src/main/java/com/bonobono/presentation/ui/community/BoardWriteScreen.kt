@@ -1,13 +1,9 @@
 package com.bonobono.presentation.ui.community
 
 import android.Manifest
-import android.content.Intent
 import android.net.Uri
 import android.os.Build
-import android.provider.Settings
 import android.util.Log
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,7 +13,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -42,14 +37,15 @@ import androidx.navigation.compose.rememberNavController
 import com.bonobono.domain.model.NetworkResult
 import com.bonobono.domain.model.community.Article
 import com.bonobono.presentation.ui.CommunityFab
+import com.bonobono.presentation.ui.NavigationRouteName
 import com.bonobono.presentation.ui.common.CheckCountDialog
-import com.bonobono.presentation.ui.common.PermissionDialog
 import com.bonobono.presentation.ui.community.util.routeMapper
 import com.bonobono.presentation.ui.community.util.textMapper
 import com.bonobono.presentation.ui.community.views.board.BoardWriteBottomView
-import com.bonobono.presentation.ui.community.views.link.LinkView
-import com.bonobono.presentation.ui.community.views.gallery.PhotoSelectedListView
 import com.bonobono.presentation.ui.community.views.board.TopContentWrite
+import com.bonobono.presentation.ui.community.views.gallery.PhotoSelectedListView
+import com.bonobono.presentation.ui.community.views.link.LinkView
+import com.bonobono.presentation.ui.community.views.map.SelectedMapView
 import com.bonobono.presentation.ui.theme.Black_100
 import com.bonobono.presentation.ui.theme.TextGray
 import com.bonobono.presentation.utils.Converter
@@ -74,6 +70,7 @@ fun BoardWriteScreen(
     var contentTextState by rememberSaveable { mutableStateOf("") }
     val previousCount = photoViewModel.selectedPhoto.size
     val writeArticleState by communityViewModel.writeArticleState.collectAsStateWithLifecycle()
+    val mapState by communityViewModel.mapState
 
     val GALLERY_PERMISSIONS = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         listOf(
@@ -84,7 +81,10 @@ fun BoardWriteScreen(
         listOf(Manifest.permission.READ_EXTERNAL_STORAGE)
     }
 
-    val multiplePermissionsState =
+    val galleryPermission =
+        rememberMultiplePermissionsState(permissions = GALLERY_PERMISSIONS)
+
+    val locationPermission =
         rememberMultiplePermissionsState(permissions = GALLERY_PERMISSIONS)
 
     Scaffold(
@@ -130,8 +130,8 @@ fun BoardWriteScreen(
             BoardWriteBottomView(
                 route = route,
                 onPhotoClick = {
-                    multiplePermissionsState.launchMultiplePermissionRequest()
-                    if (multiplePermissionsState.allPermissionsGranted) {
+                    galleryPermission.launchMultiplePermissionRequest()
+                    if (galleryPermission.allPermissionsGranted) {
                         if (previousCount == 10) {
                             showDialog = true
                         } else navController.navigate(routeMapper(navController))
@@ -145,7 +145,13 @@ fun BoardWriteScreen(
 //                        }
                     }
                 },
-                onMapClick = { /* TODO("지도 맵 선택 화면 이동") */ }
+                onMapClick = {
+                    locationPermission.launchMultiplePermissionRequest()
+                    if (galleryPermission.allPermissionsGranted) {
+                        navController.navigate(NavigationRouteName.REPORT_MAP)
+                    } else {
+                    }
+                }
             )
         }
     ) { innerPaddings ->
@@ -227,8 +233,12 @@ fun BoardWriteScreen(
                     // 커뮤니티 별 추가 UI
                     if (route == CommunityFab.WITH.route) {
                         LinkView()
-                    } else if (route == CommunityFab.REPORT.route) {
-
+                    } else  {
+                        mapState?.let {
+                            SelectedMapView(mapState = it) {
+                                communityViewModel.removeMapPosition()
+                            }
+                        }
                     }
                 }
             }

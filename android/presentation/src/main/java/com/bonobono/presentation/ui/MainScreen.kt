@@ -47,6 +47,7 @@ import com.bonobono.presentation.ui.community.CommunityScreen
 import com.bonobono.presentation.ui.community.GalleryScreen
 import com.bonobono.presentation.ui.community.views.board.CommonPostListView
 import com.bonobono.presentation.ui.community.views.link.WebView
+import com.bonobono.presentation.ui.community.views.map.ReportMapView
 import com.bonobono.presentation.ui.game.GameScreen
 import com.bonobono.presentation.ui.game.QuizScreen
 import com.bonobono.presentation.ui.main.EncyclopediaScreen
@@ -65,6 +66,7 @@ import com.bonobono.presentation.ui.theme.White
 import com.bonobono.presentation.utils.NavigationUtils
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import com.naver.maps.map.compose.NaverMapComposable
 
 
 @Composable
@@ -346,6 +348,17 @@ fun MainNavigationScreen(
             linkUrl?.let { url ->
                 WebView(url = url)
             }
+        }
+        composable(
+            route = NavigationRouteName.REPORT_MAP
+        ) {
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry(NavigationRouteName.COMMUNITY_POST_REPORT)
+            }
+            ReportMapView(
+                navController = navController,
+                communityViewModel = hiltViewModel(parentEntry)
+            )
         }
         // 마이페이지
         composable(

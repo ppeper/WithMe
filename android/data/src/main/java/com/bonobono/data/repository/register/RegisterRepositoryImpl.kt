@@ -14,43 +14,42 @@ class RegisterRepositoryImpl @Inject constructor(
     private val registerService: RegisterService
 ) : RegisterRepository {
     override suspend fun updateMember(member: Member): NetworkResult<Member> {
-//        return handleApi { registerService.updateMember(member).toDomain() }?\
-        TODO("Not yet implemented")
+        return handleApi { registerService.updateMember(member).toDomain() }
     }
 
     override suspend fun updatePassword(password: Password): NetworkResult<Member> {
-        TODO("Not yet implemented")
+        return handleApi { registerService.passwordChange(password).toDomain() }
     }
 
-    override suspend fun checkUserName(username: String): NetworkResult<String> {
-        TODO("Not yet implemented")
+    override suspend fun checkUserName(username: Member): NetworkResult<String> {
+        return handleApi { registerService.checkUserName(username) }
     }
 
-    override suspend fun checkNickName(nickname: String): NetworkResult<String> {
-        TODO("Not yet implemented")
+    override suspend fun checkNickName(nickname: Member): NetworkResult<String> {
+        return handleApi { registerService.checkNickName(nickname) }
     }
 
     override suspend fun signUp(member: Member): NetworkResult<Member> {
-        TODO("Not yet implemented")
+        return handleApi { registerService.signUp(member).toDomain() }
     }
 
     override suspend fun login(member: Member): NetworkResult<Token> {
-        TODO("Not yet implemented")
+        return handleApi { registerService.login(member).toDomain() }
     }
 
     override suspend fun logout(): NetworkResult<String> {
-        TODO("Not yet implemented")
+        return handleApi { registerService.logout() }
     }
 
     override suspend fun reissue(token: Token): NetworkResult<Token> {
-        TODO("Not yet implemented")
+        return handleApi { registerService.reissue(token).toDomain() }
     }
 
     override suspend fun getMember(): NetworkResult<Member> {
-        TODO("Not yet implemented")
+        return handleApi { registerService.getMember().toDomain() }
     }
 
     override suspend fun deleteMember(): NetworkResult<String> {
-        TODO("Not yet implemented")
+        return handleApi { registerService.deleteMember() }
     }
 }

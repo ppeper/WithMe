@@ -1,22 +1,37 @@
 package com.bonobono.presentation.viewmodel
 
 import android.util.Log
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.bonobono.domain.model.NetworkResult
+import com.bonobono.domain.model.registration.Member
+import com.bonobono.domain.usecase.register.CheckNickNameUseCase
+import com.bonobono.domain.usecase.register.CheckUserNameUseCase
+import com.bonobono.domain.usecase.register.SignUpUseCase
 import com.bonobono.presentation.ui.theme.LightGray
 import com.bonobono.presentation.ui.theme.PrimaryBlue
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
 private const val TAG = "SignUpViewModel"
 
-class SignUpViewModel : ViewModel() {
+@HiltViewModel
+class SignUpViewModel @Inject constructor(
+    private val checkUserNameUseCase: CheckUserNameUseCase,
+    private val checkNickNameUseCase: CheckNickNameUseCase,
+    private val signUpUseCase: SignUpUseCase
+) : ViewModel() {
     var checkPwdValid by mutableStateOf(false)
         private set
     var checkAllAllowed by mutableStateOf(false)
@@ -24,13 +39,10 @@ class SignUpViewModel : ViewModel() {
     var buttonColor by mutableStateOf(LightGray)
         private set
 
-    var checkUserNameValid by mutableStateOf(false)
-        private set
-    var phoneNumValid by mutableStateOf(false)
-        private set
+    private var phoneNumValid by mutableStateOf(false)
+
     var passwordSupportTxt by mutableStateOf("")
         private set
-
     // 아이디 값 입력 및 유효성 확인
     var username by mutableStateOf("")
         private set
@@ -39,9 +51,21 @@ class SignUpViewModel : ViewModel() {
         username = input
     }
 
-    fun checkUserName() {
+    private val _checkUserNameState = MutableStateFlow<String>("test")
 
+
+    val checkUserNameState = _checkUserNameState.asStateFlow()
+    fun checkUserName() = viewModelScope.launch {
+        val member = Member(listOf(), name, nickName, phoneNum, username)
+        
+        _checkUserNameState.emit(checkUserNameUseCase.invoke(member))
+        Log.d(TAG, "checkUserName: ${_checkUserNameState.value}")
+        updateButtonState()
     }
+    // 아이디 중복 확인 여부 판단용
+    var checkUserNameValid by mutableStateOf(_checkUserNameState)
+        private set
+
 
     var name by mutableStateOf("")
         private set
@@ -50,7 +74,6 @@ class SignUpViewModel : ViewModel() {
         name = input
         updateButtonState()
     }
-
 
     var nickName by mutableStateOf("")
         private set
@@ -110,18 +133,22 @@ class SignUpViewModel : ViewModel() {
 
     // 회원가입 정보 전부 기입 및 인증 전부 확인 시 버튼 활성화
     fun updateButtonState() {
-        if (name.isNotBlank() && nickName.isNotBlank() && checkPwdValid && checkUserNameValid && phoneNumValid) {
+        if (name.isNotBlank() && nickName.isNotBlank() && checkPwdValid && checkUserNameValid.value == "SUCCESS" && phoneNumValid) {
             checkAllAllowed = true
             buttonColor = PrimaryBlue
         } else {
             checkAllAllowed = false
             buttonColor = LightGray
         }
+        Log.d(TAG, "updateButtonState: ${checkUserNameValid.value}")
     }
 
-    // 회원가입
-    fun doSignUP() {
 
+    private val _signUpState = MutableStateFlow<NetworkResult<Member>>(NetworkResult.Loading)
+    val signUpState : StateFlow<NetworkResult<Member>> = _signUpState
+
+    fun signUp(member : Member) = viewModelScope.launch {
+        _signUpState.emit(signUpUseCase.invoke(member))
     }
 
 }

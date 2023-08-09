@@ -21,9 +21,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.bonobono.domain.model.registration.Member
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.common.BasicTextField
 import com.bonobono.presentation.ui.common.SupportTxtTextField
@@ -39,11 +41,10 @@ import kotlinx.coroutines.flow.onEach
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
-fun JoinScreen(navController: NavController) {
-    val viewModel: SignUpViewModel = viewModel()
+fun JoinScreen(navController: NavController, viewModel: SignUpViewModel = hiltViewModel()) {
     val buttonEnabled = viewModel.checkAllAllowed
     val buttonColor = if (buttonEnabled) PrimaryBlue else viewModel.buttonColor
-    val userNameBtnEnabled = viewModel.checkUserNameValid
+    val userNameBtnEnabled = viewModel.checkUserNameValid.value == "SUCCESS"
     val passwordEnabled = viewModel.checkPwdValid
 
     LaunchedEffect(key1 = Unit) {
@@ -151,7 +152,7 @@ fun JoinScreen(navController: NavController) {
             )
             Spacer(modifier = Modifier.height(32.dp))
             PrimaryColorButton(text = R.string.login_join, enabled = buttonEnabled, backgroundColor = buttonColor) {
-                viewModel.doSignUP()
+//                viewModel.doSignUP()
             }
         }
     }

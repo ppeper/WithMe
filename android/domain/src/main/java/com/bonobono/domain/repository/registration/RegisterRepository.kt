@@ -13,10 +13,10 @@ interface RegisterRepository {
     suspend fun updatePassword(password : Password): NetworkResult<Member>
 
     // 아이디 중복 확인
-    suspend fun checkUserName(username: String): NetworkResult<String>
+    suspend fun checkUserName(username: Member): NetworkResult<String>
 
     // 닉네임 중복 확인
-    suspend fun checkNickName(nickname : String) : NetworkResult<String>
+    suspend fun checkNickName(nickname : Member) : NetworkResult<String>
 
     // 회원가입
     suspend fun signUp(member : Member) : NetworkResult<Member>

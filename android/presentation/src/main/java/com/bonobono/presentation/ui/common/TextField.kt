@@ -199,7 +199,7 @@ fun TextFieldWithButton(
             ),
             shape = RoundedCornerShape(6.dp),
             enabled = enable,
-            onClick = { action }) {
+            onClick =  action ) {
             Text(
                 text = stringResource(buttonTxt),
                 style = primaryColorBtnText,

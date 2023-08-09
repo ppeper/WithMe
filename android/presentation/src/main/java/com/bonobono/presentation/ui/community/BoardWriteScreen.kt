@@ -100,10 +100,16 @@ fun BoardWriteScreen(
                         title = titleTextState,
                         content = contentTextState,
                     )
-                    if (link.url.isNotBlank()) {
+                    if (link.imageUrl.isNotBlank()) {
                         article = article.copy(
                             url = link.url,
                             urlTitle = link.urlTitle
+                        )
+                    }
+                    mapState?.let {
+                        article = article.copy(
+                            latitude = it.latitude,
+                            longitude = it.longitude
                         )
                     }
                     val photoList = photoViewModel.selectedPhoto.mapNotNull {

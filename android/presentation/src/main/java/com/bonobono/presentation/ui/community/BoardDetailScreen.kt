@@ -137,7 +137,9 @@ fun BoardDetailScreen(
             var metaLink by remember { mutableStateOf(Link()) }
             LaunchedEffect(Unit) {
                 scope.launch {
-                    metaLink = getMetaData(Link(article.url, article.urlTitle))
+                    if (article.url != null && article.urlTitle != null) {
+                        metaLink = getMetaData(Link(article.url!!, article.urlTitle!!))
+                    }
                 }
             }
             // Meta Url 파싱 완료
@@ -216,7 +218,7 @@ fun BoardDetailScreen(
                                     if (article.images.isNotEmpty()) {
                                         MultipleImageView(images = article.images)
                                     }
-                                    if (article.url.isNotEmpty()) {
+                                    article.url?.let {
                                         LinkImageTitle(
                                             link = metaLink,
                                             R.drawable.ic_go

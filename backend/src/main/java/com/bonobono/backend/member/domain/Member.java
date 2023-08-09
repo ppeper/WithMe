@@ -44,6 +44,8 @@ public class Member extends BaseTimeEntity  {
     @Enumerated(EnumType.STRING)
     private Provider provider;
 
+    private String firebaseToken;
+
     @ManyToMany
     @JoinTable(
         name = "role",

@@ -5,6 +5,7 @@ import com.bonobono.backend.community.article.dto.req.ArticleUpdateRequestDto;
 import com.bonobono.backend.community.article.dto.res.ArticleCommentResponseDto;
 import com.bonobono.backend.community.article.dto.res.ArticleDetailResponseDto;
 import com.bonobono.backend.community.article.dto.res.ArticleListResponseDto;
+import com.bonobono.backend.community.article.dto.res.ArticleNoticeResponseDto;
 import com.bonobono.backend.community.article.entity.Article;
 import com.bonobono.backend.community.article.entity.ArticleImage;
 import com.bonobono.backend.community.article.enumclass.ArticleType;
@@ -72,6 +73,15 @@ public class ArticleService {
         articleRepository.updateView(articleId);
         List<ArticleCommentResponseDto> comments = articleCommentService.findByArticleId(member, articleId);
         return new ArticleDetailResponseDto(article, member, comments);
+    }
+
+    // 공지사항 조회
+    @Transactional
+    public ArticleNoticeResponseDto findNoticeById(ArticleType type, Member member, Long articleId){
+        Article article = articleRepository.findByIdAndType(articleId, type)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id =" + articleId));
+        articleRepository.updateView(articleId);
+        return new ArticleNoticeResponseDto(article, member);
     }
 
     // 게시글 특정 글 수정

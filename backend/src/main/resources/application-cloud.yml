@@ -11,14 +11,14 @@ cloud:
     stack:
       auto: false
 
-#spring:
-#  datasource:
-#    hikari:
-#      maximum-pool-size: 3
-#    url: jdbc:mariadb://stg-yswa-kr-practice-db-master.mariadb.database.azure.com:3306/S09P12D105?serverTimezone=UTC&useUnicode=true&characterEncoindg=utf8
-#    driver-class-name: org.mariadb.jdbc.Driver
-#    username: S09P12D105
-#    password: 6iglEmopgM
-#  data:
-#    mongodb:
-#      uri: mongodb+srv://S09P12D105:YMliQn07tW@ssafy.ngivl.mongodb.net/S09P12D105?authSource=admin
+spring:
+  datasource:
+    hikari:
+      maximum-pool-size: 3
+    url: jdbc:mariadb://stg-yswa-kr-practice-db-master.mariadb.database.azure.com:3306/S09P12D105?serverTimezone=UTC&useUnicode=true&characterEncoindg=utf8
+    driver-class-name: org.mariadb.jdbc.Driver
+    username: S09P12D105
+    password: 6iglEmopgM
+  data:
+    mongodb:
+      uri: mongodb+srv://S09P12D105:YMliQn07tW@ssafy.ngivl.mongodb.net/S09P12D105?authSource=admin

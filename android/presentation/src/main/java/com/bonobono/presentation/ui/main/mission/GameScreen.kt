@@ -1,4 +1,4 @@
-package com.bonobono.presentation.ui.game
+package com.bonobono.presentation.ui.main.mission
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -32,30 +32,28 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.bonobono.presentation.R
+import com.bonobono.presentation.model.Trash
 import com.bonobono.presentation.ui.common.CancelButton
 import com.bonobono.presentation.ui.common.SubmitButton
 import com.bonobono.presentation.ui.common.text.CustomTextStyle
-import com.bonobono.presentation.ui.game.component.CountdownTimer
-import com.bonobono.presentation.ui.game.component.DragTarget
-import com.bonobono.presentation.ui.game.component.DropTarget
-import com.bonobono.presentation.ui.game.component.GamePromptBox
-import com.bonobono.presentation.ui.game.component.LongPressDraggable
-import com.bonobono.presentation.ui.game.component.PromptTwoButtonRow
-import com.bonobono.presentation.ui.game.component.QuizPromptBox
+import com.bonobono.presentation.ui.main.component.CountdownTimer
+import com.bonobono.presentation.ui.main.component.DragTarget
+import com.bonobono.presentation.ui.main.component.DropTarget
+import com.bonobono.presentation.ui.main.component.GamePromptBox
+import com.bonobono.presentation.ui.main.component.LongPressDraggable
+import com.bonobono.presentation.ui.main.component.PromptTwoButtonRow
+import com.bonobono.presentation.ui.main.component.QuizPromptBox
 import com.bonobono.presentation.ui.common.GifLoader
 import com.bonobono.presentation.ui.common.LottieLoader
+import com.bonobono.presentation.ui.theme.PrimaryBlue
 import com.bonobono.presentation.ui.theme.White
 import kotlinx.coroutines.delay
-
-data class Trash(
-    val name: String,
-    val image: Int
-)
 
 data class TrashCan(
     val name: String,
@@ -84,8 +82,8 @@ fun GameScreen(navController: NavHostController) {
                     .align(alignment = Alignment.TopCenter)
             ) {
                 GamePromptBox(
-                    name = "클로버 요정",
-                    content = "분리수거를 하지 않으면 바다가 계속 아플거야!\n이 쓰레기를 버리려면 어떻게 버려야할까?",
+                    name = stringResource(R.string.fairy_name),
+                    content = stringResource(R.string.game_prompt_guide),
                     modifier = Modifier
                 )
                 CountdownTimer(modifier = Modifier.align(alignment = Alignment.End), timeLeft)
@@ -93,25 +91,42 @@ fun GameScreen(navController: NavHostController) {
             TrashItemCard(trashItem = trash, Modifier.align(alignment = Alignment.Center))
             TrashCanScreen(Modifier.align(alignment = Alignment.BottomCenter))
         }
-        if(timeLeft < 7) {
-            GifLoader(modifier = Modifier.fillMaxSize(), source = R.raw.animation_devil)
-            QuizPromptBox(name = "쓰레기 마왕", content = "GAME OVER...", problem = "", modifier = Modifier.align(Alignment.BottomCenter)) {
-                PromptTwoButtonRow(modifier = Modifier.align(Alignment.BottomEnd).padding(12.dp),
-                    leftButton = {
-                        CancelButton(modifier = Modifier, text = "나가기", textStyle = CustomTextStyle.quizContentStyle.copy(color = White)) {
-                            navController.popBackStack()
-                        }
-                    },
-                    rightButton ={
-                        SubmitButton(modifier = Modifier, text = "다시하기", textStyle = CustomTextStyle.quizContentStyle.copy(color = White)) {
-
-                        }
-                    })
-            }
+        if (timeLeft < 7) {
+            GameOverPrompt(Modifier, navController)
         }
     }
 }
 
+@Composable
+fun GameOverPrompt(modifier: Modifier, navController: NavHostController) {
+    GifLoader(modifier = Modifier.fillMaxSize(), source = R.raw.animation_devil)
+    QuizPromptBox(
+        name = stringResource(R.string.evil_name),
+        content = stringResource(R.string.game_over),
+        problem = "",
+        modifier = modifier
+    ) {
+        PromptTwoButtonRow(modifier = Modifier.padding(12.dp),
+            leftButton = {
+                CancelButton(
+                    modifier = Modifier,
+                    text = stringResource(R.string.exit),
+                    textStyle = CustomTextStyle.quizContentStyle.copy(color = White)
+                ) {
+                    navController.popBackStack()
+                }
+            },
+            rightButton = {
+                SubmitButton(
+                    modifier = Modifier,
+                    text = stringResource(R.string.redo),
+                    textStyle = CustomTextStyle.quizContentStyle.copy(color = White)
+                ) {
+
+                }
+            })
+    }
+}
 
 @Composable
 fun TrashItemCard(trashItem: Trash, modifier: Modifier) {
@@ -125,7 +140,7 @@ fun TrashItemCard(trashItem: Trash, modifier: Modifier) {
         ) {
             DragTarget(modifier = Modifier.size(130.dp), dataToDrop = trashItem) {
                 Image(
-                    painter = painterResource(id = trashItem.image),
+                    painter = painterResource(id = trashItem.img),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -176,12 +191,7 @@ fun TrashCanCard(trashCan: TrashCan, modifier: Modifier) {
         modifier = modifier
             .padding(12.dp)
     ) { isInBound, foodItem ->
-        val bgColor = if (isInBound) {
-            Color.Red
-        } else {
-            Color.White
-        }
-
+        val bgColor = if (isInBound) { PrimaryBlue } else { White }
         Column(
             modifier = Modifier
                 .shadow(elevation = 4.dp, shape = RoundedCornerShape(16.dp))
@@ -193,7 +203,6 @@ fun TrashCanCard(trashCan: TrashCan, modifier: Modifier) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             Image(
                 painter = painterResource(id = trashCan.image), contentDescription = null,
                 modifier = Modifier

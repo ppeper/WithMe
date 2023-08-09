@@ -1,4 +1,4 @@
-package com.bonobono.presentation.ui.game.component
+package com.bonobono.presentation.ui.main.component
 
 
 import androidx.compose.foundation.background
@@ -79,7 +79,6 @@ fun GamePromptBox(name: String, content: String, modifier: Modifier) {
     Card(
         modifier = modifier.padding(12.dp),
         elevation = CardDefaults.cardElevation(4.dp),
-        colors = CardDefaults.cardColors(containerColor = White)
     ) {
         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             GifLoader(modifier = Modifier.size(100.dp), source = R.raw.animation_fairy)
@@ -101,7 +100,7 @@ fun GamePromptBox(name: String, content: String, modifier: Modifier) {
 }
 
 @Composable
-fun ARTextBox(
+fun ARPromptBox(
     name: String,
     content: String,
     modifier: Modifier,

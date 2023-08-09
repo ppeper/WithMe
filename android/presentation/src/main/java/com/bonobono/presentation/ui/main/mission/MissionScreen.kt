@@ -1,5 +1,6 @@
-package com.bonobono.presentation.ui.main
+package com.bonobono.presentation.ui.main.mission
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -17,12 +18,17 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.bonobono.presentation.R
@@ -37,10 +43,14 @@ import com.bonobono.presentation.ui.common.LottieLoader
 import com.bonobono.presentation.ui.main.component.ProfilePhoto
 import com.bonobono.presentation.ui.theme.LightGray
 import com.bonobono.presentation.ui.theme.White
+import com.bonobono.presentation.utils.Constants
 import com.bonobono.presentation.viewmodel.MissionViewModel
 
+private const val TAG = "MissionScreen"
 @Composable
 fun MissionScreen(navController: NavHostController, viewModel: MissionViewModel = hiltViewModel()) {
+    val completedTimeOX= viewModel.getCompletedTime(Constants.OX_QUIZ)
+    val completedTimeFour = viewModel.getCompletedTime(Constants.FOUR_QUIZ)
     Column(
         Modifier
             .verticalScroll(rememberScrollState())
@@ -51,26 +61,46 @@ fun MissionScreen(navController: NavHostController, viewModel: MissionViewModel 
         Spacer(modifier = Modifier.size(12.dp))
         DailyGameItem(
             R.raw.animation_check,
-            "출석체크하고 경험치 받기\nExp.5",
-            "출석하기",
-            navController = navController
+            stringResource(R.string.attendance_guide),
+            stringResource(R.string.attendance_btn),
         ) {
             viewModel.postAttendance(1)
         }
         Spacer(modifier = Modifier.size(12.dp))
-        DailyGameItem(R.raw.game, "게임 클리어하고 경험치 받기\nExp.10", "게임하기", navController = navController) {
+        DailyGameItem(
+            R.raw.game,
+            stringResource(R.string.game_guide),
+            stringResource(R.string.game_btn),
+        ) {
             navController.navigate(GameNav.route)
         }
         Spacer(modifier = Modifier.size(12.dp))
-        LargeSquareCardWithAnimation(R.raw.animation_four_quiz_card, "O/X 퀴즈 풀고\n경험치 얻기") {
-            navController.navigate(QuizNav.route)
+        if (completedTimeOX == 0L) {
+            LargeSquareCardWithAnimation(
+                R.raw.animation_ox_quiz_card,
+                stringResource(R.string.ox_quiz_guide)
+            ) {
+                navController.navigate(QuizNav.route)
+            }
+        } else {
+            LargeSquareCardWithAnimation(
+                R.raw.animation_four_quiz_card,
+                stringResource(R.string.four_quiz_guide)
+            ) {
+                navController.navigate(QuizNav.route)
+            }
         }
     }
 }
 
 
 @Composable
-fun DailyGameItem(source: Int, content: String, buttonText: String, navController: NavHostController, onClick: () -> Unit) {
+fun DailyGameItem(
+    source: Int,
+    content: String,
+    buttonText: String,
+    onClick: () -> Unit
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth(),
@@ -129,7 +159,11 @@ fun UserInformationItem() {
                 CircularProgressBar(percent = 0.7f, "미션달성율")
             }
         }
-        LinearProgressBar(source = R.drawable.ic_check, title = "경험치", percent = 0.3f)
+        LinearProgressBar(
+            source = R.drawable.ic_check,
+            title = stringResource(R.string.exp_txt),
+            percent = 0.3f
+        )
     }
 }
 

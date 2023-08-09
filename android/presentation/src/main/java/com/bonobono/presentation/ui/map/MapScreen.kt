@@ -154,7 +154,7 @@ fun MapScreen(
 
     var mapUiSettings by remember {
         mutableStateOf(
-            MapUiSettings(isLocationButtonEnabled = true)
+            MapUiSettings(isLocationButtonEnabled = true, isLogoClickEnabled = false)
         )
     }
 

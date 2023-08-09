@@ -10,24 +10,24 @@ import retrofit2.http.POST
 import retrofit2.http.Query
 
 interface MissionService {
-    @POST("quiz/ox")
+    @GET("quiz/ox")
     suspend fun getOXQuiz(@Query(value = "memberId") memberId: Int) : MissionResponse
-    @GET("quiz/ox/IsSuccess")
+    @POST("quiz/ox/IsSuccess")
     suspend fun postOXQuizIsSuccess(
         @Body isSuccess: IsSuccess
     ) : Boolean
 
-    @POST("quiz/four_quiz")
+    @GET("quiz/four_quiz")
     suspend fun getFourQuiz(@Query(value = "memberId") memberId: Int) : MissionResponse
 
-    @GET("quiz/four_quiz/IsSuccess")
+    @POST("quiz/four_quiz/IsSuccess")
     suspend fun postFourQuizIsSuccess(
         @Query("memberId") memberId: Int,
         @Query("problemId") problemId: Int,
         @Query("answer") answer: String
     ) : Boolean
 
-    @POST("quiz/four_quiz")
+    @GET("quiz/four_quiz")
     suspend fun getMiniGame(@Query(value = "memberId") memberId: Int) : MissionResponse
 
     @POST("attendance")

@@ -20,10 +20,10 @@ import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.common.CancelButton
 import com.bonobono.presentation.ui.common.SubmitButton
 import com.bonobono.presentation.ui.common.text.CustomTextStyle
-import com.bonobono.presentation.ui.game.component.ARTextBox
-import com.bonobono.presentation.ui.game.component.PromptInputRow
-import com.bonobono.presentation.ui.game.component.PromptOXButtonRow
-import com.bonobono.presentation.ui.game.component.PromptTwoButtonRow
+import com.bonobono.presentation.ui.main.component.ARPromptBox
+import com.bonobono.presentation.ui.main.component.PromptInputRow
+import com.bonobono.presentation.ui.main.component.PromptOXButtonRow
+import com.bonobono.presentation.ui.main.component.PromptTwoButtonRow
 import com.bonobono.presentation.ui.common.GifLoader
 import com.google.ar.core.Config
 import com.ujizin.camposer.CameraPreview
@@ -84,7 +84,7 @@ fun CameraScreen() {
             } else {
                 ARScreen(currentModel.value)
             }
-            ARTextBox(
+            ARPromptBox(
                 name = prompt.title,
                 content = prompt.content,
                 modifier = Modifier

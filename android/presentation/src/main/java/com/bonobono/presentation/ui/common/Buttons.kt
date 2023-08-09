@@ -36,7 +36,7 @@ fun SubmitButton(
         ),
         shape = RoundedCornerShape(10.dp)
     ) {
-        Text(text = text, style = textStyle)
+        Text(text = text, style = textStyle.copy(color = White))
     }
 }
 

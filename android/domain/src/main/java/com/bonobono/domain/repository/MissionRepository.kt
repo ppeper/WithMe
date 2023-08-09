@@ -13,4 +13,7 @@ interface MissionRepository {
     suspend fun getMiniGame(memberId: Int) : NetworkResult<Mission>
     suspend fun postAttendance(memberId: Int)
     suspend fun getTotalScore(memberId: Int) : NetworkResult<TotalScore>
+    fun getCompletedTime(key: String) : Long
+    suspend fun putCompletedTime(key: String, time: Long)
+    suspend fun removeCompletedTime(key: String)
 }

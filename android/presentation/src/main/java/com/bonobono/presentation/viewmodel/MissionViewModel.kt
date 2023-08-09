@@ -11,10 +11,15 @@ import com.bonobono.domain.usecase.mission.GetOXQuizUseCase
 import com.bonobono.domain.usecase.mission.PostAttendanceUseCase
 import com.bonobono.domain.usecase.mission.PostIsSuccessFourQuizUseCase
 import com.bonobono.domain.usecase.mission.PostIsSuccessOXQuizUseCase
+import com.bonobono.domain.usecase.mission.time.GetCompletedTimeUseCase
+import com.bonobono.domain.usecase.mission.time.PutCompletedTimeUseCase
+import com.bonobono.presentation.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.util.Calendar
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,46 +29,54 @@ class MissionViewModel @Inject constructor(
     private val getMiniGameUseCase: GetMiniGameUseCase,
     private val postAttendanceUseCase: PostAttendanceUseCase,
     private val postIsSuccessOXQuizUseCase: PostIsSuccessOXQuizUseCase,
-    private val postIsSuccessFourQuizUseCase: PostIsSuccessFourQuizUseCase
+    private val postIsSuccessFourQuizUseCase: PostIsSuccessFourQuizUseCase,
+    private val putCompletedTimeUseCase: PutCompletedTimeUseCase,
+    private val getCompletedTimeUseCase: GetCompletedTimeUseCase
 ) : ViewModel() {
-    private val _oxQuizState = MutableStateFlow<NetworkResult<Mission>>(NetworkResult.Loading)
-    val oxQuizState = _oxQuizState.asStateFlow()
 
-    private val _fourQuizState = MutableStateFlow<NetworkResult<Mission>>(NetworkResult.Loading)
-    val fourQuizState = _fourQuizState.asStateFlow()
+    private val _mission = MutableStateFlow<NetworkResult<Mission>>(NetworkResult.Loading)
+    val mission: StateFlow<NetworkResult<Mission>> = _mission
 
-    private val _miniGameState = MutableStateFlow<NetworkResult<Mission>>(NetworkResult.Loading)
-    val miniGameState = _miniGameState.asStateFlow()
+    private val _isSuccess = MutableStateFlow<NetworkResult<Boolean>>(NetworkResult.Loading)
+    val isSuccess: StateFlow<NetworkResult<Boolean>> = _isSuccess
 
-    private val _isSuccessOXQuizState = MutableStateFlow<NetworkResult<Boolean>>(NetworkResult.Loading)
-    val isSuccessOXQuizState = _isSuccessOXQuizState.asStateFlow()
-
-    private val _isSuccessFourQuizState = MutableStateFlow<NetworkResult<Boolean>>(NetworkResult.Loading)
-    val isSuccessFourQuizState = _isSuccessFourQuizState.asStateFlow()
-
-    fun getOXQuiz(memberId: Int) = viewModelScope.launch {
-        _oxQuizState.value = NetworkResult.Loading
-        _oxQuizState.emit(getOXQuizUseCase.invoke(memberId = memberId))
+    fun getMission(memberId: Int, type: String) = viewModelScope.launch {
+        when (type) {
+            Constants.OX_QUIZ -> _mission.emit(getOXQuizUseCase.invoke(memberId))
+            Constants.FOUR_QUIZ -> _mission.emit(getFourQuizUseCase.invoke(memberId))
+            Constants.GAME -> _mission.emit(getMiniGameUseCase.invoke(memberId))
+        }
     }
 
-    fun postIsSuccessOXQuiz(isSuccess: IsSuccess) = viewModelScope.launch {
-        _isSuccessOXQuizState.value = NetworkResult.Loading
-        _isSuccessFourQuizState.emit(postIsSuccessOXQuizUseCase.invoke(isSuccess))
-    }
-
-
-    fun getFourQuiz(memberId: Int) = viewModelScope.launch {
-        _fourQuizState.value = NetworkResult.Loading
-        _fourQuizState.emit(getFourQuizUseCase.invoke(memberId = memberId))
-    }
-
-    fun getMiniGame(memberId: Int) = viewModelScope.launch {
-        _miniGameState.value = NetworkResult.Loading
-        _miniGameState.emit(getMiniGameUseCase.invoke(memberId = memberId))
+    fun postIsSuccess(isSuccess: IsSuccess, type: String) = viewModelScope.launch {
+        when (type) {
+            Constants.OX_QUIZ -> _isSuccess.emit(postIsSuccessOXQuizUseCase.invoke(isSuccess))
+            Constants.FOUR_QUIZ -> _isSuccess.emit(postIsSuccessFourQuizUseCase.invoke(isSuccess))
+        }
     }
 
     fun postAttendance(memberId: Int) = viewModelScope.launch {
         postAttendanceUseCase.invoke(memberId)
     }
+
+    fun putCompletedTime(key: String, time: Long) = viewModelScope.launch {
+        putCompletedTimeUseCase.invoke(key, time)
+    }
+
+    fun getCompletedTime(key: String): Long {
+        return getCompletedTimeUseCase(key)
+    }
+
+//    fun getCompletedTime(key: String) = viewModelScope.launch {
+//        val timeStamp = getCompletedTimeUseCase.invoke(key)
+//        val calendarToday =
+//            Calendar.getInstance().apply { timeInMillis = System.currentTimeMillis() }
+//        val calendarGet = Calendar.getInstance().apply { timeInMillis = timeStamp }
+//
+//        _isSuccess.value =
+//            calendarToday.get(Calendar.YEAR) == calendarGet.get(Calendar.YEAR) &&
+//                    calendarToday.get(Calendar.MONTH) == calendarGet.get(Calendar.MONTH) &&
+//                    calendarToday.get(Calendar.DAY_OF_MONTH) == calendarGet.get(Calendar.DAY_OF_MONTH)
+//    }
 
 }

@@ -1,4 +1,4 @@
-package com.bonobono.presentation.ui.game.component
+package com.bonobono.presentation.ui.main.component
 
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.layout.Box

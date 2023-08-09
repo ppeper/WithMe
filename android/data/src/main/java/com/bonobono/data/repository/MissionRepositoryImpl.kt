@@ -1,5 +1,6 @@
 package com.bonobono.data.repository
 
+import com.bonobono.data.local.PreferenceDataSource
 import com.bonobono.data.mapper.toDomain
 import com.bonobono.data.remote.MissionService
 import com.bonobono.data.remote.handleApi
@@ -11,6 +12,7 @@ import com.bonobono.domain.repository.MissionRepository
 import javax.inject.Inject
 
 class MissionRepositoryImpl @Inject constructor(
+    private val preferenceDatasource: PreferenceDataSource,
     private val missionService: MissionService
 ) : MissionRepository {
 
@@ -34,6 +36,7 @@ class MissionRepositoryImpl @Inject constructor(
         return handleApi { missionService.getMiniGame(memberId = memberId).toDomain() }
     }
 
+
     override suspend fun postAttendance(memberId: Int) {
         handleApi { missionService.postAttendance(memberId = memberId) }
     }
@@ -41,5 +44,18 @@ class MissionRepositoryImpl @Inject constructor(
     override suspend fun getTotalScore(memberId: Int): NetworkResult<TotalScore> {
         return handleApi { missionService.getTotalScore(memberId = memberId).toDomain() }
     }
+
+    override fun getCompletedTime(key: String): Long {
+        return preferenceDatasource.getLong(key)
+    }
+
+    override suspend fun putCompletedTime(key: String, time: Long) {
+        preferenceDatasource.putLong(key, time)
+    }
+
+    override suspend fun removeCompletedTime(key: String) {
+
+    }
+
 
 }

@@ -1,4 +1,4 @@
-package com.bonobono.presentation.ui.main
+package com.bonobono.presentation.ui.main.ecyclopedia
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -8,13 +8,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -28,25 +26,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.main.component.AnimatedProfile
-import com.bonobono.presentation.ui.main.component.BlindProfilePhoto
 import com.bonobono.presentation.ui.main.component.ProfilePhoto
 import com.bonobono.presentation.ui.theme.DarkGray
 import com.bonobono.presentation.ui.theme.LightGray
 import com.bonobono.presentation.ui.theme.White
 import com.bonobono.presentation.utils.Character
 
+// 현재 대표 동물 이미지로
 @Composable
 fun EncyclopediaScreen() {
     Column(
         Modifier
 
     ) {
-        // 현재 대표 동물 이미지로 
-        AnimatedProfile(profileImage = R.drawable.beluga_whale, source = R.raw.animation_card)
+        AnimatedProfile(
+            profileImage = R.drawable.beluga_whale,
+            source = R.raw.animation_card
+        )
         CurInformation()
         Spacer(modifier = Modifier.size(12.dp))
         Characters()
@@ -60,7 +59,6 @@ fun CurInformation() {
             .fillMaxWidth()
             .wrapContentHeight()
     ) {
-        // Display image as the background
         Image(
             painter = painterResource(id = R.drawable.img_pixel_chat),
             contentDescription = null,
@@ -68,8 +66,6 @@ fun CurInformation() {
             modifier = Modifier
                 .fillMaxWidth()
         )
-
-        // Add your text on top of the image
         Text(
             text = "돌고래 2세",
             modifier = Modifier
@@ -105,12 +101,11 @@ fun Characters() {
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(8.dp)
         ) {
+            // 보유중 / 아닌 것들 나눠서 표시
             items(characterList) {
-//                if (it == 1 || it == 4 || it >= 8) {
-//                    BlindProfilePhoto(image = R.drawable.beluga_whale)
-//                } else {
                 ProfilePhoto(
-                    profileImage = it.icon, modifier = Modifier.size(64.dp)
+                    profileImage = it.icon, modifier = Modifier
+                        .size(64.dp)
                         .clip(CircleShape)
                         .background(LightGray)
                         .border(BorderStroke(1.dp, DarkGray), shape = CircleShape)
@@ -119,10 +114,4 @@ fun Characters() {
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun PreviewCurInform() {
-    CurInformation()
 }

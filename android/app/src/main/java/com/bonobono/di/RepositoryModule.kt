@@ -1,5 +1,6 @@
 package com.bonobono.di
 
+import com.bonobono.data.local.PreferenceDataSource
 import com.bonobono.data.remote.CommunityService
 import com.bonobono.data.remote.MissionService
 import com.bonobono.data.repository.MissionRepositoryImpl
@@ -23,7 +24,13 @@ object RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideMissionRepository(missionService: MissionService): MissionRepository {
-        return MissionRepositoryImpl(missionService = missionService)
+    fun provideMissionRepository(
+        missionService: MissionService,
+        preferenceDataSource: PreferenceDataSource
+    ): MissionRepository {
+        return MissionRepositoryImpl(
+            missionService = missionService,
+            preferenceDatasource = preferenceDataSource
+        )
     }
 }

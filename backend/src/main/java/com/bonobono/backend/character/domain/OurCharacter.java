@@ -4,6 +4,8 @@ import com.bonobono.backend.character.enumClass.CharacterLevelEnum;
 import lombok.Getter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -22,5 +24,8 @@ public class OurCharacter {
 
     @Enumerated(EnumType.STRING)
     private CharacterLevelEnum level;
+
+    @OneToMany(mappedBy = "ourCharacter")
+    private List<LocationOurCharacter> locationOurCharacters = new ArrayList<>();
 
 }

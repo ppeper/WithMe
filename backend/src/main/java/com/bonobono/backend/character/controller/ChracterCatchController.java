@@ -1,16 +1,39 @@
 package com.bonobono.backend.character.controller;
 
 
+import com.bonobono.backend.character.dto.UserChracterResponseDto;
+import com.bonobono.backend.character.dto.catchCharacter.NowPositionRequestDto;
+import com.bonobono.backend.character.dto.catchCharacter.OurChacracterWithSeaResponseDto;
+import com.bonobono.backend.character.service.OurCharacterService;
+import com.bonobono.backend.character.service.UserCharacterService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/catch")
 public class ChracterCatchController {
-    //캐릭터 잡기용 ox퀴즈 넘겨주기
 
-    //정답 체크하고 맞으면 도감에 넣기(save)
+    private final OurCharacterService ourCharacterService;
+    //요청받은 해변정보를 바탕으로 ourcharacter의 리스트와 그 위경도 값을 기준으로 랜덤으로 각 캐릭터의 위치들을 반환.
+    // (이떄 response테이블에 각 캐릭터의 위치필드를 추가해야할지 화인 필요)
+    @PostMapping("/list")
+    public ResponseEntity<List<OurChacracterWithSeaResponseDto>> OurFindAll(@RequestBody NowPositionRequestDto nowPositionRequestDto) {
+        List<OurChacracterWithSeaResponseDto> userChracterResponseDtoList = ourCharacterService.SeaOurFindList(nowPositionRequestDto);
+        return ResponseEntity.ok(userChracterResponseDtoList);
+    }
+
+    //유저가 a캐릭터 범위에 들어왔으니, 문제달라고 요청하면, 캐릭터 잡기용 ox퀴즈 넘겨주기(get)
+
+
+    //정답 체크하고 맞으면 정답입니다반환
+
+    //and가 charid와 custom이름을 주면, userchar save(새로 생김)
+
+
+
 
 }

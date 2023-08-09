@@ -1,5 +1,6 @@
 package com.bonobono.backend.location.entity;
 
+import com.bonobono.backend.character.domain.LocationOurCharacter;
 import com.bonobono.backend.community.report.entity.Report;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,6 +31,9 @@ public class Location {
 
     @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Campaign> campaigns = new ArrayList<>();
+
+    @OneToMany(mappedBy = "location")
+    private List<LocationOurCharacter> locationOurCharacters = new ArrayList<>();
 
     @Builder
     public Location(String name, double latitude, double longitude){

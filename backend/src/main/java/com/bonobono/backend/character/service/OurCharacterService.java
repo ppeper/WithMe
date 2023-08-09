@@ -1,6 +1,8 @@
 package com.bonobono.backend.character.service;
 
 import com.bonobono.backend.character.dto.OurCharacterResponseDto;
+import com.bonobono.backend.character.dto.catchCharacter.NowPositionRequestDto;
+import com.bonobono.backend.character.dto.catchCharacter.OurChacracterWithSeaResponseDto;
 import com.bonobono.backend.character.repository.OurCharacterRepository;
 import com.bonobono.backend.member.domain.Member;
 import com.bonobono.backend.member.repository.MemberRepository;
@@ -18,14 +20,9 @@ public class OurCharacterService {
     private final MemberRepository memberRepository;
     private final OurCharacterRepository ourCharacterRepository;
 
-    @Transactional(readOnly = true)
-    public List<OurCharacterResponseDto> OurfindByList(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(()-> new IllegalArgumentException("해당 멤버가 없습니다. id =" + memberId));
 
-        return ourCharacterRepository.findNotLinkedOurCharactersByMember(member.getId())
-                .stream()
-                .map(OurCharacterResponseDto::new)
-                .collect(Collectors.toList());
+    public List<OurChacracterWithSeaResponseDto> SeaOurFindList(NowPositionRequestDto nowPositionRequestDto) {
+        //요청받은 해변정보를 바탕으로 ourcharacter의 리스트와 그 위경도 값을 기준으로 랜덤으로 각 캐릭터의 위치들을 반환.
+        
     }
 }

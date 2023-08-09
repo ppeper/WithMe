@@ -49,6 +49,8 @@ import com.bonobono.presentation.ui.community.views.map.SelectedMapView
 import com.bonobono.presentation.ui.theme.Black_100
 import com.bonobono.presentation.ui.theme.TextGray
 import com.bonobono.presentation.utils.Converter
+import com.bonobono.presentation.utils.PermissionUtils.GALLERY_PERMISSIONS
+import com.bonobono.presentation.utils.PermissionUtils.LOCATION_PERMISSIONS
 import com.bonobono.presentation.viewmodel.CommunityViewModel
 import com.bonobono.presentation.viewmodel.PhotoViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -72,20 +74,11 @@ fun BoardWriteScreen(
     val writeArticleState by communityViewModel.writeArticleState.collectAsStateWithLifecycle()
     val mapState by communityViewModel.mapState
 
-    val GALLERY_PERMISSIONS = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        listOf(
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.READ_MEDIA_IMAGES,
-        )
-    } else {
-        listOf(Manifest.permission.READ_EXTERNAL_STORAGE)
-    }
-
     val galleryPermission =
         rememberMultiplePermissionsState(permissions = GALLERY_PERMISSIONS)
 
     val locationPermission =
-        rememberMultiplePermissionsState(permissions = GALLERY_PERMISSIONS)
+        rememberMultiplePermissionsState(permissions = LOCATION_PERMISSIONS)
 
     Scaffold(
         topBar = {

@@ -1,26 +1,37 @@
 package com.bonobono.presentation.ui.community.views.map
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.hardware.lights.Light
 import android.os.Bundle
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,9 +39,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.app.ActivityCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -42,6 +56,8 @@ import com.bonobono.presentation.ui.theme.Black_100
 import com.bonobono.presentation.ui.theme.LightGray
 import com.bonobono.presentation.ui.theme.White
 import com.bonobono.presentation.viewmodel.CommunityViewModel
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraPosition
 import com.naver.maps.map.MapView
@@ -57,6 +73,7 @@ import kotlinx.coroutines.launch
 
 const val MAX_ZOOM = 21.0
 const val MIN_ZOOM = 16.0
+private lateinit var fusedLocationClient: FusedLocationProviderClient
 
 @Composable
 fun ReportMapView(
@@ -68,6 +85,26 @@ fun ReportMapView(
     val lifecycleOwner = LocalLifecycleOwner.current
     val coroutineScope = rememberCoroutineScope()
     val marker by remember { mutableStateOf(Marker()) }
+    var currentPosition by remember { mutableStateOf(LatLng(0.0, 0.0)) }
+    var isSuccess by remember { mutableStateOf(false) }
+    fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+    if (ActivityCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        ) != PackageManager.PERMISSION_GRANTED
+    ) {
+        return
+    }
+    // 현재 위치를 가져오는 코드
+    fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+        location?.let {
+            currentPosition = LatLng(it.latitude, it.longitude)
+            isSuccess = true
+        }
+    }
 
     val mapView =
         MapView(context).apply {
@@ -75,6 +112,7 @@ fun ReportMapView(
                 naverMap.apply {
                     minZoom = MIN_ZOOM
                     maxZoom = MAX_ZOOM
+                    cameraPosition = CameraPosition(currentPosition, MIN_ZOOM)
                 }
                 // 마커 달기
                 marker.position = LatLng(
@@ -128,7 +166,16 @@ fun ReportMapView(
     }
 
     Box(modifier.fillMaxSize()) {
-        AndroidView(factory = { mapView })
+        if (isSuccess) {
+            AndroidView(factory = { mapView })
+        }
+        CircleBackButton(
+            modifier = modifier.align(Alignment.TopStart),
+            navController = navController
+        )
+        MapTopContent(
+            modifier = modifier.align(Alignment.TopCenter),
+        )
         Box(
             modifier = modifier
                 .wrapContentSize()
@@ -213,6 +260,60 @@ fun SelectedMapView(
     }
 }
 
+@Composable
+fun MapTopContent(
+    modifier: Modifier
+) {
+    Box(
+        modifier = modifier.wrapContentSize()
+            .padding(top = 84.dp)
+    ) {
+        Box(
+            modifier = modifier.wrapContentSize()
+                .border(border = BorderStroke(1.dp, LightGray), shape = RoundedCornerShape(10.dp))
+                .clip(RoundedCornerShape(10.dp))
+                .background(White)
+                .padding(8.dp)
+        ) {
+            Text(
+                text = "신고할 쓰레기 위치를 알려주세요!",
+                style = TextStyle(fontSize = 14.sp)
+            )
+        }
+    }
+}
+
+@Composable
+fun CircleBackButton(
+    modifier: Modifier = Modifier,
+    navController: NavController
+) {
+    Box(
+        modifier = Modifier.wrapContentSize()
+            .padding(16.dp)
+    ) {
+        Box(
+            modifier = Modifier.size(48.dp)
+                .border(border = BorderStroke(1.dp, LightGray), shape = CircleShape)
+                .clip(CircleShape)
+                .background(White)
+                .clickable { navController.popBackStack() }
+        ) {
+            Icon(
+                modifier = Modifier.size(32.dp)
+                    .align(Alignment.Center),
+                painter = painterResource(R.drawable.ic_back),
+                contentDescription = "뒤로가기"
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+fun PreviewCircleButton() {
+    CircleBackButton(modifier = Modifier, navController = rememberNavController())
+}
 
 @Preview
 @Composable

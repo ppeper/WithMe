@@ -8,6 +8,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -16,7 +18,12 @@ import com.bonobono.presentation.ui.theme.PrimaryBlue
 import com.bonobono.presentation.ui.theme.White
 
 @Composable
-fun PrimaryButton(content: String, modifier: Modifier, onClick: () -> Unit) {
+fun PrimaryButton(
+    content: String,
+    modifier: Modifier,
+    isEnabled: MutableState<Boolean> = mutableStateOf(true),
+    onClick: () -> Unit
+) {
     Button(
         modifier = modifier,
         onClick = { onClick() },
@@ -26,6 +33,7 @@ fun PrimaryButton(content: String, modifier: Modifier, onClick: () -> Unit) {
         ),
         shape = RoundedCornerShape(4.dp),
         elevation = ButtonDefaults.buttonElevation(4.dp),
+        enabled = isEnabled.value
     ) {
         Text(text = content)
     }
@@ -43,8 +51,10 @@ fun PrimaryColorButton(
         ),
         shape = RoundedCornerShape(6.dp),
         onClick = { action }) {
-        Text(text = stringResource(text),
+        Text(
+            text = stringResource(text),
             style = primaryColorBtnText,
-            modifier = Modifier.padding(vertical = 6.dp))
+            modifier = Modifier.padding(vertical = 6.dp)
+        )
     }
 }

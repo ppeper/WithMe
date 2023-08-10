@@ -42,6 +42,7 @@ import com.bonobono.presentation.ui.common.button.HomeFloatingActionButton
 import com.bonobono.presentation.ui.common.topbar.SharedTopAppBar
 import com.bonobono.presentation.ui.common.topbar.rememberAppBarState
 import com.bonobono.presentation.ui.community.BoardDetailScreen
+import com.bonobono.presentation.ui.community.CommunityScreen
 import com.bonobono.presentation.ui.community.BoardWriteScreen
 import com.bonobono.presentation.ui.community.CommunityScreen
 import com.bonobono.presentation.ui.community.GalleryScreen
@@ -49,9 +50,14 @@ import com.bonobono.presentation.ui.community.views.board.CommonPostListView
 import com.bonobono.presentation.ui.game.GameScreen
 import com.bonobono.presentation.ui.game.QuizScreen
 import com.bonobono.presentation.ui.main.EncyclopediaScreen
+import com.bonobono.presentation.ui.common.button.CommunityFloatingActionButton
+import com.bonobono.presentation.ui.common.button.HomeFloatingActionButton
+import com.bonobono.presentation.ui.main.mission.GameScreen
+import com.bonobono.presentation.ui.main.mission.QuizScreen
+import com.bonobono.presentation.ui.main.ecyclopedia.EncyclopediaScreen
 import com.bonobono.presentation.ui.main.MainHomeScreen
-import com.bonobono.presentation.ui.main.MissionScreen
-import com.bonobono.presentation.ui.main.NoticeScreen
+import com.bonobono.presentation.ui.main.mission.MissionScreen
+import com.bonobono.presentation.ui.main.notice.NoticeScreen
 import com.bonobono.presentation.ui.map.CameraScreen
 import com.bonobono.presentation.ui.map.MainMapScreen
 import com.bonobono.presentation.ui.mypage.MainMyPageScreen
@@ -61,6 +67,7 @@ import com.bonobono.presentation.ui.mypage.SettingScreen
 import com.bonobono.presentation.ui.theme.PrimaryBlue
 import com.bonobono.presentation.ui.theme.TextGray
 import com.bonobono.presentation.ui.theme.White
+import com.bonobono.presentation.utils.Constants
 import com.bonobono.presentation.utils.NavigationUtils
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
@@ -358,16 +365,19 @@ fun MainNavigationScreen(
             ProfileEditScreen(navController = navController)
         }
         composable(
-            route = QuizNav.route,
+            route = "${QuizNav.route}/{type}",
             deepLinks = QuizNav.deepLinks
         ) {
-            QuizScreen()
+            val type = it.arguments?.getString("type")
+            if (type != null) {
+                QuizScreen(type, navController = navController)
+            }
         }
         composable(
             route = GameNav.route,
             deepLinks = QuizNav.deepLinks
         ) {
-            GameScreen()
+            GameScreen(navController)
         }
     }
 }

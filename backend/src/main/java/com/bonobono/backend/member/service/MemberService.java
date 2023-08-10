@@ -58,11 +58,6 @@ public class MemberService {
                 throw new AppException(ErrorCode.NICKNAME_DUPLICATED, "이미 존재하는 닉네임입니다.");
             });
 
-//        // 비밀번호 체크 -> 제대로 작동 못함 수정해야 할 필요가 있음
-//        if (!(bCryptPasswordEncoder.matches(request.getPassword(), request.getPasswordCheck()))) {
-//            throw new AppException(ErrorCode.PASSWORD_MISMATCH, "비밀번호와 비밀번호확인이 일치하지 않습니다.");
-//        }
-
         Authority authority = authorityRepository
             .findByRole(Role.USER)
             .orElseThrow(() -> new RuntimeException("권한 정보가 없습니다."));

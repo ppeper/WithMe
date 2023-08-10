@@ -13,19 +13,19 @@ interface CommunityRepository {
     // 일반 게시글 작성
     suspend fun writeArticle(type: String, images: List<String>?, article: Article): NetworkResult<Unit>
     // 게시글 삭제
-    suspend fun deleteArticle(type: String, articleId: Int)
+    suspend fun deleteArticle(type: String, articleId: Int): NetworkResult<Unit>
     // 게시글 수정
-    suspend fun updateArticle(type: String, articleId: Int)
+    suspend fun updateArticle(type: String, articleId: Int): NetworkResult<Unit>
     // 댓글 작성
     suspend fun writeComment(type: String, articleId: Int, comment: Comment): NetworkResult<Comment>
     // 게시글 좋아요 클릭
-    suspend fun updateArticleLike(type: String, articleId: Int)
+    suspend fun updateArticleLike(type: String, articleId: Int): NetworkResult<Unit>
     // 댓글 좋아요 클릭
-    suspend fun updateCommentLike(type: String, articleId: Int, commentId: Int)
+    suspend fun updateCommentLike(type: String, articleId: Int, commentId: Int): NetworkResult<Unit>
     // 댓글 수정
-    suspend fun updateComment(type: String, articleId: Int, commentId: Int)
+    suspend fun updateComment(type: String, articleId: Int, commentId: Int): NetworkResult<Unit>
     // 댓글 삭제
-    suspend fun deleteComment(type: String, articleId: Int, commentId: Int)
+    suspend fun deleteComment(type: String, articleId: Int, commentId: Int): NetworkResult<Unit>
     // 게시글 검색
-    suspend fun queryArticle(type: String, keyword: String)
+    suspend fun queryArticle(type: String, keyword: String): NetworkResult<List<Article>>
 }

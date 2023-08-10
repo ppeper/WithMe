@@ -8,5 +8,7 @@ data class ArticleRequest(
     val title: String,
     val content: String,
     val urlTitle: String?,
-    val url: String?
+    val url: String?,
+    val latitude: Double?,
+    val longitude: Double?
 ): Parcelable

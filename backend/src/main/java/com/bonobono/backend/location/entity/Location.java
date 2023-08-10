@@ -1,5 +1,6 @@
 package com.bonobono.backend.location.entity;
 
+import com.bonobono.backend.character.domain.LocationOurCharacter;
 import com.bonobono.backend.community.report.entity.Report;
 import lombok.Builder;
 import lombok.Getter;

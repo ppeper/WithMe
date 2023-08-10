@@ -35,36 +35,36 @@ class CommunityRepositoryImpl @Inject constructor(
         return handleApi { communityService.writeArticle(type, images = imageFiles, article = article.toModel()) }
     }
 
-    override suspend fun deleteArticle(type: String, articleId: Int) {
-        handleApi { communityService.deleteArticle(type, articleId) }
+    override suspend fun deleteArticle(type: String, articleId: Int): NetworkResult<Unit> {
+        return handleApi { communityService.deleteArticle(type, articleId) }
     }
 
-    override suspend fun updateArticle(type: String, articleId: Int) {
-        handleApi { communityService.updateArticle(type, articleId) }
+    override suspend fun updateArticle(type: String, articleId: Int): NetworkResult<Unit> {
+        return handleApi { communityService.updateArticle(type, articleId) }
     }
 
     override suspend fun writeComment(type: String, articleId: Int, comment: Comment): NetworkResult<Comment> {
         return handleApi { communityService.writeComment(type, articleId, comment.toModel()).toDomain() }
     }
 
-    override suspend fun updateArticleLike(type: String, articleId: Int) {
-        handleApi { communityService.updateArticleLike(type, articleId) }
+    override suspend fun updateArticleLike(type: String, articleId: Int): NetworkResult<Unit> {
+        return handleApi { communityService.updateArticleLike(type, articleId) }
     }
 
-    override suspend fun updateCommentLike(type: String, articleId: Int, commentId: Int) {
-        handleApi { communityService.updateCommentLike(type, articleId, commentId) }
+    override suspend fun updateCommentLike(type: String, articleId: Int, commentId: Int): NetworkResult<Unit> {
+        return handleApi { communityService.updateCommentLike(type, articleId, commentId) }
     }
 
-    override suspend fun updateComment(type: String, articleId: Int, commentId: Int) {
-        handleApi { communityService.updateComment(type, articleId, commentId) }
+    override suspend fun updateComment(type: String, articleId: Int, commentId: Int): NetworkResult<Unit> {
+        return handleApi { communityService.updateComment(type, articleId, commentId) }
     }
 
-    override suspend fun deleteComment(type: String, articleId: Int, commentId: Int) {
-        handleApi { communityService.deleteComment(type, articleId, commentId) }
+    override suspend fun deleteComment(type: String, articleId: Int, commentId: Int): NetworkResult<Unit> {
+        return handleApi { communityService.deleteComment(type, articleId, commentId) }
     }
 
-    override suspend fun queryArticle(type: String, keyword: String) {
-        handleApi { communityService.queryArticle(type, keyword) }
+    override suspend fun queryArticle(type: String, keyword: String): NetworkResult<List<Article>> {
+        return handleApi { communityService.queryArticle(type, keyword).map { it.toDomain() } }
     }
 
 }

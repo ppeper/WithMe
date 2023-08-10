@@ -61,8 +61,8 @@ dependencies {
     // Permission
     implementation 'com.google.accompanist:accompanist-permissions:0.28.0'
     // AR
-    implementation 'io.github.sceneview:arsceneview:0.10.0'
     implementation 'io.github.ujizin:camposer:0.1.0'
+    implementation 'io.github.sceneview:arsceneview:0.10.0'
 
     implementation 'androidx.core:core-ktx:1.8.0'
     implementation platform('org.jetbrains.kotlin:kotlin-bom:1.8.0')
@@ -89,4 +89,6 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-runtime-compose:2.6.1"
     // Jsoup
     implementation 'org.jsoup:jsoup:1.14.3'
+    // Google Play Service
+    implementation 'com.google.android.gms:play-services-location:21.0.1'
 }

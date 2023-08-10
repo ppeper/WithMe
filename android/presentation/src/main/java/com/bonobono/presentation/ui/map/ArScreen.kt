@@ -20,11 +20,11 @@ import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.common.CancelButton
 import com.bonobono.presentation.ui.common.SubmitButton
 import com.bonobono.presentation.ui.common.text.CustomTextStyle
-import com.bonobono.presentation.ui.game.component.ARTextBox
-import com.bonobono.presentation.ui.game.component.PromptInputRow
-import com.bonobono.presentation.ui.game.component.PromptOXButtonRow
-import com.bonobono.presentation.ui.game.component.PromptTwoButtonRow
-import com.bonobono.presentation.ui.main.component.GifLoader
+import com.bonobono.presentation.ui.main.component.ARPromptBox
+import com.bonobono.presentation.ui.main.component.PromptInputRow
+import com.bonobono.presentation.ui.main.component.PromptOXButtonRow
+import com.bonobono.presentation.ui.main.component.PromptTwoButtonRow
+import com.bonobono.presentation.ui.common.GifLoader
 import com.google.ar.core.Config
 import com.ujizin.camposer.CameraPreview
 import com.ujizin.camposer.state.CamSelector
@@ -62,26 +62,29 @@ fun CameraScreen() {
     val promptsList = listOf(
         Prompt(PromptString.chapterOneTitle, PromptString.chapterOneContent, "", 0, "거절", "수락"),
         Prompt(PromptString.chapterTwoTitle, PromptString.chapterTwoContent, "", 0, "뒤로", "다음"),
-        Prompt(PromptString.chapterThreeTitle, PromptString.chapterThreeContent, "", 0, "X", "O"),
-        Prompt(PromptString.chapterFourTitle, PromptString.chapterFourContent, "", 0, "이름..", "확인"),
+        Prompt(PromptString.chapterThreeTitle, PromptString.chapterThreeContent, "", R.raw.animation_devil, "X", "O"),
+        Prompt(PromptString.chapterFourTitle, PromptString.chapterFourContent, "", R.raw.whale_lv2_happy, "이름..", "확인"),
     )
 
     var chapter by remember { mutableStateOf(0) }
     var prompt by remember { mutableStateOf(promptsList[0]) }
+    var inputName by remember {
+        mutableStateOf("")
+    }
 
     Surface(
         modifier = Modifier.fillMaxSize(),
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             val currentModel = remember {
-                mutableStateOf("egg")
+                mutableStateOf("dolphin_animated")
             }
             if(chapter >= 2) {
-                AnimationScreen(modifier = Modifier.fillMaxSize())
+                AnimationScreen(modifier = Modifier.fillMaxSize(), prompt.animation)
             } else {
                 ARScreen(currentModel.value)
             }
-            ARTextBox(
+            ARPromptBox(
                 name = prompt.title,
                 content = prompt.content,
                 modifier = Modifier
@@ -92,12 +95,18 @@ fun CameraScreen() {
                 if (chapter == 3) {
                     PromptInputRow(
                         modifier = Modifier.padding(4.dp),
-                        value = "이름을 입력해주세요.",
-                        onValueChange = {},
+                        value = inputName,
+                        hint = "이름을 입력하세요..",
+                        onValueChange = { newValue ->
+                            inputName = newValue
+                        },
                         prompt.rightButtonContent
                     )
                 } else if (chapter == 2) {
-                    PromptOXButtonRow(modifier = Modifier, onClickX = {}, onClickO = {})
+                    PromptOXButtonRow(modifier = Modifier, onClickX = {}, onClickO = {
+                        chapter = (chapter + 1) % 4
+                        prompt = promptsList[chapter]
+                    })
                 } else {
                     PromptTwoButtonRow(
                         modifier = Modifier.align(alignment = Alignment.BottomEnd),
@@ -177,7 +186,7 @@ fun ARScreen(model: String) {
 
 // gif 파일
 @Composable
-fun AnimationScreen(modifier: Modifier) {
+fun AnimationScreen(modifier: Modifier, source: Int) {
     Box(modifier = Modifier.fillMaxSize()) {
         val cameraState = rememberCameraState()
         var camSelector by remember { mutableStateOf(CamSelector.Back) }
@@ -188,8 +197,9 @@ fun AnimationScreen(modifier: Modifier) {
         ) {
             GifLoader(modifier = Modifier
                 .fillMaxWidth()
-                .height(360.dp)
-                .align(Alignment.TopCenter), source = R.raw.animation_devil)
+                .height(270.dp)
+                .padding(bottom = 64.dp)
+                .align(Alignment.Center), source = source)
         }
     }
 }

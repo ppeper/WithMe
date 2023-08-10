@@ -24,7 +24,7 @@ public class MyQuizController {
     //ox 문제(참여했다면, 다시 참여못하게)
     @GetMapping("/ox")
     public ResponseEntity<QuizeResponseDto> oxQuiz(@RequestParam Long memberId) throws ParseException {
-        QuizeResponseDto quizResponseDto = quizService.checkoxQuiz(memberId);
+        QuizeResponseDto quizResponseDto = quizService.checkoxQuiz("quiz",memberId);
         return ResponseEntity.ok(quizResponseDto);
     }
 
@@ -38,7 +38,7 @@ public class MyQuizController {
     // 버튼을 누르고 정답 넣으면 체크(MAP에 넣고 체크하기) 경험치 UP
     @PostMapping("/ox/IsSuccess")
     public ResponseEntity<Boolean> oxcheckAnswer(@RequestBody QuizRequestDto quizRequestDto) {
-        boolean result = quizService.oxIsSuccess(quizRequestDto);
+        boolean result = quizService.oxIsSuccess("quiz",quizRequestDto);
         return ResponseEntity.ok(result);
     }
 

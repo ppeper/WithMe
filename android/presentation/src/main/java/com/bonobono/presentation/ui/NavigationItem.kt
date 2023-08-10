@@ -1,7 +1,11 @@
 package com.bonobono.presentation.ui
 
 import androidx.annotation.DrawableRes
+import androidx.navigation.NamedNavArgument
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDeepLink
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.NavigationRouteName.COMMUNITY_FREE
@@ -13,15 +17,18 @@ import com.bonobono.presentation.ui.NavigationRouteName.MAIN_COMMUNITY
 import com.bonobono.presentation.ui.NavigationRouteName.MAIN_HOME
 import com.bonobono.presentation.ui.NavigationRouteName.MAIN_MAP
 import com.bonobono.presentation.ui.NavigationRouteName.MAIN_MY_PAGE
+import com.bonobono.presentation.utils.GsonUtils
 
 sealed class MainNav(
     override val route: String,
     @DrawableRes val icon: Int,
-    override val title: String) : Destination
-{
+    override val title: String
+) : Destination {
     object Home : MainNav(MAIN_HOME, R.drawable.ic_home, NavigationTitle.MAIN_HOME)
     object Map : MainNav(MAIN_MAP, R.drawable.ic_map, NavigationTitle.MAIN_MAP)
-    object Community : MainNav(MAIN_COMMUNITY, R.drawable.ic_community, NavigationTitle.MAIN_COMMUNITY)
+    object Community :
+        MainNav(MAIN_COMMUNITY, R.drawable.ic_community, NavigationTitle.MAIN_COMMUNITY)
+
     object Chatting : MainNav(MAIN_CHATTING, R.drawable.ic_chat, NavigationTitle.MAIN_CHATTING)
     object MyPage : MainNav(MAIN_MY_PAGE, R.drawable.ic_profile, NavigationTitle.MAIN_MY_PAGE)
 
@@ -33,7 +40,8 @@ sealed class MainNav(
         fun isMainRoute(route: String?): Boolean {
             return when (route) {
                 MAIN_HOME, MAIN_MAP, MAIN_CHATTING, MAIN_COMMUNITY, MAIN_MY_PAGE,
-                COMMUNITY_REPORT, COMMUNITY_WITH, COMMUNITY_FREE-> true
+                COMMUNITY_REPORT, COMMUNITY_WITH, COMMUNITY_FREE -> true
+
                 else -> false
             }
         }
@@ -146,6 +154,7 @@ object LoginNav : Destination {
     override val deepLinks: List<NavDeepLink> = listOf(
         navDeepLink { uriPattern = "$DEEP_LINK_SCHEME.$route" })
 }
+
 object JoinNav : Destination {
     override val route: String = NavigationRouteName.JOIN
     override val title: String = NavigationTitle.JOIN
@@ -188,6 +197,15 @@ interface Destination {
     val deepLinks: List<NavDeepLink>
 }
 
+interface DestinationArg<T> : Destination {
+    val argName: String
+    val arguments: List<NamedNavArgument>
+
+    fun routeWithArgName() = "$route/{$argName}"
+    fun navigateWithArg(item: T): String
+    fun findArgument(navBackStackEntry: NavBackStackEntry): T?
+}
+
 object NavigationRouteName {
     const val DEEP_LINK_SCHEME = "bonobono://"
     const val MAIN_HOME = "main_home"
@@ -209,14 +227,20 @@ object NavigationRouteName {
     const val COMMUNITY_FREE = "free"
     const val COMMUNITY_WITH = "together"
     const val COMMUNITY_REPORT = "report"
+    const val LINK_WEB_VIEW = "link_view"
+    const val REPORT_MAP = "report_map"
+
+
     // FAB Route
     const val COMMUNITY_POST = "write_free"
     const val COMMUNITY_POST_WITH = "write_with"
     const val COMMUNITY_POST_REPORT = "write_report"
+
     // Gallery Route
     const val GALLERY = "gallery"
     const val GALLERY_WITH = "gallery_with"
     const val GALLERY_REPORT = "gallery_report"
+
     // Post Detail
     const val BOARD_DETAIL = "board_detail"
 

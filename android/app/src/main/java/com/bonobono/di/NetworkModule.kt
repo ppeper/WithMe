@@ -3,10 +3,13 @@ package com.bonobono.di
 import com.bonobono.BuildConfig
 import com.bonobono.data.interceptor.XAccessTokenInterceptor
 import com.bonobono.data.remote.CommunityService
+import com.bonobono.data.remote.MissionService
+import com.bonobono.data.remote.RegisterService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.internal.MissingMainCoroutineDispatcherFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -45,5 +48,24 @@ object NetworkModule {
             .build()
             .create(CommunityService::class.java)
 
+    @Singleton
+    @Provides
+    fun provideMissionService(okHttpClient: OkHttpClient): MissionService =
+        Retrofit.Builder()
+            .baseUrl(BuildConfig.API_KEY)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
+            .build()
+            .create(MissionService::class.java)
+
+    @Singleton
+    @Provides
+    fun providesRegisterService(okHttpClient: OkHttpClient) : RegisterService =
+        Retrofit.Builder()
+            .baseUrl(BuildConfig.API_KEY)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
+            .build()
+            .create(RegisterService::class.java)
 
 }

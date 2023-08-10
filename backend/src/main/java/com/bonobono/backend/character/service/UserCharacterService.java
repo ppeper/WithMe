@@ -1,10 +1,10 @@
 package com.bonobono.backend.character.service;
 
 import com.bonobono.backend.character.domain.UserCharacter;
-import com.bonobono.backend.character.dto.CharacterMainUpdateRequestDto;
 import com.bonobono.backend.character.dto.OurCharacterResponseDto;
-import com.bonobono.backend.character.dto.CharacterNameUpdateRequestDto;
+import com.bonobono.backend.character.dto.basket.CharacterMainUpdateRequestDto;
 import com.bonobono.backend.character.dto.UserChracterResponseDto;
+import com.bonobono.backend.character.dto.catchCharacter.UserCharacterWithSeaRequestDto;
 import com.bonobono.backend.character.repository.OurCharacterRepository;
 import com.bonobono.backend.character.repository.UserCharacterRepository;
 import com.bonobono.backend.member.domain.Member;
@@ -42,12 +42,12 @@ public class UserCharacterService {
         return new UserChracterResponseDto(userCharacter);
     }
 
-    @Transactional
-    public void updateName(Long character_id, CharacterNameUpdateRequestDto memberRequestDto) {
-        UserCharacter userCharacter = userCharacterRepository.findByMemberIdAndId(memberRequestDto.getMemberId(),character_id)
-                .orElseThrow(()-> new IllegalArgumentException("해당 유저 캐릭터가 없습니다 id:"+character_id));
-        userCharacter.updateName(memberRequestDto.getCustom_name());
-    }
+//    @Transactional
+//    public void updateName(Long character_id, CharacterNameUpdateRequestDto memberRequestDto) {
+//        UserCharacter userCharacter = userCharacterRepository.findByMemberIdAndId(memberRequestDto.getMemberId(),character_id)
+//                .orElseThrow(()-> new IllegalArgumentException("해당 유저 캐릭터가 없습니다 id:"+character_id));
+//        userCharacter.updateName(memberRequestDto.getCustom_name());
+//    }
 
     @Transactional
     public void updateMain(Long character_id, CharacterMainUpdateRequestDto memberRequestDto) {
@@ -69,7 +69,22 @@ public class UserCharacterService {
         userCharacter.updateMain(memberRequestDto.getIs_main());
     }
 
-    //캐릭터의 레벨 올리기
+    // user가 가지고 있지 않은 our캐릭터
+    @Transactional(readOnly = true)
+    public List<OurCharacterResponseDto> OurfindByList(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(()-> new IllegalArgumentException("해당 멤버가 없습니다. id =" + memberId));
+
+        return ourCharacterRepository.findNotLinkedOurCharactersByMember(member.getId())
+                .stream()
+                .map(OurCharacterResponseDto::new)
+                .collect(Collectors.toList());
+    }
 
 
+    public void save(UserCharacterWithSeaRequestDto requestDto) {
+        //id는 locationour id라서 이걸 주면, 내가 그 해변정보와 ourchar정보를 뽑을 수 있음
+
+
+    }
 }

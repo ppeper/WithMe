@@ -16,13 +16,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import com.bonobono.domain.model.community.Article
 import com.bonobono.presentation.R
+import com.bonobono.presentation.ui.theme.PrimaryBlue
 import com.bonobono.presentation.ui.theme.White
+import com.bonobono.presentation.utils.Constants
 
 @Composable
 fun DropDownMenuView(
     onUpdateClick: () -> Unit,
-    onDeleteClick: () -> Unit
+    onDeleteClick: () -> Unit,
+    onFinishClick: () -> Unit,
+    article: Article
 ) {
     var menuExpanded by remember {
         mutableStateOf(false)
@@ -50,6 +57,34 @@ fun DropDownMenuView(
                 },
                 onClick = { onDeleteClick() }
             )
+            if (article.type == Constants.TOGETHER) {
+                DropdownMenuItem(
+                    text = {
+                        Text(
+                            text = if (article.recruitStatus) "모집 마감" else "모집 하기",
+                            style = TextStyle(
+                                color = PrimaryBlue,
+                                fontWeight = FontWeight(700)
+                            )
+                        )
+                    },
+                    onClick = { onFinishClick() }
+                )
+            }
+            if (article.type == Constants.REPORT && !article.recruitStatus) {
+                DropdownMenuItem(
+                    text = {
+                        Text(
+                            text = "답변 완료",
+                            style = TextStyle(
+                                color = PrimaryBlue,
+                                fontWeight = FontWeight(700)
+                            )
+                        )
+                    },
+                    onClick = { onFinishClick() }
+                )
+            }
         }
     }
 }

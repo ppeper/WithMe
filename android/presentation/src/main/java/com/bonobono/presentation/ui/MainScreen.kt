@@ -42,16 +42,18 @@ import com.bonobono.presentation.ui.common.button.HomeFloatingActionButton
 import com.bonobono.presentation.ui.common.topbar.SharedTopAppBar
 import com.bonobono.presentation.ui.common.topbar.rememberAppBarState
 import com.bonobono.presentation.ui.community.BoardDetailScreen
-import com.bonobono.presentation.ui.community.BoardWriteScreen
 import com.bonobono.presentation.ui.community.CommunityScreen
+import com.bonobono.presentation.ui.community.BoardWriteScreen
 import com.bonobono.presentation.ui.community.GalleryScreen
 import com.bonobono.presentation.ui.community.views.board.CommonPostListView
-import com.bonobono.presentation.ui.game.GameScreen
-import com.bonobono.presentation.ui.game.QuizScreen
-import com.bonobono.presentation.ui.main.EncyclopediaScreen
+import com.bonobono.presentation.ui.main.mission.GameScreen
+import com.bonobono.presentation.ui.main.mission.QuizScreen
+import com.bonobono.presentation.ui.main.ecyclopedia.EncyclopediaScreen
+import com.bonobono.presentation.ui.community.views.link.WebView
+import com.bonobono.presentation.ui.community.views.map.ReportMapView
 import com.bonobono.presentation.ui.main.MainHomeScreen
-import com.bonobono.presentation.ui.main.MissionScreen
-import com.bonobono.presentation.ui.main.NoticeScreen
+import com.bonobono.presentation.ui.main.mission.MissionScreen
+import com.bonobono.presentation.ui.main.notice.NoticeScreen
 import com.bonobono.presentation.ui.map.CameraScreen
 import com.bonobono.presentation.ui.map.MainMapScreen
 import com.bonobono.presentation.ui.mypage.MainMyPageScreen
@@ -61,6 +63,7 @@ import com.bonobono.presentation.ui.mypage.SettingScreen
 import com.bonobono.presentation.ui.theme.PrimaryBlue
 import com.bonobono.presentation.ui.theme.TextGray
 import com.bonobono.presentation.ui.theme.White
+import com.bonobono.presentation.utils.Constants
 import com.bonobono.presentation.utils.NavigationUtils
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
@@ -190,7 +193,11 @@ fun MainBottomNavigationBar(navController: NavHostController, currentRoute: Stri
                 ),
                 label = { Text(text = item.title) },
                 icon = { Icon(painter = painterResource(id = item.icon), item.route) },
-                selected = currentRoute == item.route || (item.route == currentRoute?.let { parseCommunityRoute(it) }),
+                selected = currentRoute == item.route || (item.route == currentRoute?.let {
+                    parseCommunityRoute(
+                        it
+                    )
+                }),
                 onClick = {
                     if (item.route == NavigationRouteName.MAIN_MAP) {
                         multiplePermissionsState.launchMultiplePermissionRequest()
@@ -206,7 +213,12 @@ fun MainBottomNavigationBar(navController: NavHostController, currentRoute: Stri
 }
 
 fun parseCommunityRoute(route: String): String {
-    return if (route in listOf(COMMUNITY_FREE, COMMUNITY_WITH, COMMUNITY_REPORT)) MAIN_COMMUNITY else route
+    return if (route in listOf(
+            COMMUNITY_FREE,
+            COMMUNITY_WITH,
+            COMMUNITY_REPORT
+        )
+    ) MAIN_COMMUNITY else route
 }
 
 
@@ -326,7 +338,7 @@ fun MainNavigationScreen(
         communityNavigation(navController = navController)
 
         composable(
-            route = "${BoardDetailNav.route}/{type}/{articleId}",
+            route = "${BoardDetailNav.route}/{type}/{articleId}"
         ) {
             val type = it.arguments?.getString("type")
             val articleId = it.arguments?.getString("articleId")
@@ -337,6 +349,25 @@ fun MainNavigationScreen(
                     navController = navController
                 )
             }
+        }
+        composable(
+            route = "${NavigationRouteName.LINK_WEB_VIEW}/{url}"
+        ) {
+            val linkUrl = it.arguments?.getString("url")
+            linkUrl?.let { url ->
+                WebView(url = url)
+            }
+        }
+        composable(
+            route = NavigationRouteName.REPORT_MAP
+        ) {
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry(NavigationRouteName.COMMUNITY_POST_REPORT)
+            }
+            ReportMapView(
+                navController = navController,
+                communityViewModel = hiltViewModel(parentEntry)
+            )
         }
         // 마이페이지
         composable(
@@ -358,16 +389,19 @@ fun MainNavigationScreen(
             ProfileEditScreen(navController = navController)
         }
         composable(
-            route = QuizNav.route,
+            route = "${QuizNav.route}/{type}",
             deepLinks = QuizNav.deepLinks
         ) {
-            QuizScreen()
+            val type = it.arguments?.getString("type")
+            if (type != null) {
+                QuizScreen(type, navController = navController)
+            }
         }
         composable(
             route = GameNav.route,
             deepLinks = QuizNav.deepLinks
         ) {
-            GameScreen()
+            GameScreen(navController)
         }
     }
 }

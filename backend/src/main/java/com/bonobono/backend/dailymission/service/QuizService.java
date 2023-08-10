@@ -68,14 +68,16 @@ public class QuizService {
 
     //ox퀴즈
     @Transactional
-    public QuizeResponseDto checkoxQuiz(Long memberId) throws ParseException {
+    public QuizeResponseDto checkoxQuiz(String type, Long memberId) throws ParseException {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("해당멤버가 존재하지 않습니다+id" + memberId));
 
+        if (type.equals("quiz")) {
 //        if (oxQuizRepository.existsByMemberIdAndCheckDate(memberId, checkDate)) {
 //            log.trace("이미 게임에 참여했습니다");
 //            throw new AlreadyParticipatedException("이미 게임에 참여했습니다");
 //        }
+        }
 
         long qty = oxQuizProblemRepository.findAll().size();
         int idx = (int) (Math.random()*qty);
@@ -131,7 +133,7 @@ public class QuizService {
     }
 
     @Transactional
-    public boolean oxIsSuccess(QuizRequestDto quizRequestDto) {
+    public boolean oxIsSuccess(String type, QuizRequestDto quizRequestDto) {
         Member member = memberRepository.findById(quizRequestDto.getMemberId())
                 .orElseThrow(()->new IllegalArgumentException("해당 멤버가 존재하지 않습니다 +id"+quizRequestDto.getMemberId()));
 
@@ -147,7 +149,12 @@ public class QuizService {
             UserCharacter mainChracter = member.getMainCharacter();
             if (mainChracter != null) {
                 int currentExp = mainChracter.getExperience();
-                mainChracter.updateExperience(currentExp + 5); //경험치 5씩 증가
+                if (type.equals("map")) {
+                    mainChracter.updateExperience(currentExp + 20); //경험치 20씩 증가
+                }
+                else {
+                    mainChracter.updateExperience(currentExp + 5); //경험치 5씩 증가
+                }
                 upgradeCharacterLevelService.upgradeCharacter(mainChracter,mainChracter.getExperience());
             } else {
                 throw new MainCharacterNotFoundException("대표캐릭터가 존재하지 않습니다. 멤버ID:" + member.getId());

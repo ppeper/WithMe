@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.common.button.PrimaryColorButton
+import com.bonobono.presentation.ui.theme.PrimaryBlue
 import com.bonobono.presentation.ui.theme.White
 
 @Composable
@@ -65,7 +66,7 @@ fun PasswordEditView(onDismiss: () -> Unit) {
                     label = { Text(text = "새 비밀번호")},
                     modifier = Modifier.fillMaxWidth())
                 Spacer(modifier = Modifier.height(8.dp))
-                PrimaryColorButton(text = R.string.edit_profile_change_password) {
+                PrimaryColorButton(text = R.string.edit_profile_change_password, enabled = true, backgroundColor = PrimaryBlue) {
 
                 }
             }

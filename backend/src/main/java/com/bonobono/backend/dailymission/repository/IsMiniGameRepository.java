@@ -9,7 +9,5 @@ import java.util.List;
 
 public interface IsMiniGameRepository extends JpaRepository<IsMiniGame, Long> {
 
-    boolean existsByMemberIdAndCheckDate(Long memberId, LocalDate checkDate);
-
     List<IsMiniGame> findIsMiniGameByMemberAndCheckDateBetween(Member member, LocalDate startDate, LocalDate endDate);
 }

@@ -25,7 +25,7 @@ public class OurCharacter {
     @Enumerated(EnumType.STRING)
     private CharacterLevelEnum level;
 
-    @OneToMany(mappedBy = "ourCharacter")
-    private List<LocationOurCharacter> locationOurCharacters = new ArrayList<>();
+//    @OneToMany(mappedBy = "ourCharacter", fetch = FetchType.LAZY)
+//    private List<LocationOurCharacter> locationOurCharacters = new ArrayList<>();
 
 }

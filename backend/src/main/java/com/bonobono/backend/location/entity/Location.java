@@ -39,8 +39,8 @@ public class Location {
     @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Campaign> campaigns = new ArrayList<>();
 
-    @OneToMany(mappedBy = "location")
-    private List<LocationOurCharacter> locationOurCharacters = new ArrayList<>();
+//    @OneToMany(mappedBy = "location")
+//    private List<LocationOurCharacter> locationOurCharacters = new ArrayList<>();
 
     @Builder
     public Location(String name, double latitude, double longitude, double leftlatitude, double rightlatitude, double leftlongitude, double rightlongitude){

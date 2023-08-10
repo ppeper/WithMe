@@ -13,6 +13,8 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 public class UserChracterResponseDto {
+    private Long id;
+    private Long char_ord_id;
     private String custom_name;
     private Boolean is_main;
     private Integer experience;
@@ -23,12 +25,14 @@ public class UserChracterResponseDto {
 
 
     public UserChracterResponseDto(UserCharacter userCharacter) {
+        this.id = userCharacter.getId();
         this.custom_name = userCharacter.getCustom_name();
         this.is_main=userCharacter.getMain();
         this.experience=userCharacter.getExperience();
         this.createdDate=LocalDateTime.now();
 
         //ourcharacter에서 가져온 정보
+        this.char_ord_id = userCharacter.getOurCharacter().getCharOrdId();
         this.level = userCharacter.getOurCharacter().getLevel();
         this.description = userCharacter.getOurCharacter().getDescription();
         this.memberId=userCharacter.getMember().getId();

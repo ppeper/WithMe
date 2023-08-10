@@ -83,7 +83,8 @@ public class UserCharacterService {
 
 
     public void save(UserCharacterWithSeaRequestDto requestDto) {
-        //
+        //id는 locationour id라서 이걸 주면, 내가 그 해변정보와 ourchar정보를 뽑을 수 있음
+
 
     }
 }

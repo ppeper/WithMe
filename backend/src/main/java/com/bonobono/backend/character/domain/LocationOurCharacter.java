@@ -1,6 +1,7 @@
 package com.bonobono.backend.character.domain;
 
 import com.bonobono.backend.location.entity.Location;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -23,6 +24,7 @@ public class LocationOurCharacter {
     @JoinColumn(name = "our_character_id")
     private OurCharacter ourCharacter;
 
+    @Builder
     public LocationOurCharacter(Location location, OurCharacter ourCharacter) {
         this.location = location;
         this.ourCharacter=ourCharacter;

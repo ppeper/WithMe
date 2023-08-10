@@ -199,3 +199,13 @@ VALUES ('경기도 수원시', 37.25748884382484, 127.03120068818286, 37.2571888
 --
 -- INSERT INTO report_like (report_id, member_id)
 -- VALUES (3, 2);
+INSERT INTO location_our_character (location_id, our_character_id)
+VALUES
+    (1, 1),
+    (1, 2),
+    (1, 3),
+    (1, 4),
+    (2, 1),
+    (2, 2),
+    (2, 3),
+    (2, 4);

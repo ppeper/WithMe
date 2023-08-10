@@ -4,15 +4,10 @@ import com.bonobono.backend.character.domain.LocationOurCharacter;
 import com.bonobono.backend.character.dto.catchCharacter.NowPositionRequestDto;
 import com.bonobono.backend.character.dto.catchCharacter.OurChacracterWithSeaResponseDto;
 import com.bonobono.backend.character.repository.LocationOurCharacterRepository;
-import com.bonobono.backend.character.repository.OurCharacterRepository;
 import com.bonobono.backend.dailymission.domain.OXQuizProblem;
-import com.bonobono.backend.dailymission.dto.MiniGameResponseDto;
 import com.bonobono.backend.dailymission.dto.OXQuizResponseDto;
-import com.bonobono.backend.dailymission.dto.QuizeResponseDto;
 import com.bonobono.backend.dailymission.repository.OXQuizProblemRepository;
-import com.bonobono.backend.dailymission.repository.OXQuizRepository;
 import com.bonobono.backend.global.exception.LocationOurChracterNotFoundException;
-import com.bonobono.backend.global.exception.MainCharacterNotFoundException;
 import com.bonobono.backend.location.entity.Location;
 import com.bonobono.backend.location.repository.LocationRepository;
 import com.bonobono.backend.member.domain.Member;
@@ -22,15 +17,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
-import java.util.stream.Collectors;
-
 @RequiredArgsConstructor
 @Service
 public class OurCharacterService {
@@ -60,11 +49,10 @@ public class OurCharacterService {
             int character_count = 10;
 
             //캐릭터 id, 위도, 경도를 dto에 저장
-            for (int i=1; i<character_count+1; i++) {
-                double randomLatitude = leftLatitude + (rightLatitude- leftLatitude)*random.nextDouble();
-                double randomLongitude = leftLongtitude + (rightLongtitude-leftLongtitude)*random.nextDouble();
-                LocationOurCharacter locationOurCharacter = locationOurCharacterRepository.findById(Long.valueOf(i))
-                        .orElseThrow();
+            for (LocationOurCharacter locationOurCharacter : locationOurCharacterList) {
+                double randomLatitude = leftLatitude + (rightLatitude - leftLatitude) * random.nextDouble();
+                double randomLongitude = leftLongtitude + (rightLongtitude - leftLongtitude) * random.nextDouble();
+
                 bound.add(new OurChacracterWithSeaResponseDto(randomLatitude, randomLongitude, locationOurCharacter));
             }
         }

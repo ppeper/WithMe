@@ -44,14 +44,8 @@ import com.bonobono.presentation.ui.common.topbar.rememberAppBarState
 import com.bonobono.presentation.ui.community.BoardDetailScreen
 import com.bonobono.presentation.ui.community.CommunityScreen
 import com.bonobono.presentation.ui.community.BoardWriteScreen
-import com.bonobono.presentation.ui.community.CommunityScreen
 import com.bonobono.presentation.ui.community.GalleryScreen
 import com.bonobono.presentation.ui.community.views.board.CommonPostListView
-import com.bonobono.presentation.ui.game.GameScreen
-import com.bonobono.presentation.ui.game.QuizScreen
-import com.bonobono.presentation.ui.main.EncyclopediaScreen
-import com.bonobono.presentation.ui.common.button.CommunityFloatingActionButton
-import com.bonobono.presentation.ui.common.button.HomeFloatingActionButton
 import com.bonobono.presentation.ui.main.mission.GameScreen
 import com.bonobono.presentation.ui.main.mission.QuizScreen
 import com.bonobono.presentation.ui.main.ecyclopedia.EncyclopediaScreen
@@ -197,7 +191,11 @@ fun MainBottomNavigationBar(navController: NavHostController, currentRoute: Stri
                 ),
                 label = { Text(text = item.title) },
                 icon = { Icon(painter = painterResource(id = item.icon), item.route) },
-                selected = currentRoute == item.route || (item.route == currentRoute?.let { parseCommunityRoute(it) }),
+                selected = currentRoute == item.route || (item.route == currentRoute?.let {
+                    parseCommunityRoute(
+                        it
+                    )
+                }),
                 onClick = {
                     if (item.route == NavigationRouteName.MAIN_MAP) {
                         multiplePermissionsState.launchMultiplePermissionRequest()
@@ -213,7 +211,12 @@ fun MainBottomNavigationBar(navController: NavHostController, currentRoute: Stri
 }
 
 fun parseCommunityRoute(route: String): String {
-    return if (route in listOf(COMMUNITY_FREE, COMMUNITY_WITH, COMMUNITY_REPORT)) MAIN_COMMUNITY else route
+    return if (route in listOf(
+            COMMUNITY_FREE,
+            COMMUNITY_WITH,
+            COMMUNITY_REPORT
+        )
+    ) MAIN_COMMUNITY else route
 }
 
 

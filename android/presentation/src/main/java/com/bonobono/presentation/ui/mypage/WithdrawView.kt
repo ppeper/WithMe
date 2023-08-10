@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.bonobono.presentation.R
-import com.bonobono.presentation.ui.main.component.GifLoader
+import com.bonobono.presentation.ui.common.GifLoader
 import com.bonobono.presentation.ui.theme.LightGray
 import com.bonobono.presentation.ui.theme.PrimaryBlue
 import com.bonobono.presentation.ui.theme.White

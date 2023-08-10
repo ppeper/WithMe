@@ -1,5 +1,6 @@
 package com.bonobono.data.repository.register
 
+import android.util.Log
 import com.bonobono.data.local.PreferenceDataSource
 import com.bonobono.data.mapper.toDomain
 import com.bonobono.data.remote.RegisterService
@@ -12,6 +13,7 @@ import com.bonobono.domain.model.registration.Token
 import com.bonobono.domain.repository.registration.RegisterRepository
 import javax.inject.Inject
 
+private const val TAG = "싸피"
 class RegisterRepositoryImpl @Inject constructor(
     private val  preferenceDatasource: PreferenceDataSource,
     private val registerService: RegisterService
@@ -38,7 +40,9 @@ class RegisterRepositoryImpl @Inject constructor(
 
     override suspend fun login(register: Register) {
         val token = registerService.login(register).toDomain()
+        Log.d(TAG, "login: accesstoken : ${token.accessToken} / accesstokenExpire : ${token.accessTokenExpiresIn} / refresh token: ${token.refreshToken}  / grant type : ${token.grantType}")
         preferenceDatasource.putString("access_token", token.accessToken)
+        Log.d(TAG, "login: 토큰 들어갔을까?? ${preferenceDatasource.getString("access_token")}")
     }
 
     override suspend fun logout(): NetworkResult<String> {

@@ -1,5 +1,6 @@
 package com.bonobono.di
 
+import android.content.Context
 import com.bonobono.data.local.PreferenceDataSource
 import com.bonobono.data.remote.CommunityService
 import com.bonobono.data.remote.MissionService
@@ -13,6 +14,7 @@ import com.bonobono.domain.repository.registration.RegisterRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -41,5 +43,11 @@ object RepositoryModule {
             missionService = missionService,
             preferenceDatasource = preferenceDataSource
         )
+    }
+
+    @Provides
+    @Singleton
+    fun providePreferenceDataSource(@ApplicationContext context: Context) : PreferenceDataSource {
+        return PreferenceDataSource(context)
     }
 }

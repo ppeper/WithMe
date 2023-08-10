@@ -8,7 +8,10 @@ import javax.inject.Inject
 class GetOXQuizUseCase @Inject constructor(
     private val missionRepository: MissionRepository
 ) {
-    suspend operator fun invoke(memberId: Int): NetworkResult<Mission> {
-        return missionRepository.getOXQuiz(memberId)
+    suspend operator fun invoke(memberId: Int): Mission {
+        return when(val result = missionRepository.getOXQuiz(memberId)) {
+            is NetworkResult.Success -> result.data
+            else -> Mission()
+        }
     }
 }

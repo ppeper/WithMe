@@ -7,6 +7,7 @@ import com.bonobono.data.remote.MissionService
 import com.bonobono.data.remote.handleApi
 import com.bonobono.domain.model.NetworkResult
 import com.bonobono.domain.model.mission.IsSuccess
+import com.bonobono.domain.model.mission.MiniGame
 import com.bonobono.domain.model.mission.Mission
 import com.bonobono.domain.model.mission.TotalScore
 import com.bonobono.domain.repository.MissionRepository
@@ -34,8 +35,12 @@ class MissionRepositoryImpl @Inject constructor(
         return handleApi { missionService.postFourQuizIsSuccess(isSuccess) }
     }
 
-    override suspend fun getMiniGame(memberId: Int): NetworkResult<Mission> {
+    override suspend fun getMiniGame(memberId: Int): NetworkResult<MiniGame> {
         return handleApi { missionService.getMiniGame(memberId = memberId).toDomain() }
+    }
+
+    override suspend fun postIsSuccessMiniGame(isSuccess: IsSuccess): NetworkResult<Boolean> {
+        return handleApi { missionService.postMiniGame(isSuccess) }
     }
 
 
@@ -59,6 +64,7 @@ class MissionRepositoryImpl @Inject constructor(
         //preferenceDatasource.remove(Constants.OX_QUIZ)
         preferenceDatasource.remove(Constants.ATTENDANCE)
         preferenceDatasource.remove(Constants.FOUR_QUIZ)
+        preferenceDatasource.remove(Constants.GAME)
 
         val calendar = Calendar.getInstance()
         val currentDay = calendar.get(Calendar.DAY_OF_YEAR)

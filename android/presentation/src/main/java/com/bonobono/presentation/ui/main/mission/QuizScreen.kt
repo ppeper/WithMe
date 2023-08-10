@@ -9,12 +9,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -24,19 +22,15 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
-import com.bonobono.domain.model.NetworkResult
 import com.bonobono.domain.model.mission.IsSuccess
 import com.bonobono.domain.model.mission.Mission
 import com.bonobono.presentation.R
-import com.bonobono.presentation.ui.common.CheckCountDialog
 import com.bonobono.presentation.ui.main.component.PromptOXButtonRow
 import com.bonobono.presentation.ui.main.component.QuizPromptBox
 import com.bonobono.presentation.ui.common.GifLoader
 import com.bonobono.presentation.ui.common.SubmitButton
 import com.bonobono.presentation.ui.common.text.CustomTextStyle
 import com.bonobono.presentation.ui.main.component.OverDialog
-import com.bonobono.presentation.ui.main.component.PromptInputRow
 import com.bonobono.presentation.utils.Constants
 import com.bonobono.presentation.viewmodel.MissionViewModel
 
@@ -48,11 +42,6 @@ fun QuizScreen(
     navController: NavController,
     missionViewModel: MissionViewModel = hiltViewModel()
 ) {
-
-    LaunchedEffect(Unit) {
-        missionViewModel.getMission(1, type)
-    }
-
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
             painter = painterResource(id = R.drawable.background_quiz),
@@ -69,7 +58,8 @@ fun QuizScreen(
         )
         QuizPromptBox(
             modifier = Modifier.align(Alignment.BottomCenter),
-            navController = navController
+            navController = navController,
+            type
         )
     }
 }
@@ -78,43 +68,23 @@ fun QuizScreen(
 fun QuizPromptBox(
     modifier: Modifier,
     navController: NavController,
+    type: String,
     missionViewModel: MissionViewModel = hiltViewModel()
 ) {
-    val missionResult by missionViewModel.mission.collectAsState()
-    val problemState = remember { mutableStateOf(Mission()) }
-    val problemTextState = remember { mutableStateOf("") }
+    val mission by missionViewModel.mission.collectAsStateWithLifecycle()
+    val isSuccess by missionViewModel.isSuccess.collectAsState()
 
-    val isSuccessResult by missionViewModel.isSuccess.collectAsState()
-    val isSuccessState = remember { mutableStateOf(false) }
-
-    val showDialog = remember { mutableStateOf(false) }
-
-    getProblem(missionResult, problemState, problemTextState)
-
-    checkAnswer(
-        isSuccessState = isSuccessResult,
-        isSuccess = isSuccessState,
-        showDialog = showDialog
-    )
-
-    if (showDialog.value) {
-        if (isSuccessState.value) {
-            OverDialog(title = "정답!!", content = "+Exp 10", source = R.raw.animation_fairy, commentary = problemState.value.commentary) {
-                missionViewModel.putCompletedTime(Constants.OX_QUIZ, System.currentTimeMillis())
-                navController.popBackStack()
-            }
-        } else {
-            OverDialog(title = "실패..", content = "", source = R.raw.animation_devil,  commentary = problemState.value.commentary) {
-                missionViewModel.putCompletedTime(Constants.OX_QUIZ, System.currentTimeMillis())
-                navController.popBackStack()
-            }
-        }
+    LaunchedEffect(Unit) {
+        missionViewModel.getMission(1, type)
+        Log.d(TAG, "QuizPromptBox: $mission")
     }
-    if (problemState.value.choices.isNullOrEmpty()) {
+
+
+    if (mission.choices.isNullOrEmpty()) {
         QuizPromptBox(
             name = stringResource(id = R.string.fairy_name),
             content = stringResource(R.string.quiz_prompt_guide),
-            problem = problemTextState.value,
+            problem = mission.problem,
             modifier = modifier
         ) {
             PromptOXButtonRow(
@@ -125,7 +95,7 @@ fun QuizPromptBox(
                         isSuccess = IsSuccess(
                             "X",
                             1,
-                            problemState.value.problemId
+                            mission.problemId
                         )
                     )
 
@@ -140,7 +110,7 @@ fun QuizPromptBox(
                         isSuccess = IsSuccess(
                             "O",
                             1,
-                            problemState.value.problemId
+                            mission.problemId
                         )
                     )
                     missionViewModel.putCompletedTime(
@@ -160,9 +130,9 @@ fun QuizPromptBox(
         QuizPromptBox(
             name = stringResource(id = R.string.fairy_name),
             content = stringResource(R.string.quiz_prompt_guide),
-            problem = problemTextState.value,
+            problem = mission.problem,
             modifier = modifier,
-            choices = problemState.value.choices!!,
+            choices = mission.choices!!,
             selectedIndex = selectedIndex
         ) {
             SubmitButton(
@@ -170,10 +140,11 @@ fun QuizPromptBox(
                 text = "제출",
                 textStyle = CustomTextStyle.quizContentStyle
             ) {
+
                 missionViewModel.postIsSuccess(isSuccess = IsSuccess(
-                    problemState.value.choices!![selectedIndex.value].content,
+                    mission.choices!![selectedIndex.value].content,
                     1,
-                    problemState.value.problemId
+                    mission.problemId
                 ), type = Constants.FOUR_QUIZ)
 
                 missionViewModel.putCompletedTime(
@@ -181,46 +152,23 @@ fun QuizPromptBox(
                     System.currentTimeMillis()
                 )
             }
+            checkAnswer(isSuccess = isSuccess, mission = mission, navController = navController, missionViewModel = missionViewModel)
         }
     }
 }
 
-fun getProblem(
-    missionResult: NetworkResult<Mission>,
-    problemState: MutableState<Mission>,
-    problemTextState: MutableState<String>
-) {
-    when (missionResult) {
-        is NetworkResult.Loading -> {}
-        is NetworkResult.Success -> {
-            problemState.value = missionResult.data
-            problemTextState.value = problemState.value.problem
-            Log.d(TAG, "getProblem: ${problemState.value.choices}")
+@Composable
+fun checkAnswer(isSuccess: Boolean?, mission: Mission, navController: NavController, missionViewModel: MissionViewModel) {
+    if (isSuccess == true) {
+        OverDialog(title = "정답!!", content = "+Exp 10", source = R.raw.animation_fairy, commentary = mission.commentary) {
+            missionViewModel.putCompletedTime(Constants.OX_QUIZ, System.currentTimeMillis())
+            navController.popBackStack()
         }
-
-        is NetworkResult.Error -> {}
-    }
-}
-
-
-fun checkAnswer(
-    isSuccessState: NetworkResult<Boolean>,
-    isSuccess: MutableState<Boolean>,
-    showDialog: MutableState<Boolean>
-) {
-    when (isSuccessState) {
-        is NetworkResult.Loading -> {
-            Log.d(TAG, "checkAnswer: loading")
-        }
-
-        is NetworkResult.Success -> {
-            isSuccess.value = isSuccessState.data
-            showDialog.value = true
-            Log.d(TAG, "checkAnswer: ${showDialog.value}")
-        }
-
-        is NetworkResult.Error -> {
-            Log.d(TAG, "checkAnswer: error")
+    } else if (isSuccess == false) {
+        OverDialog(title = "실패..", content = "", source = R.raw.animation_devil,  commentary = mission.commentary) {
+            missionViewModel.putCompletedTime(Constants.OX_QUIZ, System.currentTimeMillis())
+            navController.popBackStack()
         }
     }
 }
+

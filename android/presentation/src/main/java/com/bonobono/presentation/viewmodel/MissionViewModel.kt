@@ -2,11 +2,14 @@ package com.bonobono.presentation.viewmodel
 
 import android.util.Log
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bonobono.domain.model.NetworkResult
 import com.bonobono.domain.model.mission.IsSuccess
+import com.bonobono.domain.model.mission.MiniGame
 import com.bonobono.domain.model.mission.Mission
 import com.bonobono.domain.model.mission.TotalScore
 import com.bonobono.domain.usecase.mission.GetFourQuizUseCase
@@ -15,6 +18,7 @@ import com.bonobono.domain.usecase.mission.GetOXQuizUseCase
 import com.bonobono.domain.usecase.mission.GetTotalScoreUseCase
 import com.bonobono.domain.usecase.mission.PostAttendanceUseCase
 import com.bonobono.domain.usecase.mission.PostIsSuccessFourQuizUseCase
+import com.bonobono.domain.usecase.mission.PostIsSuccessMiniGameUseCase
 import com.bonobono.domain.usecase.mission.PostIsSuccessOXQuizUseCase
 import com.bonobono.domain.usecase.mission.local.GetCompletedTimeUseCase
 import com.bonobono.domain.usecase.mission.local.PutCompletedTimeUseCase
@@ -34,17 +38,21 @@ class MissionViewModel @Inject constructor(
     private val postAttendanceUseCase: PostAttendanceUseCase,
     private val postIsSuccessOXQuizUseCase: PostIsSuccessOXQuizUseCase,
     private val postIsSuccessFourQuizUseCase: PostIsSuccessFourQuizUseCase,
+    private val postIsSuccessMiniGameUseCase: PostIsSuccessMiniGameUseCase,
     private val putCompletedTimeUseCase: PutCompletedTimeUseCase,
     private val getCompletedTimeUseCase: GetCompletedTimeUseCase,
     private val removeCompletedTimeUseCase: RemoveCompletedTimeUseCase,
     private val getTotalScoreUseCase: GetTotalScoreUseCase
 ) : ViewModel() {
 
-    private val _mission = MutableStateFlow<NetworkResult<Mission>>(NetworkResult.Loading)
-    val mission: StateFlow<NetworkResult<Mission>> = _mission
+    private val _mission = MutableStateFlow<Mission>(Mission())
+    val mission: StateFlow<Mission> = _mission
 
-    private val _isSuccess = MutableStateFlow<NetworkResult<Boolean>>(NetworkResult.Loading)
-    val isSuccess: StateFlow<NetworkResult<Boolean>> = _isSuccess
+    private val _miniGame = MutableStateFlow(MiniGame())
+    val miniGame: StateFlow<MiniGame> = _miniGame
+
+    private val _isSuccess = MutableStateFlow<Boolean?>(null)
+    val isSuccess: StateFlow<Boolean?> = _isSuccess
 
     private val _totalScore = MutableStateFlow<TotalScore>(TotalScore())
     private val totalScore: StateFlow<TotalScore> = _totalScore
@@ -53,7 +61,7 @@ class MissionViewModel @Inject constructor(
         when (type) {
             Constants.OX_QUIZ -> _mission.emit(getOXQuizUseCase.invoke(memberId))
             Constants.FOUR_QUIZ -> _mission.emit(getFourQuizUseCase.invoke(memberId))
-            Constants.GAME -> _mission.emit(getMiniGameUseCase.invoke(memberId))
+            Constants.GAME -> _miniGame.emit(getMiniGameUseCase(memberId))
         }
     }
 
@@ -61,6 +69,7 @@ class MissionViewModel @Inject constructor(
         when (type) {
             Constants.OX_QUIZ -> _isSuccess.emit(postIsSuccessOXQuizUseCase.invoke(isSuccess))
             Constants.FOUR_QUIZ -> _isSuccess.emit(postIsSuccessFourQuizUseCase.invoke(isSuccess))
+            Constants.GAME -> _isSuccess.emit(postIsSuccessMiniGameUseCase.invoke(isSuccess))
         }
     }
 

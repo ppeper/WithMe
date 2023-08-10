@@ -1,5 +1,6 @@
 package com.bonobono.data.remote
 
+import com.bonobono.data.model.mission.response.MiniGameResponse
 import com.bonobono.data.model.mission.response.MissionResponse
 import com.bonobono.data.model.mission.response.TotalScoreResponse
 import com.bonobono.domain.model.mission.IsSuccess
@@ -25,8 +26,11 @@ interface MissionService {
         @Body isSuccess: IsSuccess
     ) : Boolean
 
-    @GET("quiz/four_quiz")
-    suspend fun getMiniGame(@Query(value = "memberId") memberId: Int) : MissionResponse
+    @GET("minigame")
+    suspend fun getMiniGame(@Query(value = "memberId") memberId: Int) : MiniGameResponse
+
+    @POST("minigame/IsSuccess")
+    suspend fun postMiniGame(@Body isSuccess: IsSuccess) : Boolean
 
     @POST("attendance")
     suspend fun postAttendance(@Query(value = "memberId") memberId: Int)

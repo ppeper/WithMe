@@ -23,7 +23,7 @@ interface RegisterRepository {
     suspend fun signUp(register: Register) : NetworkResult<Member>
 
     // 로그인
-    suspend fun login(register: Register) : NetworkResult<Token>
+    suspend fun login(register: Register)
 
     // 로그아웃
     suspend fun logout() : NetworkResult<String>

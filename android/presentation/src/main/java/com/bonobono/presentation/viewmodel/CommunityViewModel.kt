@@ -39,7 +39,7 @@ class CommunityViewModel @Inject constructor(
     private val _articleLikeState = MutableStateFlow<NetworkResult<Unit>>(NetworkResult.Loading)
     val articleLikeState = _articleLikeState.asStateFlow()
 
-    private val _deleteArticleState = MutableStateFlow(Unit)
+    private val _deleteArticleState = MutableStateFlow<NetworkResult<Unit>>(NetworkResult.Loading)
     val deleteArticleState = _deleteArticleState.asStateFlow()
 
     // 링크 리스트

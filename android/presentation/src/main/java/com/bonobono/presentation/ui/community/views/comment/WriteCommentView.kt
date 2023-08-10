@@ -14,6 +14,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -57,9 +58,8 @@ fun WriteCommentView(
 ) {
     var postContentState by rememberSaveable { mutableStateOf("") }
     val keyboardController = LocalSoftwareKeyboardController.current
-    val commentState by commentViewModel.commentState.collectAsStateWithLifecycle()
+    val commentState by commentViewModel.commentState
     val commentId by commentViewModel.commentId.collectAsStateWithLifecycle()
-
     Column {
         Divider(color = DividerGray)
         Row(
@@ -102,12 +102,13 @@ fun WriteCommentView(
                         }
                         Log.d("TEST", "WriteCommentView: 댓글 $comment")
                         commentViewModel.writeComment(type, articleId, comment = comment)
-                        if (commentState is NetworkResult.Success<Comment>) {
-                            val comment = (commentState as NetworkResult.Success<Comment>).data
+//                        if (commentState is NetworkResult.Success<Comment>) {
+//                            Log.d("TEST", "WriteCommentView: SUCCESS")
+//                            val comment = (commentState as NetworkResult.Success<Comment>).data
                             onWriteCommentClicked(comment)
-                        }
-                        // TODO("테스트")
-                        onWriteCommentClicked(comment)
+//                        } else {
+//                            Log.d("TEST", "WriteCommentView: ERROR")
+//                        }
                     }
                     keyboardController?.hide()
                     commentViewModel.setCommentId(-1)

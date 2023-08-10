@@ -1,7 +1,5 @@
 package com.bonobono.data.repository.community
 
-import android.net.Uri
-import android.util.Log
 import com.bonobono.data.mapper.Converter
 import com.bonobono.data.mapper.toDomain
 import com.bonobono.data.mapper.toModel
@@ -11,10 +9,7 @@ import com.bonobono.domain.model.NetworkResult
 import com.bonobono.domain.model.community.Article
 import com.bonobono.domain.model.community.Comment
 import com.bonobono.domain.repository.community.CommunityRepository
-import okhttp3.MultipartBody
-import java.io.File
 import javax.inject.Inject
-import kotlin.math.log
 
 class CommunityRepositoryImpl @Inject constructor(
     private val communityService: CommunityService

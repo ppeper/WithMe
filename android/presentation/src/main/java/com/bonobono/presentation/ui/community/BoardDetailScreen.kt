@@ -73,7 +73,6 @@ import com.bonobono.presentation.ui.community.views.comment.CommentView
 import com.bonobono.presentation.ui.community.views.comment.NoCommentView
 import com.bonobono.presentation.ui.community.views.comment.WriteCommentView
 import com.bonobono.presentation.ui.community.views.link.LinkImageTitle
-import com.bonobono.presentation.ui.community.views.link.WebView
 import com.bonobono.presentation.ui.community.views.link.getMetaData
 import com.bonobono.presentation.ui.theme.Black_100
 import com.bonobono.presentation.ui.theme.Black_70
@@ -114,7 +113,6 @@ fun BoardDetailScreen(
 
     // 게시글 정보 불러오기
     LaunchedEffect(Unit) {
-        Log.d("TEST", "BoardDetailScreen: 게시글 데이터")
         communityViewModel.getArticleById(type, articleId)
     }
     when (articleState) {
@@ -123,12 +121,7 @@ fun BoardDetailScreen(
         }
 
         is NetworkResult.Success -> {
-
-        }
-
-        is NetworkResult.Error -> {
-            // TODO("테스트 용")
-            val article = dummyArticle
+            val article = (articleState as NetworkResult.Success<Article>).data.copy(articleId = articleId)
             var comments by remember { mutableStateOf(article.comments) }
             var isTextFieldFocused by remember { mutableStateOf(false) }
             var commentCnt by remember { mutableStateOf(article.commentCnt) }
@@ -159,13 +152,14 @@ fun BoardDetailScreen(
                                         }.toList()
                                     }
                                 } else {
+                                    Log.d("TEST", "BoardDetailScreen: 댓글 추가 $comment")
                                     comments = comments.toMutableList().apply { add(comment) }.toList()
                                 }
+                                Log.d("TEST", "BoardDetailScreen: 댓글 추가 $comment")
                                 // 댓글 수 증가
                                 commentCnt++
                             },
                             onFocusChanged = {
-                                Log.d("TEST", "BoardDetailScreen: 포커스")
                                 isTextFieldFocused = !isTextFieldFocused
                             }
                         )
@@ -196,7 +190,7 @@ fun BoardDetailScreen(
                                     verticalArrangement = Arrangement.spacedBy(16.dp)
                                 ) {
 
-                                    WriterView(type = type, communityViewModel = communityViewModel, article = article)
+                                    WriterView(type = type, communityViewModel = communityViewModel, article = article, navController = navController)
 
                                     Text(
                                         text = article.title,
@@ -242,7 +236,7 @@ fun BoardDetailScreen(
                             if (article.comments.isEmpty()) {
                                 item { NoCommentView() }
                             } else {
-                                items(comments, key = { comment -> comment.hashCode()}) { item ->
+                                items(comments) { item ->
                                     CommentView(type = type, articleId = articleId, comments = item)
                                 }
                             }
@@ -250,6 +244,9 @@ fun BoardDetailScreen(
                     }
                 }
             }
+        }
+
+        is NetworkResult.Error -> {
         }
     }
 }
@@ -260,7 +257,17 @@ fun WriterView(
     type: String,
     communityViewModel: CommunityViewModel,
     article: Article,
+    navController: NavController
 ) {
+
+    val deleteState by communityViewModel.deleteArticleState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        if (deleteState is NetworkResult.Success<Unit>) {
+            navController.popBackStack()
+        }
+    }
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -276,7 +283,9 @@ fun WriterView(
         // TODO("내가 쓴 글만 DropDown 보이기 -> 로그인 완성되면 Token으로 확인)
         DropDownMenuView(
             onUpdateClick = {},
-            onDeleteClick = { communityViewModel.deleteArticle(type, article.articleId)},
+            onDeleteClick = {
+                communityViewModel.deleteArticle(type, article.articleId)
+            },
             onFinishClick = {},
             article = article
         )
@@ -299,7 +308,7 @@ fun ProfileView(
                 .data(article.profileImg)
                 .error(R.drawable.default_profile)
                 .build(),
-            contentDescription = "업로드 사진",
+            contentDescription = "프로필",
             contentScale = ContentScale.Crop
         )
         Spacer(modifier = modifier.size(12.dp))
@@ -312,7 +321,7 @@ fun ProfileView(
                 )
             )
             Text(
-                text = "DateUtils.dateToString(article.createdDate)",
+                text = DateUtils.dateToString(article.createdDate),
                 style = TextStyle(
                     fontSize = 12.sp,
                     color = TextGray,
@@ -451,7 +460,8 @@ fun PreviewWriterView() {
     WriterView(
         type = "free",
         communityViewModel = hiltViewModel(),
-        article = dummyArticle
+        article = dummyArticle,
+        navController = rememberNavController()
     )
 }
 

@@ -2,6 +2,7 @@ package com.bonobono.data.remote
 
 import com.bonobono.data.model.community.request.ArticleRequest
 import com.bonobono.data.model.community.request.CommentRequest
+import com.bonobono.data.model.community.response.ArticleDetailResponse
 import com.bonobono.domain.model.NetworkResult
 import com.bonobono.domain.model.community.Article
 import com.bonobono.data.model.community.response.ArticleResponse
@@ -31,7 +32,7 @@ interface CommunityService {
     suspend fun getArticleById(
         @Path(value = "type") communityType: String,
         @Path(value = "articleId") articleId: Long,
-    ): ArticleResponse
+    ): ArticleDetailResponse
 
     // 일반 게시글 등록
     @Multipart

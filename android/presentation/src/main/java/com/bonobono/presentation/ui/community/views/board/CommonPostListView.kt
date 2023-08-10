@@ -90,7 +90,6 @@ fun CommonPostListView(
         }
         is NetworkResult.Success -> {
             val articleList = (state as NetworkResult.Success<List<Article>>).data
-            Log.d("TEST", "CommonPostListView: $articleList")
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 contentPadding = PaddingValues(16.dp),

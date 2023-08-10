@@ -8,6 +8,7 @@ import java.util.Date
 @Parcelize
 data class CommentResponse(
     val id: Long,
+    val memberId: Long,
     val parentCommentId: Long? = null,
     val content: String,
     val profileImg: String?,

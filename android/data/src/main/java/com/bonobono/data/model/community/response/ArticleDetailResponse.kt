@@ -7,6 +7,7 @@ import java.util.Date
 
 @Parcelize
 data class ArticleDetailResponse(
+    val memberId: Long,
     val articleId: Long,
     val type: String,
     val title: String,
@@ -14,7 +15,7 @@ data class ArticleDetailResponse(
     val comments: List<CommentResponse>,
     val likes: Int,
     val nickname: String,
-    val profileImg: String,
+    val profileImg: String?,
     val commentCnt: Int,
     val images: List<ImageResponse>?,
     val liked: Boolean,

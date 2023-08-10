@@ -36,6 +36,7 @@ fun ArticleResponse.toDomain(): Article {
 
 fun ArticleDetailResponse.toDomain(): Article {
     return Article(
+        memberId = memberId,
         articleId = articleId,
         type = type,
         title = title,
@@ -44,10 +45,11 @@ fun ArticleDetailResponse.toDomain(): Article {
         commentCnt = commentCnt,
         comments = comments.map { it.toDomain() },
         likes = likes,
+        liked = liked,
         nickname = nickname,
-        profileImg = profileImg,
+        profileImg = profileImg ?: "",
         recruitStatus = recruitStatus,
-        url = url,
+        url = url.ifBlank { "https://" },
         urlTitle = urlTitle,
         createdDate = createdDate,
         views = views
@@ -69,11 +71,12 @@ fun Article.toModel(): RequestBody {
 fun CommentResponse.toDomain(): Comment {
     return Comment(
         id = id,
+        memberId = memberId,
         parentCommentId = parentCommentId,
         content = content,
         nickname = nickname,
         profileImg = profileImg,
-        childComments = childComments.map { it.toDomain() },
+        childComments = childComments?.map { it.toDomain() } ?: emptyList(),
         liked = liked,
         likes = likes,
         createdDate = createdDate

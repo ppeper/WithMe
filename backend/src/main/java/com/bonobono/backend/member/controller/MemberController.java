@@ -7,7 +7,6 @@ import com.bonobono.backend.member.dto.response.MemberResponseDto;
 import com.bonobono.backend.member.dto.response.TokenDto;
 import com.bonobono.backend.member.repository.MemberRepository;
 import com.bonobono.backend.member.service.MemberService;
-import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,13 +22,17 @@ public class MemberController {
     private final MemberService memberService;
     private final MemberRepository memberRepository;
 
-    @ApiOperation(code = 200, value = "회원가입")
+    /**
+     * 회원가입
+     */
     @PostMapping("/signup")
     public ResponseEntity<MemberResponseDto> signup(@RequestBody MemberRequestDto memberRequestDto) {
         return ResponseEntity.ok(memberService.signup(memberRequestDto));
     }
 
-    @ApiOperation(value = "아이디 중복체크")
+    /**
+     * 아이디 중복체크
+     */
     @PostMapping("/username")
     public boolean username(@RequestBody MemberUsernameRequestDto request) {
         memberRepository.findByUsername(request.getUsername())
@@ -40,7 +43,9 @@ public class MemberController {
         return true; // 중복검사 통과
     }
 
-    @ApiOperation(value = "닉네임 중복체크")
+    /**
+     * 닉네임 중복체크
+     */
     @PostMapping("/nickname")
     public boolean nickname(@RequestBody MemberNicknameRequestDto request) {
         memberRepository.findByNickname(request.getNickname())
@@ -51,26 +56,34 @@ public class MemberController {
         return true; // 중복검사 통과
     }
 
-    @ApiOperation(value = "로그인")
+    /**
+     * 로그인
+     */
     @PostMapping("/login")
     public ResponseEntity<TokenDto> login(@RequestBody MemberRequestDto memberRequestDto) {
         return ResponseEntity.ok(memberService.login(memberRequestDto));
     }
 
-    @ApiOperation(value = "토큰 재발급")
+    /**
+     * 토큰 재발급
+     */
     @PostMapping("/reissue")
     public ResponseEntity<TokenDto> reissue(@RequestBody TokenRequestDto tokenRequestDto) {
         return ResponseEntity.ok(memberService.reissue(tokenRequestDto));
     }
 
-    @ApiOperation(value = "마이페이지 내 정보 조회")
+    /**
+     * 프로필조회
+     */
     @PreAuthorize("isAuthenticated()") // AccessToken을 헤더에 넣어서 인증된 사용자임을 검증받아야함
     @GetMapping("/profile")
     public ResponseEntity<MemberResponseDto> myProfile() {
         return ResponseEntity.ok(memberService.myProfile());
     }
 
-    @ApiOperation(value = "")
+    /**
+     * 회원정보 수정
+     */
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/update")
     public ResponseEntity<MemberResponseDto> updateMyInfo(@RequestBody MemberUpdateRequestDto dto) {

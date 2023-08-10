@@ -4,6 +4,7 @@ import com.bonobono.backend.character.domain.UserCharacter;
 import com.bonobono.backend.character.dto.OurCharacterResponseDto;
 import com.bonobono.backend.character.dto.basket.CharacterMainUpdateRequestDto;
 import com.bonobono.backend.character.dto.UserChracterResponseDto;
+import com.bonobono.backend.character.dto.catchCharacter.UserCharacterWithSeaRequestDto;
 import com.bonobono.backend.character.repository.OurCharacterRepository;
 import com.bonobono.backend.character.repository.UserCharacterRepository;
 import com.bonobono.backend.member.domain.Member;
@@ -81,4 +82,8 @@ public class UserCharacterService {
     }
 
 
+    public void save(UserCharacterWithSeaRequestDto requestDto) {
+        //
+
+    }
 }

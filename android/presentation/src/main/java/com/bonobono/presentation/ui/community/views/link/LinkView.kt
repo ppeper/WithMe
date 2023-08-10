@@ -1,9 +1,12 @@
 package com.bonobono.presentation.ui.community.views.link
 
 import android.webkit.WebView
+import android.webkit.WebViewClient
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -46,6 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.bonobono.domain.model.community.Link
@@ -73,7 +78,6 @@ fun LinkView(
     var linkState by rememberSaveable { mutableStateOf("") }
     var showSheet by remember { mutableStateOf(false) }
     var currentLink by communityViewModel.link
-    var webLinkState by remember { mutableStateOf(false) }
 
     Column(
         modifier = modifier.wrapContentHeight(),
@@ -96,6 +100,7 @@ fun LinkView(
                 ModalBottomSheet(
                     onDismissRequest = { showSheet = false },
                     containerColor = White,
+                    tonalElevation = 0.dp,
                     shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp)
                 ) {
                     LinkBottomSheetContent(
@@ -137,7 +142,7 @@ fun LinkView(
                 )
             )
         } else {
-            LinkImageTitle(link = currentLink) {
+            LinkImageTitle(link = currentLink, R.drawable.ic_delete) {
                 currentLink = Link()
             }
         }
@@ -145,11 +150,14 @@ fun LinkView(
 }
 
 @Composable
-fun WebView(url: String) {
+fun WebView(
+    url: String,
+) {
     AndroidView(
         modifier = Modifier.fillMaxSize(),
         factory = { context ->
             WebView(context).apply {
+                webViewClient = WebViewClient()
                 loadUrl(url)
             }
         }
@@ -159,7 +167,8 @@ fun WebView(url: String) {
 @Composable
 fun LinkImageTitle(
     link: Link,
-    onLinkDeleteClicked: () -> Unit
+    @DrawableRes icon: Int,
+    onIconClicked: () -> Unit
 ) {
     Card (
         modifier = Modifier
@@ -169,7 +178,10 @@ fun LinkImageTitle(
         border = BorderStroke(1.dp, color = DividerGray),
         colors = CardDefaults.cardColors(containerColor = White),
     ) {
-        Row(modifier = Modifier.padding(8.dp),
+        Row(modifier = Modifier.padding(8.dp)
+            .clickable {
+                onIconClicked()
+            },
             verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
@@ -222,11 +234,11 @@ fun LinkImageTitle(
                     .background(color = Black_100)
             ) {
                 IconButton(
-                    onClick = { onLinkDeleteClicked() },
+                    onClick = { onIconClicked() },
                 ) {
                     Icon(
-                        painter = painterResource(R.drawable.ic_delete),
-                        contentDescription = "삭제",
+                        painter = painterResource(icon),
+                        contentDescription = "아이콘",
                         tint = White
                     )
                 }
@@ -279,7 +291,8 @@ suspend fun getMetaData(link: Link): Link {
         return link.copy(
             urlTitle = link.urlTitle.ifBlank { title },
             imageUrl = imageUrl,
-            content = content
+            content = content,
+            isSuccess = true
         )
     } catch (e: IOException) {
         return Link()
@@ -301,5 +314,5 @@ fun PreviewLinkView() {
 @Preview
 @Composable
 fun PreviewLinkImageTitle() {
-    LinkImageTitle(link = Link(), onLinkDeleteClicked = {})
+    LinkImageTitle(link = Link(), R.drawable.ic_delete, onIconClicked = {})
 }

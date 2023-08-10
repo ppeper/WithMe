@@ -15,8 +15,7 @@ object DateUtils {
         val timeDifference = ChronoUnit.SECONDS.between(upload, currentTime)
 
         return when {
-            timeDifference < 1 -> "방금 전"
-            timeDifference < MINUTE -> "${timeDifference}초 전"
+            timeDifference < MINUTE -> "방금 전"
             timeDifference < HOUR -> "${timeDifference / MINUTE}분 전"
             timeDifference < DAY -> "${timeDifference / HOUR}시간 전"
             timeDifference < MONTH -> "${timeDifference / DAY}일 전"

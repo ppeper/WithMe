@@ -89,4 +89,6 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-runtime-compose:2.6.1"
     // Jsoup
     implementation 'org.jsoup:jsoup:1.14.3'
+    // Google Play Service
+    implementation 'com.google.android.gms:play-services-location:21.0.1'
 }

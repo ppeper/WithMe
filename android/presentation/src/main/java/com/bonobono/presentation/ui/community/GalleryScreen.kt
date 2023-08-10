@@ -44,11 +44,15 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.common.CheckCountDialog
+import com.bonobono.presentation.ui.common.PermissionView
 import com.bonobono.presentation.ui.community.views.gallery.TopContentGallery
 import com.bonobono.presentation.ui.theme.Black_20
 import com.bonobono.presentation.ui.theme.PrimaryBlue
 import com.bonobono.presentation.ui.theme.White
+import com.bonobono.presentation.utils.PermissionUtils
 import com.bonobono.presentation.viewmodel.PhotoViewModel
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
 
 private val TAG = "갤러리"
 
@@ -58,34 +62,46 @@ data class Photo(
     val isVisible: Boolean = true
 )
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun GalleryScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
     photoViewModel: PhotoViewModel
 ) {
+    val galleryPermission =
+        rememberMultiplePermissionsState(permissions = PermissionUtils.GALLERY_PERMISSIONS)
+
     val photoList = loadPhotos()
     val currentSelectedPhoto = remember {
         mutableStateListOf<Photo>()
     }
-    Scaffold(
-        modifier = modifier.fillMaxWidth(),
-        topBar = {
-            TopContentGallery(
-                title = "사진", navController,
-                photoViewModel = photoViewModel,
-                currentSelectedPhoto = currentSelectedPhoto
-            )
-        }
-    ) {
-        Surface(
-            modifier = modifier.padding(it)
+    if (galleryPermission.allPermissionsGranted) {
+        Scaffold(
+            modifier = modifier.fillMaxWidth(),
+            topBar = {
+                TopContentGallery(
+                    title = "사진", navController,
+                    photoViewModel = photoViewModel,
+                    currentSelectedPhoto = currentSelectedPhoto
+                )
+            }
         ) {
-            GalleryGridListView(
-                photoList = photoList,
-                photoViewModel = photoViewModel,
-                currentSelectedPhoto = currentSelectedPhoto)
+            Surface(
+                modifier = modifier.padding(it)
+            ) {
+                GalleryGridListView(
+                    photoList = photoList,
+                    photoViewModel = photoViewModel,
+                    currentSelectedPhoto = currentSelectedPhoto
+                )
+            }
         }
+    } else {
+        PermissionView(
+            title = "사진 권한이 필요합니다!",
+            navController = navController
+        )
     }
 }
 
@@ -245,7 +261,8 @@ private fun loadPhotos(): List<Photo> {
         val idColumnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
         while (cursor.moveToNext()) {
             val imageId = cursor.getLong(idColumnIndex)
-            val contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, imageId)
+            val contentUri =
+                ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, imageId)
             photos.add(Photo().apply {
                 url = contentUri.toString()
             })

@@ -38,21 +38,21 @@ interface CommunityService {
         @Path(value = "type") communityType: String,
         @Part images: List<MultipartBody.Part>?,
         @Part("requestDto") article: ArticleRequest,
-    ): NetworkResult<Unit>
+    )
 
     // 게시글 삭제
     @DELETE("community/{type}/{articleId}")
     suspend fun deleteArticle(
         @Path(value = "type") communityType: String,
         @Path(value = "articleId") articleId: Int
-    ): Unit
+    )
 
     // 게시글 수정
     @PATCH("community/{type}/{articleId}")
     suspend fun updateArticle(
         @Path(value = "type") communityType: String,
         @Path(value = "articleId") articleId: Int
-    ): Unit
+    )
 
     // 게시글 댓글 등록
     @POST("community/{type}/{articleId}/comment")
@@ -67,7 +67,7 @@ interface CommunityService {
     suspend fun updateArticleLike(
         @Path(value = "type") communityType: String,
         @Path(value = "articleId") articleId: Int
-    ): Unit
+    )
 
     // 댓글 좋아요 클릭
     @PATCH("community/{type}/{articleId}/comment/{commentId}/like")
@@ -75,7 +75,7 @@ interface CommunityService {
         @Path(value = "type") communityType: String,
         @Path(value = "articleId") articleId: Int,
         @Path(value = "commentId") commentId: Int
-    ): Unit
+    )
 
     // 댓글 수정
     @PATCH("community/{type}/{articleId}/comment/{commentId}")
@@ -83,7 +83,7 @@ interface CommunityService {
         @Path(value = "type") communityType: String,
         @Path(value = "articleId") articleId: Int,
         @Path(value = "commentId") commentId: Int
-    ): Unit
+    )
 
     // 댓글 삭제
     @DELETE("community/{type}/{articleId}/comment/{commentId}")
@@ -91,11 +91,11 @@ interface CommunityService {
         @Path(value = "type") communityType: String,
         @Path(value = "articleId") articleId: Int,
         @Path(value = "commentId") commentId: Int
-    ): Unit
+    )
 
     @GET("community/{type}/search/")
     suspend fun queryArticle(
         @Path(value = "type") communityType: String,
         @Query("keyword") keyword: String
-    ): NetworkResult<Unit>
+    ): List<ArticleResponse>
 }

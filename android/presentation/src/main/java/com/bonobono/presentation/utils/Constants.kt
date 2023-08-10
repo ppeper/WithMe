@@ -8,4 +8,7 @@ object Constants {
     const val FOUR_QUIZ = "four"
     const val GAME = "game"
     const val ATTENDANCE = "attendance"
+    const val FREE = "FREE"
+    const val TOGETHER = "TOGETHER"
+    const val REPORT = "REPORT"
 }

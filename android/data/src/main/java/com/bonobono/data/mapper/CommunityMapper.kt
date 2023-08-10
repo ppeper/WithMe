@@ -56,8 +56,10 @@ fun Article.toModel(): ArticleRequest {
     return ArticleRequest(
         title = title,
         content = content,
-        urlTitle = urlTitle.ifBlank { "" },
-        url = url.ifBlank { "" }
+        urlTitle = urlTitle,
+        url = url,
+        latitude = latitude,
+        longitude = longitude
     )
 }
 
@@ -77,7 +79,7 @@ fun CommentResponse.toDomain(): Comment {
 
 fun Comment.toModel(): CommentRequest {
     return CommentRequest(
-        parentCommentId = id,
+        parentCommentId = parentCommentId,
         content = content
     )
 }

@@ -3,7 +3,7 @@ package com.bonobono.domain.model.community
 import java.time.LocalDateTime
 
 data class Comment(
-    val id: Int? = null,
+    val id: Int = -1,
     val parentCommentId: Int? = null,
     val content: String,
     val nickname: String? = null,

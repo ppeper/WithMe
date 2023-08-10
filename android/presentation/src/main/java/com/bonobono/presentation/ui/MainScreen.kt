@@ -49,6 +49,11 @@ import com.bonobono.presentation.ui.community.views.board.CommonPostListView
 import com.bonobono.presentation.ui.main.mission.GameScreen
 import com.bonobono.presentation.ui.main.mission.QuizScreen
 import com.bonobono.presentation.ui.main.ecyclopedia.EncyclopediaScreen
+import com.bonobono.presentation.ui.community.views.link.WebView
+import com.bonobono.presentation.ui.community.views.map.ReportMapView
+import com.bonobono.presentation.ui.game.GameScreen
+import com.bonobono.presentation.ui.game.QuizScreen
+import com.bonobono.presentation.ui.main.EncyclopediaScreen
 import com.bonobono.presentation.ui.main.MainHomeScreen
 import com.bonobono.presentation.ui.main.mission.MissionScreen
 import com.bonobono.presentation.ui.main.notice.NoticeScreen
@@ -65,6 +70,7 @@ import com.bonobono.presentation.utils.Constants
 import com.bonobono.presentation.utils.NavigationUtils
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import com.naver.maps.map.compose.NaverMapComposable
 
 
 @Composable
@@ -336,7 +342,7 @@ fun MainNavigationScreen(
         communityNavigation(navController = navController)
 
         composable(
-            route = "${BoardDetailNav.route}/{type}/{articleId}",
+            route = "${BoardDetailNav.route}/{type}/{articleId}"
         ) {
             val type = it.arguments?.getString("type")
             val articleId = it.arguments?.getString("articleId")
@@ -347,6 +353,25 @@ fun MainNavigationScreen(
                     navController = navController
                 )
             }
+        }
+        composable(
+            route = "${NavigationRouteName.LINK_WEB_VIEW}/{url}"
+        ) {
+            val linkUrl = it.arguments?.getString("url")
+            linkUrl?.let { url ->
+                WebView(url = url)
+            }
+        }
+        composable(
+            route = NavigationRouteName.REPORT_MAP
+        ) {
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry(NavigationRouteName.COMMUNITY_POST_REPORT)
+            }
+            ReportMapView(
+                navController = navController,
+                communityViewModel = hiltViewModel(parentEntry)
+            )
         }
         // 마이페이지
         composable(

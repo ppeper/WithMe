@@ -53,6 +53,7 @@ import com.bonobono.domain.model.NetworkResult
 import com.bonobono.domain.model.community.Article
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.BoardDetailNav
+import com.bonobono.presentation.ui.common.LoadingView
 import com.bonobono.presentation.ui.community.util.DummyData.dummyArticle
 import com.bonobono.presentation.ui.community.util.freeLaunchEffect
 import com.bonobono.presentation.ui.community.util.reportLaunchEffect
@@ -62,6 +63,7 @@ import com.bonobono.presentation.ui.theme.DarkGray
 import com.bonobono.presentation.ui.theme.Green
 import com.bonobono.presentation.ui.theme.TextGray
 import com.bonobono.presentation.ui.theme.White
+import com.bonobono.presentation.utils.Constants
 import com.bonobono.presentation.utils.DateUtils
 import com.bonobono.presentation.viewmodel.CommunityViewModel
 
@@ -83,9 +85,7 @@ fun CommonPostListView(
 
     when (state) {
         is NetworkResult.Loading -> {
-            Box(modifier = Modifier.fillMaxSize()) {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-            }
+            LoadingView()
         }
         is NetworkResult.Success -> {
             val articleList = (state as NetworkResult.Success<List<Article>>).data
@@ -136,7 +136,7 @@ fun BoardItemView(
                     .padding(top = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                if (article.type != "FREE") {
+                if (article.type != Constants.FREE) {
                     ProceedingView(type = article.type, isProceeding = article.recruitStatus)
                 } else {
                     Spacer(modifier = modifier.size(8.dp))
@@ -288,7 +288,7 @@ fun ProceedingView(
             )
         )
         Text(
-            text = if (type == "TOGETHER") {
+            text = if (type == Constants.TOGETHER) {
                 // 함께게시판
                 if (isProceeding) "모집 중" else "모집 마감"
             } else {

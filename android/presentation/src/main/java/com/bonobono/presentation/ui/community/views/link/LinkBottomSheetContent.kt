@@ -1,5 +1,7 @@
 package com.bonobono.presentation.ui.community.views.link
 
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,9 +13,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.TextStyle
@@ -26,6 +31,7 @@ import com.bonobono.presentation.ui.common.CommonTextField
 import com.bonobono.presentation.ui.common.SubmitButton
 import com.bonobono.presentation.ui.theme.Black_100
 import com.bonobono.presentation.ui.theme.DividerGray
+import com.bonobono.presentation.utils.rememberImeState
 
 @Composable
 fun LinkBottomSheetContent(
@@ -37,12 +43,18 @@ fun LinkBottomSheetContent(
     onCancelClick: () -> Unit,
     onSubmitCLick: () -> Unit,
 ) {
+    val imeState = rememberImeState()
+    val scrollState = rememberScrollState()
+    LaunchedEffect(key1 = imeState.value) {
+        scrollState.animateScrollTo(scrollState.maxValue, tween(300))
+    }
     Box(
         modifier = modifier
             .fillMaxWidth()
             .padding(16.dp)
             .clip(RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp))
             .imePadding()
+            .verticalScroll(scrollState)
     ) {
         Column(
             modifier = modifier

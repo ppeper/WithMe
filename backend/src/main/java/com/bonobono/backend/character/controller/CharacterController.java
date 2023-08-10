@@ -1,9 +1,8 @@
 package com.bonobono.backend.character.controller;
 
 
-import com.bonobono.backend.character.dto.CharacterMainUpdateRequestDto;
+import com.bonobono.backend.character.dto.basket.CharacterMainUpdateRequestDto;
 import com.bonobono.backend.character.dto.OurCharacterResponseDto;
-import com.bonobono.backend.character.dto.CharacterNameUpdateRequestDto;
 import com.bonobono.backend.character.dto.UserChracterResponseDto;
 import com.bonobono.backend.character.service.OurCharacterService;
 import com.bonobono.backend.character.service.UserCharacterService;
@@ -33,7 +32,7 @@ public class CharacterController {
     // 기다리고 있는 친구들 리스트만 보내기(ourcharacter에서 user가 아닌애들만 = 모바일에서 처리할지 여부확인 후 수정)
     @GetMapping("/our/list")
     public ResponseEntity<List<OurCharacterResponseDto>> OurfindAll(@RequestParam Long memberId) {
-        List<OurCharacterResponseDto> ourCharacterResponseDtoList = ourCharacterService.OurfindByList(memberId);
+        List<OurCharacterResponseDto> ourCharacterResponseDtoList = userCharacterService.OurfindByList(memberId);
         return ResponseEntity.ok(ourCharacterResponseDtoList);
     }
 
@@ -46,11 +45,11 @@ public class CharacterController {
     }
 
     // 커스텀 이름 바꿀 수 있도록 하기(put)
-    @PatchMapping("/user/name/{character_id}")
-    public ResponseEntity<Void> updateName(@PathVariable Long character_id, @RequestBody CharacterNameUpdateRequestDto memberRequestDto) {
-        userCharacterService.updateName(character_id, memberRequestDto);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
+//    @PatchMapping("/user/name/{character_id}")
+//    public ResponseEntity<Void> updateName(@PathVariable Long character_id, @RequestBody CharacterNameUpdateRequestDto memberRequestDto) {
+//        userCharacterService.updateName(character_id, memberRequestDto);
+//        return new ResponseEntity<>(HttpStatus.OK);
+//    }
 
     //대표캐릭터로 지정하기(put)
     //제일 처음 캐릭터는 default로 제공

@@ -1,4 +1,4 @@
-package com.bonobono.backend.character.dto;
+package com.bonobono.backend.character.dto.basket;
 
 import lombok.Builder;
 import lombok.Getter;

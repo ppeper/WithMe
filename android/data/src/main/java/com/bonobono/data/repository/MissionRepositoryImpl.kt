@@ -30,8 +30,8 @@ class MissionRepositoryImpl @Inject constructor(
         return handleApi { missionService.getFourQuiz(memberId = memberId).toDomain() }
     }
 
-    override suspend fun postIsSuccessFourQuiz(memberId: Int, problemId: Int, answer: String) : NetworkResult<Boolean> {
-        return handleApi { missionService.postFourQuizIsSuccess(memberId, problemId, answer) }
+    override suspend fun postIsSuccessFourQuiz(isSuccess: IsSuccess) : NetworkResult<Boolean> {
+        return handleApi { missionService.postFourQuizIsSuccess(isSuccess) }
     }
 
     override suspend fun getMiniGame(memberId: Int): NetworkResult<Mission> {
@@ -56,6 +56,10 @@ class MissionRepositoryImpl @Inject constructor(
     }
 
     override suspend fun removeCompletedTime() {
+        //preferenceDatasource.remove(Constants.OX_QUIZ)
+        preferenceDatasource.remove(Constants.ATTENDANCE)
+        preferenceDatasource.remove(Constants.FOUR_QUIZ)
+
         val calendar = Calendar.getInstance()
         val currentDay = calendar.get(Calendar.DAY_OF_YEAR)
 

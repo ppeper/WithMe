@@ -9,6 +9,6 @@ class PostIsSuccessFourQuizUseCase @Inject constructor(
     private val missionRepository: MissionRepository,
 ) {
     suspend operator fun invoke(isSuccess: IsSuccess) : NetworkResult<Boolean> {
-        return missionRepository.postIsSuccessFourQuiz(isSuccess.memberId, isSuccess.problemId, isSuccess.answer)
+        return missionRepository.postIsSuccessFourQuiz(isSuccess)
     }
 }

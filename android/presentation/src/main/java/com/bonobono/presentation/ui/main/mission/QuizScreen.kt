@@ -33,6 +33,8 @@ import com.bonobono.presentation.ui.common.CheckCountDialog
 import com.bonobono.presentation.ui.main.component.PromptOXButtonRow
 import com.bonobono.presentation.ui.main.component.QuizPromptBox
 import com.bonobono.presentation.ui.common.GifLoader
+import com.bonobono.presentation.ui.common.SubmitButton
+import com.bonobono.presentation.ui.common.text.CustomTextStyle
 import com.bonobono.presentation.ui.main.component.OverDialog
 import com.bonobono.presentation.ui.main.component.PromptInputRow
 import com.bonobono.presentation.utils.Constants
@@ -97,12 +99,12 @@ fun QuizPromptBox(
 
     if (showDialog.value) {
         if (isSuccessState.value) {
-            OverDialog(title = "정답!!", content = "+Exp 10", source = R.raw.animation_fairy) {
+            OverDialog(title = "정답!!", content = "+Exp 10", source = R.raw.animation_fairy, commentary = problemState.value.commentary) {
                 missionViewModel.putCompletedTime(Constants.OX_QUIZ, System.currentTimeMillis())
                 navController.popBackStack()
             }
         } else {
-            OverDialog(title = "실패..", content = "", source = R.raw.animation_devil) {
+            OverDialog(title = "실패..", content = "", source = R.raw.animation_devil,  commentary = problemState.value.commentary) {
                 missionViewModel.putCompletedTime(Constants.OX_QUIZ, System.currentTimeMillis())
                 navController.popBackStack()
             }
@@ -152,19 +154,33 @@ fun QuizPromptBox(
         val inputValue = remember {
             mutableStateOf("")
         }
+        val selectedIndex = remember {
+            mutableStateOf(0)
+        }
         QuizPromptBox(
             name = stringResource(id = R.string.fairy_name),
             content = stringResource(R.string.quiz_prompt_guide),
             problem = problemTextState.value,
-            modifier = modifier
+            modifier = modifier,
+            choices = problemState.value.choices!!,
+            selectedIndex = selectedIndex
         ) {
-            PromptInputRow(
+            SubmitButton(
                 modifier = Modifier.padding(12.dp),
-                value = inputValue.value,
-                hint = "정답을 입력해주세요.",
-                onValueChange = { newValue -> inputValue.value = newValue },
-                submitButton = "제출"
-            )
+                text = "제출",
+                textStyle = CustomTextStyle.quizContentStyle
+            ) {
+                missionViewModel.postIsSuccess(isSuccess = IsSuccess(
+                    problemState.value.choices!![selectedIndex.value].content,
+                    1,
+                    problemState.value.problemId
+                ), type = Constants.FOUR_QUIZ)
+
+                missionViewModel.putCompletedTime(
+                    Constants.FOUR_QUIZ,
+                    System.currentTimeMillis()
+                )
+            }
         }
     }
 }
@@ -179,6 +195,7 @@ fun getProblem(
         is NetworkResult.Success -> {
             problemState.value = missionResult.data
             problemTextState.value = problemState.value.problem
+            Log.d(TAG, "getProblem: ${problemState.value.choices}")
         }
 
         is NetworkResult.Error -> {}

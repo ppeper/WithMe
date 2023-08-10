@@ -22,9 +22,7 @@ interface MissionService {
 
     @POST("quiz/four_quiz/IsSuccess")
     suspend fun postFourQuizIsSuccess(
-        @Query("memberId") memberId: Int,
-        @Query("problemId") problemId: Int,
-        @Query("answer") answer: String
+        @Body isSuccess: IsSuccess
     ) : Boolean
 
     @GET("quiz/four_quiz")

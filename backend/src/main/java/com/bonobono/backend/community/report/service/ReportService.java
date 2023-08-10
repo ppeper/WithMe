@@ -9,7 +9,8 @@ import com.bonobono.backend.community.report.entity.Report;
 import com.bonobono.backend.community.report.entity.ReportImage;
 import com.bonobono.backend.community.report.repository.ReportRepository;
 import com.bonobono.backend.global.exception.UserNotAuthorizedException;
-import com.bonobono.backend.global.service.AwsS3Service;
+import com.bonobono.backend.location.entity.Location;
+import com.bonobono.backend.location.repository.LocationRepository;
 import com.bonobono.backend.member.domain.Member;
 import com.bonobono.backend.member.domain.enumtype.Role;
 import com.bonobono.backend.member.repository.MemberRepository;
@@ -27,6 +28,7 @@ public class ReportService {
 
     private final ReportRepository reportRepository;
     private final MemberRepository memberRepository;
+    private final LocationRepository locationRepository;
     private final ReportImageService reportImageService;
     private final ReportCommentService reportCommentService;
 
@@ -38,7 +40,10 @@ public class ReportService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 멤버가 없습니다. id =" + memberId));
 
-        Report report  = reportRepository.save(requestDto.toEntity(member));
+        Location location = locationRepository.findById(requestDto.getLocationId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 장소가 없습니다. id =" + requestDto.getLocationId()));
+
+        Report report  = reportRepository.save(requestDto.toEntity(member, location));
         if (imageFiles != null) {
             for (MultipartFile imageFile : imageFiles) {
                 reportImageService.saveImage(report, imageFile, imageDirName);

@@ -51,9 +51,6 @@ import com.bonobono.presentation.ui.main.mission.QuizScreen
 import com.bonobono.presentation.ui.main.ecyclopedia.EncyclopediaScreen
 import com.bonobono.presentation.ui.community.views.link.WebView
 import com.bonobono.presentation.ui.community.views.map.ReportMapView
-import com.bonobono.presentation.ui.game.GameScreen
-import com.bonobono.presentation.ui.game.QuizScreen
-import com.bonobono.presentation.ui.main.EncyclopediaScreen
 import com.bonobono.presentation.ui.main.MainHomeScreen
 import com.bonobono.presentation.ui.main.mission.MissionScreen
 import com.bonobono.presentation.ui.main.notice.NoticeScreen
@@ -70,7 +67,6 @@ import com.bonobono.presentation.utils.Constants
 import com.bonobono.presentation.utils.NavigationUtils
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
-import com.naver.maps.map.compose.NaverMapComposable
 
 
 @Composable

@@ -1,5 +1,7 @@
 package com.bonobono.presentation.ui.community.views.map
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -36,6 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.app.ActivityCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -87,11 +90,23 @@ fun ReportMapView(
         rememberMultiplePermissionsState(permissions = PermissionUtils.LOCATION_PERMISSIONS)
     fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
     // 현재 위치를 가져오는 코드
-    fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-        location?.let {
-            currentPosition = LatLng(it.latitude, it.longitude)
-            isSuccess = true
+    if (ActivityCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        ) != PackageManager.PERMISSION_GRANTED
+    ) {
+        return
+    } else {
+        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+            location?.let {
+                currentPosition = LatLng(it.latitude, it.longitude)
+                isSuccess = true
+            }
         }
+
     }
 
     val mapView =

@@ -50,7 +50,7 @@ import com.bonobono.presentation.viewmodel.CommentViewModel
 fun CommentView(
     modifier: Modifier = Modifier,
     type: String,
-    articleId: Int,
+    articleId: Long,
     comments: Comment
 ) {
     val createDateState by rememberSaveable { mutableStateOf(DateUtils.dateToString(comments.createdDate)) }
@@ -113,7 +113,7 @@ fun CommentView(
 fun CommentRow(
     modifier: Modifier = Modifier,
     type: String,
-    articleId: Int,
+    articleId: Long,
     comments: Comment,
     commentViewModel: CommentViewModel = hiltViewModel()
 ) {

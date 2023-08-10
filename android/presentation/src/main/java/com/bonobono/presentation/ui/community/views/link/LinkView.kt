@@ -295,7 +295,7 @@ suspend fun getMetaData(link: Link): Link {
             isSuccess = true
         )
     } catch (e: IOException) {
-        return Link()
+        return Link(isSuccess = true)
     }
 }
 

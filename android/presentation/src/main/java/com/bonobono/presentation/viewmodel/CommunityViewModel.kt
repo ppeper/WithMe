@@ -62,7 +62,7 @@ class CommunityViewModel @Inject constructor(
         _articleState.emit(getArticleList.invoke(type))
     }
 
-    fun getArticleById(type: String, articleId: Int) = viewModelScope.launch {
+    fun getArticleById(type: String, articleId: Long) = viewModelScope.launch {
         _articleDetailState.emit(getArticleById.invoke(type, articleId))
     }
 
@@ -70,11 +70,11 @@ class CommunityViewModel @Inject constructor(
         _writeArticleState.emit(writeArticle.invoke(type, images, article))
     }
 
-    fun updateArticleLike(type: String, articleId: Int) = viewModelScope.launch {
+    fun updateArticleLike(type: String, articleId: Long) = viewModelScope.launch {
         _articleLikeState.emit(updateArticleLike.invoke(type, articleId))
     }
 
-    fun deleteArticle(type: String, articleId: Int) = viewModelScope.launch {
+    fun deleteArticle(type: String, articleId: Long) = viewModelScope.launch {
         _deleteArticleState.emit(deleteArticle.invoke(type, articleId))
     }
 }

@@ -30,7 +30,7 @@ interface CommunityService {
     @GET("community/{type}/{articleId}")
     suspend fun getArticleById(
         @Path(value = "type") communityType: String,
-        @Path(value = "articleId") articleId: Int,
+        @Path(value = "articleId") articleId: Long,
     ): ArticleResponse
 
     // 일반 게시글 등록
@@ -46,21 +46,21 @@ interface CommunityService {
     @DELETE("community/{type}/{articleId}")
     suspend fun deleteArticle(
         @Path(value = "type") communityType: String,
-        @Path(value = "articleId") articleId: Int
+        @Path(value = "articleId") articleId: Long
     )
 
     // 게시글 수정
     @PATCH("community/{type}/{articleId}")
     suspend fun updateArticle(
         @Path(value = "type") communityType: String,
-        @Path(value = "articleId") articleId: Int
+        @Path(value = "articleId") articleId: Long
     )
 
     // 게시글 댓글 등록
     @POST("community/{type}/{articleId}/comment")
     suspend fun writeComment(
         @Path(value = "type") communityType: String,
-        @Path(value = "articleId") articleId: Int,
+        @Path(value = "articleId") articleId: Long,
         @Body comment: CommentRequest
     ): CommentResponse
 
@@ -68,31 +68,31 @@ interface CommunityService {
     @PATCH("community/{type}/{articleId}/like")
     suspend fun updateArticleLike(
         @Path(value = "type") communityType: String,
-        @Path(value = "articleId") articleId: Int
+        @Path(value = "articleId") articleId: Long
     )
 
     // 댓글 좋아요 클릭
     @PATCH("community/{type}/{articleId}/comment/{commentId}/like")
     suspend fun updateCommentLike(
         @Path(value = "type") communityType: String,
-        @Path(value = "articleId") articleId: Int,
-        @Path(value = "commentId") commentId: Int
+        @Path(value = "articleId") articleId: Long,
+        @Path(value = "commentId") commentId: Long
     )
 
     // 댓글 수정
     @PATCH("community/{type}/{articleId}/comment/{commentId}")
     suspend fun updateComment(
         @Path(value = "type") communityType: String,
-        @Path(value = "articleId") articleId: Int,
-        @Path(value = "commentId") commentId: Int
+        @Path(value = "articleId") articleId: Long,
+        @Path(value = "commentId") commentId: Long
     )
 
     // 댓글 삭제
     @DELETE("community/{type}/{articleId}/comment/{commentId}")
     suspend fun deleteComment(
         @Path(value = "type") communityType: String,
-        @Path(value = "articleId") articleId: Int,
-        @Path(value = "commentId") commentId: Int
+        @Path(value = "articleId") articleId: Long,
+        @Path(value = "commentId") commentId: Long
     )
 
     @GET("community/{type}/search/")

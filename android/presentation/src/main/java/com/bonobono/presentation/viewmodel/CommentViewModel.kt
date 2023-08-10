@@ -18,7 +18,7 @@ class CommentViewModel @Inject constructor(
     private val updateCommentLike: UpdateCommentLikeUseCase
 ): ViewModel() {
 
-    private val _commentId = MutableStateFlow(-1)
+    private val _commentId = MutableStateFlow(-1L)
     val commentId = _commentId.asStateFlow()
 
     private val _commentState = MutableStateFlow<NetworkResult<Comment>>(NetworkResult.Loading)
@@ -27,16 +27,16 @@ class CommentViewModel @Inject constructor(
     private val _commentLike = MutableStateFlow(false)
     val commentLike = _commentLike.asStateFlow()
 
-    fun setCommentId(id: Int) = viewModelScope.launch {
+    fun setCommentId(id: Long) = viewModelScope.launch {
         _commentId.value = id
     }
 
-    fun writeComment(type: String, articleId: Int, comment: Comment) = viewModelScope.launch {
+    fun writeComment(type: String, articleId: Long, comment: Comment) = viewModelScope.launch {
         _commentState.value = NetworkResult.Loading
         _commentState.emit(writeComment.invoke(type, articleId, comment))
     }
 
-    fun updateCommentLike(type: String, articleId: Int, commentId: Int) = viewModelScope.launch {
+    fun updateCommentLike(type: String, articleId: Long, commentId: Long) = viewModelScope.launch {
         updateCommentLike.invoke(type, articleId = articleId, commentId = commentId)
     }
 }

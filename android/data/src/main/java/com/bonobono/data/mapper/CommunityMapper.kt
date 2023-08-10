@@ -13,7 +13,6 @@ import com.bonobono.domain.model.community.Image
 import com.google.gson.Gson
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
-import java.time.LocalDateTime
 
 fun ArticleResponse.toDomain(): Article {
     return Article(
@@ -21,6 +20,7 @@ fun ArticleResponse.toDomain(): Article {
         type = type,
         title = title,
         content = content,
+        imageSize = imageSize,
         mainImage = images?.toDomain(),
         commentCnt = comments,
         likes = likes,
@@ -29,7 +29,7 @@ fun ArticleResponse.toDomain(): Article {
         recruitStatus = recruitStatus,
         url = url ?: "",
         urlTitle = urlTitle ?: "",
-        createdDate = createdDate ?: LocalDateTime.now(),
+        createdDate = createdDate,
         views = views
     )
 }

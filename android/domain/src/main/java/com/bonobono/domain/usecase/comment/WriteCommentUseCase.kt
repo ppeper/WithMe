@@ -8,7 +8,7 @@ import javax.inject.Inject
 class WriteCommentUseCase @Inject constructor(
     private val communityRepository: CommunityRepository
 ) {
-    suspend operator fun invoke(type: String, articleId: Int, comment: Comment): NetworkResult<Comment> {
+    suspend operator fun invoke(type: String, articleId: Long, comment: Comment): NetworkResult<Comment> {
         return communityRepository.writeComment(type, articleId, comment)
     }
 }

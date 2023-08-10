@@ -7,13 +7,13 @@ import java.util.Date
 
 @Parcelize
 data class CommentResponse(
-    val id: Int,
-    val parentCommentId: Int? = null,
+    val id: Long,
+    val parentCommentId: Long? = null,
     val content: String,
     val profileImg: String?,
     val childComments: List<CommentResponse>,
     val liked: Boolean,
     val likes: Int,
     val nickname: String,
-    val createdDate: LocalDateTime
+    val createdDate: String
 ): Parcelable

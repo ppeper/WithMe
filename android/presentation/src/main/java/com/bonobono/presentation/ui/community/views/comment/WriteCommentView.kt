@@ -49,7 +49,7 @@ import com.bonobono.presentation.viewmodel.CommentViewModel
 fun WriteCommentView(
     modifier: Modifier = Modifier,
     type: String,
-    articleId: Int,
+    articleId: Long,
     index: Int = -1,
     onWriteCommentClicked: (Comment) -> Unit,
     onFocusChanged: () -> Unit,
@@ -85,7 +85,7 @@ fun WriteCommentView(
                         color = Black_100,
                     ),
                     singleLine = true,
-                    hint = if (commentId == -1) "댓글을 입력해주세요" else "답글을 입력해주세요",
+                    hint = if (commentId == -1L) "댓글을 입력해주세요" else "답글을 입력해주세요",
                     onValueChange = { postContentState = it },
                     onFocusChange = { onFocusChanged() }
                 )
@@ -95,7 +95,7 @@ fun WriteCommentView(
                 onClick = {
                     if (postContentState.isNotBlank()) {
                         // 대댓글
-                        val comment = if (commentId != -1) {
+                        val comment = if (commentId != -1L) {
                             Comment(parentCommentId = commentId, content = postContentState)
                         } else {
                             Comment(content = postContentState)

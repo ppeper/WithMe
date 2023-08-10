@@ -345,7 +345,7 @@ fun MainNavigationScreen(
             if (articleId != null && type != null) {
                 BoardDetailScreen(
                     type = type,
-                    articleId = articleId.toInt(),
+                    articleId = articleId.toLong(),
                     navController = navController
                 )
             }

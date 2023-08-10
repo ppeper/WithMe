@@ -95,7 +95,7 @@ import java.nio.charset.StandardCharsets
 fun BoardDetailScreen(
     modifier: Modifier = Modifier,
     type: String,
-    articleId: Int,
+    articleId: Long,
     navController: NavController,
     communityViewModel: CommunityViewModel = hiltViewModel()
 ) {
@@ -312,7 +312,7 @@ fun ProfileView(
                 )
             )
             Text(
-                text = DateUtils.dateToString(article.createdDate),
+                text = "DateUtils.dateToString(article.createdDate)",
                 style = TextStyle(
                     fontSize = 12.sp,
                     color = TextGray,

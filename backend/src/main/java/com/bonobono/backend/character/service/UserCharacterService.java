@@ -1,5 +1,6 @@
 package com.bonobono.backend.character.service;
 
+import com.bonobono.backend.character.domain.OurCharacter;
 import com.bonobono.backend.character.domain.UserCharacter;
 import com.bonobono.backend.character.dto.OurCharacterResponseDto;
 import com.bonobono.backend.character.dto.basket.CharacterMainUpdateRequestDto;
@@ -10,6 +11,7 @@ import com.bonobono.backend.character.repository.UserCharacterRepository;
 import com.bonobono.backend.member.domain.Member;
 import com.bonobono.backend.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -81,10 +83,15 @@ public class UserCharacterService {
                 .collect(Collectors.toList());
     }
 
-
+    //LocationOurCharacter의 id와 custom한 이름을 주면, userchar을 save()
+    @Transactional
     public void save(UserCharacterWithSeaRequestDto requestDto) {
-        //id는 locationour id라서 이걸 주면, 내가 그 해변정보와 ourchar정보를 뽑을 수 있음
+        Member member = memberRepository.findById(requestDto.getMemberId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 멤버가 없습니다. id =" + requestDto.getMemberId()));
 
-
+        OurCharacter ourCharacter = ourCharacterRepository.findById(requestDto.getOurCharacterId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 캐릭터가 없습니다. id =" + requestDto.getOurCharacterId()));
+        UserCharacter userCharacter = requestDto.toEntity(requestDto.getCustom_name(), ourCharacter, requestDto.getLocation_name(), member);
+        userCharacterRepository.save(userCharacter);
     }
 }

@@ -26,22 +26,24 @@ public class UserCharacter extends BaseTimeEntity {
     @JoinColumn(name = "character_id")
     private OurCharacter ourCharacter; //캐릭터id(정보를가지고 있음)
 
-
     private String custom_name;
+
+    private String location_name;
 
     //경험치
     @Column(columnDefinition = "int default 0")
     private Integer experience;
 
     @Column(columnDefinition = "boolean default false")
-    private Boolean main;
+    private boolean main;
 
     @Builder
-    public UserCharacter(OurCharacter ourCharacter, Member member, boolean main, String custom_name){
+    public UserCharacter(OurCharacter ourCharacter, Member member, boolean main, String custom_name, String location_name){
         this.main = main;
         this.ourCharacter = ourCharacter;
         this.member = member;
         this.custom_name = custom_name;
+        this.location_name = location_name;
     }
 
 
@@ -60,12 +62,6 @@ public class UserCharacter extends BaseTimeEntity {
     public void setCustomNameDefaultValue() {
         this.custom_name=this.custom_name == null ?  ourCharacter.getName():this.custom_name;
         this.experience=this.experience==null? 0:this.experience;
-        this.main = this.main ==null? false: this.main;
-    }
-
-    // 글 수정
-    public void updateName(String custom_name){
-        this.custom_name=custom_name;
     }
 
 

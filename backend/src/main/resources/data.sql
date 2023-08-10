@@ -125,10 +125,10 @@ VALUES (3, 2);
 INSERT INTO article_like (article_id, member_id)
 VALUES (4, 2);
 
-INSERT INTO location (name, latitude, longitude, leftlatitude, leftlongitude, rightlatitude, rightlongitude)
+INSERT INTO location (name, center_latitude, center_longitude, left_latitude, left_longitude, right_latitude, right_longitude)
 VALUES ('서울특별시 송파구', 37.49650739457211, 127.0868362387235, 37.4965050000, 127.0868000000, 37.496510000, 127.0868400000);
 
-INSERT INTO location (name, latitude, longitude, leftlatitude, leftlongitude, rightlatitude, rightlongitude)
+INSERT INTO location (name, center_latitude, center_longitude, left_latitude, left_longitude, right_latitude, right_longitude)
 VALUES ('경기도 수원시', 37.25748884382484, 127.03120068818286, 37.25718884382484, 127.0309068818286, 37.25754884382484, 127.0369068818286);
 
 -- INSERT INTO location (location_name, latitude, longitude)

@@ -137,7 +137,9 @@ class SignUpViewModel @Inject constructor(
 
     // 회원가입 정보 전부 기입 및 인증 전부 확인 시 버튼 활성화
     fun updateButtonState() {
-        if (name.isNotBlank() && nickName.isNotBlank() && checkPwdValid) {
+        if (name.isNotBlank() && nickName.isNotBlank()
+//            && checkPwdValid
+            ) {
             checkAllAllowed = true
             buttonColor = PrimaryBlue
         } else {
@@ -155,7 +157,7 @@ class SignUpViewModel @Inject constructor(
         // 비밀번호 check 부분은 값이 없으면 회원가입이 안되므로 임시로 데이터 넣음
         // role도 일단 다 USER로 지정해버림 아니면 회원가입 안됨
         val role = Role("USER")
-        val register = Register(0, name,nickName,password, "a", phoneNum, listOf(role), username)
+        val register = Register(0, name,nickName,password, "a", "01012345678", listOf(role), username)
         _signUpState.emit(signUpUseCase.invoke(register))
         Log.d(TAG, "signUp: ${signUpState.value}")
     }

@@ -7,7 +7,7 @@ import com.google.gson.Gson
 class DataApplication : Application() {
 
     companion object {
-        const val FILE_NAME = "with_me_preference"
+        const val FILE_NAME = "with_me"
         lateinit var pref: SharedPreferences
         lateinit var editor: SharedPreferences.Editor
 

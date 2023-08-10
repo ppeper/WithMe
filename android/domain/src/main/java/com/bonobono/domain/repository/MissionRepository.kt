@@ -15,5 +15,5 @@ interface MissionRepository {
     suspend fun getTotalScore(memberId: Int) : NetworkResult<TotalScore>
     fun getCompletedTime(key: String) : Long
     suspend fun putCompletedTime(key: String, time: Long)
-    suspend fun removeCompletedTime(key: String)
+    suspend fun removeCompletedTime()
 }

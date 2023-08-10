@@ -34,13 +34,18 @@ import com.bonobono.presentation.ui.main.component.PromptOXButtonRow
 import com.bonobono.presentation.ui.main.component.QuizPromptBox
 import com.bonobono.presentation.ui.common.GifLoader
 import com.bonobono.presentation.ui.main.component.OverDialog
+import com.bonobono.presentation.ui.main.component.PromptInputRow
 import com.bonobono.presentation.utils.Constants
 import com.bonobono.presentation.viewmodel.MissionViewModel
 
 private const val TAG = "QuizScreen"
 
 @Composable
-fun QuizScreen(type: String, navController: NavController, missionViewModel: MissionViewModel = hiltViewModel()) {
+fun QuizScreen(
+    type: String,
+    navController: NavController,
+    missionViewModel: MissionViewModel = hiltViewModel()
+) {
 
     LaunchedEffect(Unit) {
         missionViewModel.getMission(1, type)
@@ -60,12 +65,19 @@ fun QuizScreen(type: String, navController: NavController, missionViewModel: Mis
                 .align(Alignment.TopCenter),
             source = R.raw.animation_fairy
         )
-        QuizPromptBox(modifier = Modifier.align(Alignment.BottomCenter), navController = navController)
+        QuizPromptBox(
+            modifier = Modifier.align(Alignment.BottomCenter),
+            navController = navController
+        )
     }
 }
 
 @Composable
-fun QuizPromptBox(modifier: Modifier, navController: NavController, missionViewModel: MissionViewModel = hiltViewModel()) {
+fun QuizPromptBox(
+    modifier: Modifier,
+    navController: NavController,
+    missionViewModel: MissionViewModel = hiltViewModel()
+) {
     val missionResult by missionViewModel.mission.collectAsState()
     val problemState = remember { mutableStateOf(Mission()) }
     val problemTextState = remember { mutableStateOf("") }
@@ -77,10 +89,14 @@ fun QuizPromptBox(modifier: Modifier, navController: NavController, missionViewM
 
     getProblem(missionResult, problemState, problemTextState)
 
-    checkAnswer(isSuccessState = isSuccessResult, isSuccess = isSuccessState, showDialog = showDialog)
+    checkAnswer(
+        isSuccessState = isSuccessResult,
+        isSuccess = isSuccessState,
+        showDialog = showDialog
+    )
 
-    if(showDialog.value) {
-        if(isSuccessState.value) {
+    if (showDialog.value) {
+        if (isSuccessState.value) {
             OverDialog(title = "정답!!", content = "+Exp 10", source = R.raw.animation_fairy) {
                 missionViewModel.putCompletedTime(Constants.OX_QUIZ, System.currentTimeMillis())
                 navController.popBackStack()
@@ -92,45 +108,64 @@ fun QuizPromptBox(modifier: Modifier, navController: NavController, missionViewM
             }
         }
     }
+    if (problemState.value.choices.isNullOrEmpty()) {
+        QuizPromptBox(
+            name = stringResource(id = R.string.fairy_name),
+            content = stringResource(R.string.quiz_prompt_guide),
+            problem = problemTextState.value,
+            modifier = modifier
+        ) {
+            PromptOXButtonRow(
+                modifier = Modifier.padding(12.dp),
+                onClickX = {
+                    missionViewModel.postIsSuccess(
+                        type = Constants.OX_QUIZ,
+                        isSuccess = IsSuccess(
+                            "X",
+                            1,
+                            problemState.value.problemId
+                        )
+                    )
 
-    QuizPromptBox(
-        name = stringResource(id = R.string.fairy_name),
-        content = stringResource(R.string.quiz_prompt_guide),
-        problem = problemTextState.value,
-        modifier = modifier
-    ) {
-        PromptOXButtonRow(
-            modifier = Modifier.padding(12.dp),
-            onClickX = {
-                missionViewModel.postIsSuccess(
-                    type = Constants.OX_QUIZ,
-                    isSuccess = IsSuccess(
-                        "X",
-                        1,
-                        problemState.value.problemId
+                    missionViewModel.putCompletedTime(
+                        Constants.OX_QUIZ,
+                        System.currentTimeMillis()
                     )
-                )
-                
-                missionViewModel.putCompletedTime(
-                    Constants.OX_QUIZ,
-                    System.currentTimeMillis()
-                )
-            },
-            onClickO = {
-                missionViewModel.postIsSuccess(
-                    type = Constants.OX_QUIZ,
-                    isSuccess = IsSuccess(
-                        "O",
-                        1,
-                        problemState.value.problemId
+                },
+                onClickO = {
+                    missionViewModel.postIsSuccess(
+                        type = Constants.OX_QUIZ,
+                        isSuccess = IsSuccess(
+                            "O",
+                            1,
+                            problemState.value.problemId
+                        )
                     )
-                )
-                missionViewModel.putCompletedTime(
-                    Constants.OX_QUIZ,
-                    System.currentTimeMillis()
-                )
-            }
-        )
+                    missionViewModel.putCompletedTime(
+                        Constants.OX_QUIZ,
+                        System.currentTimeMillis()
+                    )
+                }
+            )
+        }
+    } else {
+        val inputValue = remember {
+            mutableStateOf("")
+        }
+        QuizPromptBox(
+            name = stringResource(id = R.string.fairy_name),
+            content = stringResource(R.string.quiz_prompt_guide),
+            problem = problemTextState.value,
+            modifier = modifier
+        ) {
+            PromptInputRow(
+                modifier = Modifier.padding(12.dp),
+                value = inputValue.value,
+                hint = "정답을 입력해주세요.",
+                onValueChange = { newValue -> inputValue.value = newValue },
+                submitButton = "제출"
+            )
+        }
     }
 }
 
@@ -158,12 +193,15 @@ fun checkAnswer(
 ) {
     when (isSuccessState) {
         is NetworkResult.Loading -> {
-            Log.d(TAG, "checkAnswer: loading")}
+            Log.d(TAG, "checkAnswer: loading")
+        }
+
         is NetworkResult.Success -> {
             isSuccess.value = isSuccessState.data
             showDialog.value = true
             Log.d(TAG, "checkAnswer: ${showDialog.value}")
         }
+
         is NetworkResult.Error -> {
             Log.d(TAG, "checkAnswer: error")
         }

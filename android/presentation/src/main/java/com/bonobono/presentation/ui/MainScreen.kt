@@ -369,13 +369,16 @@ fun MainNavigationScreen(
             ProfileEditScreen(navController = navController)
         }
         composable(
-            route = QuizNav.route,
+            route = "${QuizNav.route}/{type}",
             deepLinks = QuizNav.deepLinks
         ) {
-            QuizScreen(Constants.OX_QUIZ, navController = navController)
+            val type = it.arguments?.getString("type")
+            if (type != null) {
+                QuizScreen(type, navController = navController)
+            }
         }
         composable(
-            route = GameNav.route,
+            route = "${GameNav.route}/{type}",
             deepLinks = QuizNav.deepLinks
         ) {
             GameScreen(navController)

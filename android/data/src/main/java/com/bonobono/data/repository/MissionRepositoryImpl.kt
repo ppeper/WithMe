@@ -1,5 +1,6 @@
 package com.bonobono.data.repository
 
+import com.bonobono.data.Constants
 import com.bonobono.data.local.PreferenceDataSource
 import com.bonobono.data.mapper.toDomain
 import com.bonobono.data.remote.MissionService
@@ -9,6 +10,7 @@ import com.bonobono.domain.model.mission.IsSuccess
 import com.bonobono.domain.model.mission.Mission
 import com.bonobono.domain.model.mission.TotalScore
 import com.bonobono.domain.repository.MissionRepository
+import java.util.Calendar
 import javax.inject.Inject
 
 class MissionRepositoryImpl @Inject constructor(
@@ -53,9 +55,36 @@ class MissionRepositoryImpl @Inject constructor(
         preferenceDatasource.putLong(key, time)
     }
 
-    override suspend fun removeCompletedTime(key: String) {
+    override suspend fun removeCompletedTime() {
+        val calendar = Calendar.getInstance()
+        val currentDay = calendar.get(Calendar.DAY_OF_YEAR)
 
+        val ox = preferenceDatasource.getLong(Constants.OX_QUIZ)
+        val four = preferenceDatasource.getLong(Constants.FOUR_QUIZ)
+        val attendance = preferenceDatasource.getLong(Constants.ATTENDANCE)
+
+        if (ox != 0L) {
+            val oxCalendar = Calendar.getInstance()
+            oxCalendar.timeInMillis = ox
+            if (oxCalendar.get(Calendar.DAY_OF_YEAR) != currentDay) {
+                preferenceDatasource.remove(Constants.OX_QUIZ)
+            }
+        }
+
+        if (four != 0L) {
+            val fourCalendar = Calendar.getInstance()
+            fourCalendar.timeInMillis = four
+            if (fourCalendar.get(Calendar.DAY_OF_YEAR) != currentDay) {
+                preferenceDatasource.remove(Constants.FOUR_QUIZ)
+            }
+        }
+
+        if (attendance != 0L) {
+            val attendanceCalendar = Calendar.getInstance()
+            attendanceCalendar.timeInMillis = attendance
+            if (attendanceCalendar.get(Calendar.DAY_OF_YEAR) != currentDay) {
+                preferenceDatasource.remove(Constants.ATTENDANCE)
+            }
+        }
     }
-
-
 }

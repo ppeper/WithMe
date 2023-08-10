@@ -1,4 +1,4 @@
-package com.bonobono.domain.usecase.mission.time
+package com.bonobono.domain.usecase.mission.local
 
 import com.bonobono.domain.repository.MissionRepository
 import javax.inject.Inject

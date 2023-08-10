@@ -1,5 +1,6 @@
 package com.bonobono.data.local
 
+import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import com.google.gson.Gson
@@ -9,6 +10,7 @@ import javax.inject.Inject
 class PreferenceDataSource @Inject constructor(
     @ApplicationContext context: Context,
 ) {
+
     companion object {
         private const val PREFERENCE_NAME = "with_me"
         const val COMPLETED_OX_QUIZ_TIME = "ox"
@@ -58,6 +60,10 @@ class PreferenceDataSource @Inject constructor(
 
     fun getLong(key: String, defValue: Long = 0) : Long {
         return prefs.getLong(key, defValue)
+    }
+
+    fun remove(key: String) {
+        editor.remove(key)
     }
 
 //   객체 저장 -> 유저 정보

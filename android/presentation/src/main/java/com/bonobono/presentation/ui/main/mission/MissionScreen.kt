@@ -1,6 +1,5 @@
 package com.bonobono.presentation.ui.main.mission
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -18,6 +17,8 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,7 +29,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.bonobono.presentation.R
@@ -48,29 +48,46 @@ import com.bonobono.presentation.viewmodel.MissionViewModel
 
 private const val TAG = "MissionScreen"
 @Composable
-fun MissionScreen(navController: NavHostController, viewModel: MissionViewModel = hiltViewModel()) {
-    val completedTimeOX= viewModel.getCompletedTime(Constants.OX_QUIZ)
-    val completedTimeFour = viewModel.getCompletedTime(Constants.FOUR_QUIZ)
+fun MissionScreen(navController: NavHostController, missionViewModel: MissionViewModel = hiltViewModel()) {
+    missionViewModel.removeCompletedTime() // 하루 지나면 삭제
+    val completedTimeOX = missionViewModel.getCompletedTime(Constants.OX_QUIZ)
+    val completedTimeFour = missionViewModel.getCompletedTime(Constants.FOUR_QUIZ)
+    val completedGame = missionViewModel.getCompletedTime(Constants.GAME)
+    val completedTimeAttendance = missionViewModel.getCompletedTime(Constants.ATTENDANCE)
+
+    var attendanceIsEnabled = remember { mutableStateOf(completedTimeAttendance == 0L) }
+    var gameIsEnabled = remember { mutableStateOf(completedGame == 0L) }
+    var quizIsEnabled = remember {
+        mutableStateOf(completedTimeOX == 0L && completedTimeFour == 0L)
+    }
+
+    LaunchedEffect(Unit) {
+        missionViewModel.getScore(1)
+    }
+
     Column(
         Modifier
             .verticalScroll(rememberScrollState())
             .padding(12.dp)
     ) {
-        ;
         UserInformationItem()
         Spacer(modifier = Modifier.size(12.dp))
         DailyGameItem(
             R.raw.animation_check,
             stringResource(R.string.attendance_guide),
             stringResource(R.string.attendance_btn),
+            attendanceIsEnabled
         ) {
-            viewModel.postAttendance(1)
+            missionViewModel.postAttendance(1)
+            missionViewModel.putCompletedTime(Constants.ATTENDANCE, System.currentTimeMillis())
+            attendanceIsEnabled.value = false
         }
         Spacer(modifier = Modifier.size(12.dp))
         DailyGameItem(
             R.raw.game,
             stringResource(R.string.game_guide),
             stringResource(R.string.game_btn),
+            gameIsEnabled,
         ) {
             navController.navigate(GameNav.route)
         }
@@ -80,12 +97,20 @@ fun MissionScreen(navController: NavHostController, viewModel: MissionViewModel 
                 R.raw.animation_ox_quiz_card,
                 stringResource(R.string.ox_quiz_guide)
             ) {
-                navController.navigate(QuizNav.route)
+                navController.navigate("${QuizNav.route}/${Constants.OX_QUIZ}")
+            }
+        } else if(completedTimeFour == 0L) {
+            LargeSquareCardWithAnimation(
+                R.raw.animation_four_quiz_card,
+                stringResource(R.string.four_quiz_guide)
+            ) {
+                navController.navigate("${QuizNav.route}/${Constants.FOUR_QUIZ}")
             }
         } else {
             LargeSquareCardWithAnimation(
                 R.raw.animation_four_quiz_card,
-                stringResource(R.string.four_quiz_guide)
+                stringResource(R.string.four_quiz_guide),
+                quizIsEnabled
             ) {
                 navController.navigate(QuizNav.route)
             }
@@ -99,6 +124,7 @@ fun DailyGameItem(
     source: Int,
     content: String,
     buttonText: String,
+    isEnabled: MutableState<Boolean>,
     onClick: () -> Unit
 ) {
     Card(
@@ -123,7 +149,7 @@ fun DailyGameItem(
                 modifier = Modifier.weight(1f)
             )
 
-            PrimaryButton(buttonText, Modifier) {
+            PrimaryButton(buttonText, Modifier, isEnabled) {
                 onClick()
             }
         }

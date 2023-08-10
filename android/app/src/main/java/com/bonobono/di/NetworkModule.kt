@@ -56,6 +56,4 @@ object NetworkModule {
             .client(okHttpClient)
             .build()
             .create(MissionService::class.java)
-
-
 }

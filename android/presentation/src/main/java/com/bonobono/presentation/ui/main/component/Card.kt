@@ -16,6 +16,8 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,7 +34,12 @@ import com.bonobono.presentation.ui.theme.White
 
 
 @Composable
-fun LargeSquareCardWithAnimation(source: Int, content: String, onClick: () -> Unit) {
+fun LargeSquareCardWithAnimation(
+    source: Int,
+    content: String,
+    isEnabled: MutableState<Boolean> = mutableStateOf(true),
+    onClick: () -> Unit
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth(),
@@ -61,7 +68,7 @@ fun LargeSquareCardWithAnimation(source: Int, content: String, onClick: () -> Un
                 style = CustomTextStyle.missionGuideTextStyle
             )
 
-            PrimaryButton(content = "미션 해결하기", modifier = Modifier.align(Alignment.BottomEnd)) {
+            PrimaryButton(content = "미션 해결하기", modifier = Modifier.align(Alignment.BottomEnd), isEnabled) {
                 onClick()
             }
         }

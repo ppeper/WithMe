@@ -65,12 +65,14 @@ data class TrashCan(
 fun GameScreen(navController: NavHostController) {
     val trash = Trash("계란", R.drawable.image_egg)
     var timeLeft by remember { mutableStateOf(10) }
+
     LaunchedEffect(Unit) {
         while (timeLeft > 0) {
             delay(1000)
             timeLeft--
         }
     }
+
     Box(
         modifier = Modifier.fillMaxSize()
     ) {

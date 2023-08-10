@@ -8,7 +8,10 @@ import javax.inject.Inject
 class GetTotalScoreUseCase @Inject constructor(
     private val missionRepository: MissionRepository
 ) {
-    suspend operator fun invoke(memberId: Int): NetworkResult<TotalScore> {
-        return missionRepository.getTotalScore(memberId)
+    suspend operator fun invoke(memberId: Int): TotalScore {
+        return when(val result = missionRepository.getTotalScore(1)) {
+            is NetworkResult.Success -> result.data
+            else -> TotalScore(-1, -1)
+        }
     }
 }

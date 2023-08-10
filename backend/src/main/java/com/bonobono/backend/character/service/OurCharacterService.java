@@ -40,10 +40,10 @@ public class OurCharacterService {
         List<OurChacracterWithSeaResponseDto> bound = new ArrayList<>();
         if (!locationOurCharacterList.isEmpty()) {
             //리스트의 캐릭터의 하나하나의 위치를, 그 해변의 위경도를 중심으로 랜덤으로 지정해서  OurChacracterWithSeaResponseDto에 넣는다
-            double leftLatitude = location.getLeftlatitude();
-            double rightLatitude = location.getRightlatitude();
-            double leftLongtitude = location.getLeftlongitude();
-            double rightLongtitude = location.getRightlatitude();
+            double leftLatitude = location.getLeftLatitude();
+            double rightLatitude = location.getRightLatitude();
+            double leftLongtitude = location.getLeftLongitude();
+            double rightLongtitude = location.getRightLongitude();
 
             Random random = new Random();
             int character_count = 10;

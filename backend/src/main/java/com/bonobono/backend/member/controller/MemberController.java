@@ -34,26 +34,26 @@ public class MemberController {
      * 아이디 중복체크
      */
     @PostMapping("/username")
-    public String username(@RequestBody MemberUsernameRequestDto request) {
+    public boolean username(@RequestBody MemberUsernameRequestDto request) {
         memberRepository.findByUsername(request.getUsername())
             .ifPresent(member -> {
                 throw new AppException(ErrorCode.USERNAME_DUPLICATED, "이미 존재하는 아이디입니다.");
             });
 
-        return "SUCCESS";
+        return true; // 중복검사 통과
     }
 
     /**
      * 닉네임 중복체크
      */
     @PostMapping("/nickname")
-    public String nickname(@RequestBody MemberNicknameRequestDto request) {
+    public boolean nickname(@RequestBody MemberNicknameRequestDto request) {
         memberRepository.findByNickname(request.getNickname())
             .ifPresent(member -> {
                 throw new AppException(ErrorCode.NICKNAME_DUPLICATED, "이미 존재하는 닉네임입니다.");
             });
 
-        return "SUCCESS";
+        return true; // 중복검사 통과
     }
 
     /**

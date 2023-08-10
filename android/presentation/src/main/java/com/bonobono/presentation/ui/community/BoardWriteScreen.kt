@@ -1,8 +1,6 @@
 package com.bonobono.presentation.ui.community
 
-import android.Manifest
 import android.net.Uri
-import android.os.Build
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -130,26 +128,15 @@ fun BoardWriteScreen(
                 route = route,
                 onPhotoClick = {
                     galleryPermission.launchMultiplePermissionRequest()
-                    if (galleryPermission.allPermissionsGranted) {
-                        if (previousCount == 10) {
-                            showDialog = true
-                        } else navController.navigate(routeMapper(navController))
+                    if (previousCount == 10) {
+                        showDialog = true
                     } else {
-//                        PermissionDialog(content = "사진권한이 필요한 작업입니다. 이동하시겠습니까?") {
-//                            val intent = Intent().apply {
-//                                action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-//                                data = Uri.fromParts("package", context.packageName, null)
-//                            }
-//                            context.startActivity(intent)
-//                        }
+                        navController.navigate(routeMapper(navController))
                     }
                 },
                 onMapClick = {
                     locationPermission.launchMultiplePermissionRequest()
-                    if (galleryPermission.allPermissionsGranted) {
-                        navController.navigate(NavigationRouteName.REPORT_MAP)
-                    } else {
-                    }
+                    navController.navigate(NavigationRouteName.REPORT_MAP)
                 }
             )
         }

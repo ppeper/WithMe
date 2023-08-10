@@ -38,6 +38,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -60,8 +61,7 @@ private const val TAG = "LoginScreen"
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun LoginScreen(navController: NavController) {
-    val viewModel: LoginViewModel = viewModel()
+fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltViewModel()) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember {
@@ -108,11 +108,10 @@ fun LoginScreen(navController: NavController) {
                                     "아이디 비밀번호 입력 값을 모두 기입하세요"
                                 )
                             } else {
-                                viewModel.doLogin()
+                                viewModel.login()
+                                navController.navigate("main_screen")
                             }
                         }
-
-
                 })
             Spacer(modifier = Modifier.height(16.dp))
             LoginHelpOptions(navController)

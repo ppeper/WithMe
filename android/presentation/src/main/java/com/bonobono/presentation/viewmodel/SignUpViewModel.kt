@@ -11,6 +11,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bonobono.domain.model.NetworkResult
 import com.bonobono.domain.model.registration.Member
+import com.bonobono.domain.model.registration.Register
+import com.bonobono.domain.model.registration.Role
 import com.bonobono.domain.usecase.register.CheckNickNameUseCase
 import com.bonobono.domain.usecase.register.CheckUserNameUseCase
 import com.bonobono.domain.usecase.register.SignUpUseCase
@@ -106,12 +108,14 @@ class SignUpViewModel @Inject constructor(
             checkPwdValid = false
             passwordSupportTxt = ""
         }
+        updateButtonState()
     }
 
     // 휴대폰 번호 입력 && 휴대폰 인증 코드 전송
     var phoneNum by mutableStateOf("")
     fun updatePhoneNum(input: String) {
         phoneNum = input
+        updateButtonState()
     }
 
     // 인증코드 발급 && 인증 코드 입력 시 받은 인증코드와 같은지 확인
@@ -133,7 +137,7 @@ class SignUpViewModel @Inject constructor(
 
     // 회원가입 정보 전부 기입 및 인증 전부 확인 시 버튼 활성화
     fun updateButtonState() {
-        if (name.isNotBlank() && nickName.isNotBlank() && checkPwdValid && checkUserNameValid.value == "SUCCESS" && phoneNumValid) {
+        if (name.isNotBlank() && nickName.isNotBlank() && checkPwdValid) {
             checkAllAllowed = true
             buttonColor = PrimaryBlue
         } else {
@@ -147,8 +151,13 @@ class SignUpViewModel @Inject constructor(
     private val _signUpState = MutableStateFlow<NetworkResult<Member>>(NetworkResult.Loading)
     val signUpState : StateFlow<NetworkResult<Member>> = _signUpState
 
-    fun signUp(member : Member) = viewModelScope.launch {
-        _signUpState.emit(signUpUseCase.invoke(member))
+    fun signUp() = viewModelScope.launch {
+        // 비밀번호 check 부분은 값이 없으면 회원가입이 안되므로 임시로 데이터 넣음
+        // role도 일단 다 USER로 지정해버림 아니면 회원가입 안됨
+        val role = Role("USER")
+        val register = Register(0, name,nickName,password, "a", phoneNum, listOf(role), username)
+        _signUpState.emit(signUpUseCase.invoke(register))
+        Log.d(TAG, "signUp: ${signUpState.value}")
     }
 
 }

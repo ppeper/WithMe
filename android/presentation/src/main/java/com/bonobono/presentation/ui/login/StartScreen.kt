@@ -9,12 +9,12 @@ import com.bonobono.presentation.ui.FindIdNav
 import com.bonobono.presentation.ui.FindPasswordNav
 import com.bonobono.presentation.ui.JoinNav
 import com.bonobono.presentation.ui.LoginNav
+import com.bonobono.presentation.ui.MainScreen
 
 @Composable
 fun StartScreen() {
     val loginNavController = rememberNavController()
     LoginNavigationScreen(navController = loginNavController)
-
 }
 
 @Composable
@@ -48,6 +48,9 @@ fun LoginNavigationScreen(
             deepLinks = FindPasswordNav.deepLinks
         ) {
             FindPWDScreen(navController)
+        }
+        composable("main_screen") {
+            MainScreen()
         }
     }
 }

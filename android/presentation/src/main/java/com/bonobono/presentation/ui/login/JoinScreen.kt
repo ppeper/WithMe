@@ -1,6 +1,7 @@
 package com.bonobono.presentation.ui.login
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -27,6 +28,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.bonobono.domain.model.registration.Member
 import com.bonobono.presentation.R
+import com.bonobono.presentation.ui.LoginNav
 import com.bonobono.presentation.ui.common.BasicTextField
 import com.bonobono.presentation.ui.common.SupportTxtTextField
 import com.bonobono.presentation.ui.common.TextFieldWithButton
@@ -39,6 +41,7 @@ import com.bonobono.presentation.viewmodel.SignUpViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
+private const val TAG = "싸피"
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun JoinScreen(navController: NavController, viewModel: SignUpViewModel = hiltViewModel()) {
@@ -151,9 +154,11 @@ fun JoinScreen(navController: NavController, viewModel: SignUpViewModel = hiltVi
                 keyboardType = KeyboardType.Number,
             )
             Spacer(modifier = Modifier.height(32.dp))
-            PrimaryColorButton(text = R.string.login_join, enabled = buttonEnabled, backgroundColor = buttonColor) {
-//                viewModel.doSignUP()
-            }
+            PrimaryColorButton(text = R.string.login_join, enabled = buttonEnabled, backgroundColor = buttonColor, action = {
+                Log.d(TAG, "JoinScreen: clicked!!")
+                viewModel.signUp()
+                navController.navigate(LoginNav.route)
+            })
         }
     }
 }

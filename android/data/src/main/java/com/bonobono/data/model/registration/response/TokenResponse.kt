@@ -6,7 +6,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class TokenResponse(
     val accessToken: String,
-    val accessTokenExpiresIn: Int,
+    val accessTokenExpiresIn: Long,
     val grantType: String,
     val refreshToken: String
 ) : Parcelable

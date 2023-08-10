@@ -3,6 +3,7 @@ package com.bonobono.domain.repository.registration
 import com.bonobono.domain.model.NetworkResult
 import com.bonobono.domain.model.registration.Member
 import com.bonobono.domain.model.registration.Password
+import com.bonobono.domain.model.registration.Register
 import com.bonobono.domain.model.registration.Token
 
 interface RegisterRepository {
@@ -19,10 +20,10 @@ interface RegisterRepository {
     suspend fun checkNickName(nickname : Member) : NetworkResult<String>
 
     // 회원가입
-    suspend fun signUp(member : Member) : NetworkResult<Member>
+    suspend fun signUp(register: Register) : NetworkResult<Member>
 
     // 로그인
-    suspend fun login(member : Member) : NetworkResult<Token>
+    suspend fun login(register: Register) : NetworkResult<Token>
 
     // 로그아웃
     suspend fun logout() : NetworkResult<String>

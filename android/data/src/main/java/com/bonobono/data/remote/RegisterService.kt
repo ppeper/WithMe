@@ -7,6 +7,7 @@ import com.bonobono.data.model.registration.response.MemberResponse
 import com.bonobono.data.model.registration.response.TokenResponse
 import com.bonobono.domain.model.registration.Member
 import com.bonobono.domain.model.registration.Password
+import com.bonobono.domain.model.registration.Register
 import com.bonobono.domain.model.registration.Token
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -23,7 +24,7 @@ interface RegisterService {
 
     @POST("member/signup")
     suspend fun signUp(
-        @Body member : Member
+        @Body register: Register
     ) : MemberResponse
 
     @POST("member/username")
@@ -38,7 +39,7 @@ interface RegisterService {
 
     @POST("member/login")
     suspend fun login(
-        @Body member : Member
+        @Body register: Register
     ) : TokenResponse
 
     @POST("member/reissue")

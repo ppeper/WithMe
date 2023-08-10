@@ -6,6 +6,7 @@ import com.bonobono.data.remote.handleApi
 import com.bonobono.domain.model.NetworkResult
 import com.bonobono.domain.model.registration.Member
 import com.bonobono.domain.model.registration.Password
+import com.bonobono.domain.model.registration.Register
 import com.bonobono.domain.model.registration.Token
 import com.bonobono.domain.repository.registration.RegisterRepository
 import javax.inject.Inject
@@ -29,12 +30,12 @@ class RegisterRepositoryImpl @Inject constructor(
         return handleApi { registerService.checkNickName(nickname) }
     }
 
-    override suspend fun signUp(member: Member): NetworkResult<Member> {
-        return handleApi { registerService.signUp(member).toDomain() }
+    override suspend fun signUp(register: Register): NetworkResult<Member> {
+        return handleApi { registerService.signUp(register).toDomain() }
     }
 
-    override suspend fun login(member: Member): NetworkResult<Token> {
-        return handleApi { registerService.login(member).toDomain() }
+    override suspend fun login(register: Register): NetworkResult<Token> {
+        return handleApi { registerService.login(register).toDomain() }
     }
 
     override suspend fun logout(): NetworkResult<String> {

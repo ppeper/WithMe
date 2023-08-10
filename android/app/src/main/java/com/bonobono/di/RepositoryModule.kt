@@ -27,8 +27,8 @@ object RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideRegisterRepository(registerService: RegisterService) : RegisterRepository {
-        return RegisterRepositoryImpl(registerService)
+    fun provideRegisterRepository(registerService: RegisterService, preferenceDataSource: PreferenceDataSource) : RegisterRepository {
+        return RegisterRepositoryImpl(registerService = registerService, preferenceDatasource = preferenceDataSource)
     }
 
     @Provides

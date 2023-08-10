@@ -19,5 +19,4 @@ class DataApplication : Application() {
         pref = applicationContext.getSharedPreferences(FILE_NAME, MODE_PRIVATE)
         editor = pref.edit()
     }
-
 }

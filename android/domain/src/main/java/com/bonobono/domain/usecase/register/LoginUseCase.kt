@@ -10,7 +10,7 @@ import javax.inject.Inject
 class LoginUseCase  @Inject constructor(
     private val registerRepository : RegisterRepository
 ){
-    suspend operator fun invoke(register: Register) : NetworkResult<Token> {
-        return registerRepository.login(register)
+    suspend operator fun invoke(register: Register) {
+        registerRepository.login(register)
     }
 }

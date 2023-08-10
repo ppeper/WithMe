@@ -1,5 +1,6 @@
 package com.bonobono.data.repository.register
 
+import com.bonobono.data.local.PreferenceDataSource
 import com.bonobono.data.mapper.toDomain
 import com.bonobono.data.remote.RegisterService
 import com.bonobono.data.remote.handleApi
@@ -12,6 +13,7 @@ import com.bonobono.domain.repository.registration.RegisterRepository
 import javax.inject.Inject
 
 class RegisterRepositoryImpl @Inject constructor(
+    private val  preferenceDatasource: PreferenceDataSource,
     private val registerService: RegisterService
 ) : RegisterRepository {
     override suspend fun updateMember(member: Member): NetworkResult<Member> {
@@ -34,8 +36,9 @@ class RegisterRepositoryImpl @Inject constructor(
         return handleApi { registerService.signUp(register).toDomain() }
     }
 
-    override suspend fun login(register: Register): NetworkResult<Token> {
-        return handleApi { registerService.login(register).toDomain() }
+    override suspend fun login(register: Register) {
+        val token = registerService.login(register).toDomain()
+        preferenceDatasource.putString("access_token", token.accessToken)
     }
 
     override suspend fun logout(): NetworkResult<String> {

@@ -9,11 +9,10 @@ import com.bonobono.backend.community.article.dto.res.ArticleNoticeResponseDto;
 import com.bonobono.backend.community.article.entity.Article;
 import com.bonobono.backend.community.article.entity.ArticleImage;
 import com.bonobono.backend.community.article.enumclass.ArticleType;
-import com.bonobono.backend.community.article.repository.ArticleImageRepository;
 import com.bonobono.backend.community.article.repository.ArticleRepository;
 import com.bonobono.backend.global.exception.UserNotAuthorizedException;
-import com.bonobono.backend.global.service.AwsS3Service;
 import com.bonobono.backend.member.domain.Member;
+import com.bonobono.backend.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,19 +27,21 @@ public class ArticleService {
 
     private final ArticleRepository articleRepository;
 
-    private final ArticleImageRepository articleImageRepository;
+    private final MemberRepository memberRepository;
 
     private final ArticleCommentService articleCommentService;
 
     private final ArticleImageService articleImageService;
 
-    private final AwsS3Service awsS3Service;
 
     private final String imageDirName = "article_images"; // S3 폴더이름
 
     // 게시글 글 저장
     @Transactional
-    public void save(ArticleType type, Member member, ArticleSaveRequestDto requestDto, List<MultipartFile> imageFiles){
+    public void save(ArticleType type, Long memberId, ArticleSaveRequestDto requestDto, List<MultipartFile> imageFiles){
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 멤버가 없습니다. id =" + memberId));
+
         Article article  = articleRepository.save(requestDto.toEntity(type, member));
         if (imageFiles != null) {
             for (MultipartFile imageFile : imageFiles) {

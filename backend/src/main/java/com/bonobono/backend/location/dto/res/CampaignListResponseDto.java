@@ -1,0 +1,34 @@
+package com.bonobono.backend.location.dto.res;
+
+import com.bonobono.backend.location.entity.Campaign;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+
+@Getter
+@NoArgsConstructor
+public class CampaignListResponseDto {
+
+    private String name;
+
+    private LocalDateTime startDate;
+
+    private LocalDateTime endDate;
+
+    private boolean completionStatus;
+
+    private String authority;
+
+    private String locationName;
+
+    public CampaignListResponseDto(Campaign entity){
+        this.name = entity.getName();
+        this.startDate = entity.getStartDate();
+        this.endDate = entity.getEndDate();
+        this.completionStatus = entity.isCompletionStatus();
+        this.authority = entity.getAuthority();
+        this.locationName = entity.getLocation().getName();
+
+    }
+}

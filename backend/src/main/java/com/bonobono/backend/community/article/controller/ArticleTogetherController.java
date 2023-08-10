@@ -11,6 +11,7 @@ import com.bonobono.backend.community.article.service.ArticleCommentLikeService;
 import com.bonobono.backend.community.article.service.ArticleCommentService;
 import com.bonobono.backend.community.article.service.ArticleLikeService;
 import com.bonobono.backend.community.article.service.ArticleService;
+import com.bonobono.backend.global.util.SecurityUtil;
 import com.bonobono.backend.member.domain.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -39,10 +40,9 @@ public class ArticleTogetherController {
 
     // 함께게시판 글쓰기
     @PostMapping(value = "",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> save(@AuthenticationPrincipal Member member,
-        @RequestPart ArticleSaveRequestDto requestDto,
-        @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles){
-        articleService.save(type, member, requestDto, imageFiles);
+    public ResponseEntity<Void> save(@RequestPart ArticleSaveRequestDto requestDto,
+                                     @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles){
+        articleService.save(type, SecurityUtil.getLoginMemberId(), requestDto, imageFiles);
         return new ResponseEntity(HttpStatus.CREATED);
     }
 

@@ -5,6 +5,7 @@ import com.bonobono.backend.community.article.dto.res.ArticleListResponseDto;
 import com.bonobono.backend.community.article.dto.res.ArticleNoticeResponseDto;
 import com.bonobono.backend.community.article.enumclass.ArticleType;
 import com.bonobono.backend.community.article.service.ArticleService;
+import com.bonobono.backend.global.util.SecurityUtil;
 import com.bonobono.backend.member.domain.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -28,10 +29,9 @@ public class ArticleNoticeController {
 
     // 공지사항 글 쓰기
     @PostMapping(value = "",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> save(@AuthenticationPrincipal Member member,
-                                  @RequestPart ArticleSaveRequestDto requestDto,
+    public ResponseEntity<?> save(@RequestPart ArticleSaveRequestDto requestDto,
                                   @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles){
-        articleService.save(type, member, requestDto, imageFiles);
+        articleService.save(type, SecurityUtil.getLoginMemberId(), requestDto, imageFiles);
         return new ResponseEntity(HttpStatus.CREATED);
     }
 

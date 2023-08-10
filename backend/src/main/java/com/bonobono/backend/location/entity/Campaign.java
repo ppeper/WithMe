@@ -16,6 +16,7 @@ public class Campaign {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String name;
 
     private LocalDateTime startDate;
@@ -24,6 +25,7 @@ public class Campaign {
 
     private boolean completionStatus;
 
+    @Column(nullable = false)
     private String authority;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -31,11 +33,12 @@ public class Campaign {
     private Location location;
 
     @Builder
-    public Campaign(String name, LocalDateTime startDate, LocalDateTime endDate, String authority){
+    public Campaign(String name, LocalDateTime startDate, LocalDateTime endDate, String authority, Location location){
         this.name = name;
         this.startDate = startDate;
         this.endDate = endDate;
         this.authority = authority;
+        this.location = location;
     }
 
 

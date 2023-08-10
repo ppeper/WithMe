@@ -137,9 +137,7 @@ fun BoardDetailScreen(
             var metaLink by remember { mutableStateOf(Link()) }
             LaunchedEffect(Unit) {
                 scope.launch {
-                    if (article.url != null && article.urlTitle != null) {
-                        metaLink = getMetaData(Link(article.url!!, article.urlTitle!!))
-                    }
+                    metaLink = getMetaData(Link(article.url, article.urlTitle))
                 }
             }
             // Meta Url 파싱 완료
@@ -167,6 +165,7 @@ fun BoardDetailScreen(
                                 commentCnt++
                             },
                             onFocusChanged = {
+                                Log.d("TEST", "BoardDetailScreen: 포커스")
                                 isTextFieldFocused = !isTextFieldFocused
                             }
                         )
@@ -218,14 +217,12 @@ fun BoardDetailScreen(
                                     if (article.images.isNotEmpty()) {
                                         MultipleImageView(images = article.images)
                                     }
-                                    article.url?.let {
-                                        LinkImageTitle(
-                                            link = metaLink,
-                                            R.drawable.ic_go
-                                        ) {
-                                            val encodedUrl = URLEncoder.encode(metaLink.url, StandardCharsets.UTF_8.toString())
-                                            navController.navigate("${NavigationRouteName.LINK_WEB_VIEW}/$encodedUrl")
-                                        }
+                                    LinkImageTitle(
+                                        link = metaLink,
+                                        R.drawable.ic_go
+                                    ) {
+                                        val encodedUrl = URLEncoder.encode(metaLink.url, StandardCharsets.UTF_8.toString())
+                                        navController.navigate("${NavigationRouteName.LINK_WEB_VIEW}/$encodedUrl")
                                     }
                                     Text(
                                         text = "조회수 ${article.views}",

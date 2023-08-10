@@ -10,8 +10,10 @@ import com.bonobono.data.model.community.response.ImageResponse
 import com.bonobono.domain.model.community.Article
 import com.bonobono.domain.model.community.Comment
 import com.bonobono.domain.model.community.Image
+import com.google.gson.Gson
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody
 import java.time.LocalDateTime
-import java.util.Date
 
 fun ArticleResponse.toDomain(): Article {
     return Article(
@@ -52,8 +54,8 @@ fun ArticleDetailResponse.toDomain(): Article {
     )
 }
 
-fun Article.toModel(): ArticleRequest {
-    return ArticleRequest(
+fun Article.toModel(): RequestBody {
+    val requestDto = ArticleRequest(
         title = title,
         content = content,
         urlTitle = urlTitle,
@@ -61,6 +63,7 @@ fun Article.toModel(): ArticleRequest {
         latitude = latitude,
         longitude = longitude
     )
+    return RequestBody.create("application/json".toMediaTypeOrNull(), Gson().toJson(requestDto))
 }
 
 fun CommentResponse.toDomain(): Comment {

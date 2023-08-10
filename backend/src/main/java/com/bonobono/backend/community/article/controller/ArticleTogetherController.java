@@ -12,12 +12,10 @@ import com.bonobono.backend.community.article.service.ArticleCommentService;
 import com.bonobono.backend.community.article.service.ArticleLikeService;
 import com.bonobono.backend.community.article.service.ArticleService;
 import com.bonobono.backend.global.util.SecurityUtil;
-import com.bonobono.backend.member.domain.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -55,10 +53,9 @@ public class ArticleTogetherController {
 
     // 함께게시판 특정 글, 글에 관한 댓글 조회하기
     @GetMapping("/{articleId}")
-    public ResponseEntity<ArticleDetailResponseDto> findById(@AuthenticationPrincipal Member member,
-        @PathVariable Long articleId) {
+    public ResponseEntity<ArticleDetailResponseDto> findById(@PathVariable Long articleId) {
         // @AuthenticationPrincipa 사용하기
-        ArticleDetailResponseDto responseDto = articleService.findById(type, member, articleId);
+        ArticleDetailResponseDto responseDto = articleService.findById(type, SecurityUtil.getLoginMemberId(), articleId);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
@@ -72,27 +69,24 @@ public class ArticleTogetherController {
 
     // 함께게시판 특정 글 수정
     @PatchMapping(value = "/{articleId}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> update(@AuthenticationPrincipal Member member,
-        @PathVariable Long articleId,
+    public ResponseEntity<Void> update(@PathVariable Long articleId,
         @RequestPart ArticleUpdateRequestDto requestDto,
         @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles){
-        articleService.update(member, articleId , requestDto, imageFiles);
+        articleService.update(SecurityUtil.getLoginMemberId(), articleId , requestDto, imageFiles);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     // 함께게시판 모집 완료
     @PatchMapping("/{articleId}/recruit-complete")
-    public ResponseEntity<Void> updateRecruitStatus(@AuthenticationPrincipal Member member,
-        @PathVariable Long articleId){
-        articleService.updateRecruitStatus(member, articleId);
+    public ResponseEntity<Void> updateRecruitStatus(@PathVariable Long articleId){
+        articleService.updateRecruitStatus(SecurityUtil.getLoginMemberId(), articleId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     // 함께게시판 특정 글 삭제
     @DeleteMapping("/{articleId}")
-    public ResponseEntity<Void> delete(@AuthenticationPrincipal Member member,
-        @PathVariable Long articleId){
-        articleService.delete(member, articleId);
+    public ResponseEntity<Void> delete(@PathVariable Long articleId){
+        articleService.delete(SecurityUtil.getLoginMemberId(), articleId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -100,46 +94,41 @@ public class ArticleTogetherController {
     // ----------댓글---------
     // 함께게시판 글에 댓글 쓰기
     @PostMapping("/{articleId}/comment")
-    public ResponseEntity<ArticleCommentResponseDto> saveComment(@AuthenticationPrincipal Member member,
-        @PathVariable Long articleId,
+    public ResponseEntity<ArticleCommentResponseDto> saveComment(@PathVariable Long articleId,
         @RequestBody ArticleCommentRequestDto requestDto){
-        ArticleCommentResponseDto responseDto = articleCommentService.save(member, articleId, requestDto);
+        ArticleCommentResponseDto responseDto = articleCommentService.save(SecurityUtil.getLoginMemberId(), articleId, requestDto);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
     // 함께게시판 댓글 삭제
     @DeleteMapping("/{articleId}/comment/{commentId}")
-    public ResponseEntity<Void> deleteComment(@AuthenticationPrincipal Member member,
-        @PathVariable Long articleId,
+    public ResponseEntity<Void> deleteComment( @PathVariable Long articleId,
         @PathVariable Long commentId){
-        articleCommentService.delete(member, articleId, commentId);
+        articleCommentService.delete(SecurityUtil.getLoginMemberId(), articleId, commentId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     // 함께게시판 댓글 수정
     @PatchMapping("/{articleId}/comment/{commentId}")
-    public ResponseEntity<Void> updateComment(@AuthenticationPrincipal Member member,
-        @PathVariable Long articleId,
+    public ResponseEntity<Void> updateComment(@PathVariable Long articleId,
         @PathVariable Long commentId,
         @RequestBody ArticleCommentRequestDto requestDto){
-        articleCommentService.update(member, articleId, commentId, requestDto);
+        articleCommentService.update(SecurityUtil.getLoginMemberId(), articleId, commentId, requestDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     // 함께게시판 좋아요
     @PatchMapping("/{articleId}/like")
-    public ResponseEntity<Void> like(@AuthenticationPrincipal Member member,
-        @PathVariable Long articleId) {
-        articleLikeService.like(member, articleId);
+    public ResponseEntity<Void> like(@PathVariable Long articleId) {
+        articleLikeService.like(SecurityUtil.getLoginMemberId(), articleId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     // 함께게시판 댓글 좋아요
     @PatchMapping("/{articleId}/comment/{commentId}/like")
-    public ResponseEntity<Void> like(@AuthenticationPrincipal Member member,
-        @PathVariable Long articleId,
+    public ResponseEntity<Void> like(@PathVariable Long articleId,
         @PathVariable Long commentId) {
-        articleCommentLikeService.like(member, articleId, commentId);
+        articleCommentLikeService.like(SecurityUtil.getLoginMemberId(), articleId, commentId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

@@ -9,12 +9,11 @@ import com.bonobono.backend.community.report.dto.res.ReportListResponseDto;
 import com.bonobono.backend.community.report.service.ReportCommentService;
 import com.bonobono.backend.community.report.service.ReportLikeService;
 import com.bonobono.backend.community.report.service.ReportService;
-import com.bonobono.backend.member.domain.Member;
+import com.bonobono.backend.global.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,10 +33,9 @@ public class ReportController {
     // 신고게시판 글쓰기
 
     @PostMapping(value = "",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> save(@AuthenticationPrincipal Member member,
-                                  @RequestPart ReportSaveRequestDto requestDto,
+    public ResponseEntity<?> save(@RequestPart ReportSaveRequestDto requestDto,
                                   @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles){
-        reportService.save(member, requestDto, imageFiles);
+        reportService.save(SecurityUtil.getLoginMemberId(), requestDto, imageFiles);
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
@@ -50,9 +48,8 @@ public class ReportController {
 
     // 신고게시판 특정 글, 글에 관한 댓글 조회하기
     @GetMapping("/{reportId}")
-    public ResponseEntity<ReportDetailResponseDto> findById(@AuthenticationPrincipal Member member,
-                                                            @PathVariable Long reportId) {
-        ReportDetailResponseDto responseDto = reportService.findById(member, reportId);
+    public ResponseEntity<ReportDetailResponseDto> findById(@PathVariable Long reportId) {
+        ReportDetailResponseDto responseDto = reportService.findById(SecurityUtil.getLoginMemberId(), reportId);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
@@ -66,26 +63,23 @@ public class ReportController {
 
     // 신고게시판 특정 글 수정
     @PatchMapping(value = "/{reportId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> update(@AuthenticationPrincipal Member member,
-                                       @PathVariable Long reportId,
+    public ResponseEntity<Void> update(@PathVariable Long reportId,
                                        @RequestPart ReportUpdateRequestDto requestDto,
                                        @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles){
-        reportService.update(member, reportId , requestDto, imageFiles);
+        reportService.update(SecurityUtil.getLoginMemberId(), reportId , requestDto, imageFiles);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PatchMapping("/{reportId}/admin-complete")
-    public ResponseEntity<Void> update(@AuthenticationPrincipal Member member,
-                                       @PathVariable Long reportId){
-        reportService.updateRecruitStatus(member, reportId);
+    public ResponseEntity<Void> update(@PathVariable Long reportId){
+        reportService.updateRecruitStatus(SecurityUtil.getLoginMemberId(), reportId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     // 신고게시판 특정 글 삭제
     @DeleteMapping("/{reportId}")
-    public ResponseEntity<Void> delete(@AuthenticationPrincipal Member member,
-                                       @PathVariable Long reportId){
-        reportService.delete(member, reportId);
+    public ResponseEntity<Void> delete(@PathVariable Long reportId){
+        reportService.delete(SecurityUtil.getLoginMemberId(), reportId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -93,38 +87,34 @@ public class ReportController {
     // ----------댓글---------
     // 신고게시판 글에 댓글 쓰기 (관리자 또는 작성자만)
     @PostMapping("/{reportId}/comment")
-    public ResponseEntity<ReportCommentResponseDto> saveComment(@AuthenticationPrincipal Member member,
-                                                                @PathVariable Long reportId,
+    public ResponseEntity<ReportCommentResponseDto> saveComment(@PathVariable Long reportId,
                                                                 @RequestBody ReportCommentRequestDto requestDto
     ){
-        ReportCommentResponseDto responseDto = reportCommentService.save(member, reportId, requestDto);
+        ReportCommentResponseDto responseDto = reportCommentService.save(SecurityUtil.getLoginMemberId(), reportId, requestDto);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
     // 신고게시판 댓글 삭제
     @DeleteMapping("/{reportId}/comment/{commentId}")
-    public ResponseEntity<Void> deleteComment(@AuthenticationPrincipal Member member,
-                                              @PathVariable Long reportId,
+    public ResponseEntity<Void> deleteComment(@PathVariable Long reportId,
                                               @PathVariable Long commentId){
-        reportCommentService.delete(member, reportId, commentId);
+        reportCommentService.delete(SecurityUtil.getLoginMemberId(), reportId, commentId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     // 신고게시판 댓글 수정
     @PatchMapping("/{reportId}/comment/{commentId}")
-    public ResponseEntity<Void> updateComment(@AuthenticationPrincipal Member member,
-                                              @PathVariable Long reportId,
+    public ResponseEntity<Void> updateComment(@PathVariable Long reportId,
                                               @PathVariable Long commentId,
                                               @RequestBody ReportCommentRequestDto requestDto){
-        reportCommentService.update(member, reportId, commentId, requestDto);
+        reportCommentService.update(SecurityUtil.getLoginMemberId(), reportId, commentId, requestDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     // 신고게시판 좋아요
     @PatchMapping("/{reportId}/like")
-    public ResponseEntity<Void> like(@AuthenticationPrincipal Member member,
-                                     @PathVariable Long reportId) {
-        reportLikeService.like(member, reportId);
+    public ResponseEntity<Void> like(@PathVariable Long reportId) {
+        reportLikeService.like(SecurityUtil.getLoginMemberId(), reportId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

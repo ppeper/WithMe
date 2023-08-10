@@ -6,12 +6,10 @@ import com.bonobono.backend.community.article.dto.res.ArticleNoticeResponseDto;
 import com.bonobono.backend.community.article.enumclass.ArticleType;
 import com.bonobono.backend.community.article.service.ArticleService;
 import com.bonobono.backend.global.util.SecurityUtil;
-import com.bonobono.backend.member.domain.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -44,9 +42,8 @@ public class ArticleNoticeController {
 
     // 공지사항 특정 글, 글에 관한 댓글 조회하기
     @GetMapping("/{articleId}")
-    public ResponseEntity<ArticleNoticeResponseDto> findById(@AuthenticationPrincipal Member member,
-                                                                         @PathVariable Long articleId) {
-        ArticleNoticeResponseDto responseDto = articleService.findNoticeById(type, member, articleId);
+    public ResponseEntity<ArticleNoticeResponseDto> findById(@PathVariable Long articleId) {
+        ArticleNoticeResponseDto responseDto = articleService.findNoticeById(type, SecurityUtil.getLoginMemberId(), articleId);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 }

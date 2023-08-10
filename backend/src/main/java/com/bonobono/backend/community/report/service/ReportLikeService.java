@@ -5,6 +5,7 @@ import com.bonobono.backend.community.report.entity.ReportLike;
 import com.bonobono.backend.community.report.repository.ReportLikeRepository;
 import com.bonobono.backend.community.report.repository.ReportRepository;
 import com.bonobono.backend.member.domain.Member;
+import com.bonobono.backend.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,9 +18,14 @@ public class ReportLikeService {
 
     private final ReportLikeRepository reportLikeRepository;
 
+    private final MemberRepository memberRepository;
+
     // 신고 게시글 좋아요
     @Transactional
-    public void like(Member member, Long reportId){
+    public void like(Long memberId, Long reportId){
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 멤버가 없습니다. id =" + memberId));
+
         Report report = reportRepository.findById(reportId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 ID 값을 가진 게시글이 없습니다 + id = " + reportId));
 

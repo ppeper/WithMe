@@ -22,16 +22,14 @@ public class MemberRequestDto implements Serializable {
     private Long memberId;
     private String username;
     private String password;
-    private String passwordCheck; // 비밀번호 확인 -> 제대로 작동하지 못함
     private String name;
     private String nickname;
     private String phoneNumber;
     private Set<Authority> role;
 
     @Builder
-    public MemberRequestDto(Long memberId, String passwordCheck){
+    public MemberRequestDto(Long memberId){
         this.memberId = memberId;
-        this.passwordCheck = passwordCheck;
     }
 
     public Member toMember(BCryptPasswordEncoder passwordEncoder, Set<Authority> role) {

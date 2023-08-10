@@ -1,13 +1,7 @@
 package com.bonobono.presentation.ui.community
 
-import android.Manifest
-import android.content.Intent
 import android.net.Uri
-import android.os.Build
-import android.provider.Settings
 import android.util.Log
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,7 +11,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -42,17 +35,20 @@ import androidx.navigation.compose.rememberNavController
 import com.bonobono.domain.model.NetworkResult
 import com.bonobono.domain.model.community.Article
 import com.bonobono.presentation.ui.CommunityFab
+import com.bonobono.presentation.ui.NavigationRouteName
 import com.bonobono.presentation.ui.common.CheckCountDialog
-import com.bonobono.presentation.ui.common.PermissionDialog
 import com.bonobono.presentation.ui.community.util.routeMapper
 import com.bonobono.presentation.ui.community.util.textMapper
 import com.bonobono.presentation.ui.community.views.board.BoardWriteBottomView
-import com.bonobono.presentation.ui.community.views.link.LinkView
-import com.bonobono.presentation.ui.community.views.gallery.PhotoSelectedListView
 import com.bonobono.presentation.ui.community.views.board.TopContentWrite
+import com.bonobono.presentation.ui.community.views.gallery.PhotoSelectedListView
+import com.bonobono.presentation.ui.community.views.link.LinkView
+import com.bonobono.presentation.ui.community.views.map.SelectedMapView
 import com.bonobono.presentation.ui.theme.Black_100
 import com.bonobono.presentation.ui.theme.TextGray
 import com.bonobono.presentation.utils.Converter
+import com.bonobono.presentation.utils.PermissionUtils.GALLERY_PERMISSIONS
+import com.bonobono.presentation.utils.PermissionUtils.LOCATION_PERMISSIONS
 import com.bonobono.presentation.viewmodel.CommunityViewModel
 import com.bonobono.presentation.viewmodel.PhotoViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -74,18 +70,13 @@ fun BoardWriteScreen(
     var contentTextState by rememberSaveable { mutableStateOf("") }
     val previousCount = photoViewModel.selectedPhoto.size
     val writeArticleState by communityViewModel.writeArticleState.collectAsStateWithLifecycle()
+    val mapState by communityViewModel.mapState
 
-    val GALLERY_PERMISSIONS = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        listOf(
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.READ_MEDIA_IMAGES,
-        )
-    } else {
-        listOf(Manifest.permission.READ_EXTERNAL_STORAGE)
-    }
-
-    val multiplePermissionsState =
+    val galleryPermission =
         rememberMultiplePermissionsState(permissions = GALLERY_PERMISSIONS)
+
+    val locationPermission =
+        rememberMultiplePermissionsState(permissions = LOCATION_PERMISSIONS)
 
     Scaffold(
         topBar = {
@@ -100,10 +91,16 @@ fun BoardWriteScreen(
                         title = titleTextState,
                         content = contentTextState,
                     )
-                    if (link.url.isNotBlank()) {
+                    if (link.imageUrl.isNotBlank()) {
                         article = article.copy(
                             url = link.url,
                             urlTitle = link.urlTitle
+                        )
+                    }
+                    mapState?.let {
+                        article = article.copy(
+                            latitude = it.latitude,
+                            longitude = it.longitude
                         )
                     }
                     val photoList = photoViewModel.selectedPhoto.mapNotNull {
@@ -130,22 +127,17 @@ fun BoardWriteScreen(
             BoardWriteBottomView(
                 route = route,
                 onPhotoClick = {
-                    multiplePermissionsState.launchMultiplePermissionRequest()
-                    if (multiplePermissionsState.allPermissionsGranted) {
-                        if (previousCount == 10) {
-                            showDialog = true
-                        } else navController.navigate(routeMapper(navController))
+                    galleryPermission.launchMultiplePermissionRequest()
+                    if (previousCount == 10) {
+                        showDialog = true
                     } else {
-//                        PermissionDialog(content = "사진권한이 필요한 작업입니다. 이동하시겠습니까?") {
-//                            val intent = Intent().apply {
-//                                action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-//                                data = Uri.fromParts("package", context.packageName, null)
-//                            }
-//                            context.startActivity(intent)
-//                        }
+                        navController.navigate(routeMapper(navController))
                     }
                 },
-                onMapClick = { /* TODO("지도 맵 선택 화면 이동") */ }
+                onMapClick = {
+                    locationPermission.launchMultiplePermissionRequest()
+                    navController.navigate(NavigationRouteName.REPORT_MAP)
+                }
             )
         }
     ) { innerPaddings ->
@@ -227,8 +219,12 @@ fun BoardWriteScreen(
                     // 커뮤니티 별 추가 UI
                     if (route == CommunityFab.WITH.route) {
                         LinkView()
-                    } else if (route == CommunityFab.REPORT.route) {
-
+                    } else  {
+                        mapState?.let {
+                            SelectedMapView(mapState = it) {
+                                communityViewModel.removeMapPosition()
+                            }
+                        }
                     }
                 }
             }

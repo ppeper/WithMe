@@ -2,6 +2,8 @@ package com.bonobono.presentation.ui.common.topbar.item
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Badge
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -14,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import com.bonobono.presentation.R
 
 // 공통으로 사용할 TopBar Menu Item
@@ -109,22 +112,23 @@ fun ActionsMenu(
     menuItems.alwaysShownItems.forEach { item ->
         // 알람 Action Icon은 B
         if (item.icon == R.drawable.ic_alarm) {
-            Box {
+            Box(modifier = Modifier.wrapContentSize()) {
                 IconButton(onClick = item.onClick) {
                     Icon(
                         painter = painterResource(id = item.icon),
                         contentDescription = item.contentDescription
                     )
-                    // 뱃지에 대한 색상
-                    if (notificationCount > 0) {
-                        Badge(
-                            modifier = Modifier.align(Alignment.TopEnd)
-                        ) {
-                            if (notificationCount > 99) {
-                                Text(text = "99..")
-                            } else {
-                                Text(text = notificationCount.toString())
-                            }
+                }
+                // 뱃지에 대한 색상
+                if (notificationCount > 0) {
+                    Badge(
+                        modifier = Modifier.align(Alignment.TopEnd)
+                            .padding(top = 8.dp, end = 8.dp)
+                    ) {
+                        if (notificationCount > 9) {
+                            Text(text = "9+")
+                        } else {
+                            Text(text = notificationCount.toString())
                         }
                     }
                 }

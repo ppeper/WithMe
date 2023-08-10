@@ -17,8 +17,10 @@ data class Article(
     val nickname: String = "",
     val profileImg: String = "",
     val recruitStatus: Boolean = false,
-    val url: String = "",
-    val urlTitle: String = "",
+    val url: String? = null,
+    val urlTitle: String? = null,
     val views: Int = 0,
+    val latitude: Double? = null,
+    val longitude: Double? = null,
     val createdDate: LocalDateTime = LocalDateTime.now(),
 )

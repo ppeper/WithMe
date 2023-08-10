@@ -12,6 +12,7 @@
     <string name="login_find_id">아이디 찾기</string>
     <string name="login_find_password">비밀번호 찾기</string>
     <string name="login_check_availability">중복확인</string>
+    <string name="login_phonenum_check_send">인증요청</string>
     <string name="login_resend">재전송</string>
     <string name="login_require_availability">인증요청</string>
     <string name="login_id">아이디</string>

@@ -30,6 +30,7 @@ import com.bonobono.presentation.ui.common.topbar.screen.ProfileEditScreen
 import com.bonobono.presentation.ui.mypage.view.ProfileEdit
 import com.bonobono.presentation.ui.theme.Black_100
 import com.bonobono.presentation.ui.theme.Black_70
+import com.bonobono.presentation.ui.theme.PrimaryBlue
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -61,7 +62,12 @@ fun ProfileEditScreen(
             item {
                 ProfileEdit(profileImage = R.drawable.beluga_whale)
                 Spacer(modifier = Modifier.height(32.dp))
-                ProfileEditInfo(infoType = "닉네임", info = "test", readOnly = false, singleLine = true)
+                ProfileEditInfo(
+                    infoType = "닉네임",
+                    info = "test",
+                    readOnly = false,
+                    singleLine = true
+                )
                 ProfileEditInfo(infoType = "이름", info = "test1", readOnly = true, singleLine = true)
                 ProfileEditInfo(
                     infoType = "휴대폰 번호",
@@ -70,7 +76,11 @@ fun ProfileEditScreen(
                     singleLine = true
                 )
                 Spacer(modifier = Modifier.height(16.dp))
-                PrimaryColorButton(text = R.string.edit_profile_done) {
+                PrimaryColorButton(
+                    text = R.string.edit_profile_done,
+                    enabled = true,
+                    backgroundColor = PrimaryBlue
+                ) {
 
                 }
             }

@@ -10,9 +10,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.internal.enableLiveLiterals
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -23,6 +25,7 @@ import com.bonobono.presentation.ui.common.TextFieldWithButton
 import com.bonobono.presentation.ui.common.button.PrimaryColorButton
 import com.bonobono.presentation.ui.common.text.CustomTextStyle
 import com.bonobono.presentation.ui.common.topbar.screen.SettingScreen
+import com.bonobono.presentation.ui.theme.PrimaryBlue
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -53,14 +56,24 @@ fun FindPWDScreen(
             style = CustomTextStyle.appNameText
         )
         Spacer(modifier = Modifier.height(32.dp))
-        BasicTextField(value = stringResource(id = R.string.login_name), hint = "이름", onValueChange = {})
+        BasicTextField(
+            value = stringResource(id = R.string.login_name),
+            hint = "이름",
+            keyboardType = KeyboardType.Text
+        ) {}
         Spacer(modifier = Modifier.height(8.dp))
-        BasicTextField(value = stringResource(id = R.string.login_id), hint = "아이디", onValueChange = {})
+        BasicTextField(
+            value = stringResource(id = R.string.login_id),
+            hint = "아이디",
+            keyboardType = KeyboardType.Text
+        ) {}
         Spacer(modifier = Modifier.height(8.dp))
         TextFieldWithButton(
             value = stringResource(id = R.string.login_phone_number),
             onValueChange = {},
             buttonTxt = R.string.login_require_availability,
+            enable = true,
+            keyboardType = KeyboardType.Phone,
             hint = "휴대폰 번호"
         ) {
 
@@ -69,9 +82,11 @@ fun FindPWDScreen(
         BasicTextField(
             value = stringResource(id = R.string.login_authentic_code),
             onValueChange = {},
-            hint = "인증번호")
+            hint = "인증번호",
+            keyboardType = KeyboardType.Number,
+        )
         Spacer(modifier = Modifier.height(16.dp))
-        PrimaryColorButton(text = R.string.login_find_password) {
+        PrimaryColorButton(text = R.string.login_find_password, enabled = true, backgroundColor = PrimaryBlue) {
 
         }
     }

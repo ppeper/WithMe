@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.bonobono.presentation.ui.common.text.CustomTextStyle.primaryColorBtnText
@@ -42,17 +43,19 @@ fun PrimaryButton(
 @Composable
 fun PrimaryColorButton(
     @StringRes text: Int,
+    enabled :Boolean,
+    backgroundColor : Color,
     action: () -> Unit
 ) {
     Button(modifier = Modifier
         .fillMaxWidth(),
         colors = ButtonDefaults.buttonColors(
-            containerColor = PrimaryBlue
+            containerColor = backgroundColor
         ),
         shape = RoundedCornerShape(6.dp),
-        onClick = { action }) {
-        Text(
-            text = stringResource(text),
+        enabled = enabled,
+        onClick = action) {
+        Text(text = stringResource(text),
             style = primaryColorBtnText,
             modifier = Modifier.padding(vertical = 6.dp)
         )

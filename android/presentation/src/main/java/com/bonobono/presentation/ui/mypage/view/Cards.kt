@@ -26,10 +26,10 @@ import com.bonobono.presentation.utils.NumberUtils
 @Composable
 fun MyPageInfoCard(seaAnimalExp: Int, rewardMoney: Int) {
     Card(
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(
             containerColor = ChatLightGray
         ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp, 0.dp, 16.dp, 16.dp )

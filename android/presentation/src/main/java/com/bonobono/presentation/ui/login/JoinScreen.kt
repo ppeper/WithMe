@@ -1,5 +1,7 @@
 package com.bonobono.presentation.ui.login
 
+import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,29 +12,44 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.bonobono.domain.model.registration.Member
 import com.bonobono.presentation.R
+import com.bonobono.presentation.ui.LoginNav
 import com.bonobono.presentation.ui.common.BasicTextField
+import com.bonobono.presentation.ui.common.SupportTxtTextField
 import com.bonobono.presentation.ui.common.TextFieldWithButton
 import com.bonobono.presentation.ui.common.button.PrimaryColorButton
 import com.bonobono.presentation.ui.common.text.CustomTextStyle
 import com.bonobono.presentation.ui.common.topbar.screen.SettingScreen
 import com.bonobono.presentation.ui.theme.PrimaryBlue
 import com.bonobono.presentation.ui.theme.wanju_daedunsan
+import com.bonobono.presentation.viewmodel.SignUpViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
+private const val TAG = "싸피"
+@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
-fun JoinScreen(navController: NavController) {
+fun JoinScreen(navController: NavController, viewModel: SignUpViewModel = hiltViewModel()) {
+    val buttonEnabled = viewModel.checkAllAllowed
+    val buttonColor = if (buttonEnabled) PrimaryBlue else viewModel.buttonColor
+    val userNameBtnEnabled = viewModel.checkUserNameValid.value == "SUCCESS"
+    val passwordEnabled = viewModel.checkPwdValid
+
     LaunchedEffect(key1 = Unit) {
         SettingScreen.buttons
             .onEach { button ->
@@ -46,17 +63,21 @@ fun JoinScreen(navController: NavController) {
     LazyColumn(
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Top,
-        modifier = Modifier.padding(horizontal = 16.dp, vertical = 24.dp)) {
+        modifier = Modifier.padding(horizontal = 16.dp, vertical = 24.dp)
+    ) {
         item {
             Spacer(modifier = Modifier.height(16.dp))
-            Row (verticalAlignment = Alignment.Bottom,
-                horizontalArrangement = Arrangement.Start) {
+            Row(
+                verticalAlignment = Alignment.Bottom,
+                horizontalArrangement = Arrangement.Start
+            ) {
                 Text(
                     text = stringResource(id = R.string.bonobono_app_name),
                     style = CustomTextStyle.appNameText
                 )
                 Spacer(modifier = Modifier.width(6.dp))
-                Text(text = "와 함께",
+                Text(
+                    text = "와 함께",
                     style = TextStyle(
                         fontSize = 28.sp,
                         fontFamily = wanju_daedunsan,
@@ -66,7 +87,8 @@ fun JoinScreen(navController: NavController) {
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = "아름다운 바다를 만들어요",
+            Text(
+                text = "아름다운 바다를 만들어요",
                 style = TextStyle(
                     fontSize = 28.sp,
                     fontFamily = wanju_daedunsan,
@@ -75,27 +97,68 @@ fun JoinScreen(navController: NavController) {
                 )
             )
             Spacer(modifier = Modifier.height(40.dp))
-            BasicTextField(value = "", hint = "이름", onValueChange = {})
-            Spacer(modifier = Modifier.height(12.dp))
-            BasicTextField(value = "", hint = "닉네임", onValueChange = {})
-            Spacer(modifier = Modifier.height(12.dp))
-            TextFieldWithButton(value = "", onValueChange = {}, hint = "아이디", buttonTxt = R.string.login_check_availability) {
-
+            BasicTextField(
+                value = viewModel.name,
+                hint = "이름",
+                keyboardType = KeyboardType.Text
+            ) { name -> viewModel.updateName(name) }
+            Spacer(modifier = Modifier.height(8.dp))
+            BasicTextField(
+                value = viewModel.nickName,
+                hint = "닉네임",
+                keyboardType = KeyboardType.Text
+            ) { nickName -> viewModel.updateNickName(nickName) }
+            Spacer(modifier = Modifier.height(8.dp))
+            TextFieldWithButton(
+                value = viewModel.username,
+                onValueChange = { userName -> viewModel.updateUserName(userName) },
+                hint = "아이디",
+                keyboardType = KeyboardType.Text,
+                enable = !userNameBtnEnabled,
+                buttonTxt = R.string.login_check_availability
+            ) {
+                viewModel.checkUserName()
             }
-            Spacer(modifier = Modifier.height(12.dp))
-            BasicTextField(value = "", hint = "비밀번호", onValueChange = {})
-            Spacer(modifier = Modifier.height(12.dp))
-            BasicTextField(value = "", hint = "비밀번호 확인", onValueChange = {})
-            Spacer(modifier = Modifier.height(12.dp))
-            TextFieldWithButton(value = "", onValueChange = {}, buttonTxt = R.string.login_resend, hint = "휴대폰 번호") {
-
+            Spacer(modifier = Modifier.height(8.dp))
+            BasicTextField(
+                value = viewModel.password,
+                hint = "비밀번호",
+                keyboardType = KeyboardType.Password
+            ) { password -> viewModel.updatePassword(password) }
+            Spacer(modifier = Modifier.height(8.dp))
+            SupportTxtTextField(
+                value = viewModel.passwordCheck,
+                hint = "비밀번호 확인",
+                supportingText = viewModel.passwordSupportTxt,
+                enable = passwordEnabled,
+                keyboardType = KeyboardType.Password
+            ) { passwordChk -> viewModel.updatePasswordCheck(passwordChk) }
+            Spacer(modifier = Modifier.height(8.dp))
+            TextFieldWithButton(
+                value = viewModel.phoneNum,
+                onValueChange = { phoneNum -> viewModel.updatePhoneNum(phoneNum) },
+                buttonTxt = R.string.login_phonenum_check_send,
+                keyboardType = KeyboardType.Phone,
+                enable = true,
+                hint = "휴대폰 번호"
+            ) {
+                viewModel.checkPhoneValidation()
             }
-            Spacer(modifier = Modifier.height(12.dp))
-            BasicTextField(value = "", hint = "인증번호", onValueChange = {})
-            Spacer(modifier = Modifier.height(40.dp))
-            PrimaryColorButton(text = R.string.login_join) {
-
-            }
+            Spacer(modifier = Modifier.height(8.dp))
+            SupportTxtTextField(
+                value = viewModel.validationCode,
+                hint = "인증번호",
+                onValueChange = { validationCode -> viewModel.updateValidationCode(validationCode) },
+                supportingText = "",
+                enable = true,
+                keyboardType = KeyboardType.Number,
+            )
+            Spacer(modifier = Modifier.height(32.dp))
+            PrimaryColorButton(text = R.string.login_join, enabled = buttonEnabled, backgroundColor = buttonColor, action = {
+                Log.d(TAG, "JoinScreen: clicked!!")
+                viewModel.signUp()
+                navController.navigate(LoginNav.route)
+            })
         }
     }
 }

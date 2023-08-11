@@ -33,7 +33,6 @@ public class ArticleService {
 
     private final ArticleImageService articleImageService;
 
-
     private final String imageDirName = "article_images"; // S3 폴더이름
 
     // 게시글 글 저장

@@ -51,9 +51,7 @@ public class AwsS3Service {
         }
 
         // s3에 저장된 파일 url 얻어옴.
-        URL url = amazonS3.getUrl(bucket, fileName);
-
-        return url;
+        return amazonS3.getUrl(bucket, fileName);
     }
 
     // 파일 이름이 같으면 저장이 안 된다. 따라서 파일이름 앞에 UUID를 붙인다.
@@ -62,10 +60,12 @@ public class AwsS3Service {
     }
 
 
-    public void delete(String dirName, String imageUrl) {
+    public void delete(String imageUrl, String dirName) {
         try {
-            String keyName = dirName + "/" + imageUrl;
+            String keyName = dirName + "/" + imageUrl.split("/")[2];
+            System.out.println(keyName);
             boolean isFileExist = amazonS3.doesObjectExist(bucket, keyName);
+            System.out.println(isFileExist);
             if (isFileExist) {
                 amazonS3.deleteObject(bucket, keyName);
             } else {

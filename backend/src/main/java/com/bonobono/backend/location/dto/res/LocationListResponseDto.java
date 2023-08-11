@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class LocationListResponseDto {
 
+    private Long id;
+
     private String name;
 
     private double centerLatitude;
@@ -16,6 +18,7 @@ public class LocationListResponseDto {
 
 
     public LocationListResponseDto(Location entity){
+        this.id = entity.getId();
         this.name = entity.getName();
         this.centerLatitude = entity.getCenterLatitude();
         this.centerLongitude = entity.getCenterLongitude();

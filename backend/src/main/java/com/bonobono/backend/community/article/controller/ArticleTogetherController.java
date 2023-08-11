@@ -12,6 +12,8 @@ import com.bonobono.backend.community.article.service.ArticleCommentService;
 import com.bonobono.backend.community.article.service.ArticleLikeService;
 import com.bonobono.backend.community.article.service.ArticleService;
 import com.bonobono.backend.global.util.SecurityUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+@Tag(name = "together", description = "함께게시판")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/community/together")
@@ -36,22 +39,22 @@ public class ArticleTogetherController {
 
     private final ArticleType type = ArticleType.TOGETHER;
 
-    // 함께게시판 글쓰기
+    @Operation(summary = "함께게시판 글쓰기")
     @PostMapping(value = "",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> save(@RequestPart ArticleSaveRequestDto requestDto,
                                      @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles){
         articleService.save(type, SecurityUtil.getLoginMemberId(), requestDto, imageFiles);
-        return new ResponseEntity(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    // 함께게시판 전체 글 조회
+    @Operation(summary = "함께게시판 전체 글 조회")
     @GetMapping("")
     public ResponseEntity<List<ArticleListResponseDto>> findAllDesc(){
         List<ArticleListResponseDto> responseDto =  articleService.findAllDesc(type);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
-    // 함께게시판 특정 글, 글에 관한 댓글 조회하기
+    @Operation(summary = "함께게시판 특정 글, 글에 관한 댓글 조회하기")
     @GetMapping("/{articleId}")
     public ResponseEntity<ArticleDetailResponseDto> findById(@PathVariable Long articleId) {
         // @AuthenticationPrincipa 사용하기
@@ -59,7 +62,7 @@ public class ArticleTogetherController {
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
-    // 함께게시판 게시글 검색 (키워드가 제목, 내용 포함)
+    @Operation(summary = "함께게시판 게시글 검색", description = "키워드가 제목, 내용 포함")
     @GetMapping("/search")
     public ResponseEntity<List<ArticleListResponseDto>> search(@RequestParam("keyword") String keyword){
         List<ArticleListResponseDto> responseDto = articleService.search(type, keyword);
@@ -67,7 +70,7 @@ public class ArticleTogetherController {
 
     }
 
-    // 함께게시판 특정 글 수정
+    @Operation(summary = "함께게시판 특정 글 수정")
     @PatchMapping(value = "/{articleId}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> update(@PathVariable Long articleId,
         @RequestPart ArticleUpdateRequestDto requestDto,

@@ -63,7 +63,7 @@ public class ArticleCommentService {
         }
         ArticleComment articleComment = articleCommentRepository.findById(commentId)
                 .orElseThrow(()-> new IllegalArgumentException("해당 댓글이 없습니다. id=" + commentId));
-        if(memberId == articleComment.getMember().getId()) {
+        if(memberId.equals(articleComment.getMember().getId())) {
             articleComment.updateComment(requestDto.getContent());
         } else {
             throw new UserNotAuthorizedException("해당 유저는 댓글 작성자가 아닙니다.");
@@ -78,7 +78,7 @@ public class ArticleCommentService {
         }
         ArticleComment articleComment = articleCommentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 없습니다. id=" + commentId));
-        if(memberId == articleComment.getMember().getId()) {
+        if(memberId.equals(articleComment.getMember().getId())) {
             articleCommentRepository.delete(articleComment);
         } else {
             throw new UserNotAuthorizedException("해당 멤버는 댓글 작성자가 아닙니다.");

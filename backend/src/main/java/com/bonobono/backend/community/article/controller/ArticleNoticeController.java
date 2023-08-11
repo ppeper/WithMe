@@ -6,6 +6,8 @@ import com.bonobono.backend.community.article.dto.res.ArticleNoticeResponseDto;
 import com.bonobono.backend.community.article.enumclass.ArticleType;
 import com.bonobono.backend.community.article.service.ArticleService;
 import com.bonobono.backend.global.util.SecurityUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+@Tag(name = "notice", description = "공지사항")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/community/notice")
@@ -25,23 +28,23 @@ public class ArticleNoticeController {
     private final ArticleType type = ArticleType.NOTICE;
 
 
-    // 공지사항 글 쓰기
+    @Operation(summary = "공지사항 글 쓰기")
     @PostMapping(value = "",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> save(@RequestPart ArticleSaveRequestDto requestDto,
                                   @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles){
         articleService.save(type, SecurityUtil.getLoginMemberId(), requestDto, imageFiles);
-        return new ResponseEntity(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    // 공지사항 전체 글 조회
     @GetMapping("")
+    @Operation(summary = "공지사항 전체 글 조회")
     public ResponseEntity<List<ArticleListResponseDto>> findAllDesc(){
         List<ArticleListResponseDto> responseDto =  articleService.findAllDesc(type);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
-    // 공지사항 특정 글, 글에 관한 댓글 조회하기
     @GetMapping("/{articleId}")
+    @Operation(summary = "공지사항 특정 글, 글에 관한 댓글 조회하기")
     public ResponseEntity<ArticleNoticeResponseDto> findById(@PathVariable Long articleId) {
         ArticleNoticeResponseDto responseDto = articleService.findNoticeById(type, SecurityUtil.getLoginMemberId(), articleId);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);

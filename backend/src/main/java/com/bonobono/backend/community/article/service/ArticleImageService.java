@@ -28,6 +28,7 @@ public class ArticleImageService {
     }
 
     public void deleteImage(ArticleImage articleImage, String imageUrl, String dirName){
+        // S3 이미지 삭제 후 DB에서 이미지 삭제
         awsS3Service.delete(imageUrl, dirName);
         articleImageRepository.delete(articleImage);
     }

@@ -108,7 +108,6 @@ fun BoardItemView(
     article: Article,
     navController: NavController
 ) {
-    val createDateState by rememberSaveable { mutableStateOf(DateUtils.dateToString(article.createdDate)) }
     Card(
         elevation = CardDefaults.cardElevation(4.dp),
         colors = CardDefaults.cardColors(
@@ -194,7 +193,7 @@ fun BoardItemView(
                     )
                     // 업로드 시간
                     Text(
-                        text = createDateState,
+                        text = DateUtils.dateToString(article.createdDate),
                         style = TextStyle(
                             fontSize = 10.sp,
                             fontWeight = FontWeight(400),

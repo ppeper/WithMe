@@ -17,13 +17,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -42,6 +45,7 @@ import com.bonobono.presentation.ui.theme.Black_100
 import com.bonobono.presentation.ui.theme.DividerGray
 import com.bonobono.presentation.ui.theme.LightGray
 import com.bonobono.presentation.ui.theme.PrimaryBlue
+import com.bonobono.presentation.utils.addFocusCleaner
 import com.bonobono.presentation.utils.rememberImeState
 import com.bonobono.presentation.viewmodel.CommentViewModel
 
@@ -51,15 +55,25 @@ fun WriteCommentView(
     modifier: Modifier = Modifier,
     type: String,
     articleId: Long,
-    index: Int = -1,
     onWriteCommentClicked: (Comment) -> Unit,
     onFocusChanged: () -> Unit,
-    commentViewModel: CommentViewModel = hiltViewModel()
+    commentViewModel: CommentViewModel = hiltViewModel(),
+    focusRequester: FocusRequester
 ) {
     var postContentState by rememberSaveable { mutableStateOf("") }
     val keyboardController = LocalSoftwareKeyboardController.current
-    val commentState by commentViewModel.commentState
+    var commentState by commentViewModel.commentState
     val commentId by commentViewModel.commentId.collectAsStateWithLifecycle()
+
+    if (commentState is NetworkResult.Success) {
+        Log.d("TEST", "WriteCommentView: SUCCESS")
+        val comment = (commentState as NetworkResult.Success<Comment>).data
+        onWriteCommentClicked(comment)
+        commentState = NetworkResult.Loading
+    } else {
+        Log.d("TEST", "WriteCommentView: $commentState")
+    }
+
     Column {
         Divider(color = DividerGray)
         Row(
@@ -87,7 +101,8 @@ fun WriteCommentView(
                     singleLine = true,
                     hint = if (commentId == -1L) "댓글을 입력해주세요" else "답글을 입력해주세요",
                     onValueChange = { postContentState = it },
-                    onFocusChange = { onFocusChanged() }
+                    onFocusChange = { onFocusChanged() },
+                    focusRequester = focusRequester
                 )
             }
             IconButton(
@@ -100,15 +115,7 @@ fun WriteCommentView(
                         } else {
                             Comment(content = postContentState)
                         }
-                        Log.d("TEST", "WriteCommentView: 댓글 $comment")
                         commentViewModel.writeComment(type, articleId, comment = comment)
-//                        if (commentState is NetworkResult.Success<Comment>) {
-//                            Log.d("TEST", "WriteCommentView: SUCCESS")
-//                            val comment = (commentState as NetworkResult.Success<Comment>).data
-                            onWriteCommentClicked(comment)
-//                        } else {
-//                            Log.d("TEST", "WriteCommentView: ERROR")
-//                        }
                     }
                     keyboardController?.hide()
                     commentViewModel.setCommentId(-1)
@@ -133,5 +140,5 @@ fun WriteCommentView(
 @Preview
 @Composable
 fun PreviewWriteCommentView() {
-    WriteCommentView(type = "free", articleId = 1, onWriteCommentClicked = {  }, onFocusChanged = {})
+    WriteCommentView(type = "free", articleId = 1, onWriteCommentClicked = {  }, onFocusChanged = {}, focusRequester = FocusRequester())
 }

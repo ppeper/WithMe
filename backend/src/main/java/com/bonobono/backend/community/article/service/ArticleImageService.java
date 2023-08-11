@@ -17,6 +17,7 @@ public class ArticleImageService {
 
     private final AwsS3Service awsS3Service;
 
+    // 게시글 이미지 저장
     public void saveImage(Article article, MultipartFile imageFile, String imageDirName){
         String imageUrl = awsS3Service.upload(imageFile, imageDirName).getPath();
         ArticleImageRequestDto requestDto = ArticleImageRequestDto.builder()
@@ -27,6 +28,7 @@ public class ArticleImageService {
         articleImageRepository.save(articleImage);
     }
 
+    // 게시글 이미지 삭제
     public void deleteImage(ArticleImage articleImage, String imageUrl, String dirName){
         // S3 이미지 삭제 후 DB에서 이미지 삭제
         awsS3Service.delete(imageUrl, dirName);

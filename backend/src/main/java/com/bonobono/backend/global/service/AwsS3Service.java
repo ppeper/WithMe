@@ -59,13 +59,10 @@ public class AwsS3Service {
         return dirName + "/" + UUID.randomUUID() + fileName;
     }
 
-
     public void delete(String imageUrl, String dirName) {
         try {
             String keyName = dirName + "/" + imageUrl.split("/")[2];
-            System.out.println(keyName);
             boolean isFileExist = amazonS3.doesObjectExist(bucket, keyName);
-            System.out.println(isFileExist);
             if (isFileExist) {
                 amazonS3.deleteObject(bucket, keyName);
             } else {

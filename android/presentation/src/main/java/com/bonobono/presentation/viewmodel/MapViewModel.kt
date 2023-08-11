@@ -19,6 +19,6 @@ class MapViewModel @Inject constructor(
     val locations: StateFlow<List<Location>> = _locations
 
     fun getLocations() = viewModelScope.launch {
-        getLocationsUseCase.invoke()
+        _locations.emit(getLocationsUseCase.invoke())
     }
 }

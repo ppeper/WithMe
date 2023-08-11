@@ -1,5 +1,6 @@
 package com.bonobono.presentation.ui.community.views.link
 
+import android.util.Log
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.annotation.DrawableRes
@@ -295,7 +296,8 @@ suspend fun getMetaData(link: Link): Link {
             isSuccess = true
         )
     } catch (e: IOException) {
-        return Link()
+        Log.d("TEST", "getMetaData: ")
+        return Link(isSuccess = true)
     }
 }
 

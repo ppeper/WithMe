@@ -1,6 +1,7 @@
 package com.bonobono.presentation.utils
 
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
 object DateUtils {
@@ -10,9 +11,12 @@ object DateUtils {
     private const val MONTH = 2592000L
     private const val YEAR = 31536000L
 
-    fun dateToString(upload: LocalDateTime): String {
+    fun dateToString(timeString: String): String {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
+        val dateTime = LocalDateTime.parse(timeString, formatter)
+
         val currentTime = LocalDateTime.now()
-        val timeDifference = ChronoUnit.SECONDS.between(upload, currentTime)
+        val timeDifference = ChronoUnit.SECONDS.between(dateTime, currentTime)
 
         return when {
             timeDifference < MINUTE -> "방금 전"

@@ -18,11 +18,11 @@ VALUES ('망나뇽',1,'짱 귀여워', 'LEVEL_1'),
         ('망뇽',2,'짱 귀여워', 'LEVEL_1');
 
 
-INSERT INTO user_character (custom_name, experience, main, member_id, character_id)
-VALUES ('망냐망냐',10, true, 1, 1),
-       ('망냐2',10, false, 1, 2),
-        ('망냐2',10, false, 1, 3),
-        ('망냐2',10, false, 1, 4);
+-- INSERT INTO user_character (custom_name, experience, main, member_id, character_id, location_name)
+-- VALUES ('망냐망냐',10, true, 1, 1, '경기도 수원시'),
+--        ('망냐2',10, false, 1, 2,'경기도 수원시'),
+--         ('망냐2',10, false, 1, 3,'경기도 수원시'),
+--         ('망냐2',10, false, 1, 4,'경기도 수원시');
 
 
 INSERT INTO quiz_problem (problem, answer, commentary)
@@ -125,10 +125,10 @@ VALUES (3, 2);
 INSERT INTO article_like (article_id, member_id)
 VALUES (4, 2);
 
-INSERT INTO location (name, latitude, longitude, leftlatitude, leftlongitude, rightlatitude, rightlongitude)
+INSERT INTO location (name, center_latitude, center_longitude, left_latitude, left_longitude, right_latitude, right_longitude)
 VALUES ('서울특별시 송파구', 37.49650739457211, 127.0868362387235, 37.4965050000, 127.0868000000, 37.496510000, 127.0868400000);
 
-INSERT INTO location (name, latitude, longitude, leftlatitude, leftlongitude, rightlatitude, rightlongitude)
+INSERT INTO location (name, center_latitude, center_longitude, left_latitude, left_longitude, right_latitude, right_longitude)
 VALUES ('경기도 수원시', 37.25748884382484, 127.03120068818286, 37.25718884382484, 127.0309068818286, 37.25754884382484, 127.0369068818286);
 
 -- INSERT INTO location (location_name, latitude, longitude)

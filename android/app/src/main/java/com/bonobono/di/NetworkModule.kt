@@ -3,15 +3,14 @@ package com.bonobono.di
 import android.content.Context
 import com.bonobono.BuildConfig
 import com.bonobono.data.interceptor.XAccessTokenInterceptor
+import com.bonobono.data.local.PreferenceDataSource
 import com.bonobono.data.remote.CommunityService
 import com.bonobono.data.remote.MissionService
-import com.bonobono.data.remote.RegisterService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.internal.MissingMainCoroutineDispatcherFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -68,5 +67,4 @@ object NetworkModule {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(RegisterService::class.java)
-
 }

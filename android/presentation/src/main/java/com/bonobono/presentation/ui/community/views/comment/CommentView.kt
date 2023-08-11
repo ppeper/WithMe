@@ -50,7 +50,7 @@ import com.bonobono.presentation.viewmodel.CommentViewModel
 fun CommentView(
     modifier: Modifier = Modifier,
     type: String,
-    articleId: Int,
+    articleId: Long,
     comments: Comment
 ) {
     val createDateState by rememberSaveable { mutableStateOf(DateUtils.dateToString(comments.createdDate)) }
@@ -113,7 +113,7 @@ fun CommentView(
 fun CommentRow(
     modifier: Modifier = Modifier,
     type: String,
-    articleId: Int,
+    articleId: Long,
     comments: Comment,
     commentViewModel: CommentViewModel = hiltViewModel()
 ) {
@@ -158,7 +158,6 @@ fun CommentRow(
                     onCheckedChange = {
                         // 댓글 좋아요 클릭
                         commentViewModel.updateCommentLike(type, articleId, comments.id)
-                        Log.d("TEST", "댓글 좋아요(${comments.id})")
                         if (likeState) {
                             likeCntState -= 1
                         } else likeCntState += 1
@@ -216,7 +215,7 @@ fun CommentRow(
                     ),
                     modifier = modifier.clickable {
                         // 대 댓글의 부모 id 값 viewmodel에 저장
-                        comments.id?.let { commentViewModel.setCommentId(it) }
+                        commentViewModel.setCommentId(comments.id)
                         keyboardController?.show()
                     }
                 )

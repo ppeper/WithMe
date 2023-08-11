@@ -5,12 +5,11 @@ import com.bonobono.domain.model.mission.IsSuccess
 import com.bonobono.domain.repository.MissionRepository
 import javax.inject.Inject
 
-class PostIsSuccessOXQuizUseCase @Inject constructor(
+class PostIsSuccessMiniGameUseCase @Inject constructor(
     private val missionRepository: MissionRepository,
-
-) {
-    suspend operator fun invoke(isSuccess: IsSuccess) : Boolean {
-        return when(val result = missionRepository.postIsSuccessOXQuiz(isSuccess)) {
+    ) {
+    suspend operator fun invoke(isSuccess: IsSuccess): Boolean {
+        return when (val result = missionRepository.postIsSuccessMiniGame(isSuccess)) {
             is NetworkResult.Success -> result.data
             else -> false
         }

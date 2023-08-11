@@ -5,6 +5,6 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class CommentRequest(
-    val parentCommentId: Int?,
+    val parentCommentId: Long?,
     val content: String
 ): Parcelable

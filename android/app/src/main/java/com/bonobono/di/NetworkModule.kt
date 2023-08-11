@@ -1,15 +1,17 @@
 package com.bonobono.di
 
-import android.content.Context
 import com.bonobono.BuildConfig
 import com.bonobono.data.interceptor.XAccessTokenInterceptor
 import com.bonobono.data.local.PreferenceDataSource
+import com.bonobono.data.remote.CharacterService
 import com.bonobono.data.remote.CommunityService
+import com.bonobono.data.remote.MapService
 import com.bonobono.data.remote.MissionService
+import com.bonobono.data.remote.RegisterService
+import com.bonobono.presentation.utils.Character
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -67,4 +69,25 @@ object NetworkModule {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(RegisterService::class.java)
+
+    @Singleton
+    @Provides
+    fun provideCharacterService(okHttpClient: OkHttpClient): CharacterService =
+        Retrofit.Builder()
+            .baseUrl(BuildConfig.API_KEY)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
+            .build()
+            .create(CharacterService::class.java)
+
+    @Singleton
+    @Provides
+    fun provideMapService(okHttpClient: OkHttpClient): MapService =
+        Retrofit.Builder()
+            .baseUrl(BuildConfig.API_KEY)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
+            .build()
+            .create(MapService::class.java)
+
 }

@@ -19,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.bonobono.domain.model.mission.TotalScore
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.GameNav
 import com.bonobono.presentation.ui.QuizNav
@@ -55,6 +57,8 @@ fun MissionScreen(navController: NavHostController, missionViewModel: MissionVie
     val completedGame = missionViewModel.getCompletedTime(Constants.GAME)
     val completedTimeAttendance = missionViewModel.getCompletedTime(Constants.ATTENDANCE)
 
+    val totalScore by missionViewModel.totalScore.collectAsState()
+
     var attendanceIsEnabled = remember { mutableStateOf(completedTimeAttendance == 0L) }
     var gameIsEnabled = remember { mutableStateOf(completedGame == 0L) }
     var quizIsEnabled = remember {
@@ -70,7 +74,7 @@ fun MissionScreen(navController: NavHostController, missionViewModel: MissionVie
             .verticalScroll(rememberScrollState())
             .padding(12.dp)
     ) {
-        UserInformationItem()
+        UserInformationItem(totalScore)
         Spacer(modifier = Modifier.size(12.dp))
         DailyGameItem(
             R.raw.animation_check,
@@ -157,7 +161,7 @@ fun DailyGameItem(
 }
 
 @Composable
-fun UserInformationItem() {
+fun UserInformationItem(totalScore: TotalScore) {
     Card(
         modifier = Modifier
             .fillMaxWidth(),
@@ -180,9 +184,9 @@ fun UserInformationItem() {
                     .border(BorderStroke(1.dp, LightGray), shape = CircleShape)
             )
             Row() {
-                CircularProgressBar(percent = 0.3f, "출셕율")
+                CircularProgressBar(percent = totalScore.attendanceScore * 0.01f, "출셕율")
                 Spacer(modifier = Modifier.size(24.dp))
-                CircularProgressBar(percent = 0.7f, "미션달성율")
+                CircularProgressBar(percent = totalScore.totalScore * 0.01f , "미션달성율")
             }
         }
         LinearProgressBar(

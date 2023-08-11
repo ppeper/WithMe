@@ -17,6 +17,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -45,11 +47,13 @@ fun CommonTextField(
     keyboardOptions: KeyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
     hint: String,
     onValueChange: (String) -> Unit,
-    onFocusChange: () -> Unit
+    onFocusChange: () -> Unit,
+    focusRequester: FocusRequester = FocusRequester()
 ) {
     BasicTextField(
         modifier = Modifier.fillMaxWidth()
-            .onFocusChanged { onFocusChange() },
+            .onFocusChanged { onFocusChange() }
+            .focusRequester(focusRequester),
         value = text,
         onValueChange = onValueChange,
         textStyle = textStyle,

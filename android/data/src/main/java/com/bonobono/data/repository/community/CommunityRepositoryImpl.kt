@@ -32,7 +32,16 @@ class CommunityRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteArticle(type: String, articleId: Long): NetworkResult<Unit> {
-        return handleApi { communityService.deleteArticle(type, articleId) }
+        val response = communityService.deleteArticle(type, articleId)
+        return try {
+            if (response.isSuccessful) {
+                NetworkResult.Success(Unit)
+            } else {
+                NetworkResult.Error(response.message())
+            }
+        } catch (e: Exception) {
+            e.message?.let { NetworkResult.Error(it) } ?: NetworkResult.Error("Unknown Error Occured")
+        }
     }
 
     override suspend fun updateArticle(type: String, articleId: Long): NetworkResult<Unit> {

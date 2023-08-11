@@ -5,8 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -21,5 +23,7 @@ public class TokenDto {
     private String refreshToken;
     @Schema(description = "엑세스토큰만료시간")
     private Long accessTokenExpiresIn;
+
+
 
 }

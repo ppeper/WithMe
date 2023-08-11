@@ -1,12 +1,13 @@
 package com.bonobono.domain.model.character
 
-import java.util.Date
-
 data class UserCharacter(
-    val characterId: Int,
-    val userId: Int,
-    val customName: String,
+    val char_ord_id: Int,
+    val createdDate: String,
+    val custom_name: String,
+    val description: String,
     val experience: Int,
-    val createdDate: Date,
-    val isMain: Boolean
+    val id: Int,
+    val is_main: Boolean,
+    val level: String,
+    val memberId: Int
 )

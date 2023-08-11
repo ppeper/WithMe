@@ -1,6 +1,7 @@
 package com.bonobono.domain.repository.registration
 
 import com.bonobono.domain.model.NetworkResult
+import com.bonobono.domain.model.registration.LoginResult
 import com.bonobono.domain.model.registration.Member
 import com.bonobono.domain.model.registration.Password
 import com.bonobono.domain.model.registration.Register
@@ -23,7 +24,7 @@ interface RegisterRepository {
     suspend fun signUp(register: Register) : NetworkResult<Member>
 
     // 로그인
-    suspend fun login(register: Register)
+    suspend fun login(register: Register) : NetworkResult<LoginResult>
 
     // 로그아웃
     suspend fun logout() : NetworkResult<String>
@@ -36,4 +37,12 @@ interface RegisterRepository {
 
     // 회원 정보 삭제
     suspend fun deleteMember() : NetworkResult<String>
+
+    // 자동 로그인
+
+    // 토큰 값 저장
+    suspend fun putToken(loginResult: LoginResult)
+
+    // 사용자 정보 저장
+    suspend fun putMemberInfo(member: Member)
 }

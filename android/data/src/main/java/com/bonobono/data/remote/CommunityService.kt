@@ -1,18 +1,15 @@
 package com.bonobono.data.remote
 
-import com.bonobono.data.model.community.request.ArticleRequest
 import com.bonobono.data.model.community.request.CommentRequest
 import com.bonobono.data.model.community.response.ArticleDetailResponse
-import com.bonobono.domain.model.NetworkResult
-import com.bonobono.domain.model.community.Article
 import com.bonobono.data.model.community.response.ArticleResponse
 import com.bonobono.data.model.community.response.CommentResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
-import retrofit2.http.Header
 import retrofit2.http.Multipart
 import retrofit2.http.PATCH
 import retrofit2.http.POST
@@ -48,7 +45,7 @@ interface CommunityService {
     suspend fun deleteArticle(
         @Path(value = "type") communityType: String,
         @Path(value = "articleId") articleId: Long
-    )
+    ): Response<Unit>
 
     // 게시글 수정
     @PATCH("community/{type}/{articleId}")

@@ -6,6 +6,7 @@ import com.bonobono.data.mapper.toDomain
 import com.bonobono.data.remote.RegisterService
 import com.bonobono.data.remote.handleApi
 import com.bonobono.domain.model.NetworkResult
+import com.bonobono.domain.model.registration.LoginResult
 import com.bonobono.domain.model.registration.Member
 import com.bonobono.domain.model.registration.Password
 import com.bonobono.domain.model.registration.Register
@@ -38,11 +39,8 @@ class RegisterRepositoryImpl @Inject constructor(
         return handleApi { registerService.signUp(register).toDomain() }
     }
 
-    override suspend fun login(register: Register) {
-        val token = registerService.login(register).toDomain()
-        Log.d(TAG, "login: accesstoken : ${token.accessToken} / accesstokenExpire : ${token.accessTokenExpiresIn} / refresh token: ${token.refreshToken}  / grant type : ${token.grantType}")
-        preferenceDatasource.putString("access_token", token.accessToken)
-        Log.d(TAG, "login: 토큰 들어갔을까?? ${preferenceDatasource.getString("access_token")}")
+    override suspend fun login(register: Register) : NetworkResult<LoginResult> {
+        return handleApi { registerService.login(register).toDomain() }
     }
 
     override suspend fun logout(): NetworkResult<String> {
@@ -60,4 +58,17 @@ class RegisterRepositoryImpl @Inject constructor(
     override suspend fun deleteMember(): NetworkResult<String> {
         return handleApi { registerService.deleteMember() }
     }
+
+    override suspend fun putToken(loginResult: LoginResult) {
+        preferenceDatasource.putString("access_token", loginResult.tokenDto.accessToken)
+        preferenceDatasource.putString("refresh_token", loginResult.tokenDto.refreshToken)
+        preferenceDatasource.putInt("member_id", loginResult.memberId)
+        Log.d(TAG, "putToken: access_token : ${preferenceDatasource.getString("access_token")} refresh_token : ${preferenceDatasource.getString("refresh_token")} member_id : ${preferenceDatasource.getInt("member_id")}")
+    }
+
+    override suspend fun putMemberInfo(member: Member) {
+//        preferenceDatasource.putString("member_id", member)
+    }
+
+
 }

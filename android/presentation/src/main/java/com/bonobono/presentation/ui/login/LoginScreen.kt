@@ -101,17 +101,21 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                 backgroundColor = PrimaryBlue,
                 action = {
                     Log.d(TAG, "LoginScreen: ${viewModel.username} ${viewModel.password}")
-
-                        coroutineScope.launch {
-                            if (viewModel.username.isBlank() || viewModel.password.isBlank()) {
-                                snackbarHostState.showSnackbar(
-                                    "아이디 비밀번호 입력 값을 모두 기입하세요"
-                                )
-                            } else {
-                                viewModel.login()
+                    coroutineScope.launch {
+                        if (viewModel.username.isBlank() || viewModel.password.isBlank()) {
+                            snackbarHostState.showSnackbar("아이디 비밀번호 입력 값을 모두 기입하세요.")
+                        } else {
+                            val result = viewModel.login()
+                            if (result == "SUCCESS") {
+                                Log.d(TAG, "LoginScreen: 로그인 성공")
                                 navController.navigate("main_screen")
+                            } else {
+                                Log.d(TAG, "LoginScreen: 로그인 실패")
+                                snackbarHostState.showSnackbar("아이디 비밀번호 입력 값을 다시 확인해주세요.")
                             }
                         }
+                    }
+
                 })
             Spacer(modifier = Modifier.height(16.dp))
             LoginHelpOptions(navController)

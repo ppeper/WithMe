@@ -88,7 +88,7 @@ public class ReportService {
 
         Report report = reportRepository.findById(reportId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + reportId));
-        if(member.getId() == report.getMember().getId()) {
+        if(member.getId().equals(report.getMember().getId())) {
             report.updateReport(requestDto.getTitle(), requestDto.getContent(), requestDto.getLatitude(), requestDto.getLongitude());
             if (imageFiles != null) {
                 for (MultipartFile imageFile : imageFiles) {
@@ -109,7 +109,7 @@ public class ReportService {
         Report report = reportRepository.findById(reportId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + reportId));
 
-        if(member.getRole().stream().anyMatch(authority -> authority.getRole().equals(Role.ADMIN))) {
+        if(member.getRole().stream().anyMatch(authority -> authority.getRole().equals(Role.ADMIN.toString()))) {
             report.updateAdminConfirmStatus();
         } else {
             throw new UserNotAuthorizedException("해당 멤버는 관리자가 아닙니다.");
@@ -124,7 +124,7 @@ public class ReportService {
 
         Report report = reportRepository.findById(reportId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + reportId));
-        if(member.getId() == report.getMember().getId()) {
+        if(member.getId().equals(report.getMember().getId())) {
             List<ReportImage> reportImages = report.getImages();
             for (ReportImage reportImage : reportImages) {
                 reportImageService.deleteImage(reportImage, reportImage.getImageUrl(), imageDirName);

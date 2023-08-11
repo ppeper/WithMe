@@ -5,7 +5,6 @@ data class Register(
     val name: String,
     val nickname: String,
     val password: String,
-    val passwordCheck: String,
     val phoneNumber: String,
     val role: List<Any>,
     val username: String

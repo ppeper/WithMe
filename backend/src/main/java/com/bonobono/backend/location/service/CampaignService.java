@@ -27,6 +27,17 @@ public class CampaignService {
                 .collect(Collectors.toList());
     }
 
+    // 캠페인 장소별 조회 최신순
+    @Transactional(readOnly = true)
+    public List<CampaignListResponseDto> findAllByLocation(Long locationId) {
+        Location location = locationRepository.findById(locationId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 장소가 없습니다. id =" + locationId));
+
+        return campaignRepository.findAllByLocationOrderByIdDesc(location).stream()
+                .map(CampaignListResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
     // 캠페인 등록
     @Transactional
     public void save(CampaignSaveRequestDto requestDto){

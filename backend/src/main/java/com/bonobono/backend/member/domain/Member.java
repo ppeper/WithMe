@@ -74,7 +74,7 @@ public class Member extends BaseTimeEntity  {
 
     public UserCharacter getMainCharacter() {
         for (UserCharacter character : this.userCharacters) {
-            if (character.getMain()) {
+            if (character.isMain()) {
                 return character;
             }
         }
@@ -104,6 +104,11 @@ public class Member extends BaseTimeEntity  {
 
         if((passwordEncoder.matches(dto.getPassword(), this.password)) && dto.getNewPassword() != null)
             this.password = passwordEncoder.encode(dto.getNewPassword());
+    }
+
+    // fcm 토큰 설정
+    public void setFcmToken(String fcmToken) {
+        this.firebaseToken = fcmToken;
     }
 
 }

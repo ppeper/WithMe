@@ -33,7 +33,6 @@ public class ArticleService {
 
     private final ArticleImageService articleImageService;
 
-
     private final String imageDirName = "article_images"; // S3 폴더이름
 
     // 게시글 글 저장
@@ -95,7 +94,7 @@ public class ArticleService {
     public void update(Long memberId, Long articleId, ArticleUpdateRequestDto requestDto, List<MultipartFile> imageFiles){
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + articleId));
-        if(memberId == article.getMember().getId()) {
+        if(memberId.equals(article.getMember().getId())) {
             article.updateArticle(requestDto.getTitle(), requestDto.getContent(), requestDto.getUrlTitle(), requestDto.getUrl());
             if (imageFiles != null) {
                 for (MultipartFile imageFile : imageFiles) {
@@ -112,7 +111,7 @@ public class ArticleService {
     public void updateRecruitStatus(Long memberId, Long articleId){
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + articleId));
-        if(memberId == article.getMember().getId()) {
+        if(memberId.equals(article.getMember().getId())) {
             article.updateRecruitStatus();
         } else {
             throw new UserNotAuthorizedException("해당 멤버는 게시글 작성자가 아닙니다.");
@@ -124,7 +123,7 @@ public class ArticleService {
     public void delete(Long memberId, Long articleId){
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + articleId));
-        if(memberId == article.getMember().getId()) {
+        if(memberId.equals(article.getMember().getId())) {
             List<ArticleImage> articleImages = article.getImages();
             for (ArticleImage articleImage : articleImages) {
                 articleImageService.deleteImage(articleImage, articleImage.getImageUrl(), imageDirName);

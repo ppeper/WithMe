@@ -42,6 +42,7 @@ import com.bonobono.domain.model.community.Article
 import com.bonobono.presentation.ui.CommunityFab
 import com.bonobono.presentation.ui.NavigationRouteName
 import com.bonobono.presentation.ui.common.CheckCountDialog
+import com.bonobono.presentation.ui.common.LoadingView
 import com.bonobono.presentation.ui.community.util.routeMapper
 import com.bonobono.presentation.ui.community.util.textMapper
 import com.bonobono.presentation.ui.community.views.board.BoardWriteBottomView
@@ -77,6 +78,7 @@ fun BoardWriteScreen(
     val previousCount = photoViewModel.selectedPhoto.size
     val writeArticleState by communityViewModel.writeArticleState.collectAsStateWithLifecycle()
     val mapState by communityViewModel.mapState
+    var isLoading by remember { mutableStateOf(false) }
 
     val galleryPermission =
         rememberMultiplePermissionsState(permissions = GALLERY_PERMISSIONS)

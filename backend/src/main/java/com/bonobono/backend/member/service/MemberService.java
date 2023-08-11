@@ -7,6 +7,7 @@ import com.bonobono.backend.member.domain.Member;
 import com.bonobono.backend.member.domain.Token;
 import com.bonobono.backend.member.domain.enumtype.Role;
 import com.bonobono.backend.member.dto.request.*;
+import com.bonobono.backend.member.dto.response.LoginResponseDto;
 import com.bonobono.backend.member.dto.response.MemberResponseDto;
 import com.bonobono.backend.member.dto.response.TokenDto;
 import com.bonobono.backend.global.exception.AppException;
@@ -70,7 +71,7 @@ public class MemberService {
      * 로그인
      */
     @Transactional
-    public TokenDto login(MemberLoginRequestDto request) {
+    public LoginResponseDto login(MemberLoginRequestDto request) {
         // 아이디가 틀렸을 때
         Member member = memberRepository.findByUsername(request.getUsername())
             .orElseThrow(() -> {
@@ -86,8 +87,12 @@ public class MemberService {
 
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
+        Long memberId = member.getId();
+
         // 토큰 생성
         TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
+
+        LoginResponseDto loginResponseDto = new LoginResponseDto(memberId, tokenDto);
 
         // refreshToken 저장
         Token refreshToken = Token.builder()
@@ -98,7 +103,7 @@ public class MemberService {
 
         tokenRepository.save(refreshToken);
 
-        return tokenDto;
+        return loginResponseDto;
     }
 
     /**

@@ -24,9 +24,9 @@ data class Article(
     val latitude: Double? = null,
     val longitude: Double? = null,
     val locationId: Long? = null,
-    val adminConfirmStatus: Boolean? = null,
+    var adminConfirmStatus: Boolean? = null,
     // 함께 게시판
     val url: String? = null,
     val urlTitle: String? = null,
-    val recruitStatus: Boolean? = null
+    var recruitStatus: Boolean? = null
 )

@@ -57,33 +57,40 @@ fun DropDownMenuView(
                 },
                 onClick = { onDeleteClick() }
             )
-            if (article.type == Constants.TOGETHER) {
+            if (article.type == Constants.TOGETHER && article.recruitStatus == false) {
                 DropdownMenuItem(
                     text = {
                         Text(
-                            text = if (article.recruitStatus == true) "모집 마감" else "모집 하기",
+                            text = "모집 마감",
                             style = TextStyle(
                                 color = PrimaryBlue,
                                 fontWeight = FontWeight(700)
                             )
                         )
                     },
-                    onClick = { onFinishClick() }
+                    onClick = {
+                        onFinishClick()
+                        menuExpanded = !menuExpanded
+                    }
                 )
-            }
-            if (article.type == Constants.REPORT) {
-                DropdownMenuItem(
-                    text = {
-                        Text(
-                            text = "답변 완료",
-                            style = TextStyle(
-                                color = PrimaryBlue,
-                                fontWeight = FontWeight(700)
+            } else {
+                if (article.adminConfirmStatus == false) {
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                text = "답변 완료",
+                                style = TextStyle(
+                                    color = PrimaryBlue,
+                                    fontWeight = FontWeight(700)
+                                )
                             )
-                        )
-                    },
-                    onClick = { onFinishClick() }
-                )
+                        },
+                        onClick = {
+                            menuExpanded = !menuExpanded
+                            onFinishClick()
+                        }
+                    )
+                }
             }
         }
     }

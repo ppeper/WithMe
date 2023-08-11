@@ -14,6 +14,12 @@ interface CommunityRepository {
     suspend fun writeArticle(type: String, images: List<String>?, article: Article): NetworkResult<Unit>
     // 게시글 삭제
     suspend fun deleteArticle(type: String, articleId: Long): NetworkResult<Unit>
+
+    // 함께 게시판 모집 완료
+    suspend fun recruitComplete(type: String, articleId: Long): NetworkResult<Unit>
+
+    // 신고 게시판 답변 완료
+    suspend fun adminComplete(articleId: Long): NetworkResult<Unit>
     // 게시글 수정
     suspend fun updateArticle(type: String, articleId: Long): NetworkResult<Unit>
     // 댓글 작성

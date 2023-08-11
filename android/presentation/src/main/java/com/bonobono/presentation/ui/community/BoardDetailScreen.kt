@@ -66,6 +66,7 @@ import com.bonobono.domain.model.community.Article
 import com.bonobono.domain.model.community.Image
 import com.bonobono.domain.model.community.Link
 import com.bonobono.presentation.R
+import com.bonobono.presentation.ui.BoardDetailNav
 import com.bonobono.presentation.ui.NavigationRouteName
 import com.bonobono.presentation.ui.common.LoadingView
 import com.bonobono.presentation.ui.community.util.DummyData.dummyArticle
@@ -124,7 +125,10 @@ fun BoardDetailScreen(
         is NetworkResult.Loading -> { LoadingView() }
 
         is NetworkResult.Success -> {
-            val article = (articleState as NetworkResult.Success<Article>).data.copy(articleId = articleId)
+            val result = (articleState as NetworkResult.Success<Article>).data.copy(articleId = articleId)
+            val article by remember { mutableStateOf(result) }
+            var recruitState by remember { mutableStateOf(article.recruitStatus) }
+            var adminState by remember { mutableStateOf(article.adminConfirmStatus) }
             var comments by remember { mutableStateOf(article.comments) }
             var isTextFieldFocused by remember { mutableStateOf(false) }
             var commentCnt by remember { mutableStateOf(article.commentCnt) }
@@ -198,7 +202,12 @@ fun BoardDetailScreen(
                                     verticalArrangement = Arrangement.spacedBy(16.dp)
                                 ) {
 
-                                    WriterView(type = type, communityViewModel = communityViewModel, article = article, navController = navController)
+                                    WriterView(type = type, communityViewModel = communityViewModel, article = article, navController = navController,
+                                        adminCompleteState = adminState,
+                                        recruitCompleteState = recruitState,
+                                        onRecruitCompleteClicked = { recruitState = true },
+                                        onAdminCompleteClicked = { adminState = true }
+                                    )
 
                                     Text(
                                         text = article.title,
@@ -274,14 +283,33 @@ fun WriterView(
     type: String,
     communityViewModel: CommunityViewModel,
     article: Article,
-    navController: NavController
+    recruitCompleteState: Boolean?,
+    adminCompleteState: Boolean?,
+    navController: NavController,
+    onRecruitCompleteClicked: () -> Unit,
+    onAdminCompleteClicked: () -> Unit,
 ) {
 
     val deleteState by communityViewModel.deleteArticleState.collectAsStateWithLifecycle()
+    val recruitState by communityViewModel.recruitCompleteState.collectAsStateWithLifecycle()
+    val adminState by communityViewModel.adminCompleteState.collectAsStateWithLifecycle()
+
     LaunchedEffect(deleteState) {
         if (deleteState is NetworkResult.Success<Unit>) {
             Log.d("TEST", "WriterView: $deleteState")
             navController.popBackStack()
+        }
+    }
+
+    LaunchedEffect(recruitState) {
+        if (recruitState is NetworkResult.Success<Unit>) {
+            onRecruitCompleteClicked()
+        }
+    }
+
+    LaunchedEffect(adminState) {
+        if (adminState is NetworkResult.Success<Unit>) {
+            onAdminCompleteClicked()
         }
     }
 
@@ -296,22 +324,29 @@ fun WriterView(
         Spacer(modifier = modifier.weight(1f))
         // 함께 게시판
         if (article.type == Constants.TOGETHER) {
-            article.recruitStatus?.let { ProceedingView(type = article.type!!, isProceeding = it) }
+            article.recruitStatus?.let { ProceedingView(type = article.type!!, isProceeding = recruitCompleteState!!) }
         }
         // 신고 게시판
+        Log.d("TEST", "WriterView: $article")
         if (article.type == null) {
-            article.adminConfirmStatus?.let { ProceedingView(type = Constants.REPORT, isProceeding = it) }
+            article.adminConfirmStatus?.let { ProceedingView(type = Constants.REPORT, isProceeding = adminCompleteState!!) }
         }
         // TODO("내가 쓴 글만 DropDown 보이기 -> 로그인 완성되면 Token으로 확인)
         DropDownMenuView(
+            article = article,
             onUpdateClick = {},
             onDeleteClick = {
                 article.articleId?.let { communityViewModel.deleteArticle(type, it) }
-                article.reportId?.let { communityViewModel.deleteArticle(type, it) }
             },
             onFinishClick = {
-            },
-            article = article
+                Log.d("TEST", "WriterView: onFinish $article")
+                Log.d("TEST", "WriterView: onFinish $type")
+                if (article.type == Constants.TOGETHER) {
+                    article.articleId?.let { communityViewModel.recruitComplete(type, it) }
+                } else {
+                    article.articleId?.let { communityViewModel.adminComplete(it) }
+                }
+            }
         )
     }
 }
@@ -485,7 +520,11 @@ fun PreviewWriterView() {
         type = "free",
         communityViewModel = hiltViewModel(),
         article = dummyArticle,
-        navController = rememberNavController()
+        adminCompleteState = null,
+        recruitCompleteState = null,
+        navController = rememberNavController(),
+        onRecruitCompleteClicked = {},
+        onAdminCompleteClicked = {}
     )
 }
 

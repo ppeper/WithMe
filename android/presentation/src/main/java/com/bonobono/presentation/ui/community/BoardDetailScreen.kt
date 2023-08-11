@@ -42,9 +42,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -65,6 +68,7 @@ import com.bonobono.domain.model.community.Image
 import com.bonobono.domain.model.community.Link
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.NavigationRouteName
+import com.bonobono.presentation.ui.common.LoadingView
 import com.bonobono.presentation.ui.community.util.DummyData.dummyArticle
 import com.bonobono.presentation.ui.community.util.boardDetailLaunchEffect
 import com.bonobono.presentation.ui.community.views.board.DropDownMenuView
@@ -115,10 +119,9 @@ fun BoardDetailScreen(
     LaunchedEffect(Unit) {
         communityViewModel.getArticleById(type, articleId)
     }
-    when (articleState) {
-        is NetworkResult.Loading -> {
 
-        }
+    when (articleState) {
+        is NetworkResult.Loading -> { LoadingView() }
 
         is NetworkResult.Success -> {
             val article = (articleState as NetworkResult.Success<Article>).data.copy(articleId = articleId)
@@ -128,6 +131,8 @@ fun BoardDetailScreen(
             val commentViewModel: CommentViewModel = hiltViewModel()
             val scope = rememberCoroutineScope()
             var metaLink by remember { mutableStateOf(Link()) }
+            val focusManager = LocalFocusManager.current
+            val focusRequester by remember { mutableStateOf(FocusRequester()) }
             LaunchedEffect(Unit) {
                 scope.launch {
                     metaLink = getMetaData(Link(article.url, article.urlTitle))
@@ -149,19 +154,21 @@ fun BoardDetailScreen(
                                     if (index != -1) {
                                         comments = comments.apply {
                                             comments[index].childComments = comments[index].childComments.toMutableList().apply { add(comment) }.toList()
-                                        }.toList()
+                                        }.toMutableList()
+                                        Log.d("TEST", "BoardDetailScreen: 대 댓글 추가 ${comments.hashCode()}")
                                     }
                                 } else {
-                                    Log.d("TEST", "BoardDetailScreen: 댓글 추가 $comment")
-                                    comments = comments.toMutableList().apply { add(comment) }.toList()
+                                    comments = comments.toMutableList().apply { add(comment) }.toMutableList()
+                                    Log.d("TEST", "BoardDetailScreen: 댓글 추가 ${comments.hashCode()}")
                                 }
-                                Log.d("TEST", "BoardDetailScreen: 댓글 추가 $comment")
                                 // 댓글 수 증가
                                 commentCnt++
                             },
                             onFocusChanged = {
+                                keyboardController?.show()
                                 isTextFieldFocused = !isTextFieldFocused
-                            }
+                            },
+                            focusRequester = focusRequester
                         )
                     }
                 ) {
@@ -173,6 +180,7 @@ fun BoardDetailScreen(
                             .pointerInput(Unit) {
                                 detectTapGestures {
                                     keyboardController?.hide()
+                                    focusManager.clearFocus()
                                     isTextFieldFocused = !isTextFieldFocused
                                     commentViewModel.setCommentId(-1)
                                 }
@@ -211,12 +219,14 @@ fun BoardDetailScreen(
                                     if (article.images.isNotEmpty()) {
                                         MultipleImageView(images = article.images)
                                     }
-                                    LinkImageTitle(
-                                        link = metaLink,
-                                        R.drawable.ic_go
-                                    ) {
-                                        val encodedUrl = URLEncoder.encode(metaLink.url, StandardCharsets.UTF_8.toString())
-                                        navController.navigate("${NavigationRouteName.LINK_WEB_VIEW}/$encodedUrl")
+                                    if (article.type == Constants.TOGETHER) {
+                                        LinkImageTitle(
+                                            link = metaLink,
+                                            R.drawable.ic_go
+                                        ) {
+                                            val encodedUrl = URLEncoder.encode(metaLink.url, StandardCharsets.UTF_8.toString())
+                                            navController.navigate("${NavigationRouteName.LINK_WEB_VIEW}/$encodedUrl")
+                                        }
                                     }
                                     Text(
                                         text = "조회수 ${article.views}",
@@ -236,8 +246,10 @@ fun BoardDetailScreen(
                             if (article.comments.isEmpty()) {
                                 item { NoCommentView() }
                             } else {
-                                items(comments) { item ->
-                                    CommentView(type = type, articleId = articleId, comments = item)
+                                Log.d("TEST", "BoardDetailScreen: 댓글 다시 불림")
+                                items(comments, key = { comment -> comment.id }) { item ->
+                                    Log.d("TEST", "BoardDetailScreen: 댓글 다시 리컴포저블")
+                                    CommentView(type = type, articleId = articleId, comments = item, focusRequester = focusRequester)
                                 }
                             }
                         }
@@ -245,9 +257,7 @@ fun BoardDetailScreen(
                 }
             }
         }
-
-        is NetworkResult.Error -> {
-        }
+        is NetworkResult.Error -> {}
     }
 }
 
@@ -261,9 +271,9 @@ fun WriterView(
 ) {
 
     val deleteState by communityViewModel.deleteArticleState.collectAsStateWithLifecycle()
-
-    LaunchedEffect(Unit) {
+    LaunchedEffect(deleteState) {
         if (deleteState is NetworkResult.Success<Unit>) {
+            Log.d("TEST", "WriterView: $deleteState")
             navController.popBackStack()
         }
     }

@@ -20,14 +20,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -37,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import coil.compose.AsyncImagePainter.State.Empty.painter
 import coil.request.ImageRequest
 import com.bonobono.domain.model.community.Comment
 import com.bonobono.presentation.R
@@ -49,6 +53,7 @@ import com.bonobono.presentation.viewmodel.CommentViewModel
 @Composable
 fun CommentView(
     modifier: Modifier = Modifier,
+    focusRequester: FocusRequester,
     type: String,
     articleId: Long,
     comments: Comment
@@ -97,11 +102,12 @@ fun CommentView(
                     color = Black_100,
                 )
             )
-            CommentRow(type = type, articleId = articleId, comments = comments)
+            CommentRow(type = type, articleId = articleId, comments = comments, focusRequester = focusRequester)
             // 대댓글 리스트
             if (comments.childComments.isNotEmpty()) {
+                Log.d("TEST", "CommentView: 대댓글 다시 부르기")
                 comments.childComments.forEach { reComment ->
-                    CommentView(type = type, articleId = articleId, comments = reComment)
+                    CommentView(type = type, articleId = articleId, comments = reComment, focusRequester = focusRequester)
                 }
             }
         }
@@ -115,13 +121,13 @@ fun CommentRow(
     type: String,
     articleId: Long,
     comments: Comment,
-    commentViewModel: CommentViewModel = hiltViewModel()
+    commentViewModel: CommentViewModel = hiltViewModel(),
+    focusRequester: FocusRequester
 ) {
     var likeState by rememberSaveable { mutableStateOf(comments.liked) }
     var likeCntState by rememberSaveable { mutableStateOf(comments.likes) }
     val commentCntState by rememberSaveable { mutableStateOf(comments.childComments.size) }
     val keyboardController = LocalSoftwareKeyboardController.current
-
     Row(
         modifier = modifier
             .wrapContentHeight()
@@ -215,6 +221,7 @@ fun CommentRow(
                     ),
                     modifier = modifier.clickable {
                         // 대 댓글의 부모 id 값 viewmodel에 저장
+                        focusRequester.requestFocus()
                         commentViewModel.setCommentId(comments.id)
                         keyboardController?.show()
                     }

@@ -1,6 +1,10 @@
 package com.bonobono.backend.member.service;
 
 import com.bonobono.backend.auth.jwt.TokenProvider;
+import com.bonobono.backend.character.domain.OurCharacter;
+import com.bonobono.backend.character.domain.UserCharacter;
+import com.bonobono.backend.character.repository.OurCharacterRepository;
+import com.bonobono.backend.character.repository.UserCharacterRepository;
 import com.bonobono.backend.global.util.SecurityUtil;
 import com.bonobono.backend.member.domain.Authority;
 import com.bonobono.backend.member.domain.Member;
@@ -38,7 +42,8 @@ public class MemberService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final TokenProvider tokenProvider;
     private final TokenRepository tokenRepository;
-
+    private final UserCharacterRepository userCharacterRepository;
+    private final OurCharacterRepository ourCharacterRepository;
     /**
      * 회원가입
      */
@@ -64,6 +69,22 @@ public class MemberService {
         set.add(authority);
 
         Member member = request.toMember(bCryptPasswordEncoder, set);
+
+        Long DefaultCharId =14L;
+
+        OurCharacter ourCharacter = ourCharacterRepository.findById(DefaultCharId)
+                .orElseThrow(()-> new IllegalArgumentException("돌고래 level 1이 없습니다 ="+DefaultCharId));
+
+        UserCharacter userCharacter= UserCharacter.builder()
+                .customName("기본 돌고래")
+                .ourCharacter(ourCharacter)
+                .main(true)
+                .locationName("")
+                .member(member)
+                .build();
+
+        userCharacterRepository.save(userCharacter);
+
         return MemberResponseDto.of(memberRepository.save(member));
     }
 

@@ -21,6 +21,7 @@ public class ReportDetailResponseDto {
     private String nickname;
     private String profileImg;
     private int views;
+    private String locationName;
     private double latitude;
     private double longitude;
     private boolean adminConfirmStatus;
@@ -40,6 +41,7 @@ public class ReportDetailResponseDto {
         this.nickname = entity.getMember().getNickname();
         this.profileImg = entity.getMember().getProfileImg();
         this.views = entity.getViews();
+        this.locationName = entity.getLocation().getName();
         this.latitude = entity.getLatitude();
         this.longitude = entity.getLongitude();
         this.adminConfirmStatus = entity.isAdminConfirmStatus();

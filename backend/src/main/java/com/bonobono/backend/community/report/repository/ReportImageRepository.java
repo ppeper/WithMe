@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ReportImageRepository extends JpaRepository<ReportImage, Long> {
+
+    ReportImage findByReportAndImageUrl(ReportImage report, String ImageUrl);
 }

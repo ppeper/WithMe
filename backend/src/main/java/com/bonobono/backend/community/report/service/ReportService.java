@@ -1,5 +1,6 @@
 package com.bonobono.backend.community.report.service;
 
+import com.bonobono.backend.community.article.entity.ArticleImage;
 import com.bonobono.backend.community.report.dto.req.ReportSaveRequestDto;
 import com.bonobono.backend.community.report.dto.req.ReportUpdateRequestDto;
 import com.bonobono.backend.community.report.dto.res.ReportCommentResponseDto;
@@ -82,7 +83,7 @@ public class ReportService {
 
     // 신고 게시글 특정 글 수정
     @Transactional
-    public void update(Long memberId, Long reportId, ReportUpdateRequestDto requestDto, List<MultipartFile> imageFiles){
+    public void update(Long memberId, Long reportId, ReportUpdateRequestDto requestDto, List<MultipartFile> newImages){
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 멤버가 없습니다. id =" + memberId));
 
@@ -90,9 +91,10 @@ public class ReportService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + reportId));
         if(member.getId().equals(report.getMember().getId())) {
             report.updateReport(requestDto.getTitle(), requestDto.getContent(), requestDto.getLatitude(), requestDto.getLongitude());
-            if (imageFiles != null) {
-                for (MultipartFile imageFile : imageFiles) {
-                    reportImageService.saveImage(report, imageFile, imageDirName);
+            if (newImages != null) {
+                if (newImages != null) {
+                    List<ReportImage> oldImages = report.getImages();
+                    reportImageService.updateImage(report, newImages, oldImages, imageDirName);
                 }
             }
         } else {

@@ -91,15 +91,14 @@ public class ArticleService {
 
     // 게시글 특정 글 수정
     @Transactional
-    public void update(Long memberId, Long articleId, ArticleUpdateRequestDto requestDto, List<MultipartFile> imageFiles){
+    public void update(Long memberId, Long articleId, ArticleUpdateRequestDto requestDto, List<MultipartFile> newImages){
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + articleId));
         if(memberId.equals(article.getMember().getId())) {
             article.updateArticle(requestDto.getTitle(), requestDto.getContent(), requestDto.getUrlTitle(), requestDto.getUrl());
-            if (imageFiles != null) {
-                for (MultipartFile imageFile : imageFiles) {
-                    articleImageService.saveImage(article, imageFile, imageDirName);
-                }
+            if (newImages != null) {
+                List<ArticleImage> oldImages = article.getImages();
+                articleImageService.updateImage(article, newImages, oldImages, imageDirName);
             }
         } else {
             throw new UserNotAuthorizedException("해당 멤버는 게시글 작성자가 아닙니다.");

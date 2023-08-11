@@ -1,5 +1,6 @@
 package com.bonobono.presentation.ui.community.views.board
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -280,7 +281,7 @@ fun ProceedingView(
             .height(8.dp)
             .clip(CircleShape)
             .background(
-                color = if (isProceeding) {
+                color = if (!isProceeding) {
                     Green
                 } else {
                     DarkGray
@@ -290,15 +291,15 @@ fun ProceedingView(
         Text(
             text = if (type == Constants.TOGETHER) {
                 // 함께게시판
-                if (isProceeding) "모집 중" else "모집 마감"
+                if (!isProceeding) "모집 중" else "모집 마감"
             } else {
                 // 신고게시판
-                if (isProceeding) "답변 완료" else "진행 중"
+                if (!isProceeding) "답변 완료" else "진행 중"
             },
             style = TextStyle(
                 fontSize = 12.sp,
                 fontWeight = FontWeight(700),
-                color = if (isProceeding) { Green } else { DarkGray },
+                color = if (!isProceeding) { Green } else { DarkGray },
                 textAlign = TextAlign.Center,
             )
         )

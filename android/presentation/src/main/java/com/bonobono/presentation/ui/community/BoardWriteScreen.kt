@@ -2,6 +2,7 @@ package com.bonobono.presentation.ui.community
 
 import android.net.Uri
 import android.util.Log
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,13 +16,17 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -54,7 +59,7 @@ import com.bonobono.presentation.viewmodel.PhotoViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 
-@OptIn(ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalPermissionsApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun BoardWriteScreen(
     modifier: Modifier = Modifier,
@@ -65,6 +70,7 @@ fun BoardWriteScreen(
 ) {
     val route = navController.currentDestination?.route ?: CommunityFab.FREE.route
     val context = LocalContext.current
+    val keyboardController = LocalSoftwareKeyboardController.current
     var showDialog by remember { mutableStateOf(false) }
     var titleTextState by rememberSaveable { mutableStateOf("") }
     var contentTextState by rememberSaveable { mutableStateOf("") }
@@ -77,7 +83,20 @@ fun BoardWriteScreen(
 
     val locationPermission =
         rememberMultiplePermissionsState(permissions = LOCATION_PERMISSIONS)
-
+    LaunchedEffect(writeArticleState) {
+        when (writeArticleState) {
+            is NetworkResult.Success -> {
+                Log.d("TEST", "BoardWriteScreen: 뒤로가기")
+                navController.popBackStack()
+            }
+            is NetworkResult.Loading -> {
+                Log.d("TEST", "글쓰기: 로딩중~~~~~~~~~~~")
+            }
+            is NetworkResult.Error -> {
+                Log.d("TEST", "글쓰기: 오류~~~~~~~~~~~ $")
+            }
+        }
+    }
     Scaffold(
         topBar = {
             TopContentWrite(
@@ -109,17 +128,6 @@ fun BoardWriteScreen(
                     Log.d("TEST", "BoardWriteScreen(photoList): $photoList")
                     communityViewModel.writeArticle(type, photoList, article = article)
                     Log.d("TEST", "BoardWriteScreen(article): $article")
-                    when (writeArticleState) {
-                        is NetworkResult.Success -> {
-                            navController.popBackStack()
-                        }
-                        is NetworkResult.Loading -> {
-                            Log.d("TEST", "글쓰기: 로딩중~~~~~~~~~~~")
-                        }
-                        is NetworkResult.Error -> {
-                            Log.d("TEST", "글쓰기: 오류~~~~~~~~~~~")
-                        }
-                    }
                 }
             )
         },
@@ -150,6 +158,11 @@ fun BoardWriteScreen(
                 modifier = modifier
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
+                    .pointerInput(Unit) {
+                        detectTapGestures {
+                            keyboardController?.hide()
+                        }
+                    }
             ) {
                 if (showDialog) {
                     CheckCountDialog(title = "사진 선택", count = 10) {

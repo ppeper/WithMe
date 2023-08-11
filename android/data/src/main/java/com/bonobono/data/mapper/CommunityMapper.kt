@@ -10,8 +10,9 @@ import com.bonobono.data.model.community.response.ImageResponse
 import com.bonobono.domain.model.community.Article
 import com.bonobono.domain.model.community.Comment
 import com.bonobono.domain.model.community.Image
-import java.time.LocalDateTime
-import java.util.Date
+import com.google.gson.Gson
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody
 
 fun ArticleResponse.toDomain(): Article {
     return Article(
@@ -19,6 +20,7 @@ fun ArticleResponse.toDomain(): Article {
         type = type,
         title = title,
         content = content,
+        imageSize = imageSize,
         mainImage = images?.toDomain(),
         commentCnt = comments,
         likes = likes,
@@ -27,13 +29,14 @@ fun ArticleResponse.toDomain(): Article {
         recruitStatus = recruitStatus,
         url = url ?: "",
         urlTitle = urlTitle ?: "",
-        createdDate = createdDate ?: LocalDateTime.now(),
+        createdDate = createdDate,
         views = views
     )
 }
 
 fun ArticleDetailResponse.toDomain(): Article {
     return Article(
+        memberId = memberId,
         articleId = articleId,
         type = type,
         title = title,
@@ -42,18 +45,19 @@ fun ArticleDetailResponse.toDomain(): Article {
         commentCnt = commentCnt,
         comments = comments.map { it.toDomain() },
         likes = likes,
+        liked = liked,
         nickname = nickname,
-        profileImg = profileImg,
+        profileImg = profileImg ?: "",
         recruitStatus = recruitStatus,
-        url = url,
+        url = url.ifBlank { "https://" },
         urlTitle = urlTitle,
         createdDate = createdDate,
         views = views
     )
 }
 
-fun Article.toModel(): ArticleRequest {
-    return ArticleRequest(
+fun Article.toModel(): RequestBody {
+    val requestDto = ArticleRequest(
         title = title,
         content = content,
         urlTitle = urlTitle,
@@ -61,16 +65,18 @@ fun Article.toModel(): ArticleRequest {
         latitude = latitude,
         longitude = longitude
     )
+    return RequestBody.create("application/json".toMediaTypeOrNull(), Gson().toJson(requestDto))
 }
 
 fun CommentResponse.toDomain(): Comment {
     return Comment(
         id = id,
+        memberId = memberId,
         parentCommentId = parentCommentId,
         content = content,
         nickname = nickname,
         profileImg = profileImg,
-        childComments = childComments.map { it.toDomain() },
+        childComments = childComments?.map { it.toDomain() } ?: emptyList(),
         liked = liked,
         likes = likes,
         createdDate = createdDate

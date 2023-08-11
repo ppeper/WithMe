@@ -26,22 +26,25 @@ public class UserCharacter extends BaseTimeEntity {
     @JoinColumn(name = "character_id")
     private OurCharacter ourCharacter; //캐릭터id(정보를가지고 있음)
 
+    private String customName;
 
-    private String custom_name;
+    private String locationName;
 
     //경험치
     @Column(columnDefinition = "int default 0")
     private Integer experience;
 
-    @Column(columnDefinition = "boolean default false")
-    private Boolean main;
+    private boolean main;
+
+    private int catchcount;
 
     @Builder
-    public UserCharacter(OurCharacter ourCharacter, Member member, boolean main, String custom_name){
+    public UserCharacter(OurCharacter ourCharacter, Member member, boolean main, String customName, String locationName){
         this.main = main;
         this.ourCharacter = ourCharacter;
         this.member = member;
-        this.custom_name = custom_name;
+        this.customName = customName;
+        this.locationName = locationName;
     }
 
 
@@ -50,7 +53,6 @@ public class UserCharacter extends BaseTimeEntity {
         this.experience=experience;
     }
 
-
     public void upgradeCharacter(OurCharacter upgradedCharacter) {
         this.ourCharacter = upgradedCharacter;
         this.experience= this.getExperience()-100;
@@ -58,19 +60,20 @@ public class UserCharacter extends BaseTimeEntity {
 
     @PrePersist
     public void setCustomNameDefaultValue() {
-        this.custom_name=this.custom_name == null ?  ourCharacter.getName():this.custom_name;
+        this.customName=this.customName == null ?  ourCharacter.getName():this.customName;
         this.experience=this.experience==null? 0:this.experience;
-        this.main = this.main ==null? false: this.main;
-    }
-
-    // 글 수정
-    public void updateName(String custom_name){
-        this.custom_name=custom_name;
     }
 
 
-    public void updateMain(Boolean main) {
+    public void updateMain(boolean main) {
         this.main=main;
     }
 
+    public void increaseCatchCount() {
+        this.catchcount++;
+    }
+
+    public void updateCustomName(String customName) {
+        this.customName=customName;
+    }
 }

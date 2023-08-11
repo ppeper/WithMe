@@ -74,7 +74,7 @@ public class Member extends BaseTimeEntity  {
 
     public UserCharacter getMainCharacter() {
         for (UserCharacter character : this.userCharacters) {
-            if (character.getMain()) {
+            if (character.isMain()) {
                 return character;
             }
         }

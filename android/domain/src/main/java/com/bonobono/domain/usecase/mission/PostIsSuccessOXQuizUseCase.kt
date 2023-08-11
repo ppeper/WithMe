@@ -9,7 +9,10 @@ class PostIsSuccessOXQuizUseCase @Inject constructor(
     private val missionRepository: MissionRepository,
 
 ) {
-    suspend operator fun invoke(isSuccess: IsSuccess) : NetworkResult<Boolean> {
-        return missionRepository.postIsSuccessOXQuiz(isSuccess)
+    suspend operator fun invoke(isSuccess: IsSuccess) : Boolean {
+        return when(val result = missionRepository.postIsSuccessOXQuiz(isSuccess)) {
+            is NetworkResult.Success -> result.data
+            else -> false
+        }
     }
 }

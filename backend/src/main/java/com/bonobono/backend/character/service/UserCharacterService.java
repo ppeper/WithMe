@@ -1,5 +1,6 @@
 package com.bonobono.backend.character.service;
 
+import com.bonobono.backend.character.domain.OurCharacter;
 import com.bonobono.backend.character.domain.UserCharacter;
 import com.bonobono.backend.character.dto.OurCharacterResponseDto;
 import com.bonobono.backend.character.dto.basket.CharacterMainUpdateRequestDto;
@@ -55,7 +56,7 @@ public class UserCharacterService {
                 .orElseThrow(()-> new IllegalArgumentException("해당 유저 캐릭터가 없습니다. id"+character_id));
 
         //다른 main캐릭터가 있으면, 다른 캐릭터는 false로 지정
-        if (Boolean.TRUE.equals(memberRequestDto.getIs_main())) {
+        if (Boolean.TRUE.equals(memberRequestDto.isMain())) {
             List<UserCharacter> mainCharacters = userCharacterRepository.findByMemberIdAndMain(userCharacter.getMember().getId(), Boolean.TRUE);
             if (!mainCharacters.isEmpty()) {
                 for (UserCharacter mainCharacter : mainCharacters) {
@@ -66,7 +67,7 @@ public class UserCharacterService {
                 }
             }
         }
-        userCharacter.updateMain(memberRequestDto.getIs_main());
+        userCharacter.updateMain(memberRequestDto.isMain());
     }
 
     // user가 가지고 있지 않은 our캐릭터
@@ -81,10 +82,26 @@ public class UserCharacterService {
                 .collect(Collectors.toList());
     }
 
-
+    //LocationOurCharacter의 id와 custom한 이름을 주면, userchar을 save()
+    @Transactional
     public void save(UserCharacterWithSeaRequestDto requestDto) {
-        //id는 locationour id라서 이걸 주면, 내가 그 해변정보와 ourchar정보를 뽑을 수 있음
+        Member member = memberRepository.findById(requestDto.getMemberId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 멤버가 없습니다. id =" + requestDto.getMemberId()));
 
+        OurCharacter ourCharacter = ourCharacterRepository.findById(requestDto.getOurCharacterId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 캐릭터가 없습니다. id =" + requestDto.getOurCharacterId()));
 
+        List<UserCharacter> existingUserCharacter = userCharacterRepository.findByMemberAndOurCharacterAndLocationName(member, ourCharacter, requestDto.getLocation_name());
+
+        //만약 회원과 해변, 멤버 모두 같으면, 저장을 하는게 아니라, 모두 같은 객체가 있으면, userchar의 count를 증가시켜야 함
+        if (existingUserCharacter != null && !existingUserCharacter.isEmpty()) {
+            UserCharacter userCharacter = existingUserCharacter.get(0);
+            userCharacter.increaseCatchCount();
+            userCharacter.updateCustomName(requestDto.getCustom_name());
+        }
+        else {
+            UserCharacter userCharacter = requestDto.toEntity(requestDto.getCustom_name(), ourCharacter, requestDto.getLocation_name(), member);
+            userCharacterRepository.save(userCharacter);
+        }
     }
 }

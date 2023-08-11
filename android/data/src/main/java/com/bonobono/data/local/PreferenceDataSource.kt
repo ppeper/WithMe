@@ -64,6 +64,7 @@ class PreferenceDataSource @Inject constructor(
 
     fun remove(key: String) {
         editor.remove(key)
+        editor.apply()
     }
 
 //   객체 저장 -> 유저 정보

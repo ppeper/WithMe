@@ -7,7 +7,7 @@ import javax.inject.Inject
 class UpdateCommentLikeUseCase @Inject constructor(
     private val communityRepository: CommunityRepository
 ) {
-    suspend operator fun invoke(type: String, articleId: Int, commentId: Int): NetworkResult<Unit> {
+    suspend operator fun invoke(type: String, articleId: Long, commentId: Long): NetworkResult<Unit> {
         return communityRepository.updateCommentLike(type, articleId, commentId)
     }
 }

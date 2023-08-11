@@ -33,6 +33,7 @@ fun OverDialog(
     modifier: Modifier = Modifier,
     title: String = "",
     content: String,
+    commentary: String = "",
     source: Int,
     onDismiss: () -> Unit
 ) {
@@ -64,6 +65,11 @@ fun OverDialog(
                 Text(
                     modifier = modifier.fillMaxWidth(),
                     text = content,
+                    style = CustomTextStyle.quizContentStyle
+                )
+                Text(
+                    modifier = modifier.fillMaxWidth(),
+                    text = commentary,
                     style = CustomTextStyle.quizContentStyle
                 )
                 SubmitButton(

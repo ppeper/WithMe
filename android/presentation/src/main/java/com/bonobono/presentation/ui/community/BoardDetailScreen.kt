@@ -42,7 +42,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
@@ -86,7 +85,6 @@ import com.bonobono.presentation.ui.theme.TextGray
 import com.bonobono.presentation.ui.theme.White
 import com.bonobono.presentation.utils.Constants
 import com.bonobono.presentation.utils.DateUtils
-import com.bonobono.presentation.utils.rememberImeState
 import com.bonobono.presentation.viewmodel.CommentViewModel
 import com.bonobono.presentation.viewmodel.CommunityViewModel
 import kotlinx.coroutines.launch
@@ -133,20 +131,20 @@ fun BoardDetailScreen(
             var metaLink by remember { mutableStateOf(Link()) }
             val focusManager = LocalFocusManager.current
             val focusRequester by remember { mutableStateOf(FocusRequester()) }
+            // 함께 게시판용 링크
             LaunchedEffect(Unit) {
                 scope.launch {
-                    metaLink = getMetaData(Link(article.url, article.urlTitle))
+                    metaLink = getMetaData(Link(article.url ?: "https://", article.urlTitle ?: ""))
                 }
             }
             // Meta Url 파싱 완료
             if (metaLink.isSuccess) {
-
                 Scaffold(
                     bottomBar = {
                         WriteCommentView(
                             modifier = modifier,
                             type = type,
-                            articleId = article.articleId,
+                            articleId = article.articleId!!,
                             onWriteCommentClicked = { comment ->
                                 // 대 댓글 작성
                                 if (comment.parentCommentId != null) {
@@ -287,16 +285,23 @@ fun WriterView(
     ) {
         ProfileView(article = article)
         Spacer(modifier = modifier.weight(1f))
-        if (article.type != Constants.FREE) {
-            ProceedingView(type = article.type, isProceeding = article.recruitStatus)
+        // 함께 게시판
+        if (article.type == Constants.TOGETHER) {
+            article.recruitStatus?.let { ProceedingView(type = article.type!!, isProceeding = it) }
+        }
+        // 신고 게시판
+        if (article.type == null) {
+            article.adminConfirmStatus?.let { ProceedingView(type = Constants.REPORT, isProceeding = it) }
         }
         // TODO("내가 쓴 글만 DropDown 보이기 -> 로그인 완성되면 Token으로 확인)
         DropDownMenuView(
             onUpdateClick = {},
             onDeleteClick = {
-                communityViewModel.deleteArticle(type, article.articleId)
+                article.articleId?.let { communityViewModel.deleteArticle(type, it) }
+                article.reportId?.let { communityViewModel.deleteArticle(type, it) }
             },
-            onFinishClick = {},
+            onFinishClick = {
+            },
             article = article
         )
     }

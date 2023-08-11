@@ -8,8 +8,6 @@ import java.util.Date
 @Parcelize
 data class ArticleDetailResponse(
     val memberId: Long,
-    val articleId: Long,
-    val type: String,
     val title: String,
     val content: String,
     val comments: List<CommentResponse>,
@@ -19,9 +17,19 @@ data class ArticleDetailResponse(
     val commentCnt: Int,
     val images: List<ImageResponse>?,
     val liked: Boolean,
-    val recruitStatus: Boolean,
-    val url: String,
-    val urlTitle: String,
     val views: Int,
     val createdDate: String,
+    // 일반 게시판
+    val articleId: Long?,
+    val type: String?,
+    // 신고 게시판
+    val reportId: Long?,
+    val latitude: Double?,
+    val longitude: Double?,
+    val locationId: Long?,
+    val adminConfirmStatus: Boolean?,
+    // 함께 게시판
+    val url: String?,
+    val urlTitle: String?,
+    val recruitStatus: Boolean?,
 ): Parcelable

@@ -56,6 +56,7 @@ import com.bonobono.presentation.ui.community.util.DummyData.dummyArticle
 import com.bonobono.presentation.ui.community.util.freeLaunchEffect
 import com.bonobono.presentation.ui.community.util.reportLaunchEffect
 import com.bonobono.presentation.ui.community.util.withLaunchEffect
+import com.bonobono.presentation.ui.theme.Black_100
 import com.bonobono.presentation.ui.theme.Black_70
 import com.bonobono.presentation.ui.theme.DarkGray
 import com.bonobono.presentation.ui.theme.Green
@@ -115,7 +116,8 @@ fun BoardItemView(
         ),
         shape = RoundedCornerShape(10.dp),
         onClick = {
-            navController.navigate("${BoardDetailNav.route}/$type/${article.articleId}")
+            article.articleId?.let { navController.navigate("${BoardDetailNav.route}/$type/$it") }
+            article.reportId?.let { navController.navigate("${BoardDetailNav.route}/$type/$it") }
         }
     ) {
         Row(
@@ -133,8 +135,16 @@ fun BoardItemView(
                     .padding(top = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                if (article.type != Constants.FREE) {
-                    ProceedingView(type = article.type, isProceeding = article.recruitStatus)
+                if (article.type == null) {
+                    article.adminConfirmStatus?.let {  status ->
+                        ProceedingView(type = Constants.REPORT, isProceeding = status)
+                    }
+                } else if (article.type == Constants.TOGETHER) {
+                    article.recruitStatus?.let { status ->
+                        article.type?.let {
+                            ProceedingView(type = it, isProceeding = status)
+                        }
+                    }
                 } else {
                     Spacer(modifier = modifier.size(8.dp))
                 }
@@ -143,7 +153,7 @@ fun BoardItemView(
                     style = TextStyle(
                         fontSize = 16.sp,
                         fontWeight = FontWeight(400),
-                        color = Color(0xFF191919),
+                        color = Black_100,
                     )
                 )
                 Text(
@@ -179,7 +189,7 @@ fun BoardItemView(
                         style = TextStyle(
                             fontSize = 12.sp,
                             fontWeight = FontWeight(400),
-                            color = Color(0xFF191919),
+                            color = Black_100,
                             textAlign = TextAlign.Center,
                         )
                     )
@@ -277,10 +287,10 @@ fun ProceedingView(
             .height(8.dp)
             .clip(CircleShape)
             .background(
-                color = if (!isProceeding) {
-                    Green
+                color = if (type == Constants.TOGETHER) {
+                    if (!isProceeding) { Green } else { DarkGray }
                 } else {
-                    DarkGray
+                    if (!isProceeding) { DarkGray } else { Green }
                 }
             )
         )
@@ -290,12 +300,16 @@ fun ProceedingView(
                 if (!isProceeding) "모집 중" else "모집 마감"
             } else {
                 // 신고게시판
-                if (!isProceeding) "답변 완료" else "진행 중"
+                if (!isProceeding) "진행 중" else "답변 완료"
             },
             style = TextStyle(
                 fontSize = 12.sp,
                 fontWeight = FontWeight(700),
-                color = if (!isProceeding) { Green } else { DarkGray },
+                color = if (type == Constants.TOGETHER) {
+                    if (!isProceeding) { Green } else { DarkGray }
+                } else {
+                    if (!isProceeding) { DarkGray } else { Green }
+                },
                 textAlign = TextAlign.Center,
             )
         )

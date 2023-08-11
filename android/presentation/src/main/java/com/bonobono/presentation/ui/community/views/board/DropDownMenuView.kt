@@ -61,7 +61,7 @@ fun DropDownMenuView(
                 DropdownMenuItem(
                     text = {
                         Text(
-                            text = if (article.recruitStatus) "모집 마감" else "모집 하기",
+                            text = if (article.recruitStatus == true) "모집 마감" else "모집 하기",
                             style = TextStyle(
                                 color = PrimaryBlue,
                                 fontWeight = FontWeight(700)
@@ -71,7 +71,7 @@ fun DropDownMenuView(
                     onClick = { onFinishClick() }
                 )
             }
-            if (article.type == Constants.REPORT && !article.recruitStatus) {
+            if (article.type == Constants.REPORT) {
                 DropdownMenuItem(
                     text = {
                         Text(

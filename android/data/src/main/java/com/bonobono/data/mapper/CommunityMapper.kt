@@ -16,8 +16,6 @@ import okhttp3.RequestBody
 
 fun ArticleResponse.toDomain(): Article {
     return Article(
-        articleId = articleId,
-        type = type,
         title = title,
         content = content,
         imageSize = imageSize,
@@ -26,19 +24,27 @@ fun ArticleResponse.toDomain(): Article {
         likes = likes,
         nickname = nickname,
         profileImg = profileImg ?: "",
-        recruitStatus = recruitStatus,
-        url = url ?: "",
-        urlTitle = urlTitle ?: "",
         createdDate = createdDate,
-        views = views
+        views = views,
+        //일반 게시판
+        articleId = articleId,
+        type = type,
+        // 신고 게시판
+        reportId = reportId,
+        latitude = latitude,
+        longitude = longitude,
+        locationId = locationId,
+        adminConfirmStatus = adminConfirmStatus,
+        // 함께 게시판
+        url = url,
+        urlTitle = urlTitle,
+        recruitStatus = recruitStatus,
     )
 }
 
 fun ArticleDetailResponse.toDomain(): Article {
     return Article(
         memberId = memberId,
-        articleId = articleId,
-        type = type,
         title = title,
         content = content,
         images = images?.map { it.toDomain() } ?: emptyList(),
@@ -48,11 +54,21 @@ fun ArticleDetailResponse.toDomain(): Article {
         liked = liked,
         nickname = nickname,
         profileImg = profileImg ?: "",
-        recruitStatus = recruitStatus,
-        url = url.ifBlank { "https://" },
-        urlTitle = urlTitle,
         createdDate = createdDate,
-        views = views
+        views = views,
+        //일반 게시판
+        articleId = articleId,
+        type = type,
+        // 신고 게시판
+        reportId = reportId,
+        latitude = latitude,
+        longitude = longitude,
+        locationId = locationId,
+        adminConfirmStatus = adminConfirmStatus,
+        // 함께 게시판
+        url = url?.ifBlank { "https://" },
+        urlTitle = urlTitle,
+        recruitStatus = recruitStatus,
     )
 }
 
@@ -60,10 +76,13 @@ fun Article.toModel(): RequestBody {
     val requestDto = ArticleRequest(
         title = title,
         content = content,
+        // 함께 게시판
         urlTitle = urlTitle,
         url = url,
+        // 신고 게시판
         latitude = latitude,
-        longitude = longitude
+        longitude = longitude,
+        locationId = locationId
     )
     return RequestBody.create("application/json".toMediaTypeOrNull(), Gson().toJson(requestDto))
 }
@@ -76,7 +95,7 @@ fun CommentResponse.toDomain(): Comment {
         content = content,
         nickname = nickname,
         profileImg = profileImg,
-        childComments = childComments?.map { it.toDomain() } ?: emptyList(),
+        childComments = childComments.map { it.toDomain() },
         liked = liked,
         likes = likes,
         createdDate = createdDate

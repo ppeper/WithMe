@@ -1,24 +1,24 @@
 package com.bonobono.presentation.viewmodel
 
-import android.location.Location
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.bonobono.domain.model.map.Location
+import com.bonobono.domain.usecase.map.GetLocationsUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-data class MainScreenUiState(
-    val locationFromGps: Location? = null
-)
+@HiltViewModel
+class MapViewModel @Inject constructor(
+    private val getLocationsUseCase: GetLocationsUseCase
+) : ViewModel() {
 
-class MapViewModel : ViewModel() {
+    private val _locations = MutableStateFlow<List<Location>>(listOf())
+    val locations: StateFlow<List<Location>> = _locations
 
-    var uiState by mutableStateOf(MainScreenUiState())
-        private set
-
-    fun setLocationFromGps(location: Location?) {
-        if (uiState.locationFromGps == null && uiState.locationFromGps != location) {
-            uiState = uiState.copy(locationFromGps = location)
-        }
+    fun getLocations() = viewModelScope.launch {
+        getLocationsUseCase.invoke()
     }
-
 }

@@ -80,6 +80,8 @@ fun QuizPromptBox(
     }
 
 
+    checkAnswer(isSuccess = isSuccess, mission = mission, navController = navController, missionViewModel = missionViewModel)
+
     if (mission.choices.isNullOrEmpty()) {
         QuizPromptBox(
             name = stringResource(id = R.string.fairy_name),
@@ -152,7 +154,6 @@ fun QuizPromptBox(
                     System.currentTimeMillis()
                 )
             }
-            checkAnswer(isSuccess = isSuccess, mission = mission, navController = navController, missionViewModel = missionViewModel)
         }
     }
 }

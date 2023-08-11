@@ -9,7 +9,9 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.theme.Black_100
@@ -46,12 +48,14 @@ object CustomTextStyle {
 
     val quizTitleStyle = TextStyle(
         fontFamily = FontFamily(Font(R.font.ramche)),
-        fontSize = 24.sp
+        fontSize = 24.sp,
+        lineHeight = 1.5.em
     )
 
     val quizContentStyle = TextStyle(
         fontFamily = FontFamily(Font(R.font.ramche)),
-        fontSize = 14.sp
+        fontSize = 14.sp,
+        lineHeight = 1.5.em
     )
 
     val primaryColorBtnText = TextStyle(

@@ -28,7 +28,7 @@ class XAccessTokenInterceptor @Inject constructor(
             }
         } catch (e: Exception) {
             Log.d(TAG, "intercept: 헤더 안담김")
-            return chain.proceed(chain.request())
+            //return chain.proceed(chain.request())
         }
         Log.d(TAG, "intercept: Intercept!!!!!")
 //        DataApplication.pref.getString("access_token", null).let { token ->

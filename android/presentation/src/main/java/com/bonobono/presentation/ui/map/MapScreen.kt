@@ -24,6 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.bonobono.domain.model.map.Campaign
 import com.bonobono.domain.model.map.Location
@@ -44,6 +46,7 @@ import com.bonobono.presentation.ui.main.component.CampaignCard
 import com.bonobono.presentation.ui.main.component.RankingCard
 import com.bonobono.presentation.ui.theme.PrimaryBlue
 import com.bonobono.presentation.ui.theme.White
+import com.bonobono.presentation.viewmodel.MapViewModel
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraPosition
 import com.naver.maps.map.compose.CameraPositionState
@@ -132,14 +135,10 @@ fun MainMapScreen(navController: NavHostController) {
 fun MapScreen(
     navController: NavHostController,
     scaffoldState: BottomSheetScaffoldState,
-    locationTitle: MutableState<String>
+    locationTitle: MutableState<String>,
+    mapViewModel: MapViewModel = hiltViewModel()
 ) {
-    val locations = listOf<Location>(
-        Location(1, "부산 광안리", 35.153387, 129.113506),
-        Location(2, "충남 서천 춘장대 해수욕장", 36.016374, 126.700953),
-        Location(3, "울산 일산 해수욕장", 35.431840, 129.371506),
-        Location(4, "여수 웅천천수공원", 34.746716, 127.73199)
-    )
+    val locations by mapViewModel.locations.collectAsState()
 
     val cameraPositionState: CameraPositionState = rememberCameraPositionState {
         position = CameraPosition(LatLng(35.9078, 127.7669), 6.0)
@@ -207,14 +206,14 @@ fun MapMarkers(
     val scope = rememberCoroutineScope()
     locations.forEach { item ->
         Marker(
-            state = MarkerState(position = LatLng(item.latitude, item.longitude)),
+            state = MarkerState(position = LatLng(item.centerLatitude, item.centerLongitude)),
             icon = OverlayImage.fromResource(R.drawable.ic_beach_pin),
             width = 48.dp,
             height = 48.dp,
             onClick = {
-                locationTitle.value = item.locationName
+                locationTitle.value = item.name
                 cameraPositionState.position =
-                    CameraPosition(LatLng(item.latitude, item.longitude), 11.0)
+                    CameraPosition(LatLng(item.centerLatitude, item.centerLongitude), 11.0)
                 scope.launch {
                      scaffoldState.bottomSheetState.expand()
                 }
@@ -234,13 +233,13 @@ fun MapChips(locations: List<Location>, cameraPositionState: CameraPositionState
                 selected = false,
                 elevation = FilterChipDefaults.elevatedFilterChipElevation(1.dp),
                 onClick = {
-                    locationName.value = item.locationName
+                    locationName.value = item.name
                     cameraPositionState.position =
-                        CameraPosition(LatLng(item.latitude, item.longitude), 11.0)
+                        CameraPosition(LatLng(item.centerLatitude, item.centerLongitude), 11.0)
                 },
                 label = {
                     Text(
-                        text = item.locationName,
+                        text = item.name,
                         style = CustomTextStyle.gameGuideTextStyle
                     )
                 })

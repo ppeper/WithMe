@@ -12,8 +12,9 @@ object DateUtils {
     private const val YEAR = 31536000L
 
     fun dateToString(timeString: String): String {
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
-        val dateTime = LocalDateTime.parse(timeString, formatter)
+        val time = timeString.slice(0..22)
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")
+        val dateTime = LocalDateTime.parse(time, formatter)
 
         val currentTime = LocalDateTime.now()
         val timeDifference = ChronoUnit.SECONDS.between(dateTime, currentTime)

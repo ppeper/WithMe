@@ -115,6 +115,7 @@ fun BoardDetailScreen(
     LaunchedEffect(Unit) {
         communityViewModel.getArticleById(type, articleId)
     }
+
     when (articleState) {
         is NetworkResult.Loading -> {
 
@@ -211,12 +212,14 @@ fun BoardDetailScreen(
                                     if (article.images.isNotEmpty()) {
                                         MultipleImageView(images = article.images)
                                     }
-                                    LinkImageTitle(
-                                        link = metaLink,
-                                        R.drawable.ic_go
-                                    ) {
-                                        val encodedUrl = URLEncoder.encode(metaLink.url, StandardCharsets.UTF_8.toString())
-                                        navController.navigate("${NavigationRouteName.LINK_WEB_VIEW}/$encodedUrl")
+                                    if (article.type == Constants.TOGETHER) {
+                                        LinkImageTitle(
+                                            link = metaLink,
+                                            R.drawable.ic_go
+                                        ) {
+                                            val encodedUrl = URLEncoder.encode(metaLink.url, StandardCharsets.UTF_8.toString())
+                                            navController.navigate("${NavigationRouteName.LINK_WEB_VIEW}/$encodedUrl")
+                                        }
                                     }
                                     Text(
                                         text = "조회수 ${article.views}",
@@ -262,9 +265,12 @@ fun WriterView(
 
     val deleteState by communityViewModel.deleteArticleState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(deleteState) {
         if (deleteState is NetworkResult.Success<Unit>) {
+            Log.d("TEST", "WriterView: $deleteState")
             navController.popBackStack()
+        } else {
+            Log.d("TEST", "WriterView: $deleteState")
         }
     }
 

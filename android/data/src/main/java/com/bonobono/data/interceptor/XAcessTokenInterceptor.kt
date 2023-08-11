@@ -31,13 +31,6 @@ class XAccessTokenInterceptor @Inject constructor(
             return chain.proceed(chain.request())
         }
         Log.d(TAG, "intercept: Intercept!!!!!")
-//        DataApplication.pref.getString("access_token", null).let { token ->
-//            token?.let {
-//                builder.addHeader("Authorization", "Bearer $it")
-//                Log.d(TAG, "intercept: 헤더 담김 ${it}")
-//                return chain.proceed(builder.build())
-//            }
-//        }
         return chain.proceed(builder.build())
     }
 }

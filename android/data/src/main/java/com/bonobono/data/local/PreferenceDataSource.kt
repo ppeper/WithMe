@@ -3,6 +3,7 @@ package com.bonobono.data.local
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import com.bonobono.domain.model.registration.Member
 import com.google.gson.Gson
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -16,6 +17,7 @@ class PreferenceDataSource @Inject constructor(
         const val COMPLETED_OX_QUIZ_TIME = "ox"
         const val COMPLETED_FOUR_QUIZ_TIME = "four"
         const val COMPLETED_ATTENDANCE_TIME = "attendance"
+        const val MEMBER_INFO = "member"
     }
 
     private fun getPreference(context: Context): SharedPreferences {
@@ -68,16 +70,16 @@ class PreferenceDataSource @Inject constructor(
     }
 
 //   객체 저장 -> 유저 정보
-//    fun putAccountInfo(accountInfo: AccountInfo) {
-//        putString(ACCOUNT_INFO, gson.toJson(accountInfo))
-//    }
-//
-//    fun getAccountInfo() : AccountInfo? {
-//        return gson.fromJson(getString(ACCOUNT_INFO), AccountInfo::class.java)
-//    }
-//
-//    fun removeAccountInfo() {
-//        putString(ACCOUNT_INFO, null)
-//    }
+    fun putAccountInfo(member: Member) {
+        putString(MEMBER_INFO, gson.toJson(member))
+    }
+
+    fun getAccountInfo() : Member? {
+        return gson.fromJson(getString(MEMBER_INFO), Member::class.java)
+    }
+
+    fun removeAccountInfo() {
+        putString(MEMBER_INFO, null)
+    }
 
 }

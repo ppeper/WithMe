@@ -6,6 +6,7 @@ import com.bonobono.data.interceptor.XAccessTokenInterceptor
 import com.bonobono.data.local.PreferenceDataSource
 import com.bonobono.data.remote.CommunityService
 import com.bonobono.data.remote.MissionService
+import com.bonobono.data.remote.RegisterService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

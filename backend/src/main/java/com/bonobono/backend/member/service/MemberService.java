@@ -6,10 +6,7 @@ import com.bonobono.backend.member.domain.Authority;
 import com.bonobono.backend.member.domain.Member;
 import com.bonobono.backend.member.domain.Token;
 import com.bonobono.backend.member.domain.enumtype.Role;
-import com.bonobono.backend.member.dto.request.MemberRequestDto;
-import com.bonobono.backend.member.dto.request.MemberUpdateRequestDto;
-import com.bonobono.backend.member.dto.request.PasswordChangeRequestDto;
-import com.bonobono.backend.member.dto.request.TokenRequestDto;
+import com.bonobono.backend.member.dto.request.*;
 import com.bonobono.backend.member.dto.response.MemberResponseDto;
 import com.bonobono.backend.member.dto.response.TokenDto;
 import com.bonobono.backend.global.exception.AppException;
@@ -73,7 +70,7 @@ public class MemberService {
      * 로그인
      */
     @Transactional
-    public TokenDto login(MemberRequestDto request) {
+    public TokenDto login(MemberLoginRequestDto request) {
         // 아이디가 틀렸을 때
         Member member = memberRepository.findByUsername(request.getUsername())
             .orElseThrow(() -> {
@@ -96,6 +93,7 @@ public class MemberService {
         Token refreshToken = Token.builder()
             .key(authentication.getName())
             .value(tokenDto.getRefreshToken())
+            .fcmtoken(request.getFcmtoken())
             .build();
 
         tokenRepository.save(refreshToken);

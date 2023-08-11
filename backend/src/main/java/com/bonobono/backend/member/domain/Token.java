@@ -20,10 +20,14 @@ public class Token {
     @Column(name = "rt_value")
     private String value;
 
+    @Column(name = "fcm_token")
+    private String fcmtoken;
+
     @Builder
-    public Token(String key, String value) {
+    public Token(String key, String value, String fcmtoken) {
         this.key = key;
         this.value = value;
+        this.fcmtoken=fcmtoken;
     }
 
     public Token updateValue(String token) {

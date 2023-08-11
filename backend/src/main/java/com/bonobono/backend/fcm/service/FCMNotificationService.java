@@ -2,7 +2,9 @@ package com.bonobono.backend.fcm.service;
 
 import com.bonobono.backend.fcm.dto.FCMNotificationRequestDto;
 import com.bonobono.backend.member.domain.Member;
+import com.bonobono.backend.member.domain.Token;
 import com.bonobono.backend.member.repository.MemberRepository;
+import com.bonobono.backend.member.repository.TokenRepository;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
@@ -18,20 +20,22 @@ public class FCMNotificationService {
 
     private final FirebaseMessaging firebaseMessaging;
     private final MemberRepository memberRepository;
+    private final TokenRepository tokenRepository;
 
     public String sendNotificationByToken(FCMNotificationRequestDto requestDto){
 
         Optional<Member> member = memberRepository.findById(requestDto.getMemberId());
+        Optional<Token> token = tokenRepository.findByKey(Long.toString(requestDto.getMemberId()));
 
         if(member.isPresent()) {
-            if (member.get().getFirebaseToken() != null) {
+            if (token.get().getFcmtoken() != null) {
                 Notification notification = Notification.builder()
                         .setTitle(requestDto.getTitle())
                         .setBody(requestDto.getBody())
                         .build();
 
                 Message message = Message.builder()
-                        .setToken(member.get().getFirebaseToken())
+                        .setToken(token.get().getFcmtoken())
                         .setNotification(notification)
                         .build();
 

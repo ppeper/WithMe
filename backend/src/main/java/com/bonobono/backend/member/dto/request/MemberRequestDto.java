@@ -20,7 +20,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @NoArgsConstructor
 @Schema(description = "사용자 요청 Dto")
 public class MemberRequestDto implements Serializable {
-    
+
     private Long memberId;
     @Schema(description = "아이디")
     private String username;
@@ -52,9 +52,6 @@ public class MemberRequestDto implements Serializable {
             .build();
     }
 
-    public UsernamePasswordAuthenticationToken toAuthentication() {
-        return new UsernamePasswordAuthenticationToken(username, password);
-    }
 
     public static MemberRequestDto of(Member member) {
         

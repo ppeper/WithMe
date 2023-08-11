@@ -1,11 +1,6 @@
 package com.bonobono.backend.global.config;
 
 import com.bonobono.backend.auth.jwt.*;
-import com.bonobono.backend.auth.oauth.CustomOAuthLoginValidateFilter;
-import com.bonobono.backend.auth.oauth.OAuthSuccessHandler;
-import com.bonobono.backend.auth.oauth.validate.GoogleTokenValidate;
-import com.bonobono.backend.auth.oauth.validate.KakaoTokenValidate;
-import com.bonobono.backend.auth.oauth.validate.NaverTokenValidator;
 import com.bonobono.backend.member.repository.TokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -31,11 +26,6 @@ public class SecurityConfig {
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 //    private final JdbcTemplate jdbcTemplate;
     private final TokenRepository tokenRepository;
-    private final OAuth2UserService oAuth2UserService;
-    private final OAuthSuccessHandler successHandler;
-    private final GoogleTokenValidate googleTokenValidate;
-    private final KakaoTokenValidate kakaoTokenValidate;
-    private final NaverTokenValidator naverTokenValidator;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
@@ -58,9 +48,6 @@ public class SecurityConfig {
             .authenticationEntryPoint(jwtAuthenticationEntryPoint)
             .accessDeniedHandler(jwtAccessDeniedHandler)
             .and()
-            .addFilterBefore(new JwtFilter(tokenProvider, tokenRepository), UsernamePasswordAuthenticationFilter.class)
-            .addFilterBefore(new CustomOAuthLoginValidateFilter(googleTokenValidate, kakaoTokenValidate, naverTokenValidator, successHandler),
-                    JwtFilter.class)
             .apply(new JwtSecurityConfig(tokenProvider, tokenRepository));
 
         return http.build();

@@ -1,7 +1,5 @@
 package com.bonobono.backend.community.report.service;
 
-import com.bonobono.backend.community.article.entity.Article;
-import com.bonobono.backend.community.article.entity.ArticleImage;
 import com.bonobono.backend.community.report.dto.req.ReportImageRequestDto;
 import com.bonobono.backend.community.report.entity.Report;
 import com.bonobono.backend.community.report.entity.ReportImage;
@@ -31,7 +29,7 @@ public class ReportImageService {
         reportImageRepository.save(reportImage);
     }
 
-    public void updateImage(Report report, List<MultipartFile> newImages, List<ArticleImage> oldImages, String imageDirName){
+    public void updateImage(Report report, List<MultipartFile> newImages, List<ReportImage> oldImages, String imageDirName){
         List<String> imageUrls = oldImages.stream()
                 .map(ReportImage::getImageUrl)
                 .collect(Collectors.toList());
@@ -56,8 +54,6 @@ public class ReportImageService {
             ReportImage reportImage = reportImageRepository.findByReportAndImageUrl(report, imageUrl);
             deleteImage(reportImage, imageUrl, imageDirName);
         }
-
-        // 남은 imageUrls 삭제
     }
 
     public void deleteImage(ReportImage reportImage, String imageUrl, String dirName){

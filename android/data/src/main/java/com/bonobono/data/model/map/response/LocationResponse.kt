@@ -7,6 +7,6 @@ import kotlinx.parcelize.Parcelize
 data class LocationResponse(
     val centerLatitude: Double,
     val centerLongitude: Double,
-    val id: Int,
+    val id: Long,
     val name: String
 ) : Parcelable

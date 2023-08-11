@@ -5,6 +5,6 @@ import retrofit2.http.GET
 
 interface MapService {
 
-    @GET("/location")
+    @GET("location")
     suspend fun getLocations() : List<LocationResponse>
 }

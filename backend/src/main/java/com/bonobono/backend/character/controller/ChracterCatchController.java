@@ -48,7 +48,7 @@ public class ChracterCatchController {
     }
 
     //LocationOurCharacter의 id와 custom한 이름을 주면, userchar을 save()
-    @PostMapping("/UserCharacter/save")
+    @PatchMapping("/UserCharacter/save")
     public ResponseEntity<?> save(@RequestBody UserCharacterWithSeaRequestDto requestDto) {
         userCharacterService.save(requestDto);
         return new ResponseEntity(HttpStatus.CREATED);

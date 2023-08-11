@@ -8,6 +8,7 @@ import com.bonobono.backend.community.article.repository.ArticleCommentRepositor
 import com.bonobono.backend.community.article.repository.ArticleRepository;
 import com.bonobono.backend.global.exception.UserNotAuthorizedException;
 import com.bonobono.backend.member.domain.Member;
+import com.bonobono.backend.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,9 +24,13 @@ public class ArticleCommentService {
 
     private final ArticleCommentRepository articleCommentRepository;
 
+    private final MemberRepository memberRepository;
+
     // 댓글, 대댓글 작성하기
     @Transactional
-    public ArticleCommentResponseDto save(Member member, Long articleId, ArticleCommentRequestDto requestDto) {
+    public ArticleCommentResponseDto save(Long memberId, Long articleId, ArticleCommentRequestDto requestDto) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 멤버가 없습니다. id =" + memberId));
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(()-> new IllegalArgumentException("해당 게시글이 없습니다. id=" + articleId));
 
@@ -44,6 +49,7 @@ public class ArticleCommentService {
     // 댓글 조회하기
     @Transactional
     public List<ArticleCommentResponseDto> findByArticleId(Member member, Long articleId){
+
         return articleCommentRepository.findAllByArticleIdAndParentCommentIsNull(articleId).stream()
                 .map(articleComment -> new ArticleCommentResponseDto(articleComment, member))
                 .collect(Collectors.toList());
@@ -51,13 +57,13 @@ public class ArticleCommentService {
 
     // 댓글 수정하기
     @Transactional
-    public void update(Member member, Long articleId, Long commentId, ArticleCommentRequestDto requestDto) {
+    public void update(Long memberId, Long articleId, Long commentId, ArticleCommentRequestDto requestDto) {
         if (!articleRepository.existsById(articleId)) {
             throw new IllegalArgumentException("해당 게시글이 없습니다. id=" + articleId);
         }
         ArticleComment articleComment = articleCommentRepository.findById(commentId)
                 .orElseThrow(()-> new IllegalArgumentException("해당 댓글이 없습니다. id=" + commentId));
-        if(member.getId() == articleComment.getMember().getId()) {
+        if(memberId == articleComment.getMember().getId()) {
             articleComment.updateComment(requestDto.getContent());
         } else {
             throw new UserNotAuthorizedException("해당 유저는 댓글 작성자가 아닙니다.");
@@ -66,13 +72,13 @@ public class ArticleCommentService {
 
     // 댓글 삭제하기
     @Transactional
-    public void delete(Member member, Long articleId, Long commentId){
+    public void delete(Long memberId, Long articleId, Long commentId){
         if (!articleRepository.existsById(articleId)) {
             throw new IllegalArgumentException("해당 게시글이 없습니다. id=" + articleId);
         }
         ArticleComment articleComment = articleCommentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 없습니다. id=" + commentId));
-        if(member.getId() == articleComment.getMember().getId()) {
+        if(memberId == articleComment.getMember().getId()) {
             articleCommentRepository.delete(articleComment);
         } else {
             throw new UserNotAuthorizedException("해당 멤버는 댓글 작성자가 아닙니다.");

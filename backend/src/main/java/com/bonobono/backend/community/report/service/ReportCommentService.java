@@ -9,6 +9,7 @@ import com.bonobono.backend.community.report.repository.ReportRepository;
 import com.bonobono.backend.global.exception.UserNotAuthorizedException;
 import com.bonobono.backend.member.domain.Member;
 import com.bonobono.backend.member.domain.enumtype.Role;
+import com.bonobono.backend.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,9 +25,14 @@ public class ReportCommentService {
 
     private final ReportCommentRepository reportCommentRepository;
 
+    private final MemberRepository memberRepository;
+
     // 신고게시글 댓글, 대댓글 작성하기
     @Transactional
-    public ReportCommentResponseDto save(Member member, Long reportId, ReportCommentRequestDto requestDto) {
+    public ReportCommentResponseDto save(Long memberId, Long reportId, ReportCommentRequestDto requestDto) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 멤버가 없습니다. id =" + memberId));
+
         Report report = reportRepository.findById(reportId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + reportId));
 
@@ -50,6 +56,7 @@ public class ReportCommentService {
     // 신고게시글 댓글 조회하기
     @Transactional
     public List<ReportCommentResponseDto> findByReportId(Member member, Long reportId){
+
         return reportCommentRepository.findAllByReportIdAndParentCommentIsNull(reportId).stream()
                 .map(reportComment -> new ReportCommentResponseDto(reportComment, member))
                 .collect(Collectors.toList());
@@ -57,7 +64,10 @@ public class ReportCommentService {
 
     // 댓글 수정하기
     @Transactional
-    public void update(Member member, Long reportId, Long commentId, ReportCommentRequestDto requestDto) {
+    public void update(Long memberId, Long reportId, Long commentId, ReportCommentRequestDto requestDto) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 멤버가 없습니다. id =" + memberId));
+
         if (!reportRepository.existsById(reportId)) {
             throw new IllegalArgumentException("해당 게시글이 없습니다. id=" + reportId);
         }
@@ -72,7 +82,10 @@ public class ReportCommentService {
 
     // 댓글 삭제하기
     @Transactional
-    public void delete(Member member, Long reportId, Long commentId){
+    public void delete(Long memberId, Long reportId, Long commentId){
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 멤버가 없습니다. id =" + memberId));
+
         if (!reportRepository.existsById(reportId)) {
             throw new IllegalArgumentException("해당 게시글이 없습니다. id=" + reportId);
         }

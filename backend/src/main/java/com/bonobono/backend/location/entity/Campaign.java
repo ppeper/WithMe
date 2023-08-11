@@ -14,6 +14,7 @@ public class Campaign {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "campaign_id")
     private Long id;
 
     @Column(nullable = false)

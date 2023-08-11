@@ -1,5 +1,7 @@
 package com.bonobono.presentation.viewmodel
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.getValue
@@ -39,16 +41,14 @@ class LoginViewModel @Inject constructor(
         Log.d(TAG, "updatePassword: $password")
     }
 
-    private val _loginState = MutableStateFlow<NetworkResult<Token>>(NetworkResult.Loading)
-    val loginState : StateFlow<NetworkResult<Token>> = _loginState
+
 
     fun login() = viewModelScope.launch {
         Log.d(TAG, "doLogin: 로그인 버튼 선택")
         val role = Role("USER")
         val register = Register(0, "test","test",password, "a", "010-1234-5678", listOf(role), username)
-        _loginState.emit(loginUseCase.invoke(register))
-        Log.d(TAG, "login: ${loginState.value}")
-
+        loginUseCase.invoke(register)
+        Log.d(TAG, "login: ")
     }
 
 

@@ -81,7 +81,7 @@ public class Member extends BaseTimeEntity  {
         return null;
     }
     @Builder
-    public Member(String username, String password, String name, String nickname, String phoneNumber, Provider provider, Set<Authority> role) {
+    public Member(String username, String password, String name, String nickname, String phoneNumber, Provider provider, Set<Authority> role, String firebaseToken) {
         this.username = username;
         this.password = password;
         this.name = name;
@@ -89,6 +89,7 @@ public class Member extends BaseTimeEntity  {
         this.phoneNumber = phoneNumber;
         this.provider = provider;
         this.role = role;
+        this.firebaseToken = firebaseToken;
     }
 
     // 회원 정보 수정

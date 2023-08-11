@@ -7,30 +7,30 @@ spring:
       - oauth
       - cloud
 
-  datasource:
-    url: jdbc:mariadb://localhost:3306/websocket
-    driver-class-name: org.mariadb.jdbc.Driver
-    username: root
-    password: 1234
-  data:
-    mongodb:
-      uri: mongodb://localhost:27017/websocket
+#  datasource:
+#    url: jdbc:mariadb://localhost:3306/bonobono
+#    driver-class-name: org.mariadb.jdbc.Driver
+#    username: root
+#    password: 1234
+#  data:
+#    mongodb:
+#      uri: mongodb://localhost:27017/websocket
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
 
     properties:
       hibernate:
-        format_sql: true
-        show_sql: true #show sql
-    defer-datasource-initialization: true
+#        format_sql: true
+#        show_sql: true #show sql
+#    defer-datasource-initialization: true
 
 # Spring Boot 실행시 SQL문 자동실행
-  sql:
-    init:
-      data-locations: classpath:data.sql
-      mode: always
+#  sql:
+#    init:
+#      data-locations: classpath:data.sql
+#      mode: always
 
   mvc: # swagger로 인해서 세팅
     pathmatch:

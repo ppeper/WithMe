@@ -68,7 +68,10 @@ public class ArticleService {
 
     // 게시글 특정글 조회
     @Transactional
-    public ArticleDetailResponseDto findById(ArticleType type, Member member, Long articleId){
+    public ArticleDetailResponseDto findById(ArticleType type, Long memberId, Long articleId){
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 멤버가 없습니다. id =" + memberId));
+
         Article article = articleRepository.findByIdAndType(articleId, type)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id =" + articleId));
         articleRepository.updateView(articleId);
@@ -78,7 +81,9 @@ public class ArticleService {
 
     // 공지사항 조회
     @Transactional
-    public ArticleNoticeResponseDto findNoticeById(ArticleType type, Member member, Long articleId){
+    public ArticleNoticeResponseDto findNoticeById(ArticleType type, Long memberId, Long articleId){
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 멤버가 없습니다. id =" + memberId));
         Article article = articleRepository.findByIdAndType(articleId, type)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id =" + articleId));
         articleRepository.updateView(articleId);
@@ -87,11 +92,10 @@ public class ArticleService {
 
     // 게시글 특정 글 수정
     @Transactional
-    public void update(Member member, Long articleId, ArticleUpdateRequestDto requestDto, List<MultipartFile> imageFiles){
+    public void update(Long memberId, Long articleId, ArticleUpdateRequestDto requestDto, List<MultipartFile> imageFiles){
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + articleId));
-
-        if(member.getId() == article.getMember().getId()) {
+        if(memberId == article.getMember().getId()) {
             article.updateArticle(requestDto.getTitle(), requestDto.getContent(), requestDto.getUrlTitle(), requestDto.getUrl());
             if (imageFiles != null) {
                 for (MultipartFile imageFile : imageFiles) {
@@ -105,10 +109,10 @@ public class ArticleService {
 
     // 함께 게시글 모집 완료
     @Transactional
-    public void updateRecruitStatus(Member member, Long articleId){
+    public void updateRecruitStatus(Long memberId, Long articleId){
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + articleId));
-        if(member.getId() == article.getMember().getId()) {
+        if(memberId == article.getMember().getId()) {
             article.updateRecruitStatus();
         } else {
             throw new UserNotAuthorizedException("해당 멤버는 게시글 작성자가 아닙니다.");
@@ -117,10 +121,10 @@ public class ArticleService {
 
     // 게시글 특정글 삭제
     @Transactional
-    public void delete(Member member, Long articleId){
+    public void delete(Long memberId, Long articleId){
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + articleId));
-        if(member.getId() == article.getMember().getId()) {
+        if(memberId == article.getMember().getId()) {
             List<ArticleImage> articleImages = article.getImages();
             for (ArticleImage articleImage : articleImages) {
                 articleImageService.deleteImage(articleImage, articleImage.getImageUrl(), imageDirName);

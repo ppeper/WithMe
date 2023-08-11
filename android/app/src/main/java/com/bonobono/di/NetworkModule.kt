@@ -1,15 +1,16 @@
 package com.bonobono.di
 
+import android.content.Context
 import com.bonobono.BuildConfig
 import com.bonobono.data.interceptor.XAccessTokenInterceptor
+import com.bonobono.data.local.PreferenceDataSource
 import com.bonobono.data.remote.CommunityService
 import com.bonobono.data.remote.MissionService
-import com.bonobono.data.remote.RegisterService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.internal.MissingMainCoroutineDispatcherFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -23,17 +24,17 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun provideOkHttpClient(): OkHttpClient =
+    fun provideOkHttpClient(xAccessTokenInterceptor: XAccessTokenInterceptor): OkHttpClient =
         if (BuildConfig.DEBUG) {
             OkHttpClient.Builder()
                 .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-                .addNetworkInterceptor(XAccessTokenInterceptor()) // JWT 자동 헤더 전송
+                .addNetworkInterceptor(xAccessTokenInterceptor) // JWT 자동 헤더 전송
                 .build()
         } else {
             OkHttpClient.Builder()
                 .readTimeout(5000, TimeUnit.MILLISECONDS)
                 .connectTimeout(5000, TimeUnit.MILLISECONDS)
-                .addNetworkInterceptor(XAccessTokenInterceptor()) // JWT 자동 헤더 전송
+                .addNetworkInterceptor(xAccessTokenInterceptor) // JWT 자동 헤더 전송
                 .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build()
         }
@@ -64,8 +65,6 @@ object NetworkModule {
         Retrofit.Builder()
             .baseUrl(BuildConfig.API_KEY)
             .addConverterFactory(GsonConverterFactory.create())
-            .client(okHttpClient)
             .build()
             .create(RegisterService::class.java)
-
 }

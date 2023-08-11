@@ -55,12 +55,13 @@ public class Report extends BaseTimeEntity {
     private Set<ReportLike> reportLikes = new HashSet<>();
 
     @Builder
-    public Report(String title, String content, double latitude, double longitude, Member member) {
+    public Report(String title, String content, double latitude, double longitude, Member member, Location location) {
         this.title = title;
         this.content = content;
         this.latitude = latitude;
         this.longitude = longitude;
         this.member = member;
+        this.location = location;
     }
 
     // 글 수정

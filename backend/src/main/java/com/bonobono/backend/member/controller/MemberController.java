@@ -64,8 +64,7 @@ public class MemberController {
 
     @Operation(
             summary = "로그인",
-            description = "username과 password를 입력받아 로그인한 사용자에게" +
-                    "accessToken과 refreshToken을 반환해줍니다."
+            description = "username과 password를 입력받아 로그인한 사용자에게 accessToken과 refreshToken을 반환해줍니다."
     )
     @PostMapping("/login")
     public ResponseEntity<TokenDto> login(@RequestBody MemberRequestDto memberRequestDto) {
@@ -74,8 +73,7 @@ public class MemberController {
 
     @Operation(
             summary = "토큰 재발급",
-            description = "로그인을 했을 때 발급받은 만료기간이 지난 accessToken과 refreshToken을 입력하여" +
-                    "accessToken과 refreshToken을 재발급해줍니다."
+            description = "로그인을 했을 때 발급받은 만료기간이 지난 accessToken과 refreshToken을 입력하여 accessToken과 refreshToken을 재발급해줍니다."
     )
     @PostMapping("/reissue")
     public ResponseEntity<TokenDto> reissue(@RequestBody TokenRequestDto tokenRequestDto) {
@@ -94,8 +92,7 @@ public class MemberController {
 
     @Operation(
             summary = "프로필 조회",
-            description = "로그인을 했을 때 발급받은 accessToken을 헤더에 넣어 해당 사용자의" +
-                    "실명, 닉네임, 휴대폰번호를 수정할 수 있습니다."
+            description = "로그인을 했을 때 발급받은 accessToken을 헤더에 넣어 해당 사용자의 실명, 닉네임, 휴대폰번호를 수정할 수 있습니다."
     )
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/update")
@@ -106,8 +103,7 @@ public class MemberController {
 
     @Operation(
             summary = "비밀번호 변경",
-            description = "로그인을 했을 때 발급받은 accessToken을 헤더에 넣어 해당 사용자의" +
-                    "비밀번호를 변경할 수 있습니다."
+            description = "로그인을 했을 때 발급받은 accessToken을 헤더에 넣어 해당 사용자의 비밀번호를 변경할 수 있습니다."
     )
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/password")
@@ -118,8 +114,7 @@ public class MemberController {
 
     @Operation(
             summary = "회원탈퇴",
-            description = "로그인을 했을 때 발급받은 accessToken을 헤더에 넣어 해당 사용자를" +
-                    "로그아웃 처리해준 뒤 데이터베이스에서 해당 사용자의 정보를 삭제합니다."
+            description = "로그인을 했을 때 발급받은 accessToken을 헤더에 넣어 해당 사용자를 로그아웃 처리해준 뒤 데이터베이스에서 해당 사용자의 정보를 삭제합니다."
     )
     @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/profile")
@@ -131,8 +126,7 @@ public class MemberController {
 
     @Operation(
             summary = "로그아웃",
-            description = "로그인을 했을 때 발급받은 accessToken을 헤더에 넣어 해당 사용자를" +
-                    "로그아웃 처리해줍니다."
+            description = "로그인을 했을 때 발급받은 accessToken을 헤더에 넣어 해당 사용자를 로그아웃 처리해줍니다."
     )
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/logout")

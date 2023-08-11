@@ -7,8 +7,8 @@ import kotlinx.parcelize.Parcelize
 data class ArticleRequest(
     val title: String,
     val content: String,
-    val urlTitle: String?,
-    val url: String?,
+    val urlTitle: String? = null,
+    val url: String? = null,
     val latitude: Double?,
     val longitude: Double?
 ): Parcelable

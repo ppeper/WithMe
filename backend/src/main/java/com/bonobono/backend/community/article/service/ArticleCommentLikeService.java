@@ -7,6 +7,7 @@ import com.bonobono.backend.community.article.repository.ArticleCommentLikeRepos
 import com.bonobono.backend.community.article.repository.ArticleCommentRepository;
 import com.bonobono.backend.community.article.repository.ArticleRepository;
 import com.bonobono.backend.member.domain.Member;
+import com.bonobono.backend.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,12 +22,16 @@ public class ArticleCommentLikeService {
 
     private final ArticleCommentLikeRepository articleCommentLikeRepository;
 
+    private final MemberRepository memberRepository;
+
     // 댓글 좋아요
     @Transactional
-    public void like(Member member, Long articleId, Long articleCommentId){
+    public void like(Long memberId, Long articleId, Long articleCommentId){
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(()-> new IllegalArgumentException("해당 게시글이 없습니다. id=" + articleId));
 
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 멤버가 없습니다. id =" + memberId));
 
         ArticleComment articleComment = articleCommentRepository.findById(articleCommentId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 없습니다. id=" + articleCommentId));

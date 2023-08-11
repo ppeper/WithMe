@@ -28,9 +28,9 @@ public class CampaignController {
     }
 
     @Operation(summary = "장소별 캠페인 정보 조회")
-    @GetMapping("/{campaignId}")
-    public ResponseEntity<List<CampaignListResponseDto>> findAllByLocation(@PathVariable Long campaignId){
-        List<CampaignListResponseDto> responseDto =  campaignService.findAllByLocation(campaignId);
+    @GetMapping("/{locationId}")
+    public ResponseEntity<List<CampaignListResponseDto>> findAllByLocation(@PathVariable Long locationId){
+        List<CampaignListResponseDto> responseDto =  campaignService.findAllByLocation(locationId);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 

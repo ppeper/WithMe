@@ -27,6 +27,13 @@ public class CampaignController {
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
+    @Operation(summary = "장소별 캠페인 정보 조회")
+    @GetMapping("/{campaignId}")
+    public ResponseEntity<List<CampaignListResponseDto>> findAllByLocation(@PathVariable Long campaignId){
+        List<CampaignListResponseDto> responseDto =  campaignService.findAllByLocation(campaignId);
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
     @Operation(summary = "캠페인 정보 저장")
     @PostMapping("")
     public ResponseEntity<Void> save(@RequestBody CampaignSaveRequestDto requestDto){

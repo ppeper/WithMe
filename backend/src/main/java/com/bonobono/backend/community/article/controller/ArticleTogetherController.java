@@ -80,6 +80,7 @@ public class ArticleTogetherController {
     }
 
     // 함께게시판 모집 완료
+    @Operation(summary = "함께게시판 모집 완료처리")
     @PatchMapping("/{articleId}/recruit-complete")
     public ResponseEntity<Void> updateRecruitStatus(@PathVariable Long articleId){
         articleService.updateRecruitStatus(SecurityUtil.getLoginMemberId(), articleId);
@@ -87,15 +88,15 @@ public class ArticleTogetherController {
     }
 
     // 함께게시판 특정 글 삭제
+    @Operation(summary = "함께게시판 특정 글 삭제")
     @DeleteMapping("/{articleId}")
     public ResponseEntity<Void> delete(@PathVariable Long articleId){
         articleService.delete(SecurityUtil.getLoginMemberId(), articleId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-
     // ----------댓글---------
-    // 함께게시판 글에 댓글 쓰기
+    @Operation(summary = "함께게시판 글에 댓글 쓰기")
     @PostMapping("/{articleId}/comment")
     public ResponseEntity<ArticleCommentResponseDto> saveComment(@PathVariable Long articleId,
         @RequestBody ArticleCommentRequestDto requestDto){
@@ -103,7 +104,7 @@ public class ArticleTogetherController {
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
-    // 함께게시판 댓글 삭제
+    @Operation(summary = "함께게시판 댓글 삭제")
     @DeleteMapping("/{articleId}/comment/{commentId}")
     public ResponseEntity<Void> deleteComment( @PathVariable Long articleId,
         @PathVariable Long commentId){
@@ -111,7 +112,7 @@ public class ArticleTogetherController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    // 함께게시판 댓글 수정
+    @Operation(summary = "함께게시판 댓글 수정")
     @PatchMapping("/{articleId}/comment/{commentId}")
     public ResponseEntity<Void> updateComment(@PathVariable Long articleId,
         @PathVariable Long commentId,
@@ -120,14 +121,14 @@ public class ArticleTogetherController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    // 함께게시판 좋아요
+    @Operation(summary = "함께게시판 좋아요")
     @PatchMapping("/{articleId}/like")
     public ResponseEntity<Void> like(@PathVariable Long articleId) {
         articleLikeService.like(SecurityUtil.getLoginMemberId(), articleId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    // 함께게시판 댓글 좋아요
+    @Operation(summary = "함께게시판 댓글 좋아요")
     @PatchMapping("/{articleId}/comment/{commentId}/like")
     public ResponseEntity<Void> like(@PathVariable Long articleId,
         @PathVariable Long commentId) {

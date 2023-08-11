@@ -36,15 +36,15 @@ public class ArticleNoticeController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @GetMapping("")
     @Operation(summary = "공지사항 전체 글 조회")
+    @GetMapping("")
     public ResponseEntity<List<ArticleListResponseDto>> findAllDesc(){
         List<ArticleListResponseDto> responseDto =  articleService.findAllDesc(type);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
-    @GetMapping("/{articleId}")
     @Operation(summary = "공지사항 특정 글, 글에 관한 댓글 조회하기")
+    @GetMapping("/{articleId}")
     public ResponseEntity<ArticleNoticeResponseDto> findById(@PathVariable Long articleId) {
         ArticleNoticeResponseDto responseDto = articleService.findNoticeById(type, SecurityUtil.getLoginMemberId(), articleId);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);

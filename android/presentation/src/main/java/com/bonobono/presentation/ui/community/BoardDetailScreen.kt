@@ -103,7 +103,7 @@ fun BoardDetailScreen(
     communityViewModel: CommunityViewModel = hiltViewModel()
 ) {
     boardDetailLaunchEffect(navController = navController)
-    val imeState = rememberImeState()
+//    val imeState = rememberImeState()
     val keyboardController = LocalSoftwareKeyboardController.current
     val scrollState = rememberLazyListState()
     val articleState by communityViewModel.articleDetailState.collectAsStateWithLifecycle()
@@ -243,7 +243,7 @@ fun BoardDetailScreen(
                                 }
                             }
 
-                            if (article.comments.isEmpty()) {
+                            if (comments.isEmpty()) {
                                 item { NoCommentView() }
                             } else {
                                 Log.d("TEST", "BoardDetailScreen: 댓글 다시 불림")

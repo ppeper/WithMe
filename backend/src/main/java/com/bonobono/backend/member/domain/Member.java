@@ -106,4 +106,9 @@ public class Member extends BaseTimeEntity  {
             this.password = passwordEncoder.encode(dto.getNewPassword());
     }
 
+    // fcm 토큰 설정
+    public void setFcmToken(String fcmToken) {
+        this.firebaseToken = fcmToken;
+    }
+
 }

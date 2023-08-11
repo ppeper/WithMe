@@ -1,5 +1,6 @@
 package com.bonobono.backend.auth.jwt;
 
+import com.bonobono.backend.member.domain.Member;
 import com.bonobono.backend.member.dto.response.TokenDto;
 import com.bonobono.backend.member.repository.MemberRepository;
 import io.jsonwebtoken.Claims;
@@ -48,6 +49,7 @@ public class TokenProvider {
             .collect(Collectors.joining(","));
 
         long now = (new Date()).getTime();
+
 
         // Access Token 생성
         Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);

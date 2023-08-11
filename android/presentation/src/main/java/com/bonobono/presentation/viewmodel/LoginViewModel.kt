@@ -28,13 +28,14 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 private const val TAG = "LoginViewModel"
+
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
     private val tokenInputUseCase: TokenInputUseCase,
     private val memberInfoInputUseCase: MemberInfoInputUseCase,
     private val getMemberUseCase: GetMemberUseCase
-): ViewModel() {
+) : ViewModel() {
     var username by mutableStateOf("")
         private set
 
@@ -58,10 +59,11 @@ class LoginViewModel @Inject constructor(
         return when (result) {
             is NetworkResult.Success -> {
                 // token 값 sharedpreference에 넣어주자
-                tokenInputUseCase.invoke(result.data.tokenDto)
+                tokenInputUseCase.invoke(result.data)
 
                 "SUCCESS" // Return the login result
             }
+
             else -> {
                 "FAIL" // Return the login result
             }
@@ -69,17 +71,20 @@ class LoginViewModel @Inject constructor(
     }
 
     fun putMemberInfo() = viewModelScope.launch {
-        val result = getMemberUseCase.invoke()
-//        memberInfoInputUseCase.invoke(result.data)
+        val memberInfo = getMemberUseCase.invoke()
+        if (memberInfo is NetworkResult.Success) {
+            memberInfoInputUseCase.invoke(memberInfo.data)
+        }
     }
 
     var autoLoginState by mutableStateOf(false)
         private set
-    fun updateAutoLoginState(input : Boolean) {
+
+    fun updateAutoLoginState(input: Boolean) {
         Log.d(TAG, "updateAutoLoginState: $input")
         autoLoginState = input
 
-        if(autoLoginState) {
+        if (autoLoginState) {
             // 참으로 선택한 경우 자동 로그인 시켜야 하니까
             // 여기서 memeberid 값 sharedpreference에 저장
 

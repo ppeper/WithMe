@@ -24,6 +24,7 @@ data class ArticleDetailResponse(
     val type: String?,
     // 신고 게시판
     val reportId: Long?,
+    val locationName: String?,
     val latitude: Double?,
     val longitude: Double?,
     val locationId: Long?,

@@ -77,6 +77,7 @@ import com.bonobono.presentation.ui.community.views.comment.NoCommentView
 import com.bonobono.presentation.ui.community.views.comment.WriteCommentView
 import com.bonobono.presentation.ui.community.views.link.LinkImageTitle
 import com.bonobono.presentation.ui.community.views.link.getMetaData
+import com.bonobono.presentation.ui.community.views.map.ReportMapAndLocation
 import com.bonobono.presentation.ui.theme.Black_100
 import com.bonobono.presentation.ui.theme.Black_70
 import com.bonobono.presentation.ui.theme.DividerGray
@@ -87,6 +88,7 @@ import com.bonobono.presentation.utils.Constants
 import com.bonobono.presentation.utils.DateUtils
 import com.bonobono.presentation.viewmodel.CommentViewModel
 import com.bonobono.presentation.viewmodel.CommunityViewModel
+import com.naver.maps.geometry.LatLng
 import kotlinx.coroutines.launch
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -217,6 +219,7 @@ fun BoardDetailScreen(
                                     if (article.images.isNotEmpty()) {
                                         MultipleImageView(images = article.images)
                                     }
+                                    // 함게 게시판 링크 뷰
                                     if (article.type == Constants.TOGETHER) {
                                         LinkImageTitle(
                                             link = metaLink,
@@ -224,6 +227,12 @@ fun BoardDetailScreen(
                                         ) {
                                             val encodedUrl = URLEncoder.encode(metaLink.url, StandardCharsets.UTF_8.toString())
                                             navController.navigate("${NavigationRouteName.LINK_WEB_VIEW}/$encodedUrl")
+                                        }
+                                    }
+                                    // 신고 게시판 map view
+                                    with(article) {
+                                        if (latitude != null && longitude != null && locationName != null) {
+                                            ReportMapAndLocation(mapState = LatLng(latitude!!, longitude!!), locationName = locationName!!)
                                         }
                                     }
                                     Text(

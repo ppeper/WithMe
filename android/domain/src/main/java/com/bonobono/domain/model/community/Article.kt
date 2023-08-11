@@ -20,6 +20,7 @@ data class Article(
     val type: String? = null,
     // 신고 게시판
     val reportId: Long? = null,
+    val locationName: String? = null,
     val latitude: Double? = null,
     val longitude: Double? = null,
     val locationId: Long? = null,

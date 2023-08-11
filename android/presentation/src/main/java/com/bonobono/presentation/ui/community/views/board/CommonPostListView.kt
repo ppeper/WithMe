@@ -1,5 +1,6 @@
 package com.bonobono.presentation.ui.community.views.board
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -116,8 +117,12 @@ fun BoardItemView(
         ),
         shape = RoundedCornerShape(10.dp),
         onClick = {
-            article.articleId?.let { navController.navigate("${BoardDetailNav.route}/$type/$it") }
-            article.reportId?.let { navController.navigate("${BoardDetailNav.route}/$type/$it") }
+            Log.d("TEST", "BoardItemView: articleId: ${article.articleId}, reportId: ${article.reportId}")
+            if (article.articleId == null) {
+                article.reportId?.let { navController.navigate("${BoardDetailNav.route}/$type/$it") }
+            } else {
+                article.articleId?.let { navController.navigate("${BoardDetailNav.route}/$type/$it") }
+            }
         }
     ) {
         Row(
@@ -288,9 +293,17 @@ fun ProceedingView(
             .clip(CircleShape)
             .background(
                 color = if (type == Constants.TOGETHER) {
-                    if (!isProceeding) { Green } else { DarkGray }
+                    if (!isProceeding) {
+                        Green
+                    } else {
+                        DarkGray
+                    }
                 } else {
-                    if (!isProceeding) { DarkGray } else { Green }
+                    if (!isProceeding) {
+                        DarkGray
+                    } else {
+                        Green
+                    }
                 }
             )
         )

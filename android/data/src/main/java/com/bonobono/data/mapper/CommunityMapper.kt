@@ -61,6 +61,7 @@ fun ArticleDetailResponse.toDomain(): Article {
         type = type,
         // 신고 게시판
         reportId = reportId,
+        locationName = locationName,
         latitude = latitude,
         longitude = longitude,
         locationId = locationId,

@@ -9,7 +9,7 @@ class GetArticleByIdUseCase @Inject constructor(
     private val communityRepository: CommunityRepository
 ) {
 
-    suspend operator fun invoke(type: String, articleId: Int): NetworkResult<Article> {
+    suspend operator fun invoke(type: String, articleId: Long): NetworkResult<Article> {
         return communityRepository.getArticleById(type, articleId)
     }
 }

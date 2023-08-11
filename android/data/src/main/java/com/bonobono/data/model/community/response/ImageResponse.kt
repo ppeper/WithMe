@@ -5,6 +5,6 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ImageResponse(
-    val imageName: String,
+    val imageName: String?,
     val imageUrl: String
 ): Parcelable

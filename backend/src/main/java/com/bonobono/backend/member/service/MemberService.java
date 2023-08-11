@@ -89,10 +89,12 @@ public class MemberService {
 
         Long memberId = member.getId();
 
+        Set<Authority> role = member.getRole();
+
         // 토큰 생성
         TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
 
-        LoginResponseDto loginResponseDto = new LoginResponseDto(memberId, tokenDto);
+        LoginResponseDto loginResponseDto = new LoginResponseDto(memberId, tokenDto, role);
 
         // refreshToken 저장
         Token refreshToken = Token.builder()

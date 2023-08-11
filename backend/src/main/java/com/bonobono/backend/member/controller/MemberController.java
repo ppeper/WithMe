@@ -92,7 +92,7 @@ public class MemberController {
     }
 
     @Operation(
-            summary = "프로필 조회",
+            summary = "프로필 수정",
             description = "로그인을 했을 때 발급받은 accessToken을 헤더에 넣어 해당 사용자의 실명, 닉네임, 휴대폰번호를 수정할 수 있습니다."
     )
     @PreAuthorize("isAuthenticated()")

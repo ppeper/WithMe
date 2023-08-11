@@ -56,7 +56,7 @@ public class UserCharacterService {
                 .orElseThrow(()-> new IllegalArgumentException("해당 유저 캐릭터가 없습니다. id"+character_id));
 
         //다른 main캐릭터가 있으면, 다른 캐릭터는 false로 지정
-        if (Boolean.TRUE.equals(memberRequestDto.getIs_main())) {
+        if (Boolean.TRUE.equals(memberRequestDto.isMain())) {
             List<UserCharacter> mainCharacters = userCharacterRepository.findByMemberIdAndMain(userCharacter.getMember().getId(), Boolean.TRUE);
             if (!mainCharacters.isEmpty()) {
                 for (UserCharacter mainCharacter : mainCharacters) {
@@ -67,7 +67,7 @@ public class UserCharacterService {
                 }
             }
         }
-        userCharacter.updateMain(memberRequestDto.getIs_main());
+        userCharacter.updateMain(memberRequestDto.isMain());
     }
 
     // user가 가지고 있지 않은 our캐릭터

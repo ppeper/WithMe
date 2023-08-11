@@ -16,7 +16,7 @@ public class UserChracterResponseDto {
     private Long id;
     private Long char_ord_id;
     private String custom_name;
-    private Boolean is_main;
+    private boolean main;
     private Integer experience;
     private LocalDateTime createdDate;
     private String location_name;
@@ -29,7 +29,7 @@ public class UserChracterResponseDto {
     public UserChracterResponseDto(UserCharacter userCharacter) {
         this.id = userCharacter.getId();
         this.custom_name = userCharacter.getCustomName();
-        this.is_main=userCharacter.isMain();
+        this.main=userCharacter.isMain();
         this.experience=userCharacter.getExperience();
         this.createdDate=LocalDateTime.now();
         this.location_name=userCharacter.getLocationName();

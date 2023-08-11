@@ -34,7 +34,6 @@ public class UserCharacter extends BaseTimeEntity {
     @Column(columnDefinition = "int default 0")
     private Integer experience;
 
-    @Column(columnDefinition = "boolean default false")
     private boolean main;
 
     private int catchcount;
@@ -66,7 +65,7 @@ public class UserCharacter extends BaseTimeEntity {
     }
 
 
-    public void updateMain(Boolean main) {
+    public void updateMain(boolean main) {
         this.main=main;
     }
 

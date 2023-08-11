@@ -79,7 +79,6 @@ public class ArticleTogetherController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    // 함께게시판 모집 완료
     @Operation(summary = "함께게시판 모집 완료처리")
     @PatchMapping("/{articleId}/recruit-complete")
     public ResponseEntity<Void> updateRecruitStatus(@PathVariable Long articleId){
@@ -87,7 +86,6 @@ public class ArticleTogetherController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    // 함께게시판 특정 글 삭제
     @Operation(summary = "함께게시판 특정 글 삭제")
     @DeleteMapping("/{articleId}")
     public ResponseEntity<Void> delete(@PathVariable Long articleId){

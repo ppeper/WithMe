@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 public interface ArticleImageRepository extends JpaRepository<ArticleImage, Long> {
 
-    List<ArticleImage> findArticleImagesByArticle(Article article);
+    ArticleImage findByArticleAndImageUrl(Article article, String imageUrl);
 
 }

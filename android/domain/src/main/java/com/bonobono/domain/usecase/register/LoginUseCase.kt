@@ -1,6 +1,7 @@
 package com.bonobono.domain.usecase.register
 
 import com.bonobono.domain.model.NetworkResult
+import com.bonobono.domain.model.registration.LoginResult
 import com.bonobono.domain.model.registration.Member
 import com.bonobono.domain.model.registration.Register
 import com.bonobono.domain.model.registration.Token
@@ -10,7 +11,7 @@ import javax.inject.Inject
 class LoginUseCase  @Inject constructor(
     private val registerRepository : RegisterRepository
 ){
-    suspend operator fun invoke(register: Register) {
-        registerRepository.login(register)
+    suspend operator fun invoke(register: Register) : NetworkResult<LoginResult> {
+        return registerRepository.login(register)
     }
 }

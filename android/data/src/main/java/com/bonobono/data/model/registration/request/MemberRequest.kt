@@ -9,7 +9,6 @@ data class MemberRequest(
     val name: String,
     val nickname: String,
     val password: String,
-    val passwordCheck: String,
     val phoneNumber: String,
     val role: List<RoleRequest>,
     val username: String

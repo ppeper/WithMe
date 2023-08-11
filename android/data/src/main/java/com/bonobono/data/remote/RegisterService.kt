@@ -3,6 +3,7 @@ package com.bonobono.data.remote
 import com.bonobono.data.model.registration.request.MemberRequest
 import com.bonobono.data.model.registration.request.PasswordChangeRequest
 import com.bonobono.data.model.registration.request.TokenRequest
+import com.bonobono.data.model.registration.response.LoginResponse
 import com.bonobono.data.model.registration.response.MemberResponse
 import com.bonobono.data.model.registration.response.TokenResponse
 import com.bonobono.domain.model.registration.Member
@@ -40,7 +41,7 @@ interface RegisterService {
     @POST("member/login")
     suspend fun login(
         @Body register: Register
-    ) : TokenResponse
+    ) : LoginResponse
 
     @POST("member/reissue")
     suspend fun reissue(

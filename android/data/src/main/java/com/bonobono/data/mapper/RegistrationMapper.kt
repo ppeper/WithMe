@@ -3,9 +3,11 @@ package com.bonobono.data.mapper
 import com.bonobono.data.model.registration.request.MemberRequest
 import com.bonobono.data.model.registration.request.RoleRequest
 import com.bonobono.data.model.registration.response.AuthoritySetResponse
+import com.bonobono.data.model.registration.response.LoginResponse
 import com.bonobono.data.model.registration.response.MemberResponse
 import com.bonobono.data.model.registration.response.TokenResponse
 import com.bonobono.domain.model.registration.AuthoritySet
+import com.bonobono.domain.model.registration.LoginResult
 import com.bonobono.domain.model.registration.Member
 import com.bonobono.domain.model.registration.Register
 import com.bonobono.domain.model.registration.Role
@@ -42,7 +44,6 @@ fun MemberRequest.toDomain(): Register {
         name = name,
         nickname = nickname,
         password = password,
-        passwordCheck = passwordCheck,
         phoneNumber = phoneNumber,
         role = role,
         username = username
@@ -52,5 +53,12 @@ fun MemberRequest.toDomain(): Register {
 fun RoleRequest.toDomain(): Role {
     return Role(
         role = role
+    )
+}
+
+fun LoginResponse.toDomain(): LoginResult {
+    return LoginResult(
+        memberId = memberId,
+        tokenDto = tokenDto.toDomain()
     )
 }

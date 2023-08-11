@@ -12,6 +12,8 @@ import com.bonobono.backend.community.article.service.ArticleCommentService;
 import com.bonobono.backend.community.article.service.ArticleLikeService;
 import com.bonobono.backend.community.article.service.ArticleService;
 import com.bonobono.backend.global.util.SecurityUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+@Tag(name = "free", description = "자유게시판")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/community/free")
@@ -35,15 +38,15 @@ public class ArticleFreeController {
     private final ArticleCommentLikeService articleCommentLikeService;
     private final ArticleType type = ArticleType.FREE;
 
-    // 자유게시판 글쓰기
+    @Operation(summary = "자유게시판 글쓰기")
     @PostMapping(value = "",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> save(@RequestPart ArticleSaveRequestDto requestDto,
                                   @RequestPart(value = "imageFiles", required = false) List<MultipartFile> imageFiles){
         articleService.save(type, SecurityUtil.getLoginMemberId(), requestDto, imageFiles);
-        return new ResponseEntity(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    // 자유게시판 전체 글 조회
+    @Operation(summary = "자유게시판 전체 글 조회")
     @GetMapping("")
     public ResponseEntity<List<ArticleListResponseDto>> findAllDesc(){
         List<ArticleListResponseDto> responseDto =  articleService.findAllDesc(type);
@@ -51,13 +54,14 @@ public class ArticleFreeController {
     }
 
     // 자유게시판 특정 글, 글에 관한 댓글 조회하기
+    @Operation(summary = "자유게시판 특정 글, 글에 관한 댓글 조회하기")
     @GetMapping("/{articleId}")
     public ResponseEntity<ArticleDetailResponseDto> findById(@PathVariable Long articleId) {
         ArticleDetailResponseDto responseDto = articleService.findById(type, SecurityUtil.getLoginMemberId(), articleId);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
-    // 자유게시판 게시글 검색 (키워드가 제목, 내용 포함)
+    @Operation(summary = "자유게시판 게시글 검색", description = "키워드가 제목, 내용 포함")
     @GetMapping("/search")
     public ResponseEntity<List<ArticleListResponseDto>> search(@RequestParam("keyword") String keyword){
         List<ArticleListResponseDto> responseDto = articleService.search(type, keyword);
@@ -65,7 +69,7 @@ public class ArticleFreeController {
 
     }
 
-    // 자유게시판 특정 글 수정
+    @Operation(summary = "자유게시판 특정 글 수정")
     @PatchMapping(value = "/{articleId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> update( @PathVariable Long articleId,
         @RequestPart ArticleUpdateRequestDto requestDto,
@@ -74,7 +78,7 @@ public class ArticleFreeController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    // 자유게시판 특정 글 삭제
+    @Operation(summary = "자유게시판 특정 글 삭제")
     @DeleteMapping("/{articleId}")
     public ResponseEntity<Void> delete(@PathVariable Long articleId){
         articleService.delete(SecurityUtil.getLoginMemberId(), articleId);
@@ -83,7 +87,7 @@ public class ArticleFreeController {
 
 
     // ----------댓글---------
-    // 자유게시판 글에 댓글 쓰기
+    @Operation(summary = "자유게시판 글에 댓글 쓰기")
     @PostMapping("/{articleId}/comment")
     public ResponseEntity<ArticleCommentResponseDto> saveComment(@PathVariable Long articleId,
         @RequestBody ArticleCommentRequestDto requestDto
@@ -92,7 +96,7 @@ public class ArticleFreeController {
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
-    // 자유게시판 댓글 삭제
+    @Operation(summary = "자유게시판 댓글 삭제")
     @DeleteMapping("/{articleId}/comment/{commentId}")
     public ResponseEntity<Void> deleteComment(@PathVariable Long articleId,
         @PathVariable Long commentId){
@@ -100,7 +104,7 @@ public class ArticleFreeController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    // 자유게시판 댓글 수정
+    @Operation(summary = "자유게시판 댓글 수정")
     @PatchMapping("/{articleId}/comment/{commentId}")
     public ResponseEntity<Void> updateComment(@PathVariable Long articleId,
         @PathVariable Long commentId,
@@ -109,14 +113,14 @@ public class ArticleFreeController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    // 자유게시판 좋아요
+    @Operation(summary = "자유게시판 좋아요")
     @PatchMapping("/{articleId}/like")
     public ResponseEntity<Void> like(@PathVariable Long articleId) {
         articleLikeService.like(SecurityUtil.getLoginMemberId(), articleId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    // 자유게시판 댓글 좋아요
+    @Operation(summary = "자유게시판 댓글 좋아요")
     @PatchMapping("/{articleId}/comment/{commentId}/like")
     public ResponseEntity<Void> like(@PathVariable Long articleId,
         @PathVariable Long commentId) {

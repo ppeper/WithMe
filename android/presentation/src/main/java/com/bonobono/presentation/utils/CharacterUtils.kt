@@ -32,6 +32,9 @@ object CharacterName {
     const val SEA_GULL = "갈매기"
     const val SHRIMP = "새우"
     const val TURTLE = "거북이"
+    const val WHALE = "고래"
+    const val DOLPHIN = "돌고래"
+    const val SEAL = "물범"
 }
 
 object CharacterImage {
@@ -54,9 +57,10 @@ object CharacterContent {
     const val KILLER_WHALE = "범고래"
     const val NEMO = "니모"
     const val OTTER = "해달"
-    const val SEA_LION = "바다사자"
+    const val SEAL = "물범"
     const val SEA_GULL = "갈매기"
     const val SHRIMP = "새우"
     const val TURTLE = "거북이"
+    const val SEA_LION = "바다사자"
 }
 

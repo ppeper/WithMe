@@ -6,11 +6,7 @@ import com.bonobono.backend.member.domain.Authority;
 import com.bonobono.backend.member.domain.Member;
 import com.bonobono.backend.member.domain.Token;
 import com.bonobono.backend.member.domain.enumtype.Role;
-import com.bonobono.backend.member.dto.request.MemberRequestDto;
-import com.bonobono.backend.member.dto.request.MemberUpdateRequestDto;
-import com.bonobono.backend.member.dto.request.PasswordChangeRequestDto;
-import com.bonobono.backend.member.dto.request.TokenRequestDto;
-import com.bonobono.backend.member.dto.response.LoginResponseDto;
+import com.bonobono.backend.member.dto.request.*;
 import com.bonobono.backend.member.dto.response.MemberResponseDto;
 import com.bonobono.backend.member.dto.response.TokenDto;
 import com.bonobono.backend.global.exception.AppException;
@@ -74,7 +70,7 @@ public class MemberService {
      * 로그인
      */
     @Transactional
-    public LoginResponseDto login(MemberRequestDto request) {
+    public TokenDto login(MemberLoginRequestDto request) {
         // 아이디가 틀렸을 때
         Member member = memberRepository.findByUsername(request.getUsername())
             .orElseThrow(() -> {
@@ -90,22 +86,19 @@ public class MemberService {
 
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
-        Long memberId = member.getId();
         // 토큰 생성
         TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
-
-        LoginResponseDto loginResponseDto = new LoginResponseDto(memberId, tokenDto);
-
 
         // refreshToken 저장
         Token refreshToken = Token.builder()
             .key(authentication.getName())
             .value(tokenDto.getRefreshToken())
+            .fcmtoken(request.getFcmtoken())
             .build();
 
         tokenRepository.save(refreshToken);
 
-        return loginResponseDto;
+        return tokenDto;
     }
 
     /**
@@ -198,31 +191,6 @@ public class MemberService {
             throw new RuntimeException("로그인 유저 정보가 없습니다.");
         }
         memberRepository.deleteById(loginMemberId);
-    }
-
-    /**
-     * fcm 토큰 발급
-     */
-    @Transactional
-    public boolean setFcmToken(Long memberId, String fcmToken) throws Exception {
-
-        Member member = memberRepository.findById(memberId)
-            .orElseThrow(() -> new Exception("FCM 토큰 설정중, 사용자를 찾을 수 없습니다."));
-        member.setFcmToken(fcmToken);
-        
-        return true; // 토큰 정상 발급
-    }
-    
-    /**
-     * fcm 토큰 삭제
-     */
-    @Transactional
-    public boolean deleteFcmToken(Long memberId) throws Exception {
-        Member member = memberRepository.findById(memberId)
-            .orElseThrow(() -> new Exception("FCM 토큰 설정중, 사용자를 찾을 수 없습니다."));
-        member.setFcmToken(null);
-        
-        return true; // 토큰 정상 삭제
     }
 
 }

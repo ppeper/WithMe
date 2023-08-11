@@ -55,7 +55,6 @@ class SignUpViewModel @Inject constructor(
 
     private val _checkUserNameState = MutableStateFlow<String>("test")
 
-
     val checkUserNameState = _checkUserNameState.asStateFlow()
     fun checkUserName() = viewModelScope.launch {
         val member = Member(listOf(), name, nickName, phoneNum, username)

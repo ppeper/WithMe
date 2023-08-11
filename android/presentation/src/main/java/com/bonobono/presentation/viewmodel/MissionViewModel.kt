@@ -55,7 +55,7 @@ class MissionViewModel @Inject constructor(
     val isSuccess: StateFlow<Boolean?> = _isSuccess
 
     private val _totalScore = MutableStateFlow<TotalScore>(TotalScore())
-    private val totalScore: StateFlow<TotalScore> = _totalScore
+    val totalScore: StateFlow<TotalScore> = _totalScore
 
     fun getMission(memberId: Int, type: String) = viewModelScope.launch {
         when (type) {
@@ -91,7 +91,6 @@ class MissionViewModel @Inject constructor(
 
     fun getScore(memberId: Int) = viewModelScope.launch {
         _totalScore.emit(getTotalScoreUseCase.invoke(memberId))
-        Log.d("juyong", "getScore: ${_totalScore.value}")
     }
 
 }

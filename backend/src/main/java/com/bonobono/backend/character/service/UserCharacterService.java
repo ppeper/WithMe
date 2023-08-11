@@ -11,7 +11,6 @@ import com.bonobono.backend.character.repository.UserCharacterRepository;
 import com.bonobono.backend.member.domain.Member;
 import com.bonobono.backend.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -91,7 +90,18 @@ public class UserCharacterService {
 
         OurCharacter ourCharacter = ourCharacterRepository.findById(requestDto.getOurCharacterId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 캐릭터가 없습니다. id =" + requestDto.getOurCharacterId()));
-        UserCharacter userCharacter = requestDto.toEntity(requestDto.getCustom_name(), ourCharacter, requestDto.getLocation_name(), member);
-        userCharacterRepository.save(userCharacter);
+
+        List<UserCharacter> existingUserCharacter = userCharacterRepository.findByMemberAndOurCharacterAndLocationName(member, ourCharacter, requestDto.getLocation_name());
+
+        //만약 회원과 해변, 멤버 모두 같으면, 저장을 하는게 아니라, 모두 같은 객체가 있으면, userchar의 count를 증가시켜야 함
+        if (existingUserCharacter != null && !existingUserCharacter.isEmpty()) {
+            UserCharacter userCharacter = existingUserCharacter.get(0);
+            userCharacter.increaseCatchCount();
+            userCharacter.updateCustomName(requestDto.getCustom_name());
+        }
+        else {
+            UserCharacter userCharacter = requestDto.toEntity(requestDto.getCustom_name(), ourCharacter, requestDto.getLocation_name(), member);
+            userCharacterRepository.save(userCharacter);
+        }
     }
 }

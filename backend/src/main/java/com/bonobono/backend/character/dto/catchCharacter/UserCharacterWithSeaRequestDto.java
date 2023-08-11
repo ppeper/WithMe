@@ -30,8 +30,8 @@ public class UserCharacterWithSeaRequestDto {
         return UserCharacter.builder()
                 .ourCharacter(ourCharacter)
                 .member(member)
-                .custom_name(custom_name)
-                .location_name(location_name)
+                .customName(custom_name)
+                .locationName(location_name)
                 .build();
     }
 }

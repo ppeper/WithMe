@@ -28,11 +28,11 @@ public class UserChracterResponseDto {
 
     public UserChracterResponseDto(UserCharacter userCharacter) {
         this.id = userCharacter.getId();
-        this.custom_name = userCharacter.getCustom_name();
+        this.custom_name = userCharacter.getCustomName();
         this.is_main=userCharacter.isMain();
         this.experience=userCharacter.getExperience();
         this.createdDate=LocalDateTime.now();
-        this.location_name=userCharacter.getLocation_name();
+        this.location_name=userCharacter.getLocationName();
 
         //ourcharacter에서 가져온 정보
         this.char_ord_id = userCharacter.getOurCharacter().getCharOrdId();

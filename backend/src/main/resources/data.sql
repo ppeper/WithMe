@@ -18,11 +18,11 @@ VALUES ('망나뇽',1,'짱 귀여워', 'LEVEL_1'),
         ('망뇽',2,'짱 귀여워', 'LEVEL_1');
 
 
-INSERT INTO user_character (custom_name, experience, main, member_id, character_id)
-VALUES ('망냐망냐',10, true, 1, 1),
-       ('망냐2',10, false, 1, 2),
-        ('망냐2',10, false, 1, 3),
-        ('망냐2',10, false, 1, 4);
+-- INSERT INTO user_character (custom_name, experience, main, member_id, character_id, location_name)
+-- VALUES ('망냐망냐',10, true, 1, 1, '경기도 수원시'),
+--        ('망냐2',10, false, 1, 2,'경기도 수원시'),
+--         ('망냐2',10, false, 1, 3,'경기도 수원시'),
+--         ('망냐2',10, false, 1, 4,'경기도 수원시');
 
 
 INSERT INTO quiz_problem (problem, answer, commentary)

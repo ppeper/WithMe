@@ -1,5 +1,8 @@
 package com.bonobono.presentation.ui.map
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.location.Location
 import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,6 +28,8 @@ import com.bonobono.presentation.ui.main.component.PromptInputRow
 import com.bonobono.presentation.ui.main.component.PromptOXButtonRow
 import com.bonobono.presentation.ui.main.component.PromptTwoButtonRow
 import com.bonobono.presentation.ui.common.GifLoader
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.ar.core.Config
 import com.ujizin.camposer.CameraPreview
 import com.ujizin.camposer.state.CamSelector
@@ -203,7 +208,6 @@ fun AnimationScreen(modifier: Modifier, source: Int) {
         }
     }
 }
-
 
 
 

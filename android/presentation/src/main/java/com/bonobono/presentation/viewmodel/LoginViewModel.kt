@@ -1,34 +1,21 @@
 package com.bonobono.presentation.viewmodel
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bonobono.domain.model.NetworkResult
 import com.bonobono.domain.model.registration.LoginInput
-import com.bonobono.domain.model.registration.Register
-import com.bonobono.domain.model.registration.Role
-import com.bonobono.domain.model.registration.Token
 import com.bonobono.domain.usecase.register.GetFCMTokenUseCase
 import com.bonobono.domain.usecase.register.GetLoginInfoUseCase
 import com.bonobono.domain.usecase.register.GetMemberUseCase
+import com.bonobono.domain.usecase.register.LoginResultInputUseCase
 import com.bonobono.domain.usecase.register.LoginUseCase
 import com.bonobono.domain.usecase.register.MemberInfoInputUseCase
 import com.bonobono.domain.usecase.register.PutLoginInfoUseCase
-import com.bonobono.domain.usecase.register.TokenInputUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -37,7 +24,7 @@ private const val TAG = "LoginViewModel"
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
-    private val tokenInputUseCase: TokenInputUseCase,
+    private val loginResultInputUseCase: LoginResultInputUseCase,
     private val memberInfoInputUseCase: MemberInfoInputUseCase,
     private val getMemberUseCase: GetMemberUseCase,
     private val putLoginInfoUseCase: PutLoginInfoUseCase,
@@ -71,7 +58,7 @@ class LoginViewModel @Inject constructor(
         return when (result) {
             is NetworkResult.Success -> {
                 // token 값 sharedpreference에 넣어주자
-                tokenInputUseCase.invoke(result.data)
+                loginResultInputUseCase.invoke(result.data)
 //                putMemberInfo()
                 "SUCCESS" // Return the login result
             }

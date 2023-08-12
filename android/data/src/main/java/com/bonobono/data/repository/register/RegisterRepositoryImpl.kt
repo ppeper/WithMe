@@ -65,11 +65,12 @@ class RegisterRepositoryImpl @Inject constructor(
         return handleApi { registerService.deleteMember() }
     }
 
-    override suspend fun putToken(loginResult: LoginResult) {
+    override suspend fun putLoginResult(loginResult: LoginResult) {
         preferenceDatasource.putString("access_token", loginResult.tokenDto.accessToken)
         preferenceDatasource.putString("refresh_token", loginResult.tokenDto.refreshToken)
         preferenceDatasource.putInt("member_id", loginResult.memberId)
-        Log.d(TAG, "putToken: access_token : ${preferenceDatasource.getString("access_token")} refresh_token : ${preferenceDatasource.getString("refresh_token")} member_id : ${preferenceDatasource.getInt("member_id")}")
+        preferenceDatasource.putString("role", loginResult.role[0].role)
+        Log.d(TAG, "putToken: access_token : ${preferenceDatasource.getString("access_token")} refresh_token : ${preferenceDatasource.getString("refresh_token")} member_id : ${preferenceDatasource.getInt("member_id")}\nrole: ${preferenceDatasource.getString("role")}")
     }
 
     override suspend fun putMemberInfo(member: Member) {

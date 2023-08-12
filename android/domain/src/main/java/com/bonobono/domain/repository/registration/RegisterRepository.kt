@@ -43,7 +43,7 @@ interface RegisterRepository {
     // 자동 로그인
 
     // 토큰 값 저장
-    suspend fun putToken(loginResult: LoginResult)
+    suspend fun putLoginResult(loginResult: LoginResult)
 
     // 사용자 정보 저장
     suspend fun putMemberInfo(member: Member)

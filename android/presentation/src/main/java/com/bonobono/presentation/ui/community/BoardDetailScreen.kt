@@ -205,8 +205,14 @@ fun BoardDetailScreen(
                                     WriterView(type = type, communityViewModel = communityViewModel, article = article, navController = navController,
                                         adminCompleteState = adminState,
                                         recruitCompleteState = recruitState,
-                                        onRecruitCompleteClicked = { recruitState = true },
-                                        onAdminCompleteClicked = { adminState = true }
+                                        onRecruitCompleteClicked = {
+                                            article.recruitStatus = true
+                                            recruitState = true
+                                        },
+                                        onAdminCompleteClicked = {
+                                            article.adminConfirmStatus = true
+                                            adminState = true
+                                        }
                                     )
 
                                     Text(

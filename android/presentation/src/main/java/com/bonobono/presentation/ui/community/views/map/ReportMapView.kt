@@ -233,6 +233,7 @@ fun SelectedMapView(
             )
     ) {
         NaverMap(
+            modifier = modifier.clip(RoundedCornerShape(10.dp)),
             cameraPositionState = cameraPositionState,
             uiSettings = mapUiSettings
         ) {

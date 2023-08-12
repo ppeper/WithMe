@@ -3,6 +3,7 @@ package com.bonobono.presentation.ui.community.util
 import com.bonobono.domain.model.community.Article
 import com.bonobono.domain.model.community.Comment
 import com.bonobono.domain.model.community.Image
+import com.bonobono.domain.model.map.Location
 import com.bonobono.presentation.ui.community.views.gallery.PhotoSelected
 
 object DummyData {
@@ -34,5 +35,19 @@ object DummyData {
             comment3
         ),
         url = "https://op.gg"
+    )
+    val locations = listOf(
+        Location(
+            id = 1,
+            name = "1해변",
+            centerLatitude = 0.0,
+            centerLongitude = 0.0
+        ),
+        Location(
+            id = 1,
+            name = "1해변",
+            centerLatitude = 0.0,
+            centerLongitude = 0.0
+        )
     )
 }

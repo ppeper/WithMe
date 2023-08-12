@@ -10,6 +10,8 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -51,7 +53,8 @@ fun CommonTextField(
     focusRequester: FocusRequester = FocusRequester()
 ) {
     BasicTextField(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
             .onFocusChanged { onFocusChange() }
             .focusRequester(focusRequester),
         value = text,
@@ -156,6 +159,8 @@ fun SupportTxtTextField(
         visualTransformation = visualTransformation
     )
 }
+
+
 
 @Composable
 fun TextFieldWithButton(

@@ -190,6 +190,13 @@ object GameNav : Destination {
         navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${GameNav.route}" })
 }
 
+object ARMapNav: Destination {
+    override val route: String = NavigationRouteName.AR_MAP
+    override val title: String = NavigationTitle.MAP_AR
+    override val deepLinks: List<NavDeepLink> = listOf(
+        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${ARMapNav.route}" })
+}
+
 
 interface Destination {
     val route: String
@@ -214,6 +221,7 @@ object NavigationRouteName {
     const val MAIN_CHATTING = "main_chat"
     const val MAIN_MAP = "main_map"
 
+    const val AR_MAP = "ar_map"
     // Mission
     const val MISSION = "mission"
     const val QUIZ = "quiz"
@@ -265,6 +273,8 @@ object NavigationTitle {
     const val MAIN_CHATTING = "채팅"
     const val MAIN_COMMUNITY = "게시판"
     const val MAIN_MY_PAGE = "프로필"
+
+    const val MAP_AR = "AR 지도"
 
     const val COMMUNITY_FREE = "자유게시판"
     const val COMMUNITY_WITH = "함께게시판"

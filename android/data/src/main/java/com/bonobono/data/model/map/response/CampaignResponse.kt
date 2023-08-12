@@ -1,12 +1,14 @@
-package com.bonobono.domain.model.map
+package com.bonobono.data.model.map.response
 
-import java.util.Date
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
-data class Campaign (
+@Parcelize
+data class CampaignResponse(
     val authority: String,
     val completionStatus: Boolean,
     val endDate: String,
     val locationName: String,
     val name: String,
     val startDate: String
-)
+) : Parcelable

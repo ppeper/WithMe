@@ -39,6 +39,7 @@ import com.bonobono.presentation.ui.theme.DarkGray
 import com.bonobono.presentation.ui.theme.LightGray
 import com.bonobono.presentation.ui.theme.White
 import com.bonobono.presentation.utils.Character
+import com.bonobono.presentation.utils.characterList
 import com.bonobono.presentation.viewmodel.CharacterViewModel
 
 // 현재 대표 동물 이미지로
@@ -85,18 +86,6 @@ fun CurInformation() {
 
 @Composable
 fun Characters(userCharacterList: List<UserCharacter>) {
-    val characterList = listOf<Character>(
-        Character.AMMONITE,
-        Character.BELUGA,
-        Character.HIPPOCAMPUS,
-        Character.KILLER_WHALE,
-        Character.NEMO,
-        Character.OTTER,
-        Character.SEA_LION,
-        Character.SEA_GULL,
-        Character.SHRIMP,
-        Character.TURTLE
-    )
     Card(
         modifier = Modifier.padding(12.dp),
         elevation = CardDefaults.cardElevation(4.dp),

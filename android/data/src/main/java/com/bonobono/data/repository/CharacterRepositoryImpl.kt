@@ -6,6 +6,8 @@ import com.bonobono.data.remote.CharacterService
 import com.bonobono.data.remote.handleApi
 import com.bonobono.domain.model.NetworkResult
 import com.bonobono.domain.model.character.UserCharacter
+import com.bonobono.domain.model.map.Campaign
+import com.bonobono.domain.model.map.Ranking
 import com.bonobono.domain.repository.CharacterRepository
 import javax.inject.Inject
 
@@ -15,5 +17,4 @@ class CharacterRepositoryImpl @Inject constructor(
     override suspend fun getUserCharacterList(): NetworkResult<List<UserCharacter>> {
         return handleApi { characterService.getUserCharacterList(1).map { it.toDomain() } }
     }
-
 }

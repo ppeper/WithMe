@@ -60,7 +60,20 @@ object CharacterContent {
     const val SEAL = "물범"
     const val SEA_GULL = "갈매기"
     const val SHRIMP = "새우"
-    const val TURTLE = "거북이"
+    const val TURTLE = "거북"
     const val SEA_LION = "바다사자"
 }
+
+val characterList = listOf<Character>(
+    Character.AMMONITE,
+    Character.BELUGA,
+    Character.HIPPOCAMPUS,
+    Character.KILLER_WHALE,
+    Character.NEMO,
+    Character.OTTER,
+    Character.SEA_LION,
+    Character.SEA_GULL,
+    Character.SHRIMP,
+    Character.TURTLE
+)
 

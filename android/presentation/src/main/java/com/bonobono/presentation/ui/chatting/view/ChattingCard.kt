@@ -49,7 +49,6 @@ private const val TAG = "ChattingCard"
 fun ChattingCard(chat: Chat) {
     val currentDate = LocalDateTime.now()
     var radioBtnCheck by remember { mutableStateOf(false) }
-//    Log.d(TAG, "ChattingCard: ${currentDate} and latestTime is ${latestTime} ")
     val formattedDate = when {
         LocalDate.from(chat.latestTime) == LocalDate.from(currentDate) -> chat.latestTime.format(DateTimeFormatter.ofPattern("hh : mm a"))
         chat.latestTime == currentDate.minusDays(1) -> "어제"

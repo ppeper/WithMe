@@ -140,87 +140,64 @@ VALUES (3, 2);
 INSERT INTO article_like (article_id, member_id)
 VALUES (4, 2);
 
-INSERT INTO location (name, center_latitude, center_longitude, left_latitude, left_longitude, right_latitude, right_longitude)
-VALUES ('서울특별시 송파구', 37.49650739457211, 127.0868362387235, 37.4965050000, 127.0868000000, 37.496510000, 127.0868400000);
-
-INSERT INTO location (name, center_latitude, center_longitude, left_latitude, left_longitude, right_latitude, right_longitude)
-VALUES ('경기도 수원시', 37.25748884382484, 127.03120068818286, 37.25718884382484, 127.0309068818286, 37.25754884382484, 127.0369068818286);
-
--- INSERT INTO location (location_name, latitude, longitude)
--- VALUES ('부산광역시 해운대구', 35.17440133141441, 129.2071257645525);
---
--- INSERT INTO location (location_name, latitude, longitude)
--- VALUES ('대전광역시 유성구', 36.38219930109041, 127.34781678051049);
---
--- INSERT INTO location (location_name, latitude, longitude)
--- VALUES ('인천광역시 연수구', 37.41059245415787, 126.68408651292456);
---
--- INSERT INTO report (title, content, views, latitude, longitude, admin_confirm_status, member_id, location_id)
--- VALUES ('서울 송파구 쓰레기 많음', '서울 송파구 어디어디에 쓰레기가 많이 더러워져 있습니다. 청소 바랍니다', 10, 37.49650739457211, 127.0868362387235, false, 1, 1);
---
--- INSERT INTO report (title, content, views, latitude, longitude, admin_confirm_status, member_id, location_id)
--- VALUES ('수원시 쓰레기 무담장 실화냐?', '수원시에 어디어디에 쓰레기를 쌓았더니 처음엔 나쁜 냄새만 나더니 이젠 악취가 전체 수원시를 울린다고 합니다! 조속한 처리바랍니다.', 0, 37.25748884382484, 127.03120068818286, false, 2, 2);
---
--- INSERT INTO report (title, content, views, latitude, longitude, admin_confirm_status, member_id, location_id)
--- VALUES ('해운대구 해수욕장 쓰레기', '해운대구 해수욕장에서 쓰레기를 쌓아두고 가는 사람들이 많습니다. 처리 부탁드립니다.', 5, 35.17440133141441, 129.2071257645525, false, 1, 3);
---
--- INSERT INTO report (title, content, views, latitude, longitude, admin_confirm_status, member_id, location_id)
--- VALUES ('대전 유성구 하남중학교 판자 쓰레기', '대전 유성구 하남중학교 앞에 판자쓰레기가 너무 많이 쌓여있습니다. 이곳을 지나가는 차량들이 너무나도 조심스러워합니다. 처리바랍니다.', 0, 36.38219930109041, 127.34781678051049, false, 2, 4);
---
--- INSERT INTO report (title, content, views, latitude, longitude, admin_confirm_status, member_id, location_id)
--- VALUES ('인천 연수구 아웃백 쓰레기 무단투기 확인', '인천 연수구 아웃백에서 먹고나온 인분들의 쓰레기 무단투기를 확인했습니다. 처리바랍니다.', 2, 37.41059245415787, 126.68408651292456, false, 2, 5);
---
--- INSERT INTO report_comment (content, report_id, member_id, parent_comment_id)
--- VALUES ('정말 현타옵니다. 우리 동네도 너무 쓰레기들로 가득 차 있어서 이번 기회에 청소를 해주셨으면 좋겠습니다.', 1, 1, null);
---
--- INSERT INTO report_comment (content, report_id, member_id, parent_comment_id)
--- VALUES ('저도 그 생각입니다. 세상을 지키기 위한 가장 작은 시작이 우리 동네부터 시작하는것인듯 합니다.', 1, 2, null);
---
--- INSERT INTO report_comment (content, report_id, member_id, parent_comment_id)
--- VALUES ('실화인가요? 층고도 넘어가면서 처리못한 쓰레기라니..', 2, 1, null);
---
--- INSERT INTO report_comment (content, report_id, member_id, parent_comment_id)
--- VALUES ('악취보다 페코페이...ㅠ', 2, 2, null);
---
--- INSERT INTO report_comment (content, report_id, member_id, parent_comment_id)
--- VALUES ('이번 여름은 해수욕장 가지 마세요..', 3, 2, null);
---
--- INSERT INTO report_comment (content, report_id, member_id, parent_comment_id)
--- VALUES ('이쪽 지역 살아서 좋은게 몇 안남네요. 해운대까지 이런 상황이면 다시방문하는 관광객도 줄일것 같아서 제발 조속한 처리바랍니다', 3, 1, null);
---
--- INSERT INTO report_comment (content, report_id, member_id, parent_comment_id)
--- VALUES ('진짜 넘나 위험한 상황이네요..  그도 그럴것이 판자쓰레기 속에 누군가 단련된 이미지를 가지고 등장한다면 안전한 도시라는 평가를 받을수 없겠죠', 4, 2, null);
---
--- INSERT INTO report_comment (content, report_id, member_id, parent_comment_id)
--- VALUES ('대전 실화냐? 대전에서 또 쓰레기 문제라니 참 억울해요.', 4, 1, null);
---
--- INSERT INTO report_comment (content, report_id, member_id, parent_comment_id)
--- VALUES ('아웃백 갔을때 쓰레기통에 쓰레기 넣어놓고 가면 알아서 청소하겠죠?하고 생각하지마세요.', 5, 1, null);
---
--- INSERT INTO report_comment (content, report_id, member_id, parent_comment_id)
--- VALUES ('네 그렇죠. 우리 모두 쓰레기문제에 대한 인식을 바꿔야할 필요가 있습니다.', 5, 2, null);
---
--- INSERT INTO report_like (report_id, member_id)
--- VALUES (1, 1);
---
--- INSERT INTO report_like (report_id, member_id)
--- VALUES (1, 2);
---
--- INSERT INTO report_like (report_id, member_id)
--- VALUES (2, 1);
---
--- INSERT INTO report_like (report_id, member_id)
--- VALUES (2, 2);
---
--- INSERT INTO report_like (report_id, member_id)
--- VALUES (3, 2);
 INSERT INTO location_our_character (location_id, our_character_id)
 VALUES
     (1, 1),
     (1, 2),
     (1, 3),
     (1, 4),
+    (1, 5),
+    (1, 6),
+    (1, 7),
+    (1, 8),
+    (1, 9),
+    (1, 10),
+    (1, 11),
+    (1, 14),
+    (1, 17),
     (2, 1),
     (2, 2),
     (2, 3),
-    (2, 4);
+    (2, 4),
+    (2, 5),
+    (2, 6),
+    (2, 7),
+    (2, 8),
+    (2, 9),
+    (2, 10),
+    (2, 11),
+    (2, 14),
+    (2, 17),
+    (3, 1),
+    (3, 2),
+    (3, 3),
+    (3, 4),
+    (3, 5),
+    (3, 6),
+    (3, 7),
+    (3, 8),
+    (3, 9),
+    (3, 10),
+    (3, 11),
+    (3, 14),
+    (3, 17),
+    (4, 1),
+    (4, 2),
+    (4, 3),
+    (4, 4),
+    (4, 5),
+    (4, 6),
+    (4, 7),
+    (4, 8),
+    (4, 9),
+    (4, 10),
+    (4, 11),
+    (4, 14),
+    (4, 17);
+
+INSERT INTO location (name, center_latitude, center_longitude, left_latitude, left_longitude, right_latitude, right_longitude)
+VALUES
+    ('부산 광안리 해수욕장', '35.153387', '129.113506', '35.1526', '129.1092', '35.1557', '129.1179'),
+    ('충남 서천 춘장대 해수욕장', '36.016374', '126.700953', '36.0109', '126.6983', '36.0226', '126.7037'),
+    ('울산 일산 해수욕장', '35.431840', '129.371506', '35.4274', '129.3644', '35.4374', '129.381'),
+    ('여수 웅천천수공원', '34.746716', '127.73199', '34.7450', '127.7275', '34.7482', '127.7363');

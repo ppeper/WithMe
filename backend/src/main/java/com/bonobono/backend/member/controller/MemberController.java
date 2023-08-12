@@ -3,6 +3,7 @@ package com.bonobono.backend.member.controller;
 import com.bonobono.backend.global.exception.AppException;
 import com.bonobono.backend.global.exception.ErrorCode;
 import com.bonobono.backend.member.dto.request.*;
+import com.bonobono.backend.member.dto.response.LoginResponseDto;
 import com.bonobono.backend.member.dto.response.MemberResponseDto;
 import com.bonobono.backend.member.dto.response.TokenDto;
 import com.bonobono.backend.member.repository.MemberRepository;
@@ -67,7 +68,7 @@ public class MemberController {
             description = "username과 password를 입력받아 로그인한 사용자에게 accessToken과 refreshToken을 반환해줍니다."
     )
     @PostMapping("/login")
-    public ResponseEntity<TokenDto> login(@RequestBody MemberLoginRequestDto memberRequestDto) {
+    public ResponseEntity<LoginResponseDto> login(@RequestBody MemberLoginRequestDto memberRequestDto) {
         return ResponseEntity.ok(memberService.login(memberRequestDto));
     }
 
@@ -91,7 +92,7 @@ public class MemberController {
     }
 
     @Operation(
-            summary = "프로필 조회",
+            summary = "프로필 수정",
             description = "로그인을 했을 때 발급받은 accessToken을 헤더에 넣어 해당 사용자의 실명, 닉네임, 휴대폰번호를 수정할 수 있습니다."
     )
     @PreAuthorize("isAuthenticated()")

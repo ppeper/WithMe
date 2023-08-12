@@ -40,6 +40,9 @@ spring:
       max-file-size: 50MB
       max-request-size: 50MB
 
+  jackson:
+    time-zone: Asia/Seoul
+
 jwt:
   header: Authorization
   secret-key: q1w2e3r4 #${JWT_SECRET_KEY} #

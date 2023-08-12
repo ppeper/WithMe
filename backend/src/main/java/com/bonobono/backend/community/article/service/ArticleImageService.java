@@ -33,43 +33,70 @@ public class ArticleImageService {
 
     // 게시글 이미지 수정
     public void updateImage(Article article, List<MultipartFile> newImages, List<ArticleImage> oldImages, String imageDirName){
-        // 해당 게시글 articleImage 리스트
-        // 비교할 때 "https://bonobono.s3.ap-northeast-2.amazonaws.com" 포함되면 비교하기
-        // imageUrl로 비교해서 있는 값이면 통과 없는 값이면 저장
-        // 남은 값들은 삭제
-        List<String> imageUrls = oldImages.stream()
-                .map(ArticleImage::getImageUrl)
-                .collect(Collectors.toList());
-
-        String s3BaseUrl = "https://bonobono.s3.ap-northeast-2.amazonaws.com";
-        for (MultipartFile newImage : newImages){
-            boolean isChecked = newImage.getOriginalFilename().contains(s3BaseUrl);
-            if(isChecked){
-                String newImageUrl = newImage.getOriginalFilename().split(imageDirName + "/" )[1];
-                boolean isContained =  imageUrls.contains(newImageUrl);
-                if(!isContained){
-                    saveImage(article, newImage, imageDirName);
-                } else {
-                    imageUrls.remove(newImageUrl);
-                }
-            } else {
+        if (oldImages.isEmpty()){
+            // 원래 게시글에 이미지가 없었다면
+            for (MultipartFile newImage : newImages){
                 saveImage(article, newImage, imageDirName);
             }
-        }
+        } else {
+            // 원래 게시글에 이미지가 있다면
 
-        for (String imageUrl :imageUrls) {
-            ArticleImage articleImage = articleImageRepository.findByArticleAndImageUrl(article, imageUrl);
-            deleteImage(articleImage, imageUrl, imageDirName);
-        }
+            // 기존 게시글의 이미지 url을 받아오자
+            List<String> imageUrls = oldImages.stream()
+                    .map(ArticleImage::getImageUrl)
+                    .collect(Collectors.toList());
+            System.out.println("imageUrls : " + imageUrls);
+            // String s3BaseUrl = "https://bonobono.s3.ap-northeast-2.amazonaws.com";
 
-        // 남은 imageUrls 삭제
+            // 새롭게 받아온 이미지들을 하나씩 확인해보자
+            String checkKey = imageDirName +"/";
+            for (MultipartFile newImage : newImages){
+                // 수정된 게시글의 이미지들이 기존의 이미지와 겹치는 지 확인
+                String imageName = newImage.getOriginalFilename();
+                if(imageName != null) {
+                    boolean isChecked = imageName.contains(checkKey);
+                    if (isChecked) {
+                        // 이미 S3 버킷에 저장되어 있는 이미지이면
+                        String newImageUrl = newImage.getOriginalFilename().split(checkKey)[1];
+
+                        // S3 버킷에 해당 이미지가 있는지 확인
+                        boolean isContained = imageUrls.contains(newImageUrl);
+                        if (!isContained) {
+                            // S3 버킷에도 없는 이미지 이면 저장
+                            saveImage(article, newImage, imageDirName);
+                        } else {
+
+                            // S3 버킷에 있는 이미지이면 비교대상 기존 이미지 리스트중 삭제 (또 저장안해도 되니까)
+                            imageUrls.remove(newImageUrl);
+                        }
+                    } else {
+
+                        // S3 버킷에 없는 이미지는 저장
+                        saveImage(article, newImage, imageDirName);
+                    }
+                }
+            }
+
+            // 기존 이미지 중에 새롭게 받아온 이미지들 중 없다면 다 삭제
+            if(!imageUrls.isEmpty()){
+                for(String imageUrl : imageUrls){
+                    ArticleImage articleImage = articleImageRepository.findByArticleAndImageUrl(article, imageUrl);
+                    System.out.println("imageUrl : " + imageUrl);
+                    awsS3Service.delete(articleImage.getImageUrl(), imageDirName);
+                    articleImageRepository.delete(articleImage);
+                }
+            }
+        }
     }
 
     // 게시글 이미지 삭제
-    public void deleteImage(ArticleImage articleImage, String imageUrl, String dirName){
+    public void deleteImage(List<ArticleImage> articleImages, String dirName){
         // S3 이미지 삭제 후 DB에서 이미지 삭제
-        awsS3Service.delete(imageUrl, dirName);
-        articleImageRepository.delete(articleImage);
+        for (ArticleImage articleImage : articleImages){
+            awsS3Service.delete(articleImage.getImageUrl(), dirName);
+            articleImageRepository.delete(articleImage);
+        }
+
     }
 
 

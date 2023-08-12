@@ -28,7 +28,7 @@ public class FCMNotificationService {
         Optional<Token> token = tokenRepository.findByKey(Long.toString(requestDto.getMemberId()));
 
         if(member.isPresent()) {
-            if (token.get().getFcmtoken() != null) {
+            if (token.isPresent() && token.get().getFcmtoken() != null) {
                 Notification notification = Notification.builder()
                         .setTitle(requestDto.getTitle())
                         .setBody(requestDto.getBody())

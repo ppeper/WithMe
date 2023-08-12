@@ -1,5 +1,6 @@
 package com.bonobono.backend.location.controller;
 
+import com.bonobono.backend.global.util.SecurityUtil;
 import com.bonobono.backend.location.dto.req.LocationSaveRequestDto;
 import com.bonobono.backend.location.dto.res.LocationListResponseDto;
 import com.bonobono.backend.location.dto.res.LocationSelectResponseDto;
@@ -38,7 +39,7 @@ public class LocationController {
     @Operation(summary = "장소 정보 저장")
     @PostMapping("")
     public ResponseEntity<Void> save(@RequestBody LocationSaveRequestDto requestDto){
-        locationService.save(requestDto);
+        locationService.save(SecurityUtil.getLoginMemberId(), requestDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }

@@ -14,14 +14,19 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bonobono.domain.model.NetworkResult
+import com.bonobono.domain.model.registration.LoginInput
 import com.bonobono.domain.model.registration.Register
 import com.bonobono.domain.model.registration.Role
 import com.bonobono.domain.model.registration.Token
+import com.bonobono.domain.usecase.register.GetFCMTokenUseCase
+import com.bonobono.domain.usecase.register.GetLoginInfoUseCase
 import com.bonobono.domain.usecase.register.GetMemberUseCase
 import com.bonobono.domain.usecase.register.LoginUseCase
 import com.bonobono.domain.usecase.register.MemberInfoInputUseCase
+import com.bonobono.domain.usecase.register.PutLoginInfoUseCase
 import com.bonobono.domain.usecase.register.TokenInputUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -34,7 +39,10 @@ class LoginViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
     private val tokenInputUseCase: TokenInputUseCase,
     private val memberInfoInputUseCase: MemberInfoInputUseCase,
-    private val getMemberUseCase: GetMemberUseCase
+    private val getMemberUseCase: GetMemberUseCase,
+    private val putLoginInfoUseCase: PutLoginInfoUseCase,
+    private val getLoginInfoUseCase: GetLoginInfoUseCase,
+    private val getFCMTokenUseCase: GetFCMTokenUseCase
 ) : ViewModel() {
     var username by mutableStateOf("")
         private set
@@ -50,20 +58,23 @@ class LoginViewModel @Inject constructor(
         Log.d(TAG, "updatePassword: $password")
     }
 
+    var fcmToken by mutableStateOf("")
+        private set
+    fun getFcmToken() = viewModelScope.launch {
+        fcmToken = getFCMTokenUseCase.invoke()
+        Log.d(TAG, "getFcmToken: $fcmToken")
+    }
+
     suspend fun login(): String {
-        Log.d(TAG, "doLogin: 로그인 버튼 선택")
-        val role = Role("USER")
-        val register = Register(0, "", "", password, "", listOf(role), username)
-        val result = loginUseCase.invoke(register)
-        Log.d(TAG, "login: result ${result}")
+        val loginInput = LoginInput(fcmtoken = fcmToken, username = username, password = password)
+        val result = loginUseCase.invoke(loginInput)
         return when (result) {
             is NetworkResult.Success -> {
                 // token 값 sharedpreference에 넣어주자
                 tokenInputUseCase.invoke(result.data)
-
+//                putMemberInfo()
                 "SUCCESS" // Return the login result
             }
-
             else -> {
                 "FAIL" // Return the login result
             }
@@ -83,13 +94,18 @@ class LoginViewModel @Inject constructor(
     fun updateAutoLoginState(input: Boolean) {
         Log.d(TAG, "updateAutoLoginState: $input")
         autoLoginState = input
-
-        if (autoLoginState) {
-            // 참으로 선택한 경우 자동 로그인 시켜야 하니까
-            // 여기서 memeberid 값 sharedpreference에 저장
-
-        }
     }
 
+    fun putLoginInfo() = viewModelScope.launch {
+        putLoginInfoUseCase.invoke(LoginInput(fcmtoken = fcmToken, username = username, password = password))
+    }
+
+    fun getLoginInfo() = viewModelScope.launch {
+        val result = getLoginInfoUseCase.invoke()
+        username = result.username
+        password = result.password
+        fcmToken = result.fcmtoken
+        Log.d(TAG, "getLoginInfo: $username , $password , $fcmToken")
+    }
 
 }

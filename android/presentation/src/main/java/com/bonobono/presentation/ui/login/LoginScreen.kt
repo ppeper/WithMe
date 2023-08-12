@@ -67,6 +67,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
     val snackbarHostState = remember {
         SnackbarHostState()
     }
+    viewModel.getFcmToken()
     Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) {
         Column(
             verticalArrangement = Arrangement.Center,
@@ -108,6 +109,10 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                             val result = viewModel.login()
                             if (result == "SUCCESS") {
                                 Log.d(TAG, "LoginScreen: 로그인 성공")
+                                if(viewModel.autoLoginState) {
+                                    // 자동 로그인 누른 상태 -> 저장해서 자동 로그인 시키자
+                                    viewModel.putLoginInfo()
+                                }
                                 navController.navigate("main_screen")
                             } else {
                                 Log.d(TAG, "LoginScreen: 로그인 실패")

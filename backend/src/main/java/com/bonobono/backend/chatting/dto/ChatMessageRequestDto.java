@@ -17,12 +17,12 @@ public class ChatMessageRequestDto {
     private String userName; //username;
     private String msg; //msg
     private String imageUrl; // file(BYTE형식으로 변환?)
-    private String roomNumber;
+    private int roomNumber;
 
 
     //생성자
     @Builder
-    public ChatMessageRequestDto(String userName, String sessionId, String msg, String imageUrl, String roomNumber) {
+    public ChatMessageRequestDto(String userName, String sessionId, String msg, String imageUrl, int roomNumber) {
         this.msg = msg;
         this.userName = userName;
         this.sessionId = sessionId;

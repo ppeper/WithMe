@@ -29,27 +29,12 @@ public class ChatRoomController {
     private final ChatMessageService chatMessageService;
     private final MemberRepository memberRepository;
 
-    //방이 이미 있으면 get아니면 새로 save하기
-//    @GetMapping("/{roomNumber}/{other}")
-//    public ChatRoomWithMessagesDto makeRoom(@PathVariable String roomNumber, @PathVariable String other, @AuthenticationPrincipal Member member) {
-//        Optional<ChatRoom> optionalChatRoom = chatRoomRepository.findByRoomNumber(roomNumber);
-//        if (optionalChatRoom.isPresent()) {
-//            List<ChatMessageResponseDto> chatMessage = chatMessageService.findByRoomNumber(roomNumber);
-//            ChatRoom chatRoom = optionalChatRoom.get();
-//            return new ChatRoomWithMessagesDto(chatRoom,chatMessage);
-//        }
-//        else {
-//            ChatRoomRequestDto requestDto = new ChatRoomRequestDto(other, roomNumber, member);
-//            ChatRoom newChatRoom=chatRoomService.save(requestDto);
-//            return new ChatRoomWithMessagesDto(newChatRoom, new ArrayList<>());
-//        }
-//    }
-
     /**
      * 맴버정보도 들고오기*/
-    @PostMapping("/")
+    @PostMapping("/room")
     public ResponseEntity<ChatRoomWithMessagesDto> makeRoom(@RequestBody ChatRoomRequestDto chatRoomRequestDto) {
         Optional<ChatRoom> optionalChatRoom = chatRoomRepository.findByRoomNumber(chatRoomRequestDto.getRoomNumber());
+        //고유한 값이어야 함
 
         //채팅방이 이미있으면, 반환
         if (optionalChatRoom.isPresent()) {
@@ -59,15 +44,10 @@ public class ChatRoomController {
             return ResponseEntity.ok(chatRoomWithMessagesDto);
         //없으면 새로 만들기
         } else {
-            Optional<Member> optionalMember = memberRepository.findById(chatRoomRequestDto.getMember().getId());
-            if (optionalMember.isPresent()) {
-                ChatRoomRequestDto requestDto = new ChatRoomRequestDto(chatRoomRequestDto.getOther(), chatRoomRequestDto.getRoomNumber(), optionalMember.get());
-                ChatRoom newChatRoom=chatRoomService.save(requestDto);
-                ChatRoomWithMessagesDto chatRoomWithMessagesDto = new ChatRoomWithMessagesDto(newChatRoom, new ArrayList<>());
-                return ResponseEntity.ok(chatRoomWithMessagesDto);
-            } else {
-                throw new IllegalArgumentException("사용자를 찾을 수 없습니다 memberId: " + chatRoomRequestDto.getMember().getId());
-            }
+            ChatRoomRequestDto requestDto = new ChatRoomRequestDto(chatRoomRequestDto.getNickname(), chatRoomRequestDto.getRoomNumber());
+            ChatRoom newChatRoom=chatRoomService.save(requestDto);
+            ChatRoomWithMessagesDto chatRoomWithMessagesDto = new ChatRoomWithMessagesDto(newChatRoom, new ArrayList<>());
+            return ResponseEntity.ok(chatRoomWithMessagesDto);
         }
     }
 
@@ -79,16 +59,11 @@ public class ChatRoomController {
         return ResponseEntity.ok(roomResponseDtos);
     }
 
-//    //채팅방 일부 검색으로 조회(쿼리 dsl 사용)
-//    @GetMapping("/search")
-//    public List<ChatRoomResponseDto> findByOther(@RequestParam("other") String other) {
-//        return chatRoomService.findByOther(other);
-//    }
 
     //채팅방 삭제
     //채팅방 삭제하면 채팅도 삭제되는지 확인 필요
     @DeleteMapping("/{roomNumber}")
-    public ResponseEntity<Void> DeleteChat(@PathVariable String roomNumber) {
+    public ResponseEntity<Void> DeleteChat(@PathVariable int roomNumber) {
         chatRoomService.delete(roomNumber);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

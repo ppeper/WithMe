@@ -50,7 +50,7 @@ public class SocketHandler extends TextWebSocketHandler {
                                     .msg((String) obj.get("msg"))
                                     .sessionId((String) obj.get("sessionId"))
                                     .imageUrl(null)
-                                    .roomNumber((String) obj.get("roomNumber"))
+                                    .roomNumber(Integer.parseInt((String)obj.get("roomNumber")))
                                     .build();
                             chatMessageService.save(chatMessageRequestDto);
 
@@ -111,7 +111,7 @@ public class SocketHandler extends TextWebSocketHandler {
         byteBuffer.position(0); //파일을 저장하면서 position값이 변경되었으므로 0으로 초기화한다.
         //파일쓰기가 끝나면 이미지를 발송한다.
 
-        String roomNumber = (String) session.getAttributes().get("roomNumber");
+        int roomNumber = (int) session.getAttributes().get("roomNumber");
         String userName = (String) session.getAttributes().get("userName");
         String sessionID = (String) session.getAttributes().get("sessionID");
 
@@ -147,7 +147,7 @@ public class SocketHandler extends TextWebSocketHandler {
         super.afterConnectionEstablished(session);
         boolean flag = false;
         String url = session.getUri().toString();
-        String roomNumber = url.split("/chating/")[1];
+        String roomNumber = url.split("/chat/")[1];
         int idx = rls.size(); //방의 사이즈를 조사한다.
         if(rls.size() > 0) {
             for(int i=0; i<rls.size(); i++) {

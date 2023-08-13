@@ -22,12 +22,12 @@ public class ChatMessage extends BaseTimeEntity {
     private String userName; //username;
     private String msg; //msg
     private String imageUrl;
-    private String roomNumber;
+    private int roomNumber;
     private LocalDateTime createdTime;
 
 
     @Builder //생성자 빌드
-    public ChatMessage(String msg, String imageUrl, String roomNumber, String userName, String sessionId) {
+    public ChatMessage(String msg, String imageUrl, int roomNumber, String userName, String sessionId) {
         this.msg = msg;
         this.imageUrl = imageUrl;
         this.roomNumber=roomNumber;

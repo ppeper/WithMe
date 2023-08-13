@@ -14,10 +14,7 @@ public class ChatMessageResponseDto {
     private String userName;
     private String msg;
     private String imageUrl;
-    private String roomNumber;
-    private String sessionId;
     private LocalDateTime createdDate;
-//    private LocalDateTime updatedDate;
 
 
 
@@ -25,10 +22,7 @@ public class ChatMessageResponseDto {
         this.userName = chatMessage.getUserName();
         this.msg = chatMessage.getMsg();
         this.imageUrl = chatMessage.getImageUrl();
-        this.roomNumber=chatMessage.getRoomNumber();
-        this.sessionId=chatMessage.getSessionId();
         this.createdDate=chatMessage.getCreatedTime();
-//        this.updatedDate=chatMessage.getUpdatedDate();
     }
 
 }

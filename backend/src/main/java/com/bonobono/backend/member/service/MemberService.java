@@ -243,15 +243,11 @@ public class MemberService {
     /**
      * 프로필 이미지 수정
      */
-    public ProfileImgResponseDto uploadProfileImg(Member member, MultipartFile newImage, ProfileImg oldImage, String imageDirName) {
+    public ProfileImgResponseDto uploadProfileImg(Member member, MultipartFile newImage, ProfileImg oldImage, String imageDirName) throws NullPointerException {
         String s3BaseUrl = "https://bonobono.s3.ap-northeast-2.amazonaws.com";
 
-        // oldImage가 null 이면 그냥 newImage 저장
-        if (oldImage == null) {
-            saveProfileImg(member, newImage, imageDirName);
-        }
-        // oldImage가 null이 아니면 newImage 저장 후 oldImage 삭제
-        else {
+        try {
+            // oldImage가 null이 아니면 newImage 저장 후 oldImage 삭제
             // oldImage Url 추출
             String imageUrl = oldImage.getImageUrl();
 
@@ -269,6 +265,9 @@ public class MemberService {
                 deleteProfileImg(oldImage, imageUrl, imageDirName);
                 return response;
             }
+        } catch (NullPointerException e) {
+            // oldImage가 null이면 그냥 newImage 저장
+            saveProfileImg(member, newImage, imageDirName);
         }
 
         return null;

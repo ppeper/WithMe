@@ -117,7 +117,7 @@ public class MemberController {
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/img")
     public ResponseEntity<ProfileImgResponseDto> uploadImg(
-            @RequestParam("img") MultipartFile image
+            @RequestPart("img") MultipartFile image
     ) {
         Member member = memberService.getMemberById(SecurityUtil.getLoginMemberId());
         ProfileImg oldImg = member.getProfileImg();

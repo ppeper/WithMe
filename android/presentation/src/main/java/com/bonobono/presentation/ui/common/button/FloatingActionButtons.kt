@@ -39,7 +39,7 @@ fun HomeFloatingActionButton(
 
 @Composable
 fun CommunityFloatingActionButton(
-    navController: NavHostController,
+    navController: NavController,
     item: CommunityFab
 ) {
     FloatingActionButton(

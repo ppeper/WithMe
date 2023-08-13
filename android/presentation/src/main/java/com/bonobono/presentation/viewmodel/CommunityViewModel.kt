@@ -6,9 +6,11 @@ import androidx.lifecycle.viewModelScope
 import com.bonobono.domain.model.NetworkResult
 import com.bonobono.domain.model.community.Article
 import com.bonobono.domain.model.community.Link
+import com.bonobono.domain.usecase.community.AdminCompleteUseCase
 import com.bonobono.domain.usecase.community.DeleteArticleUseCase
 import com.bonobono.domain.usecase.community.GetArticleByIdUseCase
 import com.bonobono.domain.usecase.community.GetArticleListUseCase
+import com.bonobono.domain.usecase.community.RecruitCompleteUseCase
 import com.bonobono.domain.usecase.community.UpdateArticleLikeUseCase
 import com.bonobono.domain.usecase.community.WriteArticleUseCase
 import com.naver.maps.geometry.LatLng
@@ -24,7 +26,9 @@ class CommunityViewModel @Inject constructor(
     private val getArticleById: GetArticleByIdUseCase,
     private val writeArticle: WriteArticleUseCase,
     private val updateArticleLike: UpdateArticleLikeUseCase,
-    private val deleteArticle: DeleteArticleUseCase
+    private val deleteArticle: DeleteArticleUseCase,
+    private val recruitComplete: RecruitCompleteUseCase,
+    private val adminComplete: AdminCompleteUseCase,
 ): ViewModel() {
 
     private val _articleState = MutableStateFlow<NetworkResult<List<Article>>>(NetworkResult.Loading)
@@ -41,6 +45,12 @@ class CommunityViewModel @Inject constructor(
 
     private val _deleteArticleState = MutableStateFlow<NetworkResult<Unit>>(NetworkResult.Loading)
     val deleteArticleState = _deleteArticleState.asStateFlow()
+
+    private val _recruitCompleteState = MutableStateFlow<NetworkResult<Unit>>(NetworkResult.Loading)
+    val recruitCompleteState = _recruitCompleteState.asStateFlow()
+
+    private val _adminCompleteState = MutableStateFlow<NetworkResult<Unit>>(NetworkResult.Loading)
+    val adminCompleteState = _adminCompleteState.asStateFlow()
 
     // 링크 리스트
     private val _link = mutableStateOf(Link())
@@ -76,5 +86,13 @@ class CommunityViewModel @Inject constructor(
 
     fun deleteArticle(type: String, articleId: Long) = viewModelScope.launch {
         _deleteArticleState.emit(deleteArticle.invoke(type, articleId))
+    }
+
+    fun recruitComplete(type: String, articleId: Long) = viewModelScope.launch {
+        _recruitCompleteState.emit(recruitComplete.invoke(type, articleId))
+    }
+
+    fun adminComplete(articleId: Long) = viewModelScope.launch {
+        _recruitCompleteState.emit(adminComplete.invoke(articleId))
     }
 }

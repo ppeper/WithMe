@@ -1,5 +1,5 @@
 package com.bonobono.domain.model.registration
 
-data class AuthoritySet(
+data class Authority(
     val role: String
 )

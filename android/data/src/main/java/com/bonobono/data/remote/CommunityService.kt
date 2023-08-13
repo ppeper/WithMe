@@ -47,6 +47,17 @@ interface CommunityService {
         @Path(value = "articleId") articleId: Long
     ): Response<Unit>
 
+    @PATCH("community/{type}/{articleId}/recruit-complete")
+    suspend fun recruitComplete(
+        @Path(value = "type") communityType: String,
+        @Path(value = "articleId") articleId: Long
+    )
+
+    @PATCH("community/report/{articleId}/admin-complete")
+    suspend fun adminComplete(
+        @Path(value = "articleId") articleId: Long
+    )
+
     // 게시글 수정
     @PATCH("community/{type}/{articleId}")
     suspend fun updateArticle(

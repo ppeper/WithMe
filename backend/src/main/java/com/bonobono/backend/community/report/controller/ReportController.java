@@ -72,7 +72,7 @@ public class ReportController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @Operation(summary = "신고게시판 관리자 처리 확인")
+    @Operation(summary = "신고게시판 관리자 확인 처리")
     @PatchMapping("/{reportId}/admin-complete")
     public ResponseEntity<Void> update(@PathVariable Long reportId){
         reportService.updateRecruitStatus(SecurityUtil.getLoginMemberId(), reportId);

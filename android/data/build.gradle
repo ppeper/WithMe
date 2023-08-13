@@ -40,6 +40,7 @@ android {
 dependencies {
     implementation project(':domain')
     implementation "com.google.dagger:hilt-android:2.44.2"
+    implementation 'com.google.firebase:firebase-messaging-ktx:23.2.1'
     kapt "com.google.dagger:hilt-android-compiler:2.44.2"
 
 
@@ -63,4 +64,5 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:4.9.0'
     // Data Store
     implementation "androidx.datastore:datastore-preferences:1.0.0"
+
 }

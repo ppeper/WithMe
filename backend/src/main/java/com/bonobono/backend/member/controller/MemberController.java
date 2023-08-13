@@ -2,11 +2,16 @@ package com.bonobono.backend.member.controller;
 
 import com.bonobono.backend.global.exception.AppException;
 import com.bonobono.backend.global.exception.ErrorCode;
+import com.bonobono.backend.global.util.SecurityUtil;
+import com.bonobono.backend.member.domain.Member;
+import com.bonobono.backend.member.domain.ProfileImg;
 import com.bonobono.backend.member.dto.request.*;
 import com.bonobono.backend.member.dto.response.LoginResponseDto;
 import com.bonobono.backend.member.dto.response.MemberResponseDto;
+import com.bonobono.backend.member.dto.response.ProfileImgResponseDto;
 import com.bonobono.backend.member.dto.response.TokenDto;
 import com.bonobono.backend.member.repository.MemberRepository;
+import com.bonobono.backend.member.repository.ProfileImgRepository;
 import com.bonobono.backend.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -15,16 +20,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-@Tag(name = "member", description = "사용자 API")
+@Tag(name = "member", description = "사용자")
 @RestController
 @RequestMapping("/member")
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberService memberService;
     private final MemberRepository memberRepository;
+    private final ProfileImgRepository imgRepository;
 
     @Operation(
             summary = "회원가입",
@@ -42,9 +50,9 @@ public class MemberController {
     @PostMapping("/username")
     public boolean username(@RequestBody MemberUsernameRequestDto request) {
         memberRepository.findByUsername(request.getUsername())
-            .ifPresent(member -> {
-                throw new AppException(ErrorCode.USERNAME_DUPLICATED, "이미 존재하는 아이디입니다.");
-            });
+                .ifPresent(member -> {
+                    throw new AppException(ErrorCode.USERNAME_DUPLICATED, "이미 존재하는 아이디입니다.");
+                });
 
         return true; // 중복검사 통과
     }
@@ -56,9 +64,9 @@ public class MemberController {
     @PostMapping("/nickname")
     public boolean nickname(@RequestBody MemberNicknameRequestDto request) {
         memberRepository.findByNickname(request.getNickname())
-            .ifPresent(member -> {
-                throw new AppException(ErrorCode.NICKNAME_DUPLICATED, "이미 존재하는 닉네임입니다.");
-            });
+                .ifPresent(member -> {
+                    throw new AppException(ErrorCode.NICKNAME_DUPLICATED, "이미 존재하는 닉네임입니다.");
+                });
 
         return true; // 중복검사 통과
     }
@@ -100,6 +108,29 @@ public class MemberController {
     public ResponseEntity<MemberResponseDto> updateMyInfo(@RequestBody MemberUpdateRequestDto dto) {
         memberService.updateMyInfo(dto);
         return ResponseEntity.ok(memberService.myProfile());
+    }
+
+    @Operation(
+            summary = "프로필 이미지 업로드",
+            description = ""
+    )
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/img")
+    public ResponseEntity<ProfileImgResponseDto> uploadImg(
+            @RequestParam("img") MultipartFile image
+    ) {
+        Member member = memberService.getMemberById(SecurityUtil.getLoginMemberId());
+        ProfileImg oldImg = member.getProfileImg();
+
+        String imageUrl = oldImg.getImageUrl(); // oldImg에서 URL 추출
+        String s3BaseUrl = "https://bonobono.s3.ap-northeast-2.amazonaws.com";
+
+        int index = imageUrl.indexOf(s3BaseUrl) + s3BaseUrl.length();
+        String key = imageUrl.substring(index);
+        String[] keyComponets = key.split("/");
+        String imgDirName = keyComponets[0];
+
+        return ResponseEntity.ok(memberService.uploadProfileImg(member, image, oldImg, imgDirName));
     }
 
     @Operation(

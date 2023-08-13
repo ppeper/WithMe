@@ -39,17 +39,17 @@ public class Member extends BaseTimeEntity  {
 
     private String phoneNumber;
 
-    private String profileImg;
+    @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
+    private ProfileImg profileImg;
 
     @Enumerated(EnumType.STRING)
     private Provider provider;
 
-
     @ManyToMany
     @JoinTable(
-        name = "role",
-        joinColumns = {@JoinColumn(name="member_id", referencedColumnName = "member_id")},
-        inverseJoinColumns = {@JoinColumn(name = "role", referencedColumnName = "role")})
+            name = "role",
+            joinColumns = {@JoinColumn(name="member_id", referencedColumnName = "member_id")},
+            inverseJoinColumns = {@JoinColumn(name = "role", referencedColumnName = "role")})
     private Set<Authority> role = new HashSet<>();
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL,  orphanRemoval = true)
@@ -71,6 +71,8 @@ public class Member extends BaseTimeEntity  {
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL,  orphanRemoval = true)
     private List<Reward> rewards = new ArrayList<>();
 
+
+
     public UserCharacter getMainCharacter() {
         for (UserCharacter character : this.userCharacters) {
             if (character.isMain()) {
@@ -80,12 +82,13 @@ public class Member extends BaseTimeEntity  {
         return null;
     }
     @Builder
-    public Member(String username, String password, String name, String nickname, String phoneNumber, Provider provider, Set<Authority> role) {
+    public Member(String username, String password, String name, String nickname, String phoneNumber, ProfileImg profileImg, Provider provider, Set<Authority> role) {
         this.username = username;
         this.password = password;
         this.name = name;
         this.nickname = nickname;
         this.phoneNumber = phoneNumber;
+        this.profileImg = profileImg;
         this.provider = provider;
         this.role = role;
     }

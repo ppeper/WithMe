@@ -44,6 +44,14 @@ class CommunityRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun recruitComplete(type: String, articleId: Long): NetworkResult<Unit> {
+        return handleApi { communityService.recruitComplete(type, articleId) }
+    }
+
+    override suspend fun adminComplete(articleId: Long): NetworkResult<Unit> {
+        return handleApi { communityService.adminComplete(articleId) }
+    }
+
     override suspend fun updateArticle(type: String, articleId: Long): NetworkResult<Unit> {
         return handleApi { communityService.updateArticle(type, articleId) }
     }

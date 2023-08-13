@@ -1,6 +1,5 @@
 package com.bonobono.backend.community.report.service;
 
-import com.bonobono.backend.community.article.entity.ArticleImage;
 import com.bonobono.backend.community.report.dto.req.ReportSaveRequestDto;
 import com.bonobono.backend.community.report.dto.req.ReportUpdateRequestDto;
 import com.bonobono.backend.community.report.dto.res.ReportCommentResponseDto;
@@ -90,12 +89,12 @@ public class ReportService {
         Report report = reportRepository.findById(reportId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + reportId));
         if(member.getId().equals(report.getMember().getId())) {
-            report.updateReport(requestDto.getTitle(), requestDto.getContent(), requestDto.getLatitude(), requestDto.getLongitude());
             if (newImages != null) {
-                if (newImages != null) {
+                if (!newImages.isEmpty()) {
                     List<ReportImage> oldImages = report.getImages();
                     reportImageService.updateImage(report, newImages, oldImages, imageDirName);
                 }
+                report.updateReport(requestDto.getTitle(), requestDto.getContent(), requestDto.getLatitude(), requestDto.getLongitude());
             }
         } else {
             throw new UserNotAuthorizedException("해당 멤버는 게시글 작성자가 아닙니다.");
@@ -128,9 +127,7 @@ public class ReportService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + reportId));
         if(member.getId().equals(report.getMember().getId())) {
             List<ReportImage> reportImages = report.getImages();
-            for (ReportImage reportImage : reportImages) {
-                reportImageService.deleteImage(reportImage, reportImage.getImageUrl(), imageDirName);
-            }
+            reportImageService.deleteImage(reportImages, imageDirName);
             reportRepository.delete(report);
         } else {
             throw new UserNotAuthorizedException("해당 멤버는 게시글 작성자가 아닙니다.");

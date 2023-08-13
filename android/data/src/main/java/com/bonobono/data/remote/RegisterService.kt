@@ -6,6 +6,7 @@ import com.bonobono.data.model.registration.request.TokenRequest
 import com.bonobono.data.model.registration.response.LoginResponse
 import com.bonobono.data.model.registration.response.MemberResponse
 import com.bonobono.data.model.registration.response.TokenResponse
+import com.bonobono.domain.model.registration.LoginInput
 import com.bonobono.domain.model.registration.Member
 import com.bonobono.domain.model.registration.Password
 import com.bonobono.domain.model.registration.Register
@@ -40,7 +41,7 @@ interface RegisterService {
 
     @POST("member/login")
     suspend fun login(
-        @Body register: Register
+        @Body loginInput: LoginInput
     ) : LoginResponse
 
     @POST("member/reissue")

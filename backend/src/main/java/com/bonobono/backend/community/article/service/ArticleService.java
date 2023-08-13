@@ -95,11 +95,11 @@ public class ArticleService {
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + articleId));
         if(memberId.equals(article.getMember().getId())) {
-            article.updateArticle(requestDto.getTitle(), requestDto.getContent(), requestDto.getUrlTitle(), requestDto.getUrl());
-            if (newImages != null) {
+            if (!newImages.isEmpty()) {
                 List<ArticleImage> oldImages = article.getImages();
                 articleImageService.updateImage(article, newImages, oldImages, imageDirName);
             }
+            article.updateArticle(requestDto.getTitle(), requestDto.getContent(), requestDto.getUrlTitle(), requestDto.getUrl());
         } else {
             throw new UserNotAuthorizedException("해당 멤버는 게시글 작성자가 아닙니다.");
         }
@@ -123,9 +123,8 @@ public class ArticleService {
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + articleId));
         if(memberId.equals(article.getMember().getId())) {
-            List<ArticleImage> articleImages = article.getImages();
-            for (ArticleImage articleImage : articleImages) {
-                articleImageService.deleteImage(articleImage, articleImage.getImageUrl(), imageDirName);
+            if(article.getImages() != null) {
+                articleImageService.deleteImage(article.getImages(), imageDirName);
             }
             articleRepository.delete(article);
         } else {

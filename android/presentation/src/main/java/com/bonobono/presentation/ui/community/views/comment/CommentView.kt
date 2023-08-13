@@ -59,6 +59,8 @@ fun CommentView(
     comments: Comment
 ) {
     val createDateState by rememberSaveable { mutableStateOf(DateUtils.dateToString(comments.createdDate)) }
+    val reComment by remember { mutableStateOf(comments.childComments) }
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -104,9 +106,9 @@ fun CommentView(
             )
             CommentRow(type = type, articleId = articleId, comments = comments, focusRequester = focusRequester)
             // 대댓글 리스트
-            if (comments.childComments.isNotEmpty()) {
+            if (reComment.isNotEmpty()) {
                 Log.d("TEST", "CommentView: 대댓글 다시 부르기")
-                comments.childComments.forEach { reComment ->
+                reComment.forEach { reComment ->
                     CommentView(type = type, articleId = articleId, comments = reComment, focusRequester = focusRequester)
                 }
             }

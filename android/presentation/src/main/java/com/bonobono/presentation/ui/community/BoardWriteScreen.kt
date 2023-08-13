@@ -17,6 +17,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,11 +42,12 @@ import com.bonobono.domain.model.NetworkResult
 import com.bonobono.domain.model.community.Article
 import com.bonobono.presentation.ui.CommunityFab
 import com.bonobono.presentation.ui.NavigationRouteName
+import com.bonobono.presentation.ui.NavigationRouteName.COMMUNITY_REPORT
 import com.bonobono.presentation.ui.common.CheckCountDialog
-import com.bonobono.presentation.ui.common.LoadingView
 import com.bonobono.presentation.ui.community.util.routeMapper
 import com.bonobono.presentation.ui.community.util.textMapper
 import com.bonobono.presentation.ui.community.views.board.BoardWriteBottomView
+import com.bonobono.presentation.ui.community.views.board.ReportDropDown
 import com.bonobono.presentation.ui.community.views.board.TopContentWrite
 import com.bonobono.presentation.ui.community.views.gallery.PhotoSelectedListView
 import com.bonobono.presentation.ui.community.views.link.LinkView
@@ -56,6 +58,7 @@ import com.bonobono.presentation.utils.Converter
 import com.bonobono.presentation.utils.PermissionUtils.GALLERY_PERMISSIONS
 import com.bonobono.presentation.utils.PermissionUtils.LOCATION_PERMISSIONS
 import com.bonobono.presentation.viewmodel.CommunityViewModel
+import com.bonobono.presentation.viewmodel.MapViewModel
 import com.bonobono.presentation.viewmodel.PhotoViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
@@ -67,7 +70,8 @@ fun BoardWriteScreen(
     type: String,
     navController: NavController,
     photoViewModel: PhotoViewModel = hiltViewModel(),
-    communityViewModel: CommunityViewModel = hiltViewModel()
+    communityViewModel: CommunityViewModel = hiltViewModel(),
+    mapViewModel: MapViewModel = hiltViewModel()
 ) {
     val route = navController.currentDestination?.route ?: CommunityFab.FREE.route
     val context = LocalContext.current
@@ -75,11 +79,17 @@ fun BoardWriteScreen(
     var showDialog by remember { mutableStateOf(false) }
     var titleTextState by rememberSaveable { mutableStateOf("") }
     var contentTextState by rememberSaveable { mutableStateOf("") }
+    val selectedOcean by mapViewModel.selectedLocation.collectAsStateWithLifecycle()
+
     val previousCount = photoViewModel.selectedPhoto.size
     val writeArticleState by communityViewModel.writeArticleState.collectAsStateWithLifecycle()
+    // 신고 게시판
     val mapState by communityViewModel.mapState
-    var isLoading by remember { mutableStateOf(false) }
+    val locations by mapViewModel.locations.collectAsState()
 
+    LaunchedEffect(Unit) {
+        mapViewModel.getLocations()
+    }
     val galleryPermission =
         rememberMultiplePermissionsState(permissions = GALLERY_PERMISSIONS)
 
@@ -104,8 +114,15 @@ fun BoardWriteScreen(
             TopContentWrite(
                 title = "글 작성",
                 navController = navController,
-                completeButtonState = titleTextState.isNotBlank() && contentTextState.isNotBlank(),
-                onCompleteClick = { /* TODO("서버로 게시글 등록") */
+                completeButtonState =
+                // 신고 게시판은 LocationId 값도 필요
+                if (type == COMMUNITY_REPORT) {
+                    titleTextState.isNotBlank() && contentTextState.isNotBlank() && selectedOcean != null && mapState != null
+                } else {
+                    titleTextState.isNotBlank() && contentTextState.isNotBlank()
+                }
+                ,
+                onCompleteClick = {
                     val link = communityViewModel.link.value
                     // 갤러리 이미지 목록 Real Path로 변경
                     var article = Article(
@@ -120,6 +137,7 @@ fun BoardWriteScreen(
                     }
                     mapState?.let {
                         article = article.copy(
+                            locationId = selectedOcean?.id,
                             latitude = it.latitude,
                             longitude = it.longitude
                         )
@@ -127,9 +145,8 @@ fun BoardWriteScreen(
                     val photoList = photoViewModel.selectedPhoto.mapNotNull {
                         Converter.getRealPathFromUriOrNull(context, Uri.parse(it.url))
                     }.ifEmpty { null }
-                    Log.d("TEST", "BoardWriteScreen(photoList): $photoList")
-                    communityViewModel.writeArticle(type, photoList, article = article)
                     Log.d("TEST", "BoardWriteScreen(article): $article")
+                    communityViewModel.writeArticle(type, photoList, article = article)
                 }
             )
         },
@@ -234,7 +251,10 @@ fun BoardWriteScreen(
                     // 커뮤니티 별 추가 UI
                     if (route == CommunityFab.WITH.route) {
                         LinkView()
-                    } else  {
+                    }
+                    if (route == CommunityFab.REPORT.route) {
+                        // 현재 해변 선택
+                        ReportDropDown(locations, mapViewModel = mapViewModel)
                         mapState?.let {
                             SelectedMapView(mapState = it) {
                                 communityViewModel.removeMapPosition()

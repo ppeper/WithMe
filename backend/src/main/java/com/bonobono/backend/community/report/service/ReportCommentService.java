@@ -6,6 +6,8 @@ import com.bonobono.backend.community.report.entity.Report;
 import com.bonobono.backend.community.report.entity.ReportComment;
 import com.bonobono.backend.community.report.repository.ReportCommentRepository;
 import com.bonobono.backend.community.report.repository.ReportRepository;
+import com.bonobono.backend.fcm.dto.FCMNotificationRequestDto;
+import com.bonobono.backend.fcm.service.FCMNotificationService;
 import com.bonobono.backend.global.exception.UserNotAuthorizedException;
 import com.bonobono.backend.member.domain.Member;
 import com.bonobono.backend.member.domain.enumtype.Role;
@@ -27,6 +29,8 @@ public class ReportCommentService {
 
     private final MemberRepository memberRepository;
 
+    private final FCMNotificationService fcmNotificationService;
+
     // 신고게시글 댓글, 대댓글 작성하기
     @Transactional
     public ReportCommentResponseDto save(Long memberId, Long reportId, ReportCommentRequestDto requestDto) {
@@ -36,7 +40,10 @@ public class ReportCommentService {
         Report report = reportRepository.findById(reportId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + reportId));
 
-        if (member.getId() != report.getMember().getId() || !member.getRole().stream().anyMatch(authority -> authority.getRole().equals(Role.ADMIN))) {
+        boolean isAuthor = member.getId().equals(report.getMember().getId());
+        boolean isAdmin = member.getRole().stream().anyMatch(authority -> authority.getRole().equals(Role.ADMIN.toString()));
+
+        if (!isAuthor && !isAdmin) {
             throw new UserNotAuthorizedException("해당 멤버는 게시글 작성자 또는 관리자가 아니기에 댓글을 작성할 수 없습니다.");
         }
 
@@ -49,6 +56,15 @@ public class ReportCommentService {
         if (parentComment != null) {
             parentComment.addChildComment(reportComment);
         }
+
+        FCMNotificationRequestDto fcmNotificationRequestDto = FCMNotificationRequestDto.builder()
+                .memberId(report.getMember().getId())
+                .title("게시물에 댓글이 작성되었습니다.")
+                .body(requestDto.getContent())
+                .build();
+
+        fcmNotificationService.sendNotificationByToken(fcmNotificationRequestDto);
+
         return new ReportCommentResponseDto(reportComment, member);
     }
 
@@ -73,7 +89,7 @@ public class ReportCommentService {
         }
         ReportComment reportComment = reportCommentRepository.findById(commentId)
                 .orElseThrow(()-> new IllegalArgumentException("해당 댓글이 없습니다. id=" + commentId));
-        if(member.getId() == reportComment.getMember().getId()) {
+        if(member.getId().equals(reportComment.getMember().getId())) {
             reportComment.updateComment(requestDto.getContent());
         } else {
             throw new UserNotAuthorizedException("해당 유저는 댓글 작성자가 아닙니다.");
@@ -91,7 +107,7 @@ public class ReportCommentService {
         }
         ReportComment reportComment = reportCommentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 없습니다. id=" + reportId));
-        if(member.getId() == reportComment.getMember().getId()) {
+        if(member.getId().equals(reportComment.getMember().getId())) {
             reportCommentRepository.delete(reportComment);
         } else {
             throw new UserNotAuthorizedException("해당 멤버는 댓글 작성자가 아닙니다.");

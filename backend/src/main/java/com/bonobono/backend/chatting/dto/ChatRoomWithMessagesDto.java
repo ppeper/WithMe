@@ -14,12 +14,14 @@ import java.util.List;
 public class ChatRoomWithMessagesDto {
     private String nickname;
     private int roomNumber;
-    private ProfileImg profileImg;
+    private String profileImgName;
+    private String profileImgUrl;
     private List<ChatMessageResponseDto> messages;
 
     public ChatRoomWithMessagesDto(ChatRoom chatRoom, List<ChatMessageResponseDto> messages) {
         this.nickname = chatRoom.getOther().getNickname();
-        this.profileImg= chatRoom.getOther().getProfileImg();
+        this.profileImgName= chatRoom.getOther().getProfileImg().getImageName();
+        this.profileImgUrl = chatRoom.getOther().getProfileImg().getImageUrl();
         this.roomNumber = chatRoom.getRoomNumber();
         this.messages = messages;
     }

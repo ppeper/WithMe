@@ -5,22 +5,27 @@ import com.bonobono.backend.character.domain.OurCharacter;
 import com.bonobono.backend.character.domain.UserCharacter;
 import com.bonobono.backend.character.repository.OurCharacterRepository;
 import com.bonobono.backend.character.repository.UserCharacterRepository;
+import com.bonobono.backend.global.service.AwsS3Service;
 import com.bonobono.backend.global.util.SecurityUtil;
 import com.bonobono.backend.member.domain.Authority;
 import com.bonobono.backend.member.domain.Member;
+import com.bonobono.backend.member.domain.ProfileImg;
 import com.bonobono.backend.member.domain.Token;
 import com.bonobono.backend.member.domain.enumtype.Role;
 import com.bonobono.backend.member.dto.request.*;
 import com.bonobono.backend.member.dto.response.LoginResponseDto;
 import com.bonobono.backend.member.dto.response.MemberResponseDto;
+import com.bonobono.backend.member.dto.response.ProfileImgResponseDto;
 import com.bonobono.backend.member.dto.response.TokenDto;
 import com.bonobono.backend.global.exception.AppException;
 import com.bonobono.backend.global.exception.ErrorCode;
 import com.bonobono.backend.member.repository.AuthorityRepository;
 import com.bonobono.backend.member.repository.MemberRepository;
+import com.bonobono.backend.member.repository.ProfileImgRepository;
 import com.bonobono.backend.member.repository.TokenRepository;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,6 +34,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import org.webjars.NotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -44,6 +51,23 @@ public class MemberService {
     private final TokenRepository tokenRepository;
     private final UserCharacterRepository userCharacterRepository;
     private final OurCharacterRepository ourCharacterRepository;
+    private final ProfileImgRepository imgRepository;
+    private final AwsS3Service awsS3Service;
+
+    /**
+     * 현재 로그인한 사용자 조회
+     */
+    public Member getMemberById(Long memberId) {
+        Optional<Member> memberOptional = memberRepository.findById(memberId);
+
+        if (memberOptional.isPresent()) {
+            Member member = memberOptional.get();
+            return member;
+        } else {
+            throw new NotFoundException("해당 멤버를 찾을 수 없습니다.");
+        }
+    }
+
     /**
      * 회원가입
      */
@@ -51,19 +75,19 @@ public class MemberService {
     public MemberResponseDto signup(MemberRequestDto request) {
         // 아이디 중복 검증
         memberRepository.findByUsername(request.getUsername())
-            .ifPresent(member -> {
-                throw new AppException(ErrorCode.USERNAME_DUPLICATED, "이미 존재하는 아이디입니다.");
-            });
-        
+                .ifPresent(member -> {
+                    throw new AppException(ErrorCode.USERNAME_DUPLICATED, "이미 존재하는 아이디입니다.");
+                });
+
         // 닉네임 중복 검증
         memberRepository.findByNickname(request.getNickname())
-            .ifPresent(member -> {
-                throw new AppException(ErrorCode.NICKNAME_DUPLICATED, "이미 존재하는 닉네임입니다.");
-            });
+                .ifPresent(member -> {
+                    throw new AppException(ErrorCode.NICKNAME_DUPLICATED, "이미 존재하는 닉네임입니다.");
+                });
 
         Authority authority = authorityRepository
-            .findByRole(Role.USER)
-            .orElseThrow(() -> new RuntimeException("권한 정보가 없습니다."));
+                .findByRole(Role.USER)
+                .orElseThrow(() -> new RuntimeException("권한 정보가 없습니다."));
 
         Set<Authority> set = new HashSet<>();
         set.add(authority);
@@ -95,10 +119,10 @@ public class MemberService {
     public LoginResponseDto login(MemberLoginRequestDto request) {
         // 아이디가 틀렸을 때
         Member member = memberRepository.findByUsername(request.getUsername())
-            .orElseThrow(() -> {
-                throw new AppException(ErrorCode.USERNAME_NOTFOUND, "존재하지 않는 아이디입니다.");
-            });
-        
+                .orElseThrow(() -> {
+                    throw new AppException(ErrorCode.USERNAME_NOTFOUND, "존재하지 않는 아이디입니다.");
+                });
+
         // 비밀번호를 틀렸을 때
         if (!bCryptPasswordEncoder.matches(request.getPassword(), member.getPassword())) {
             throw new AppException(ErrorCode.INVALID_PASSWORD, "잘못된 비밀번호입니다.");
@@ -119,10 +143,10 @@ public class MemberService {
 
         // refreshToken 저장
         Token refreshToken = Token.builder()
-            .key(authentication.getName())
-            .value(tokenDto.getRefreshToken())
-            .fcmtoken(request.getFcmtoken())
-            .build();
+                .key(authentication.getName())
+                .value(tokenDto.getRefreshToken())
+                .fcmtoken(request.getFcmtoken())
+                .build();
 
         tokenRepository.save(refreshToken);
 
@@ -144,7 +168,7 @@ public class MemberService {
 
         // DB에서 member_id를 기반으로 Refresh Token 값 가져옴
         Token refreshToken = tokenRepository.findByKey(authentication.getName())
-            .orElseThrow(() -> new RuntimeException("로그아웃 된 사용자입니다."));
+                .orElseThrow(() -> new RuntimeException("로그아웃 된 사용자입니다."));
 
         // refresh token이 다르면
         if (!refreshToken.getValue().equals(request.getRefreshToken())) {
@@ -194,6 +218,70 @@ public class MemberService {
                 .orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다."));
 
         member.changePassword(request, bCryptPasswordEncoder);
+    }
+
+    /**
+     * 프로필 이미지 저장
+     */
+    public ProfileImgResponseDto saveProfileImg(Member member, MultipartFile img, String imageDirName) {
+        String imageUrl = awsS3Service.upload(img, imageDirName).getPath();
+        ProfileImgRequestDto request = ProfileImgRequestDto.builder()
+                .imgName(img.getOriginalFilename())
+                .imgUrl(imageUrl)
+                .build();
+        ProfileImg profileImg = request.toEntity(member);
+        imgRepository.save(profileImg);
+
+        ProfileImgResponseDto response = ProfileImgResponseDto.builder()
+                .memberId(member.getId())
+                .img(request)
+                .build();
+
+        return response;
+    }
+
+    /**
+     * 프로필 이미지 수정
+     */
+    public ProfileImgResponseDto uploadProfileImg(Member member, MultipartFile newImage, ProfileImg oldImage, String imageDirName) {
+        String s3BaseUrl = "https://bonobono.s3.ap-northeast-2.amazonaws.com";
+
+        // oldImage가 null 이면 그냥 newImage 저장
+        if (oldImage == null) {
+            saveProfileImg(member, newImage, imageDirName);
+        }
+        // oldImage가 null이 아니면 newImage 저장 후 oldImage 삭제
+        else {
+            // oldImage Url 추출
+            String imageUrl = oldImage.getImageUrl();
+
+            boolean isChecked = newImage.getOriginalFilename().contains(s3BaseUrl);
+            if(isChecked) {
+                String newImageUrl = newImage.getOriginalFilename().split(imageDirName + "/")[1];
+                boolean isSame = imageUrl.contains(newImageUrl);
+                if (!isSame) {
+                    ProfileImgResponseDto response = saveProfileImg(member, newImage, imageDirName);
+                    deleteProfileImg(oldImage, imageUrl, imageDirName);
+                    return response;
+                }
+            } else {
+                ProfileImgResponseDto response = saveProfileImg(member, newImage, imageDirName);
+                deleteProfileImg(oldImage, imageUrl, imageDirName);
+                return response;
+            }
+        }
+
+        return null;
+
+    }
+
+    /**
+     * 프로필 이미지 삭제
+     */
+    public void deleteProfileImg(ProfileImg profileImg, String imageUrl, String dirName) {
+        // S3 이미지 삭제 후 DB에서 이미지 삭제
+        awsS3Service.delete(imageUrl, dirName);
+        imgRepository.delete(profileImg);
     }
 
     /**

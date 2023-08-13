@@ -34,7 +34,7 @@ public class ArticleNoticeResponseDto {
         this.content = entity.getContent();
         this.memberId = entity.getMember().getId();
         this.nickname = entity.getMember().getNickname();
-        this.profileImg = entity.getMember().getProfileImg();
+        this.profileImg = entity.getMember().getProfileImg().getImageUrl();
         this.views = entity.getViews();
         this.urlTitle = entity.getUrlTitle();
         this.url = entity.getUrl();

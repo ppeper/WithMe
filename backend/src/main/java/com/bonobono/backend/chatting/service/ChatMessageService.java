@@ -30,7 +30,7 @@ public class ChatMessageService {
     }
 
     @Transactional
-    public List<ChatMessageResponseDto> findByRoomNumber(final String roomNumber) {
+    public List<ChatMessageResponseDto> findByRoomNumber(final int roomNumber) {
         List<ChatMessage> chatMessage = this.chatMessageRepository.findByRoomNumber(roomNumber);
         List<ChatMessageResponseDto> dtolist = new ArrayList<>();
         for (ChatMessage chatMessage1 : chatMessage) {

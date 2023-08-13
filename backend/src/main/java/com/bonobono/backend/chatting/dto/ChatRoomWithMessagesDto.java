@@ -11,16 +11,12 @@ import java.util.List;
 @Getter
 @Setter
 public class ChatRoomWithMessagesDto {
-    private Long id;
-    private Member member;
-    private Member other;
-    private String roomNumber;
+    private String nickname;
+    private int roomNumber;
     private List<ChatMessageResponseDto> messages;
 
     public ChatRoomWithMessagesDto(ChatRoom chatRoom, List<ChatMessageResponseDto> messages) {
-        this.id = chatRoom.getId();
-        this.member = chatRoom.getMember();
-        this.other = chatRoom.getOther();
+        this.nickname = chatRoom.getOther().getNickname();
         this.roomNumber = chatRoom.getRoomNumber();
         this.messages = messages;
     }

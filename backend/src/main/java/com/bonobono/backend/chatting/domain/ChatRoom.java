@@ -25,10 +25,10 @@ public class ChatRoom extends BaseTimeEntity { //생성시각 상속
     @JoinColumn(name="other_id")
     private Member other; //대화상대
 
-    private String roomNumber; //메시지의 room번호와 연결위해(클라이언트에게 받아야함..)
+    private int roomNumber; //메시지의 room번호와 연결위해(클라이언트에게 받아야함..)
 
     @Builder
-    public ChatRoom(Member other, String roomNumber, Member member) {
+    public ChatRoom(Member other, int roomNumber, Member member) {
         this.other=other;
         this.roomNumber=roomNumber;
         this.member=member;

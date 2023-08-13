@@ -1,5 +1,6 @@
 package com.bonobono.backend.chatting.dto;
 
+import com.bonobono.backend.chatting.domain.ChatMessage;
 import com.bonobono.backend.chatting.domain.ChatRoom;
 import com.bonobono.backend.member.domain.Member;
 import com.bonobono.backend.member.domain.ProfileImg;
@@ -16,16 +17,14 @@ import java.util.stream.Collectors;
 public class ChatRoomResponseDto {
     private int roomNumber;
     private String nickname;
-    private String createdDate;
-    private ProfileImg profileImg;
+    private String profileImgName;
+    private String profileImgUrl;
 
     public ChatRoomResponseDto(ChatRoom chatRoom) {
         this.roomNumber = chatRoom.getRoomNumber();
         this.nickname = chatRoom.getOther().getNickname();
-        this.profileImg=chatRoom.getOther().getProfileImg();
-        this.createdDate = chatRoom.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
-//        this.updatedDate = chatRoom.getModifiedDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
-//        this.messages = chatRoom.getChatMessageList().stream().map(ChatMessageResponseDto::new).collect(Collectors.toList());
+        this.profileImgName=chatRoom.getOther().getProfileImg().getImageName();
+        this.profileImgUrl=chatRoom.getOther().getProfileImg().getImageUrl();
     }
 
 }

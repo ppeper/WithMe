@@ -14,7 +14,7 @@ cloud:
 spring:
   datasource:
     hikari:
-      maximum-pool-size: 3
+      maximum-pool-size: 6
     url: jdbc:mariadb://stg-yswa-kr-practice-db-master.mariadb.database.azure.com:3306/S09P12D105?useUnicode=true&characterEncoindg=utf8&serverTimezone=Asia/Seoul
     driver-class-name: org.mariadb.jdbc.Driver
     username: S09P12D105

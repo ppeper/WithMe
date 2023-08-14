@@ -15,6 +15,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 
@@ -61,8 +63,10 @@ public class AwsS3Service {
 
     public void delete(String imageUrl, String dirName) {
         try {
-            String keyName = dirName + "/" + imageUrl.split("/")[2];
+            String keyName = URLDecoder.decode(dirName + "/" + imageUrl.split("/")[2], StandardCharsets.UTF_8);
+            System.out.println(keyName);
             boolean isFileExist = amazonS3.doesObjectExist(bucket, keyName);
+            System.out.println(isFileExist);
             if (isFileExist) {
                 amazonS3.deleteObject(bucket, keyName);
             } else {

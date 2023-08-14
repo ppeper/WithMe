@@ -29,16 +29,19 @@ public class Campaign {
     @Column(nullable = false)
     private String authority;
 
+    private String url;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="location_id", nullable = false)
     private Location location;
 
     @Builder
-    public Campaign(String name, LocalDateTime startDate, LocalDateTime endDate, String authority, Location location){
+    public Campaign(String name, LocalDateTime startDate, LocalDateTime endDate, String authority, String url, Location location){
         this.name = name;
         this.startDate = startDate;
         this.endDate = endDate;
         this.authority = authority;
+        this.url = url;
         this.location = location;
     }
 

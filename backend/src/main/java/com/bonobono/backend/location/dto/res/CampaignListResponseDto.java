@@ -20,6 +20,8 @@ public class CampaignListResponseDto {
 
     private String authority;
 
+    private String url;
+
     private String locationName;
 
     public CampaignListResponseDto(Campaign entity){
@@ -28,6 +30,7 @@ public class CampaignListResponseDto {
         this.endDate = entity.getEndDate();
         this.completionStatus = entity.isCompletionStatus();
         this.authority = entity.getAuthority();
+        this.url = entity.getUrl();
         this.locationName = entity.getLocation().getName();
 
     }

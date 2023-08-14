@@ -17,6 +17,7 @@ public class CampaignSaveRequestDto {
     private LocalDateTime endDate;
     private boolean completionStatus;
     private String authority;
+    private String url;
     private Long locationId;
 
     @Builder
@@ -25,12 +26,14 @@ public class CampaignSaveRequestDto {
                                   LocalDateTime endDate,
                                   boolean completionStatus,
                                   String authority,
+                                  String url,
                                   Long locationId){
         this.name = name;
         this.startDate = startDate;
         this.endDate = endDate;
         this.completionStatus = completionStatus;
-        this.authority =authority;
+        this.authority = authority;
+        this.url = url;
         this.locationId = locationId;
     }
 
@@ -40,6 +43,7 @@ public class CampaignSaveRequestDto {
                 .startDate(startDate)
                 .endDate(endDate)
                 .authority(authority)
+                .url(url)
                 .location(location)
                 .build();
     }

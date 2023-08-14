@@ -76,7 +76,7 @@ public class UserCharacterService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(()-> new IllegalArgumentException("해당 멤버가 없습니다. id =" + memberId));
 
-        return ourCharacterRepository.findNotLinkedOurCharactersByMember(member.getId())
+        return ourCharacterRepository.findNotLinkedOurCharactersByMemberAndLevel(member.getId())
                 .stream()
                 .map(OurCharacterResponseDto::new)
                 .collect(Collectors.toList());

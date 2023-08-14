@@ -42,17 +42,21 @@ public class OurCharacterService {
         List<OurChacracterWithSeaResponseDto> bound = new ArrayList<>();
         if (!locationOurCharacterList.isEmpty()) {
             //리스트의 캐릭터의 하나하나의 위치를, 그 해변의 위경도를 중심으로 랜덤으로 지정해서  OurChacracterWithSeaResponseDto에 넣는다
-            double leftLatitude = location.getLeftLatitude();
-            double rightLatitude = location.getRightLatitude();
+            double incrementLatitude=0.0001;
+            double incrementLogitude=0.001;
+
             double leftLongtitude = location.getLeftLongitude();
             double rightLongtitude = location.getRightLongitude();
+            double upperLatitude = location.getUpperLatitude();
+            double lowerLatitude = location.getLowerLatitude();
+
 
             Random random = new Random();
 
             //캐릭터 id, 위도, 경도를 dto에 저장
             for (LocationOurCharacter locationOurCharacter : locationOurCharacterList) {
-                double randomLatitude = leftLatitude + (rightLatitude - leftLatitude) * random.nextDouble();
-                double randomLongitude = leftLongtitude + (rightLongtitude - leftLongtitude) * random.nextDouble();
+                double randomLatitude = lowerLatitude + (upperLatitude - lowerLatitude-incrementLatitude) * random.nextDouble()+incrementLatitude*random.nextDouble();
+                double randomLongitude = leftLongtitude + (rightLongtitude - leftLongtitude-incrementLogitude) * random.nextDouble()+incrementLogitude*random.nextDouble();
 
                 bound.add(new OurChacracterWithSeaResponseDto(randomLatitude, randomLongitude, locationOurCharacter));
             }

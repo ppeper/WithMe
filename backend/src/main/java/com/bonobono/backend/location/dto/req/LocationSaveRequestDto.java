@@ -12,26 +12,27 @@ public class LocationSaveRequestDto {
     private String name;
     private double centerLatitude;
     private double centerLongitude;
-    private double leftLatitude;
+//    private double leftLatitude;
     private double leftLongitude;
-    private double rightLatitude;
+    private double upperLatitude;
     private double rightLongitude;
+    private double lowerLatitude;
 
 
     @Builder
     public LocationSaveRequestDto(String name,
                                   double centerLatitude,
                                   double centerLongitude,
-                                  double leftLatitude,
+                                  double upperLatitude,
                                   double leftLongitude,
-                                  double rightLatitude,
+                                  double lowerLatitude,
                                   double rightLongitude) {
         this.name = name;
         this.centerLatitude = centerLatitude;
         this.centerLongitude = centerLongitude;
-        this.leftLatitude = leftLatitude;
+        this.upperLatitude = upperLatitude;
         this.leftLongitude = leftLongitude;
-        this.rightLatitude = rightLatitude;
+        this.lowerLatitude = lowerLatitude;
         this.rightLongitude = rightLongitude;
     }
 
@@ -40,9 +41,9 @@ public class LocationSaveRequestDto {
                 .name(name)
                 .centerLatitude(centerLatitude)
                 .centerLongitude(centerLongitude)
-                .leftLatitude(leftLatitude)
+                .lowerLatitude(lowerLatitude)
                 .leftLongitude(leftLongitude)
-                .rightLatitude(rightLatitude)
+                .upperLatitude(upperLatitude)
                 .rightLongitude(rightLongitude)
                 .build();
     }

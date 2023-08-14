@@ -5,14 +5,12 @@ import com.bonobono.backend.community.article.enumclass.ArticleType;
 import com.bonobono.backend.member.domain.Member;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
-@Setter
 @NoArgsConstructor
 public class ArticleDetailResponseDto {
 

@@ -80,13 +80,11 @@ public class ArticleService {
 
     // 공지사항 조회
     @Transactional
-    public ArticleNoticeResponseDto findNoticeById(ArticleType type, Long memberId, Long articleId){
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 멤버가 없습니다. id =" + memberId));
+    public ArticleNoticeResponseDto findNoticeById(ArticleType type, Long articleId){
         Article article = articleRepository.findByIdAndType(articleId, type)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id =" + articleId));
         articleRepository.updateView(articleId);
-        return new ArticleNoticeResponseDto(article, member);
+        return new ArticleNoticeResponseDto(article);
     }
 
     // 게시글 특정 글 수정

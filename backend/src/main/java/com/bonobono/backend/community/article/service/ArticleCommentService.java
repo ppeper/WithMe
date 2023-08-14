@@ -48,14 +48,15 @@ public class ArticleCommentService {
             parentComment.addChildComment(articleComment);
         }
 
-        FCMNotificationRequestDto fcmNotificationRequestDto = FCMNotificationRequestDto.builder()
-                .memberId(article.getMember().getId())
-                .title("게시물에 댓글이 작성되었습니다.")
-                .body(requestDto.getContent())
-                .build();
+        if (!memberId.equals(article.getMember().getId())){
+            FCMNotificationRequestDto fcmNotificationRequestDto = FCMNotificationRequestDto.builder()
+                    .memberId(article.getMember().getId())
+                    .title("게시물에 댓글이 작성되었습니다.")
+                    .body(requestDto.getContent())
+                    .build();
 
-        fcmNotificationService.sendNotificationByToken(fcmNotificationRequestDto);
-
+            fcmNotificationService.sendNotificationByToken(fcmNotificationRequestDto);
+        }
         return new ArticleCommentResponseDto(articleComment, member);
     }
 

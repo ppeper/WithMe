@@ -3,6 +3,7 @@ package com.bonobono.presentation.ui.common.topbar.utils
 import com.bonobono.presentation.ui.BoardDetailNav
 import com.bonobono.presentation.ui.NavigationRouteName
 import com.bonobono.presentation.ui.common.topbar.screen.BoardDetailScreen
+import com.bonobono.presentation.ui.common.topbar.screen.ChattingScreen
 import com.bonobono.presentation.ui.common.topbar.screen.CommunityFreeScreen
 import com.bonobono.presentation.ui.common.topbar.screen.MissionScreen
 import com.bonobono.presentation.ui.common.topbar.screen.CommunityListScreen
@@ -34,6 +35,7 @@ fun getScreen(route: String?): Screen? = when (route) {
     NavigationRouteName.MISSION -> MissionScreen
     NavigationRouteName.ENCYCLOPEDIA -> EncyclopediaScreen
     NavigationRouteName.JOIN -> JoinScreen
+    NavigationRouteName.MAIN_CHATTING -> ChattingScreen
     ManyOptionsRoute -> ManyOptionsScreen
     else -> null
 }

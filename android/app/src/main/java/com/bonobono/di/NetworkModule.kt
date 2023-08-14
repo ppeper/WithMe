@@ -4,6 +4,7 @@ import com.bonobono.BuildConfig
 import com.bonobono.data.interceptor.XAccessTokenInterceptor
 import com.bonobono.data.local.PreferenceDataSource
 import com.bonobono.data.remote.CharacterService
+import com.bonobono.data.remote.ChatService
 import com.bonobono.data.remote.CommunityService
 import com.bonobono.data.remote.MapService
 import com.bonobono.data.remote.MissionService
@@ -30,13 +31,13 @@ object NetworkModule {
         if (BuildConfig.DEBUG) {
             OkHttpClient.Builder()
                 .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-                .addNetworkInterceptor(xAccessTokenInterceptor) // JWT 자동 헤더 전송
+                .addInterceptor(xAccessTokenInterceptor) // JWT 자동 헤더 전송
                 .build()
         } else {
             OkHttpClient.Builder()
                 .readTimeout(5000, TimeUnit.MILLISECONDS)
                 .connectTimeout(5000, TimeUnit.MILLISECONDS)
-                .addNetworkInterceptor(xAccessTokenInterceptor) // JWT 자동 헤더 전송
+                .addInterceptor(xAccessTokenInterceptor) // JWT 자동 헤더 전송
                 .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build()
         }
@@ -90,4 +91,13 @@ object NetworkModule {
             .build()
             .create(MapService::class.java)
 
+    @Singleton
+    @Provides
+    fun provideChatService(okHttpClient: OkHttpClient): ChatService =
+        Retrofit.Builder()
+            .baseUrl(BuildConfig.API_KEY)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
+            .build()
+            .create(ChatService::class.java)
 }

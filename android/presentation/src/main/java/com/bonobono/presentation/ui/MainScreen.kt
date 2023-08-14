@@ -36,6 +36,7 @@ import com.bonobono.presentation.ui.NavigationRouteName.COMMUNITY_GRAPH
 import com.bonobono.presentation.ui.NavigationRouteName.COMMUNITY_REPORT
 import com.bonobono.presentation.ui.NavigationRouteName.COMMUNITY_WITH
 import com.bonobono.presentation.ui.NavigationRouteName.MAIN_COMMUNITY
+import com.bonobono.presentation.ui.chatting.ChattingRoomScreen
 import com.bonobono.presentation.ui.chatting.MainChattingScreen
 import com.bonobono.presentation.ui.common.button.CommunityFloatingActionButton
 import com.bonobono.presentation.ui.common.button.HomeFloatingActionButton
@@ -402,6 +403,16 @@ fun MainNavigationScreen(
             deepLinks = QuizNav.deepLinks
         ) {
             GameScreen(navController)
+        }
+
+        composable(
+            route = "${ChattingEditNav.route}/{nickname}",
+            deepLinks = ChattingEditNav.deepLinks
+        ) {
+            val nickname = it.arguments?.getString("nickname")
+            if(nickname != null) {
+                ChattingRoomScreen(navController = navController, roomTitle = nickname)
+            }
         }
     }
 }

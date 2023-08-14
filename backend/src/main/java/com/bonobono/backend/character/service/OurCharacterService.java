@@ -6,6 +6,7 @@ import com.bonobono.backend.character.dto.catchCharacter.OurChacracterWithSeaRes
 import com.bonobono.backend.character.repository.LocationOurCharacterRepository;
 import com.bonobono.backend.dailymission.repository.OXQuizProblemRepository;
 import com.bonobono.backend.global.exception.LocationOurChracterNotFoundException;
+import com.bonobono.backend.global.util.SecurityUtil;
 import com.bonobono.backend.location.entity.Location;
 import com.bonobono.backend.location.repository.LocationRepository;
 import com.bonobono.backend.member.domain.Member;
@@ -29,8 +30,9 @@ public class OurCharacterService {
     @Transactional(readOnly = true)
     public List<OurChacracterWithSeaResponseDto> SeaOurFindList(NowPositionRequestDto nowPositionRequestDto) {
         //위경도로 해변위치 찾아온다
-        Member member = memberRepository.findById(nowPositionRequestDto.getMemberId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 멤버가 없습니다. id =" + nowPositionRequestDto.getMemberId()));
+        Member member = memberRepository
+                .findById(SecurityUtil.getLoginMemberId())
+                .orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다."));
 
 
         Location location = locationRepository.findByName(nowPositionRequestDto.getName())

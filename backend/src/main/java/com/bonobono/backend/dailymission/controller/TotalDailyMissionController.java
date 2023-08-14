@@ -14,16 +14,13 @@ import org.springframework.web.bind.annotation.*;
 public class TotalDailyMissionController {
 
     /** 처음 페이지를 들어가면 보이는 달성률들 */
-    private final AttendanceService attendanceService;
     private final TotalDailyMissionService totalDailyMissionService;
 
 
     // date를 체크해서 한달 중 몇%를 했는지 반환해주는 함수
     @GetMapping
-    public ResponseEntity<TotalDailyMissionResponseDto> attendancePercentage(@RequestParam("memberId") Long memberId) {
-//        @AuthenticationPrincipal Member member
-//        AttendanceDto attendanceDto = new AttendanceDto(member.getId());
-        TotalDailyMissionResponseDto result = totalDailyMissionService.AttendanceAndTotalPercentage(memberId);
+    public ResponseEntity<TotalDailyMissionResponseDto> attendancePercentage() {
+        TotalDailyMissionResponseDto result = totalDailyMissionService.AttendanceAndTotalPercentage();
         return ResponseEntity.ok(result);
     }
 

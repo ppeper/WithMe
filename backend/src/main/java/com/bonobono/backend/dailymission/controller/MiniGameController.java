@@ -22,8 +22,8 @@ public class MiniGameController {
     //참여하기 버튼 누르면, 미니게임 이미 참여하면 참여하셨습니다를 반환
     // 미니게임 참여하지 않았으면, 미니게임 객체를 반환
     @GetMapping
-    public ResponseEntity<MiniGameResponseDto> checkMiniGame(@RequestParam Long memberId) {
-        MiniGameResponseDto miniGameResponseDto = miniGameService.checkMiniGame(memberId);
+    public ResponseEntity<MiniGameResponseDto> checkMiniGame() {
+        MiniGameResponseDto miniGameResponseDto = miniGameService.checkMiniGame();
         return ResponseEntity.ok(miniGameResponseDto);
     }
 

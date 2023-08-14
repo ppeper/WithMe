@@ -8,12 +8,10 @@ public class QuizRequestDto {
 
     private String answer;
     private Long problemId;
-    private Long memberId;
 
-    public QuizRequestDto(String answer, Long problemId, Long memberId) {
+    public QuizRequestDto(String answer, Long problemId) {
         this.answer=answer;
         this.problemId=problemId;
-        this.memberId=memberId;
     }
 
 }

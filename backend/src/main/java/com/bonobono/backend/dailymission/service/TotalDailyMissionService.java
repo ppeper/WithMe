@@ -10,6 +10,7 @@ import com.bonobono.backend.dailymission.repository.AttendanceRepository;
 import com.bonobono.backend.dailymission.repository.IsMiniGameRepository;
 import com.bonobono.backend.dailymission.repository.OXQuizRepository;
 import com.bonobono.backend.dailymission.repository.QuizRepository;
+import com.bonobono.backend.global.util.SecurityUtil;
 import com.bonobono.backend.member.domain.Member;
 import com.bonobono.backend.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -40,9 +41,10 @@ public class TotalDailyMissionService {
 
     // date를 체크해서 한달 중 몇%를 했는지 반환해주는 함수
     @Transactional(readOnly = true)
-    public TotalDailyMissionResponseDto AttendanceAndTotalPercentage(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(()->new IllegalArgumentException("해당 멤버가 존재하지 않습니다 +id"+memberId));
+    public TotalDailyMissionResponseDto AttendanceAndTotalPercentage() {
+        Member member = memberRepository
+                .findById(SecurityUtil.getLoginMemberId())
+                .orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다."));
 
         List<Attendance> attendanceList= attendanceRepository.findAttendanceByMemberAndCheckDateBetween(member, startDate, endDate);
         int attendanceDays = attendanceList.size();

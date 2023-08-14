@@ -239,7 +239,6 @@ fun BoardWriteScreen(
                             fontWeight = FontWeight(400),
                             color = Black_100,
                         ),
-                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                         decorationBox = { innerTextField ->
                             if (contentTextState.isEmpty()) {
                                 Text(

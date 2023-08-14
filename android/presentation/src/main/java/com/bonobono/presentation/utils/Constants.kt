@@ -11,5 +11,7 @@ object Constants {
     const val FREE = "FREE"
     const val TOGETHER = "TOGETHER"
     const val REPORT = "REPORT"
+    const val AR = "ar"
+    const val MAIN_CHARACTER = "main_character"
     const val ADMIN_ROLE = "ADMIN"
 }

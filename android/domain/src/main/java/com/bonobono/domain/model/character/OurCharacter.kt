@@ -4,9 +4,8 @@ import java.util.Date
 
 
 data class OurCharacter(
-    val characterId: Int,
-    val characterOrdId: Int,
+    val id: Long,
     val name: String,
     val description: String,
-    val level: Int
+    val level: String
 )

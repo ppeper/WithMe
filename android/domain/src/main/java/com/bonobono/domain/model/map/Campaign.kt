@@ -2,12 +2,12 @@ package com.bonobono.domain.model.map
 
 import java.util.Date
 
-data class Campaign (
-    val id: Int,
-    val locationId: Int,
+data class Campaign(
+    val authority: String,
+    val completionStatus: Boolean,
+    val endDate: String,
+    val locationName: String,
     val name: String,
-    val startDate: Date,
-    val endDate: Date,
-    val isCompleted: Boolean,
-    val agency: String
+    val startDate: String,
+    val url: String
 )

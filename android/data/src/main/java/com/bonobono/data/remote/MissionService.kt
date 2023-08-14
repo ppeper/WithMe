@@ -37,4 +37,12 @@ interface MissionService {
 
     @GET("dailymission")
     suspend fun getTotalScore(@Query(value = "memberId") memberId: Int) : TotalScoreResponse
+
+    @GET("catch/ox")
+    suspend fun getCatchOXQuiz(@Query(value = "memberId") memberId: Int) : MissionResponse
+    @POST("catch/ox/IsSuccess")
+    suspend fun postCatchOXQuizIsSuccess(
+        @Body isSuccess: IsSuccess
+    ) : Boolean
+
 }

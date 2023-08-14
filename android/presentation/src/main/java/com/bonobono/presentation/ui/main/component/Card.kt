@@ -143,14 +143,14 @@ fun CampaignCard(modifier: Modifier = Modifier, campaign: Campaign) {
             Text(text = campaign.startDate.toString())
             Spacer(modifier = Modifier.size(4.dp))
             Row {
-                val completed = if (campaign.isCompleted) "완료" else "진행중"
+                val completed = if (campaign.completionStatus) "완료" else "진행중"
                 val image =
-                    if (campaign.isCompleted) R.drawable.ic_star_black else R.drawable.ic_stars
+                    if (campaign.completionStatus) R.drawable.ic_star_black else R.drawable.ic_stars
                 Image(painter = painterResource(id = image), contentDescription = "별")
                 Spacer(modifier = Modifier.size(4.dp))
                 Text(text = completed, style = CustomTextStyle.gameGuideTextStyle)
                 Spacer(modifier = Modifier.size(4.dp))
-                Text(text = "by ${campaign.agency}", style = CustomTextStyle.mapGrayTextStyle)
+                Text(text = "by ${campaign.authority}", style = CustomTextStyle.mapGrayTextStyle)
             }
         }
     }

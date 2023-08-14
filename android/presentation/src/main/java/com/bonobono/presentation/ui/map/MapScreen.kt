@@ -1,5 +1,6 @@
 package com.bonobono.presentation.ui.map
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,14 +40,18 @@ import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.bonobono.domain.model.map.Campaign
+import com.bonobono.domain.model.map.CatchKey
 import com.bonobono.domain.model.map.Location
 import com.bonobono.presentation.R
+import com.bonobono.presentation.ui.ARMapNav
 import com.bonobono.presentation.ui.CameraNav
+import com.bonobono.presentation.ui.QuizNav
 import com.bonobono.presentation.ui.common.text.CustomTextStyle
 import com.bonobono.presentation.ui.main.component.CampaignCard
 import com.bonobono.presentation.ui.main.component.RankingCard
 import com.bonobono.presentation.ui.theme.PrimaryBlue
 import com.bonobono.presentation.ui.theme.White
+import com.bonobono.presentation.utils.Constants
 import com.bonobono.presentation.viewmodel.MapViewModel
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraPosition
@@ -62,13 +67,23 @@ import com.naver.maps.map.overlay.OverlayImage
 import kotlinx.coroutines.launch
 import java.util.Date
 
+private const val TAG = "MapScreen"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainMapScreen(navController: NavHostController) {
+fun MainMapScreen(navController: NavHostController, mapViewModel: MapViewModel = hiltViewModel()) {
     val scaffoldState = rememberBottomSheetScaffoldState()
     var selectedChipIndex by remember { mutableStateOf(0) }
-    var locationTitle = remember { mutableStateOf("") }
+
+    val locations by mapViewModel.locations.collectAsState()
+    val selectedIdx = remember {
+        mutableStateOf(0)
+    }
+
+    mapViewModel.getLocations()
+
+    Log.d(TAG, "MainMapScreen: $locations")
+
     BottomSheetScaffold(
         scaffoldState = scaffoldState,
         sheetPeekHeight = 60.dp,
@@ -83,49 +98,73 @@ fun MainMapScreen(navController: NavHostController) {
                 contentAlignment = Alignment.TopCenter
             ) {
                 Column {
-                    Row(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(12.dp), horizontalArrangement = Arrangement.Center) {
-                        Text(text = locationTitle.value, style = CustomTextStyle.mapTitleTextStyle)
-                    }
-                    Row(
-                        modifier = Modifier.padding(horizontal = 12.dp)
-                    ) {
-                        ElevatedFilterChip(
-                            modifier = Modifier.padding(4.dp),
-                            selected = false,
-                            onClick = {
-                                selectedChipIndex = 0
-                            },
-                            label = {
-                                Text(
-                                    text = "캠페인",
-                                    style = CustomTextStyle.gameGuideTextStyle
-                                )
-                            })
-                        ElevatedFilterChip(
-                            modifier = Modifier.padding(4.dp),
-                            selected = false,
-                            onClick = {
-                                selectedChipIndex = 1
-                            },
-                            label = {
-                                Text(
-                                    text = "랭킹",
-                                    style = CustomTextStyle.gameGuideTextStyle
-                                )
-                            })
-                    }
-                    if (selectedChipIndex == 0) {
-                        BottomSheetCampaignContent()
-                    } else {
-                        BottomSheetRankingContent()
+                    if (locations.isNotEmpty()) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(12.dp), horizontalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = locations[selectedIdx.value].name,
+                                style = CustomTextStyle.mapTitleTextStyle
+                            )
+                        }
+                        Row(
+                            modifier = Modifier.padding(horizontal = 12.dp)
+                        ) {
+                            ElevatedFilterChip(
+                                modifier = Modifier.padding(4.dp),
+                                selected = false,
+                                onClick = {
+                                    selectedChipIndex = 0
+                                },
+                                label = {
+                                    Text(
+                                        text = "캠페인",
+                                        style = CustomTextStyle.gameGuideTextStyle
+                                    )
+                                })
+                            ElevatedFilterChip(
+                                modifier = Modifier.padding(4.dp),
+                                selected = false,
+                                onClick = {
+                                    selectedChipIndex = 1
+                                },
+                                label = {
+                                    Text(
+                                        text = "랭킹",
+                                        style = CustomTextStyle.gameGuideTextStyle
+                                    )
+                                })
+                            Spacer(modifier = Modifier.weight(1f))
+                            ElevatedFilterChip(
+                                modifier = Modifier.padding(4.dp),
+                                selected = false,
+                                colors = FilterChipDefaults.elevatedFilterChipColors(
+                                    containerColor = PrimaryBlue
+                                ),
+                                onClick = {
+                                    mapViewModel.location.value = locations[selectedIdx.value]
+                                    navController.navigate(ARMapNav.route)
+                                },
+                                label = {
+                                    Text(
+                                        text = "AR",
+                                        style = CustomTextStyle.gameGuideTextStyle.copy(color = White)
+                                    )
+                                })
+                        }
+                        if (selectedChipIndex == 0) {
+                            BottomSheetCampaignContent(mapViewModel, locations, selectedIdx)
+                        } else {
+                            BottomSheetRankingContent(mapViewModel, locations, selectedIdx)
+                        }
                     }
                 }
             }
         }) { innerPadding ->
         Box(Modifier.padding(innerPadding)) {
-            MapScreen(navController = navController, scaffoldState, locationTitle)
+            MapScreen(navController = navController, scaffoldState, locations, selectedIdx)
         }
     }
 }
@@ -136,18 +175,15 @@ fun MainMapScreen(navController: NavHostController) {
 fun MapScreen(
     navController: NavHostController,
     scaffoldState: BottomSheetScaffoldState,
-    locationTitle: MutableState<String>,
-    mapViewModel: MapViewModel = hiltViewModel()
+    locations: List<Location>,
+    selectedIdx: MutableState<Int>
 ) {
-    val locations by mapViewModel.locations.collectAsState()
+
 
     val cameraPositionState: CameraPositionState = rememberCameraPositionState {
         position = CameraPosition(LatLng(35.9078, 127.7669), 6.0)
     }
 
-    LaunchedEffect(Unit) {
-        mapViewModel.getLocations()
-    }
 
     var mapUiSettings by remember {
         mutableStateOf(
@@ -158,46 +194,25 @@ fun MapScreen(
     val locationSource = rememberFusedLocation()
 
     Box(Modifier.fillMaxSize()) {
-        NaverMap(cameraPositionState = cameraPositionState, uiSettings = mapUiSettings, locationSource = locationSource) {
+        NaverMap(
+            cameraPositionState = cameraPositionState,
+            uiSettings = mapUiSettings,
+            locationSource = locationSource
+        ) {
             MapMarkers(
                 locations = locations,
                 scaffoldState = scaffoldState,
                 cameraPositionState = cameraPositionState,
-                locationTitle = locationTitle
+                selectedIdx = selectedIdx
             )
+        }
 
-        }
-        Column {
-            MapChips(locations = locations, cameraPositionState = cameraPositionState, locationName = locationTitle)
-            Column(
-                modifier = Modifier
-                    .align(Alignment.End)
-                    .padding(4.dp)
-            ) {
-                ChipAR(navController = navController)
-            }
-        }
+        MapChips(
+            locations = locations,
+            cameraPositionState = cameraPositionState,
+            selectedIdx = selectedIdx
+        )
     }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ChipAR(navController: NavHostController) {
-    ElevatedFilterChip(
-        modifier = Modifier
-            .padding(4.dp),
-        colors = FilterChipDefaults.elevatedFilterChipColors(
-            containerColor = PrimaryBlue
-        ),
-        selected = false,
-        onClick = { navController.navigate(CameraNav.route) },
-        label = {
-            Text(
-                text = "AR",
-                style = CustomTextStyle.gameGuideTextStyle,
-                color = White
-            )
-        })
 }
 
 @OptIn(ExperimentalNaverMapApi::class, ExperimentalMaterial3Api::class)
@@ -206,21 +221,21 @@ fun MapMarkers(
     locations: List<Location>,
     scaffoldState: BottomSheetScaffoldState,
     cameraPositionState: CameraPositionState,
-    locationTitle: MutableState<String>
+    selectedIdx: MutableState<Int>
 ) {
     val scope = rememberCoroutineScope()
-    locations.forEach { item ->
+    locations.forEachIndexed { idx, item ->
         Marker(
             state = MarkerState(position = LatLng(item.centerLatitude, item.centerLongitude)),
             icon = OverlayImage.fromResource(R.drawable.ic_beach_pin),
             width = 48.dp,
             height = 48.dp,
             onClick = {
-                locationTitle.value = item.name
+                selectedIdx.value = idx
                 cameraPositionState.position =
                     CameraPosition(LatLng(item.centerLatitude, item.centerLongitude), 11.0)
                 scope.launch {
-                     scaffoldState.bottomSheetState.expand()
+                    scaffoldState.bottomSheetState.expand()
                 }
                 true
             }
@@ -230,15 +245,20 @@ fun MapMarkers(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MapChips(locations: List<Location>, cameraPositionState: CameraPositionState, locationName: MutableState<String>) {
+fun MapChips(
+    locations: List<Location>,
+    selectedIdx: MutableState<Int>,
+    cameraPositionState: CameraPositionState
+) {
     LazyRow() {
-        items(locations) { item ->
+        items(locations.size) { idx ->
+            val item = locations[idx]
             ElevatedFilterChip(
                 modifier = Modifier.padding(4.dp),
                 selected = false,
                 elevation = FilterChipDefaults.elevatedFilterChipElevation(1.dp),
                 onClick = {
-                    locationName.value = item.name
+                    selectedIdx.value = idx
                     cameraPositionState.position =
                         CameraPosition(LatLng(item.centerLatitude, item.centerLongitude), 11.0)
                 },
@@ -253,11 +273,16 @@ fun MapChips(locations: List<Location>, cameraPositionState: CameraPositionState
 }
 
 @Composable
-fun BottomSheetRankingContent() {
-    val items = listOf<Int>(1, 2, 3)
+fun BottomSheetRankingContent(
+    mapViewModel: MapViewModel,
+    locations: List<Location>,
+    selectedIdx: MutableState<Int>
+) {
+    mapViewModel.getRanking(locations[selectedIdx.value].id)
+    val rankingList by mapViewModel.ranking.collectAsState()
     LazyColumn() {
         var ranking = 1
-        items(items) {
+        items(rankingList) {
             RankingCard(
                 profileImage = R.drawable.beluga_whale,
                 nickName = "주용가리",
@@ -269,18 +294,13 @@ fun BottomSheetRankingContent() {
 }
 
 @Composable
-fun BottomSheetCampaignContent() {
-    val items = listOf<Campaign>(
-        Campaign(-1, 1, "일산 해수욕장", Date(), Date(), false, "해양수산부"),
-        Campaign(-1, 1, "일산 해수욕장", Date(), Date(), false, "해양수산부"),
-        Campaign(-1, 1, "일산 해수욕장", Date(), Date(), false, "해양수산부")
-    )
-    val completed = listOf<Campaign>(
-        Campaign(-1, 1, "일산 해수욕장", Date(), Date(), true, "해양수산부"),
-        Campaign(-1, 1, "일산 해수욕장", Date(), Date(), true, "해양수산부"),
-        Campaign(-1, 1, "일산 해수욕장", Date(), Date(), true, "해양수산부")
-    )
-
+fun BottomSheetCampaignContent(
+    mapViewModel: MapViewModel,
+    locations: List<Location>,
+    selectedIdx: MutableState<Int>
+) {
+    mapViewModel.getCampaign(locations[selectedIdx.value].id)
+    val campaignList by mapViewModel.campaign.collectAsState()
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -290,14 +310,14 @@ fun BottomSheetCampaignContent() {
     ) {
         Text(text = "진행중", style = CustomTextStyle.mapTitleTextStyle)
         LazyRow() {
-            items(items) {
-                CampaignCard(modifier = Modifier.zIndex(1f),campaign = it)
+            items(campaignList) {
+                CampaignCard(modifier = Modifier.zIndex(1f), campaign = it)
             }
         }
         Spacer(modifier = Modifier.size(4.dp))
         Text(text = "완료", style = CustomTextStyle.mapTitleTextStyle)
         LazyRow() {
-            items(completed) {
+            items(campaignList) {
                 CampaignCard(campaign = it)
             }
         }

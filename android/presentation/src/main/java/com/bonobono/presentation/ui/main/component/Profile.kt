@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,18 +29,20 @@ fun ProfilePhoto(profileImage: Int, modifier: Modifier) {
         modifier = modifier,
         painter = painterResource(id = profileImage),
         contentDescription = "프로필 사진",
-        contentScale = ContentScale.Fit
+        contentScale = ContentScale.FillHeight
     )
 }
 
 @Composable
-fun BlindProfilePhoto(image: Int) {
+fun BlindProfilePhoto(image: Int, modifier: Modifier) {
     Box {
         Image(
-            modifier = Modifier
+            modifier = modifier
                 .clip(CircleShape)
                 .border(BorderStroke(1.dp, DarkGray), shape = CircleShape)
                 .background(LightGray)
+                .size(80.dp)
+                .padding(8.dp)
                 .graphicsLayer {
                     alpha = 0.05f
                 },

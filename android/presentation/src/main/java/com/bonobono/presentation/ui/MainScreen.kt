@@ -55,6 +55,8 @@ import com.bonobono.presentation.ui.community.views.map.ReportMapView
 import com.bonobono.presentation.ui.main.MainHomeScreen
 import com.bonobono.presentation.ui.main.mission.MissionScreen
 import com.bonobono.presentation.ui.main.notice.NoticeScreen
+import com.bonobono.presentation.ui.map.ARMapScreen
+import com.bonobono.presentation.ui.map.ARScreen
 import com.bonobono.presentation.ui.map.CameraScreen
 import com.bonobono.presentation.ui.map.MainMapScreen
 import com.bonobono.presentation.ui.mypage.MainMyPageScreen
@@ -66,6 +68,7 @@ import com.bonobono.presentation.ui.theme.TextGray
 import com.bonobono.presentation.ui.theme.White
 import com.bonobono.presentation.utils.Constants
 import com.bonobono.presentation.utils.NavigationUtils
+import com.bonobono.presentation.viewmodel.MapViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 
@@ -285,7 +288,10 @@ fun MainNavigationScreen(
             route = CameraNav.route,
             deepLinks = CameraNav.deepLinks
         ) {
-            CameraScreen()
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry(NavigationRouteName.AR_MAP)
+            }
+            CameraScreen(hiltViewModel(parentEntry), navController = navController)
         }
         composable(
             route = NavigationRouteName.GALLERY
@@ -415,6 +421,14 @@ fun MainNavigationScreen(
         ) {
             GameScreen(navController)
         }
+        composable(
+            route = ARMapNav.route,
+        ) {
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry(NavigationRouteName.MAIN_MAP)
+            }
+            ARMapScreen(navController = navController, hiltViewModel(parentEntry))
+        }
     }
 }
 
@@ -443,6 +457,7 @@ fun NavGraphBuilder.communityNavigation(
     }
 
 }
+
 
 @Preview
 @Composable

@@ -52,6 +52,14 @@ class MissionRepositoryImpl @Inject constructor(
         return handleApi { missionService.getTotalScore(memberId = memberId).toDomain() }
     }
 
+    override suspend fun getCatchOXQuiz(memberId: Int): NetworkResult<Mission> {
+        return handleApi { missionService.getCatchOXQuiz(memberId = memberId).toDomain() }
+    }
+
+    override suspend fun postCatchIsSuccessOXQuiz(isSuccess: IsSuccess) : NetworkResult<Boolean> {
+        return handleApi { missionService.postCatchOXQuizIsSuccess(isSuccess) }
+    }
+
     override fun getCompletedTime(key: String): Long {
         return preferenceDatasource.getLong(key)
     }

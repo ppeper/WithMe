@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
@@ -195,7 +196,8 @@ fun BoardWriteScreen(
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     BasicTextField(
-                        modifier = modifier.fillMaxWidth(),
+                        modifier = modifier.fillMaxWidth()
+                            .wrapContentHeight(),
                         value = titleTextState,
                         onValueChange = { titleTextState = it },
                         textStyle = TextStyle(

@@ -11,7 +11,7 @@ fun textMapper(
     return when (route) {
         CommunityFab.FREE.route -> { "자유롭게 글을 작성해주세요" }
         CommunityFab.WITH.route -> { "함께하고 싶은 내용을 작성해주세요" }
-        CommunityFab.REPORT.route -> { "신고할 내용을 작성해 주세요" }
+        CommunityFab.REPORT.route -> { "신고할 내용을 작성해 주세요\n\n(필수) 신고할 해변과 위치를 지도에서 선택해주세요!" }
         else -> { "자유롭게 글을 작성해주세요" }
     }
 }

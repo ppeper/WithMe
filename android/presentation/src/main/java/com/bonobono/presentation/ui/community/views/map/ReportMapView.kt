@@ -100,7 +100,7 @@ fun ReportMapView(
             Manifest.permission.ACCESS_COARSE_LOCATION
         ) != PackageManager.PERMISSION_GRANTED
     ) {
-        return
+        isSuccess = false
     } else {
         fusedLocationClient.lastLocation.addOnSuccessListener { location ->
             location?.let {
@@ -108,7 +108,6 @@ fun ReportMapView(
                 isSuccess = true
             }
         }
-
     }
 
     val mapView =
@@ -164,40 +163,45 @@ fun ReportMapView(
     DisposableEffect(true) {
         lifecycleOwner.lifecycle.addObserver(lifecycleObserver)
         onDispose {
+            // 뷰가 해제될 때 리스너 remove
             lifecycleOwner.lifecycle.removeObserver(lifecycleObserver)
         }
     }
 
     if (locationPermission.allPermissionsGranted) {
-        // 뷰가 해제될 때 리스너 remove
-        Box(modifier.fillMaxSize()) {
-            if (isSuccess) {
+        if (isSuccess) {
+            Box(modifier.fillMaxSize()) {
                 AndroidView(factory = { mapView })
-            }
-            CircleBackButton(
-                modifier = modifier.align(Alignment.TopStart),
-                navController = navController
-            )
-            MapTopContent(
-                modifier = modifier.align(Alignment.TopCenter),
-            )
-            Box(
-                modifier = modifier
-                    .wrapContentSize()
-                    .padding(start = 16.dp, end = 16.dp, bottom = 48.dp)
-                    .align(Alignment.BottomCenter)
-            ) {
-                SubmitButton(
+                CircleBackButton(
+                    modifier = modifier.align(Alignment.TopStart),
+                    navController = navController
+                )
+                MapTopContent(
+                    modifier = modifier.align(Alignment.TopCenter),
+                )
+                Box(
                     modifier = modifier
-                        .fillMaxWidth()
-                        .height(48.dp),
-                    text = "선택",
-                    textStyle = TextStyle(color = White)
+                        .wrapContentSize()
+                        .padding(start = 16.dp, end = 16.dp, bottom = 48.dp)
+                        .align(Alignment.BottomCenter)
                 ) {
-                    communityViewModel.setMapPosition(marker.position)
-                    navController.popBackStack()
+                    SubmitButton(
+                        modifier = modifier
+                            .fillMaxWidth()
+                            .height(48.dp),
+                        text = "선택",
+                        textStyle = TextStyle(color = White)
+                    ) {
+                        communityViewModel.setMapPosition(marker.position)
+                        navController.popBackStack()
+                    }
                 }
             }
+        } else {
+            PermissionView(
+                title = "위치 권한이 필요합니다!",
+                navController = navController
+            )
         }
     } else {
         PermissionView(

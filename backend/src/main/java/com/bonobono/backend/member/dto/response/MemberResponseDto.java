@@ -2,6 +2,7 @@ package com.bonobono.backend.member.dto.response;
 
 import com.bonobono.backend.member.domain.Authority;
 import com.bonobono.backend.member.domain.Member;
+import com.bonobono.backend.member.domain.ProfileImg;
 import com.bonobono.backend.member.domain.enumtype.Role;
 import java.util.Set;
 

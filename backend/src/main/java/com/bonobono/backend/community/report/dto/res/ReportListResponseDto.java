@@ -30,7 +30,7 @@ public class ReportListResponseDto {
         this.title = entity.getTitle();
         this.content = entity.getContent();
         this.nickname = entity.getMember().getNickname();
-        this.profileImg = entity.getMember().getProfileImg().getImageUrl();
+//        this.profileImg = entity.getMember().getProfileImg().getImageUrl();
         this.views = entity.getViews();
         this.adminConfirmStatus = entity.isAdminConfirmStatus();
         this.images = entity.getImages().stream()

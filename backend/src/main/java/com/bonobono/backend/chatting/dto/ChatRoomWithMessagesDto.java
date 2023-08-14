@@ -20,8 +20,8 @@ public class ChatRoomWithMessagesDto {
 
     public ChatRoomWithMessagesDto(ChatRoom chatRoom, List<ChatMessageResponseDto> messages) {
         this.nickname = chatRoom.getOther().getNickname();
-        this.profileImgName= chatRoom.getOther().getProfileImg().getImageName();
-        this.profileImgUrl = chatRoom.getOther().getProfileImg().getImageUrl();
+//        this.profileImgName= chatRoom.getOther().getProfileImg().getImageName();
+//        this.profileImgUrl = chatRoom.getOther().getProfileImg().getImageUrl();
         this.roomNumber = chatRoom.getRoomNumber();
         this.messages = messages;
     }

@@ -110,28 +110,28 @@ public class MemberController {
         return ResponseEntity.ok(memberService.myProfile());
     }
 
-    @Operation(
-            summary = "프로필 이미지 업로드",
-            description = ""
-    )
-    @PreAuthorize("isAuthenticated()")
-    @PostMapping("/img")
-    public ResponseEntity<ProfileImgResponseDto> uploadImg(
-            @RequestPart("img") MultipartFile image
-    ) {
-        Member member = memberService.getMemberById(SecurityUtil.getLoginMemberId());
-        ProfileImg oldImg = member.getProfileImg();
-
-        String imageUrl = oldImg.getImageUrl(); // oldImg에서 URL 추출
-        String s3BaseUrl = "https://bonobono.s3.ap-northeast-2.amazonaws.com";
-
-        int index = imageUrl.indexOf(s3BaseUrl) + s3BaseUrl.length();
-        String key = imageUrl.substring(index);
-        String[] keyComponets = key.split("/");
-        String imgDirName = keyComponets[0];
-
-        return ResponseEntity.ok(memberService.uploadProfileImg(member, image, oldImg, imgDirName));
-    }
+//    @Operation(
+//            summary = "프로필 이미지 업로드",
+//            description = ""
+//    )
+//    @PreAuthorize("isAuthenticated()")
+//    @PostMapping("/img")
+//    public ResponseEntity<ProfileImgResponseDto> uploadImg(
+//            @RequestParam("image") MultipartFile image
+//    ) {
+//        Member member = memberService.getMemberById(SecurityUtil.getLoginMemberId());
+//        ProfileImg oldImg = member.getProfileImg();
+//
+//        String imageUrl = oldImg.getImageUrl(); // oldImg에서 URL 추출
+//        String s3BaseUrl = "https://bonobono.s3.ap-northeast-2.amazonaws.com";
+//
+//        int index = imageUrl.indexOf(s3BaseUrl) + s3BaseUrl.length();
+//        String key = imageUrl.substring(index);
+//        String[] keyComponets = key.split("/");
+//        String imgDirName = keyComponets[0];
+//
+//        return ResponseEntity.ok(memberService.uploadProfileImg(member, image, oldImg, imgDirName));
+//    }
 
     @Operation(
             summary = "비밀번호 변경",

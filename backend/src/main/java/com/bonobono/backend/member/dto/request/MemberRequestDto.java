@@ -2,6 +2,7 @@ package com.bonobono.backend.member.dto.request;
 
 import com.bonobono.backend.member.domain.Authority;
 import com.bonobono.backend.member.domain.Member;
+import com.bonobono.backend.member.domain.ProfileImg;
 import com.bonobono.backend.member.domain.enumtype.Provider;
 
 import java.io.Serializable;
@@ -52,9 +53,8 @@ public class MemberRequestDto implements Serializable {
             .build();
     }
 
-
     public static MemberRequestDto of(Member member) {
-        
+
         if (member == null) {
             return null;
         }

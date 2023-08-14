@@ -46,7 +46,7 @@ public class ArticleNoticeController {
     @Operation(summary = "공지사항 특정 글, 글에 관한 댓글 조회하기")
     @GetMapping("/{articleId}")
     public ResponseEntity<ArticleNoticeResponseDto> findById(@PathVariable Long articleId) {
-        ArticleNoticeResponseDto responseDto = articleService.findNoticeById(type, SecurityUtil.getLoginMemberId(), articleId);
+        ArticleNoticeResponseDto responseDto = articleService.findNoticeById(type, articleId);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 }

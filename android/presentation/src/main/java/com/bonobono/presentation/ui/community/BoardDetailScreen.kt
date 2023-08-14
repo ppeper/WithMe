@@ -69,12 +69,14 @@ import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.BoardDetailNav
 import com.bonobono.presentation.ui.NavigationRouteName
 import com.bonobono.presentation.ui.common.LoadingView
+import com.bonobono.presentation.ui.community.util.DummyData
 import com.bonobono.presentation.ui.community.util.DummyData.dummyArticle
 import com.bonobono.presentation.ui.community.util.boardDetailLaunchEffect
 import com.bonobono.presentation.ui.community.views.board.DropDownMenuView
 import com.bonobono.presentation.ui.community.views.board.ProceedingView
 import com.bonobono.presentation.ui.community.views.comment.CommentView
 import com.bonobono.presentation.ui.community.views.comment.NoCommentView
+import com.bonobono.presentation.ui.community.views.comment.NoValidUserView
 import com.bonobono.presentation.ui.community.views.comment.WriteCommentView
 import com.bonobono.presentation.ui.community.views.link.LinkImageTitle
 import com.bonobono.presentation.ui.community.views.link.getMetaData
@@ -89,6 +91,7 @@ import com.bonobono.presentation.utils.Constants
 import com.bonobono.presentation.utils.DateUtils
 import com.bonobono.presentation.viewmodel.CommentViewModel
 import com.bonobono.presentation.viewmodel.CommunityViewModel
+import com.bonobono.presentation.viewmodel.SharedLocalViewModel
 import com.naver.maps.geometry.LatLng
 import kotlinx.coroutines.launch
 import java.net.URLEncoder
@@ -101,9 +104,10 @@ fun BoardDetailScreen(
     type: String,
     articleId: Long,
     navController: NavController,
-    communityViewModel: CommunityViewModel = hiltViewModel()
+    communityViewModel: CommunityViewModel = hiltViewModel(),
 ) {
     boardDetailLaunchEffect(navController = navController)
+
 //    val imeState = rememberImeState()
     val keyboardController = LocalSoftwareKeyboardController.current
     val scrollState = rememberLazyListState()
@@ -124,9 +128,14 @@ fun BoardDetailScreen(
     when (articleState) {
         is NetworkResult.Loading -> { LoadingView() }
 
-        is NetworkResult.Success -> {
-            val result = (articleState as NetworkResult.Success<Article>).data.copy(articleId = articleId)
-            val article by remember { mutableStateOf(result) }
+        is NetworkResult.Error -> {
+            val localViewModel: SharedLocalViewModel = hiltViewModel()
+            val currentMemberId = localViewModel.getMemberId("member_id").toLong()
+            val role = localViewModel.getRole("role")
+
+//            val result = (articleState as NetworkResult.Success<Article>).data.copy(articleId = articleId)
+//            val article by remember { mutableStateOf(result) }
+            val article = DummyData.dummyArticle
             var recruitState by remember { mutableStateOf(article.recruitStatus) }
             var adminState by remember { mutableStateOf(article.adminConfirmStatus) }
             var comments by remember { mutableStateOf(article.comments) }
@@ -147,34 +156,40 @@ fun BoardDetailScreen(
             if (metaLink.isSuccess) {
                 Scaffold(
                     bottomBar = {
-                        WriteCommentView(
-                            modifier = modifier,
-                            type = type,
-                            articleId = article.articleId!!,
-                            onWriteCommentClicked = { comment ->
-                                // 대 댓글 작성
-                                if (comment.parentCommentId != null) {
-                                    val index = comments.indexOfFirst { it.id == comment.parentCommentId }
-                                    if (index != -1) {
-                                        comments = comments.apply {
-                                            comments[index].childComments = comments[index].childComments.toMutableList().apply { add(comment) }.toList()
-                                        }.toMutableList()
-                                        Log.d("TEST", "BoardDetailScreen: 대 댓글 추가 ${comments.hashCode()}")
+                        // 신고 게시판 -> 글쓴이, 관리자만 댓글 작성 가능
+                        if (type == NavigationRouteName.COMMUNITY_REPORT &&
+                            (article.memberId != currentMemberId && role != Constants.ADMIN_ROLE)) {
+                            NoValidUserView()
+                        } else {
+                            WriteCommentView(
+                                modifier = modifier,
+                                type = type,
+                                articleId = article.articleId!!,
+                                onWriteCommentClicked = { comment ->
+                                    // 대 댓글 작성
+                                    if (comment.parentCommentId != null) {
+                                        val index = comments.indexOfFirst { it.id == comment.parentCommentId }
+                                        if (index != -1) {
+                                            comments = comments.apply {
+                                                comments[index].childComments = comments[index].childComments.toMutableList().apply { add(comment) }.toList()
+                                            }.toMutableList()
+                                            Log.d("TEST", "BoardDetailScreen: 대 댓글 추가 ${comments.hashCode()}")
+                                        }
+                                    } else {
+                                        comments = comments.toMutableList().apply { add(comment) }.toMutableList()
+                                        Log.d("TEST", "BoardDetailScreen: 댓글 추가 ${comments.hashCode()}")
                                     }
-                                } else {
-                                    comments = comments.toMutableList().apply { add(comment) }.toMutableList()
-                                    Log.d("TEST", "BoardDetailScreen: 댓글 추가 ${comments.hashCode()}")
-                                }
-                                // 댓글 수 증가
-                                commentCnt++
-                            },
-                            onFocusChanged = {
-                                keyboardController?.show()
-                                isTextFieldFocused = !isTextFieldFocused
-                            },
-                            focusRequester = focusRequester
-                        )
-                    }
+                                    // 댓글 수 증가
+                                    commentCnt++
+                                },
+                                onFocusChanged = {
+                                    keyboardController?.show()
+                                    isTextFieldFocused = !isTextFieldFocused
+                                },
+                                focusRequester = focusRequester
+                            )
+                        }
+                        }
                 ) {
                     Box(
                         modifier = modifier
@@ -201,19 +216,21 @@ fun BoardDetailScreen(
                                         .then(modifier.padding(16.dp)),
                                     verticalArrangement = Arrangement.spacedBy(16.dp)
                                 ) {
-
-                                    WriterView(type = type, communityViewModel = communityViewModel, article = article, navController = navController,
-                                        adminCompleteState = adminState,
-                                        recruitCompleteState = recruitState,
-                                        onRecruitCompleteClicked = {
-                                            article.recruitStatus = true
-                                            recruitState = true
-                                        },
-                                        onAdminCompleteClicked = {
-                                            article.adminConfirmStatus = true
-                                            adminState = true
-                                        }
-                                    )
+                                    // 작성자만 dropdown 볼 수 있음
+                                    if (currentMemberId == article.memberId) {
+                                        WriterView(role = role, memberId = currentMemberId, type = type, communityViewModel = communityViewModel, article = article, navController = navController,
+                                            adminCompleteState = adminState,
+                                            recruitCompleteState = recruitState,
+                                            onRecruitCompleteClicked = {
+                                                article.recruitStatus = true
+                                                recruitState = true
+                                            },
+                                            onAdminCompleteClicked = {
+                                                article.adminConfirmStatus = true
+                                                adminState = true
+                                            }
+                                        )
+                                    }
 
                                     Text(
                                         text = article.title,
@@ -279,13 +296,15 @@ fun BoardDetailScreen(
                 }
             }
         }
-        is NetworkResult.Error -> {}
+        is NetworkResult.Success -> {}
     }
 }
 
 @Composable
 fun WriterView(
     modifier: Modifier = Modifier,
+    role: String?,
+    memberId: Long,
     type: String,
     communityViewModel: CommunityViewModel,
     article: Article,
@@ -337,8 +356,9 @@ fun WriterView(
         if (article.type == null) {
             article.adminConfirmStatus?.let { ProceedingView(type = Constants.REPORT, isProceeding = adminCompleteState!!) }
         }
-        // TODO("내가 쓴 글만 DropDown 보이기 -> 로그인 완성되면 Token으로 확인)
         DropDownMenuView(
+            role = role,
+            memberId = memberId,
             article = article,
             onUpdateClick = {},
             onDeleteClick = {
@@ -524,6 +544,8 @@ fun PreviewLikeAndCommentView() {
 fun PreviewWriterView() {
     WriterView(
         type = "free",
+        memberId = 1,
+        role = "ADMIN",
         communityViewModel = hiltViewModel(),
         article = dummyArticle,
         adminCompleteState = null,

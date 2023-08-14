@@ -30,7 +30,7 @@ public class ArticleCommentResponseDto {
         this.content = entity.getContent();
         this.memberId = entity.getMember().getId();
         this.nickname = entity.getMember().getNickname();
-        this.profileImg = entity.getMember().getProfileImg().getImageUrl();
+//        this.profileImg = entity.getMember().getProfileImg().getImageUrl();
         this.childComments = entity.getChildComments().stream()
                 .map(childComment -> new ArticleCommentResponseDto(childComment, member))
                 .collect(Collectors.toList());

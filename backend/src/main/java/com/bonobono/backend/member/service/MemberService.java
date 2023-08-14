@@ -220,68 +220,71 @@ public class MemberService {
         member.changePassword(request, bCryptPasswordEncoder);
     }
 
-    /**
-     * 프로필 이미지 저장
-     */
-    public ProfileImgResponseDto saveProfileImg(Member member, MultipartFile img, String imageDirName) {
-        String imageUrl = awsS3Service.upload(img, imageDirName).getPath();
-        ProfileImgRequestDto request = ProfileImgRequestDto.builder()
-                .imgName(img.getOriginalFilename())
-                .imgUrl(imageUrl)
-                .build();
-        ProfileImg profileImg = request.toEntity(member);
-        imgRepository.save(profileImg);
-
-        ProfileImgResponseDto response = ProfileImgResponseDto.builder()
-                .memberId(member.getId())
-                .img(request)
-                .build();
-
-        return response;
-    }
-
-    /**
-     * 프로필 이미지 수정
-     */
-    public ProfileImgResponseDto uploadProfileImg(Member member, MultipartFile newImage, ProfileImg oldImage, String imageDirName) throws NullPointerException {
-        String s3BaseUrl = "https://bonobono.s3.ap-northeast-2.amazonaws.com";
-
-        try {
-            // oldImage가 null이 아니면 newImage 저장 후 oldImage 삭제
-            // oldImage Url 추출
-            String imageUrl = oldImage.getImageUrl();
-
-            boolean isChecked = newImage.getOriginalFilename().contains(s3BaseUrl);
-            if(isChecked) {
-                String newImageUrl = newImage.getOriginalFilename().split(imageDirName + "/")[1];
-                boolean isSame = imageUrl.contains(newImageUrl);
-                if (!isSame) {
-                    ProfileImgResponseDto response = saveProfileImg(member, newImage, imageDirName);
-                    deleteProfileImg(oldImage, imageUrl, imageDirName);
-                    return response;
-                }
-            } else {
-                ProfileImgResponseDto response = saveProfileImg(member, newImage, imageDirName);
-                deleteProfileImg(oldImage, imageUrl, imageDirName);
-                return response;
-            }
-        } catch (NullPointerException e) {
-            // oldImage가 null이면 그냥 newImage 저장
-            saveProfileImg(member, newImage, imageDirName);
-        }
-
-        return null;
-
-    }
-
-    /**
-     * 프로필 이미지 삭제
-     */
-    public void deleteProfileImg(ProfileImg profileImg, String imageUrl, String dirName) {
-        // S3 이미지 삭제 후 DB에서 이미지 삭제
-        awsS3Service.delete(imageUrl, dirName);
-        imgRepository.delete(profileImg);
-    }
+//    /**
+//     * 프로필 이미지 저장
+//     */
+//    public ProfileImgResponseDto saveProfileImg(Member member, MultipartFile img, String imageDirName) {
+//        String imageUrl = awsS3Service.upload(img, imageDirName).getPath();
+//        ProfileImgRequestDto request = ProfileImgRequestDto.builder()
+//                .imgName(img.getOriginalFilename())
+//                .imgUrl(imageUrl)
+//                .build();
+//        ProfileImg profileImg = request.toEntity(member);
+//        imgRepository.save(profileImg);
+//
+//        ProfileImgResponseDto response = ProfileImgResponseDto.builder()
+//                .memberId(member.getId())
+//                .img(request)
+//                .build();
+//
+//        return response;
+//    }
+//
+//    /**
+//     * 프로필 이미지 수정
+//     */
+//    public ProfileImgResponseDto uploadProfileImg(Member member, MultipartFile newImage, ProfileImg oldImage, String imageDirName) throws NullPointerException {
+//        String s3BaseUrl = "https://bonobono.s3.ap-northeast-2.amazonaws.com";
+//
+//        try {
+//            // oldImage가 null이 아니면 newImage 저장 후 oldImage 삭제
+//            // oldImage Url 추출
+//            String imageUrl = oldImage.getImageUrl();
+//
+//            boolean isChecked = newImage.getOriginalFilename().contains(s3BaseUrl);
+//            if(isChecked) {
+//                String newImageUrl = newImage.getOriginalFilename().split(imageDirName + "/")[1];
+//                boolean isSame = imageUrl.contains(newImageUrl);
+//                if (!isSame) {
+//                    ProfileImgResponseDto response = saveProfileImg(member, newImage, imageDirName);
+//                    deleteProfileImg(oldImage, imageUrl, imageDirName);
+//                    return response;
+//                }
+//            } else {
+//                ProfileImgResponseDto response = saveProfileImg(member, newImage, imageDirName);
+//                deleteProfileImg(oldImage, imageUrl, imageDirName);
+//                return response;
+//            }
+//        } catch (NullPointerException e) {
+//            if(oldImage == null) {
+//                throw e;
+//            }
+//            // oldImage가 null이면 그냥 newImage 저장
+//            saveProfileImg(member, newImage, imageDirName);
+//        }
+//
+//        return null;
+//
+//    }
+//
+//    /**
+//     * 프로필 이미지 삭제
+//     */
+//    public void deleteProfileImg(ProfileImg profileImg, String imageUrl, String dirName) {
+//        // S3 이미지 삭제 후 DB에서 이미지 삭제
+//        awsS3Service.delete(imageUrl, dirName);
+//        imgRepository.delete(profileImg);
+//    }
 
     /**
      * 로그아웃

@@ -25,11 +25,11 @@ public class ProfileImgRequestDto {
         this.imgUrl = imgUrl;
     }
 
-    public ProfileImg toEntity(Member member) {
-        return ProfileImg.builder()
-                .imageId(imgId)
-                .imageName(imgName)
-                .imageUrl(imgUrl)
-                .build();
-    }
+//    public ProfileImg toEntity(Member member) {
+//        return ProfileImg.builder()
+//                .imageId(imgId)
+//                .imageName(imgName)
+//                .imageUrl(imgUrl)
+//                .build();
+//    }
 }

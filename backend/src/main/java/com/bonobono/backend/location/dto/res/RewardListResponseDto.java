@@ -15,6 +15,6 @@ public class RewardListResponseDto {
     public RewardListResponseDto(Reward entity){
         this.count = entity.getCount();
         this.nickname = entity.getMember().getNickname();
-        this.profileImg = entity.getMember().getProfileImg().getImageUrl();
+//        this.profileImg = entity.getMember().getProfileImg().getImageUrl();
     }
 }

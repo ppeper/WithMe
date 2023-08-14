@@ -23,8 +23,8 @@ public class ChatRoomResponseDto {
     public ChatRoomResponseDto(ChatRoom chatRoom) {
         this.roomNumber = chatRoom.getRoomNumber();
         this.nickname = chatRoom.getOther().getNickname();
-        this.profileImgName=chatRoom.getOther().getProfileImg().getImageName();
-        this.profileImgUrl=chatRoom.getOther().getProfileImg().getImageUrl();
+//        this.profileImgName=chatRoom.getOther().getProfileImg().getImageName();
+//        this.profileImgUrl=chatRoom.getOther().getProfileImg().getImageUrl();
     }
 
 }

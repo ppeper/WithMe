@@ -17,17 +17,26 @@ public class ProfileImg {
     private Long imageId;
 
     private String imageName;
-
     private String imageUrl;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @Builder
-    public ProfileImg(Long imageId, String imageName, String imageUrl) {
-        this.imageId = imageId;
-        this.imageName = imageName;
-        this.imageUrl = imageUrl;
-    }
+//    @Builder
+//    public ProfileImg(Long imageId, String imageName, String imageUrl, Member member) {
+//        this.imageId = imageId;
+//        this.imageName = imageName;
+//        this.imageUrl = imageUrl;
+//        this.member = member;
+//
+//    }
+//
+//    @Builder(builderMethodName = "createProfileImg")
+//    public ProfileImg(String imgUrl, String imgName, Member member) {
+//        this.imageUrl = imgUrl;
+//        this.imageName = imgName;
+//        this.member = member;
+//        member.setProfileImg(this);
+//    }
 }

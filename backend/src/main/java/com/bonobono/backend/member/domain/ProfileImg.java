@@ -1,5 +1,6 @@
 package com.bonobono.backend.member.domain;
 
+import com.bonobono.backend.member.dto.request.ProfileImgRequestDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,20 +24,25 @@ public class ProfileImg {
     @JoinColumn(name = "member_id")
     private Member member;
 
-//    @Builder
-//    public ProfileImg(Long imageId, String imageName, String imageUrl, Member member) {
-//        this.imageId = imageId;
-//        this.imageName = imageName;
-//        this.imageUrl = imageUrl;
-//        this.member = member;
-//
-//    }
-//
-//    @Builder(builderMethodName = "createProfileImg")
-//    public ProfileImg(String imgUrl, String imgName, Member member) {
-//        this.imageUrl = imgUrl;
-//        this.imageName = imgName;
-//        this.member = member;
-//        member.setProfileImg(this);
-//    }
+    @Builder
+    public ProfileImg(Long imageId, String imageName, String imageUrl, Member member) {
+        this.imageId = imageId;
+        this.imageName = imageName;
+        this.imageUrl = imageUrl;
+        this.member = member;
+
+    }
+
+    @Builder(builderMethodName = "createProfileImg")
+    public ProfileImg(String imgUrl, String imgName, Member member) {
+        this.imageUrl = imgUrl;
+        this.imageName = imgName;
+        this.member = member;
+        member.setProfileImg(this);
+    }
+
+    public void updateImage(ProfileImgRequestDto dto) {
+        this.imageUrl = dto.getImgUrl();
+        this.imageName = dto.getImgName();
+    }
 }

@@ -2,6 +2,7 @@ package com.bonobono.backend.member.controller;
 
 import com.bonobono.backend.global.exception.AppException;
 import com.bonobono.backend.global.exception.ErrorCode;
+import com.bonobono.backend.global.service.AwsS3Service;
 import com.bonobono.backend.global.util.SecurityUtil;
 import com.bonobono.backend.member.domain.Member;
 import com.bonobono.backend.member.domain.ProfileImg;
@@ -33,6 +34,7 @@ public class MemberController {
     private final MemberService memberService;
     private final MemberRepository memberRepository;
     private final ProfileImgRepository imgRepository;
+    private final AwsS3Service awsS3Service;
 
     @Operation(
             summary = "회원가입",
@@ -110,28 +112,37 @@ public class MemberController {
         return ResponseEntity.ok(memberService.myProfile());
     }
 
-//    @Operation(
-//            summary = "프로필 이미지 업로드",
-//            description = ""
-//    )
-//    @PreAuthorize("isAuthenticated()")
-//    @PostMapping("/img")
-//    public ResponseEntity<ProfileImgResponseDto> uploadImg(
-//            @RequestParam("image") MultipartFile image
-//    ) {
-//        Member member = memberService.getMemberById(SecurityUtil.getLoginMemberId());
-//        ProfileImg oldImg = member.getProfileImg();
-//
+    @Operation(
+            summary = "프로필 이미지 업로드",
+            description = ""
+    )
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/img")
+    public ResponseEntity<ProfileImgResponseDto> uploadImg(
+            @RequestPart("image") MultipartFile image
+    ) {
+        Member member = memberService.getMemberById(SecurityUtil.getLoginMemberId());
+        ProfileImg oldImg = member.getProfileImg();
+        String imgDirName = "profile_images";
+
 //        String imageUrl = oldImg.getImageUrl(); // oldImg에서 URL 추출
 //        String s3BaseUrl = "https://bonobono.s3.ap-northeast-2.amazonaws.com";
 //
-//        int index = imageUrl.indexOf(s3BaseUrl) + s3BaseUrl.length();
-//        String key = imageUrl.substring(index);
-//        String[] keyComponets = key.split("/");
-//        String imgDirName = keyComponets[0];
-//
-//        return ResponseEntity.ok(memberService.uploadProfileImg(member, image, oldImg, imgDirName));
-//    }
+//        String imgDirName;
+//        if(!imageUrl.equals("default") && imageUrl.contains(s3BaseUrl)) {
+//            // 이미지 파일이 S3에 업로드되어 있는 경우
+//            int index = imageUrl.indexOf(s3BaseUrl) + s3BaseUrl.length();
+//            String key = imageUrl.substring(index);
+//            String[] keyComponents = key.split("/");
+//            imgDirName = keyComponents[0];
+//        } else {
+//            // 이미지 파일이 S3에 업로드되어 있지 않은 경우
+//            imgDirName = "profile_images";
+//            imageUrl = awsS3Service.upload(image, imgDirName).getPath();
+//        }
+
+        return ResponseEntity.ok(memberService.uploadProfileImg(member, image, oldImg, imgDirName));
+    }
 
     @Operation(
             summary = "비밀번호 변경",

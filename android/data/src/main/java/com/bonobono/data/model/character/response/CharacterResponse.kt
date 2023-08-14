@@ -1,4 +1,4 @@
-package com.bonobono.domain.model.character
+package com.bonobono.data.model.character.response
 
 data class CharacterResponse(
     val createdDate: String,

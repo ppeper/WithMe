@@ -40,6 +40,8 @@ class MapViewModel @Inject constructor(
     private val _catchCharacters = MutableStateFlow<List<CatchCharacter>>(listOf())
     val catchCharacters: StateFlow<List<CatchCharacter>> = _catchCharacters
 
+    var curCatchCharacter: CatchCharacter? = null
+
     fun getLocations() = viewModelScope.launch {
         _locations.emit(getLocationsUseCase.invoke())
     }

@@ -12,6 +12,8 @@ import com.bonobono.domain.model.mission.IsSuccess
 import com.bonobono.domain.model.mission.MiniGame
 import com.bonobono.domain.model.mission.Mission
 import com.bonobono.domain.model.mission.TotalScore
+import com.bonobono.domain.usecase.map.GetCatchOXQuizUseCase
+import com.bonobono.domain.usecase.map.PostIsSuccessCatchOXQuizUseCase
 import com.bonobono.domain.usecase.mission.GetFourQuizUseCase
 import com.bonobono.domain.usecase.mission.GetMiniGameUseCase
 import com.bonobono.domain.usecase.mission.GetOXQuizUseCase
@@ -42,7 +44,9 @@ class MissionViewModel @Inject constructor(
     private val putCompletedTimeUseCase: PutCompletedTimeUseCase,
     private val getCompletedTimeUseCase: GetCompletedTimeUseCase,
     private val removeCompletedTimeUseCase: RemoveCompletedTimeUseCase,
-    private val getTotalScoreUseCase: GetTotalScoreUseCase
+    private val getTotalScoreUseCase: GetTotalScoreUseCase,
+    private val getCatchOXQuizUseCase: GetCatchOXQuizUseCase,
+    private val postIsSuccessCatchOXQuizUseCase: PostIsSuccessCatchOXQuizUseCase
 ) : ViewModel() {
 
     private val _mission = MutableStateFlow<Mission>(Mission())
@@ -62,6 +66,7 @@ class MissionViewModel @Inject constructor(
             Constants.OX_QUIZ -> _mission.emit(getOXQuizUseCase.invoke(memberId))
             Constants.FOUR_QUIZ -> _mission.emit(getFourQuizUseCase.invoke(memberId))
             Constants.GAME -> _miniGame.emit(getMiniGameUseCase(memberId))
+            Constants.AR -> _mission.emit(getCatchOXQuizUseCase(memberId))
         }
     }
 
@@ -70,6 +75,7 @@ class MissionViewModel @Inject constructor(
             Constants.OX_QUIZ -> _isSuccess.emit(postIsSuccessOXQuizUseCase.invoke(isSuccess))
             Constants.FOUR_QUIZ -> _isSuccess.emit(postIsSuccessFourQuizUseCase.invoke(isSuccess))
             Constants.GAME -> _isSuccess.emit(postIsSuccessMiniGameUseCase.invoke(isSuccess))
+            Constants.AR -> _isSuccess.emit(postIsSuccessCatchOXQuizUseCase(isSuccess))
         }
     }
 
@@ -84,6 +90,7 @@ class MissionViewModel @Inject constructor(
     fun getCompletedTime(key: String): Long {
         return getCompletedTimeUseCase(key)
     }
+
 
     fun removeCompletedTime() = viewModelScope.launch {
         removeCompletedTimeUseCase.invoke()

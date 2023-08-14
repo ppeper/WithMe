@@ -287,7 +287,10 @@ fun MainNavigationScreen(
             route = CameraNav.route,
             deepLinks = CameraNav.deepLinks
         ) {
-            CameraScreen()
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry(NavigationRouteName.AR_MAP)
+            }
+            CameraScreen(hiltViewModel(parentEntry), navController = navController)
         }
         composable(
             route = NavigationRouteName.GALLERY
@@ -442,7 +445,6 @@ fun NavGraphBuilder.communityNavigation(
     }
 
 }
-
 
 
 @Preview

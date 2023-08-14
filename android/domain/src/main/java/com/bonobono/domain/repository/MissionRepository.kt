@@ -17,5 +17,7 @@ interface MissionRepository {
     suspend fun getTotalScore(memberId: Int) : NetworkResult<TotalScore>
     fun getCompletedTime(key: String) : Long
     suspend fun putCompletedTime(key: String, time: Long)
+    suspend fun getCatchOXQuiz(memberId: Int) : NetworkResult<Mission>
+    suspend fun postCatchIsSuccessOXQuiz(isSuccess: IsSuccess) : NetworkResult<Boolean>
     suspend fun removeCompletedTime()
 }

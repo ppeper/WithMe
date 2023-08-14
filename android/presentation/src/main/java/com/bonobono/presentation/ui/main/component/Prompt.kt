@@ -210,7 +210,7 @@ fun PromptOXButtonRow(
 fun PromptInputRow(
     modifier: Modifier,
     value: String,
-    hint: String,
+    hint: String = "정답을 입력하세요..",
     onValueChange: (String) -> Unit,
     submitButton: String
 ) {
@@ -229,7 +229,7 @@ fun PromptInputRow(
             onValueChange = onValueChange,
             placeholder = {
                 Text(
-                    text = "정답을 입력하세요..",
+                    text = hint,
                     style = CustomTextStyle.quizContentStyle.copy(color = LightGray)
                 )
                 Text(text = hint, style = CustomTextStyle.quizContentStyle.copy(color = LightGray))

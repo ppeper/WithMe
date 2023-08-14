@@ -1,5 +1,6 @@
 package com.bonobono.presentation.ui.map
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -66,6 +67,7 @@ import com.naver.maps.map.overlay.OverlayImage
 import kotlinx.coroutines.launch
 import java.util.Date
 
+private const val TAG = "MapScreen"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -77,14 +79,10 @@ fun MainMapScreen(navController: NavHostController, mapViewModel: MapViewModel =
     val selectedIdx = remember {
         mutableStateOf(0)
     }
-    val locationList = listOf<String>(
-        "부산 광안리 해수욕장",
-        "충남 서천 춘장대 해수욕장",
-        "울산 일산 해수욕장",
-        "여수 웅천천수공원",
-    )
 
     mapViewModel.getLocations()
+
+    Log.d(TAG, "MainMapScreen: $locations")
 
     BottomSheetScaffold(
         scaffoldState = scaffoldState,
@@ -138,17 +136,21 @@ fun MainMapScreen(navController: NavHostController, mapViewModel: MapViewModel =
                                         style = CustomTextStyle.gameGuideTextStyle
                                     )
                                 })
+                            Spacer(modifier = Modifier.weight(1f))
                             ElevatedFilterChip(
                                 modifier = Modifier.padding(4.dp),
                                 selected = false,
+                                colors = FilterChipDefaults.elevatedFilterChipColors(
+                                    containerColor = PrimaryBlue
+                                ),
                                 onClick = {
-                                    mapViewModel.location.value = locations.get(selectedIdx.value)
+                                    mapViewModel.location.value = locations[selectedIdx.value]
                                     navController.navigate(ARMapNav.route)
                                 },
                                 label = {
                                     Text(
                                         text = "AR",
-                                        style = CustomTextStyle.gameGuideTextStyle
+                                        style = CustomTextStyle.gameGuideTextStyle.copy(color = White)
                                     )
                                 })
                         }
@@ -203,45 +205,14 @@ fun MapScreen(
                 cameraPositionState = cameraPositionState,
                 selectedIdx = selectedIdx
             )
+        }
 
-        }
-        Column {
-            MapChips(
-                locations = locations,
-                selectedIdx = selectedIdx,
-                cameraPositionState = cameraPositionState
-            )
-            Column(
-                modifier = Modifier
-                    .align(Alignment.End)
-                    .padding(4.dp)
-            ) {
-                ChipAR(navController = navController)
-            }
-        }
+        MapChips(
+            locations = locations,
+            cameraPositionState = cameraPositionState,
+            selectedIdx = selectedIdx
+        )
     }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ChipAR(navController: NavHostController) {
-    ElevatedFilterChip(
-        modifier = Modifier
-            .padding(4.dp),
-        colors = FilterChipDefaults.elevatedFilterChipColors(
-            containerColor = PrimaryBlue
-        ),
-        selected = false,
-        onClick = {
-            navController.navigate(CameraNav.route)
-        },
-        label = {
-            Text(
-                text = "AR",
-                style = CustomTextStyle.gameGuideTextStyle,
-                color = White
-            )
-        })
 }
 
 @OptIn(ExperimentalNaverMapApi::class, ExperimentalMaterial3Api::class)

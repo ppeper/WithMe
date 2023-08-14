@@ -45,6 +45,7 @@ import com.bonobono.presentation.ui.CommunityFab
 import com.bonobono.presentation.ui.NavigationRouteName
 import com.bonobono.presentation.ui.NavigationRouteName.COMMUNITY_REPORT
 import com.bonobono.presentation.ui.common.CheckCountDialog
+import com.bonobono.presentation.ui.common.LoadingView
 import com.bonobono.presentation.ui.community.util.routeMapper
 import com.bonobono.presentation.ui.community.util.textMapper
 import com.bonobono.presentation.ui.community.views.board.BoardWriteBottomView

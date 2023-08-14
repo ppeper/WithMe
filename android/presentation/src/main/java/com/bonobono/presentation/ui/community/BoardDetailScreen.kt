@@ -25,9 +25,11 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.IconToggleButton
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -79,6 +81,7 @@ import com.bonobono.presentation.ui.community.views.comment.WriteCommentView
 import com.bonobono.presentation.ui.community.views.link.LinkImageTitle
 import com.bonobono.presentation.ui.community.views.link.getMetaData
 import com.bonobono.presentation.ui.community.views.map.ReportMapAndLocation
+import com.bonobono.presentation.ui.community.views.profile.ProfileSheetContent
 import com.bonobono.presentation.ui.theme.Black_100
 import com.bonobono.presentation.ui.theme.Black_70
 import com.bonobono.presentation.ui.theme.DividerGray
@@ -95,7 +98,7 @@ import kotlinx.coroutines.launch
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun BoardDetailScreen(
     modifier: Modifier = Modifier,
@@ -132,6 +135,7 @@ fun BoardDetailScreen(
             val localViewModel: SharedLocalViewModel = hiltViewModel()
             val currentMemberId = localViewModel.getMemberId("member_id").toLong()
             val role = localViewModel.getRole("role")
+            var showSheet by remember { mutableStateOf(false) }
 
             val result =
                 (articleState as NetworkResult.Success<Article>).data.copy(articleId = articleId)
@@ -150,6 +154,23 @@ fun BoardDetailScreen(
             LaunchedEffect(Unit) {
                 scope.launch {
                     metaLink = getMetaData(Link(article.url ?: "https://", article.urlTitle ?: ""))
+                }
+            }
+
+            // 프로필 바텀 시트 뷰
+            if (showSheet) {
+                ModalBottomSheet(
+                    onDismissRequest = { showSheet = false },
+                    containerColor = White,
+                    tonalElevation = 0.dp,
+                    shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp)
+                ) {
+                    ProfileSheetContent(
+                        modifier = modifier,
+                        article = article,
+                    ) {
+                         /* TODO("해당 유저와 채팅하기") */
+                    }
                 }
             }
             // Meta Url 파싱 완료
@@ -242,7 +263,8 @@ fun BoardDetailScreen(
                                         onAdminCompleteClicked = {
                                             article.adminConfirmStatus = true
                                             adminState = true
-                                        }
+                                        },
+                                        onProfileClicked = { showSheet = true }
                                     )
 
                                     Text(
@@ -340,6 +362,7 @@ fun WriterView(
     navController: NavController,
     onRecruitCompleteClicked: () -> Unit,
     onAdminCompleteClicked: () -> Unit,
+    onProfileClicked: () -> Unit
 ) {
 
     val deleteState by communityViewModel.deleteArticleState.collectAsStateWithLifecycle()
@@ -372,7 +395,7 @@ fun WriterView(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        ProfileView(article = article)
+        ProfileView(article = article) { onProfileClicked() }
         Spacer(modifier = modifier.weight(1f))
         // 함께 게시판
         if (article.type == Constants.TOGETHER) {
@@ -428,9 +451,16 @@ fun WriterView(
 @Composable
 fun ProfileView(
     modifier: Modifier = Modifier,
-    article: Article
+    article: Article,
+    onProfileClicked: () -> Unit
 ) {
     Row(
+        modifier = modifier.clickable(
+            interactionSource = MutableInteractionSource(),
+            indication = null
+        ) {
+            onProfileClicked()
+        },
         verticalAlignment = Alignment.CenterVertically
     ) {
         AsyncImage(
@@ -600,7 +630,8 @@ fun PreviewWriterView() {
         recruitCompleteState = null,
         navController = rememberNavController(),
         onRecruitCompleteClicked = {},
-        onAdminCompleteClicked = {}
+        onAdminCompleteClicked = {},
+        onProfileClicked = {}
     )
 }
 

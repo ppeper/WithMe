@@ -20,9 +20,9 @@ fun RankingResponse.toDomain(): Ranking {
 }
 
 fun CampaignResponse.toDomain(): Campaign {
-    return Campaign(authority, completionStatus, endDate, locationName, name, startDate)
+    return Campaign(authority, completionStatus, endDate, locationName, name, startDate, url)
 }
 
 fun com.bonobono.data.model.character.response.OurCharacterResponse.toDomain() : OurCharacter {
-    return OurCharacter(name, description, level)
+    return OurCharacter(id, name, description, level)
 }

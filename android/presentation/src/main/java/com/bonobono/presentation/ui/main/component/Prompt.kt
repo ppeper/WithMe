@@ -107,7 +107,7 @@ fun GamePromptBox(name: String, content: String, modifier: Modifier) {
         modifier = modifier.padding(12.dp),
         elevation = CardDefaults.cardElevation(4.dp),
     ) {
-        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        Row(modifier = Modifier.fillMaxWidth().background(White), verticalAlignment = Alignment.CenterVertically) {
             GifLoader(modifier = Modifier.size(100.dp), source = R.raw.animation_fairy)
             Column(modifier = Modifier.fillMaxWidth()) {
                 Text(
@@ -140,7 +140,7 @@ fun ARPromptBox(
                 shape = RoundedCornerShape(topEnd = 10.dp, topStart = 10.dp)
             )
             .fillMaxWidth()
-            .fillMaxHeight(0.4f)
+            .fillMaxHeight(0.32f)
             .padding(12.dp),
     ) {
         Text(text = name, style = CustomTextStyle.quizTitleStyle)
@@ -212,7 +212,8 @@ fun PromptInputRow(
     value: String,
     hint: String = "정답을 입력하세요..",
     onValueChange: (String) -> Unit,
-    submitButton: String
+    submitButton: String,
+    onClick: () -> Unit = {},
 ) {
 
     Row(
@@ -243,7 +244,7 @@ fun PromptInputRow(
             text = submitButton,
             CustomTextStyle.quizContentStyle
         ) {
-
+            onClick()
         }
     }
 }

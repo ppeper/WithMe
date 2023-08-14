@@ -14,17 +14,19 @@ import retrofit2.http.Path
 interface MapService {
 
     @GET("location")
-    suspend fun getLocations() : List<LocationResponse>
+    suspend fun getLocations(): List<LocationResponse>
 
     @GET("reward/{locationId}")
-    suspend fun getRanking(@Path(value = "locationId") locationId: Long) : List<RankingResponse>
+    suspend fun getRanking(@Path(value = "locationId") locationId: Long): List<RankingResponse>
 
     @GET("campaign/{locationId}")
-    suspend fun getCampaign(@Path(value = "locationId") locationId: Long) : List<CampaignResponse>
+    suspend fun getCampaign(@Path(value = "locationId") locationId: Long): List<CampaignResponse>
 
-    @POST
+    @POST("campaign")
     suspend fun postCampaign(@Body campaign: Campaign)
 
     @POST("catch/list")
-    suspend fun getCatchList(@Body key: CatchKey) : List<CatchCharacterResponse>
+    suspend fun getCatchList(@Body key: CatchKey): List<CatchCharacterResponse>
+
+
 }

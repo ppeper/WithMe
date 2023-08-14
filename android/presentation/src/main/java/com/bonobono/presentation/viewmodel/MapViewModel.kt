@@ -12,6 +12,7 @@ import com.bonobono.domain.usecase.map.GetCampaignUseCase
 import com.bonobono.domain.usecase.map.GetCatchCharactersUseCase
 import com.bonobono.domain.usecase.map.GetLocationsUseCase
 import com.bonobono.domain.usecase.map.GetRankingUseCase
+import com.bonobono.domain.usecase.map.PostCampaignUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,7 +24,8 @@ class MapViewModel @Inject constructor(
     private val getLocationsUseCase: GetLocationsUseCase,
     private val getCampaignUseCase: GetCampaignUseCase,
     private val getRankingUseCase: GetRankingUseCase,
-    private val getCatchCharactersUseCase: GetCatchCharactersUseCase
+    private val getCatchCharactersUseCase: GetCatchCharactersUseCase,
+    private val postCampaignUseCase: PostCampaignUseCase
 ) : ViewModel() {
 
     private val _locations = MutableStateFlow<List<Location>>(listOf())
@@ -58,4 +60,7 @@ class MapViewModel @Inject constructor(
         _catchCharacters.emit(getCatchCharactersUseCase.invoke(catchKey))
     }
 
+    fun postCampaign(campaign: Campaign) = viewModelScope.launch {
+        postCampaignUseCase.invoke(campaign)
+    }
 }

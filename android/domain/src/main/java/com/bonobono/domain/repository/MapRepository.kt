@@ -12,4 +12,5 @@ interface MapRepository {
     suspend fun getRanking(locationId: Long) : NetworkResult<List<Ranking>>
     suspend fun getCampaign(locationId: Long) : NetworkResult<List<Campaign>>
     suspend fun getCatchCharacterList(key: CatchKey) : NetworkResult<List<CatchCharacter>>
+    suspend fun postCampaign(campaign: Campaign) : NetworkResult<Unit>
 }

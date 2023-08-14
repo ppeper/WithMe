@@ -10,5 +10,6 @@ data class CampaignResponse(
     val endDate: String,
     val locationName: String,
     val name: String,
-    val startDate: String
+    val startDate: String,
+    val url: String
 ) : Parcelable

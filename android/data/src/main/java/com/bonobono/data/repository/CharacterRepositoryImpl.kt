@@ -6,6 +6,7 @@ import com.bonobono.data.remote.CharacterService
 import com.bonobono.data.remote.handleApi
 import com.bonobono.domain.model.NetworkResult
 import com.bonobono.domain.model.character.OurCharacter
+import com.bonobono.domain.model.character.SaveCharacter
 import com.bonobono.domain.model.character.UserCharacter
 import com.bonobono.domain.model.map.Campaign
 import com.bonobono.domain.model.map.Ranking
@@ -21,5 +22,9 @@ class CharacterRepositoryImpl @Inject constructor(
 
     override suspend fun getOurCharacterList(): NetworkResult<List<OurCharacter>> {
         return handleApi { characterService.getOurCharacterList(1).map { it.toDomain() } }
+    }
+
+    override suspend fun patchSavaCharacter(character: SaveCharacter): NetworkResult<Unit> {
+        return handleApi { characterService.patchSaveCharacter(character) }
     }
 }

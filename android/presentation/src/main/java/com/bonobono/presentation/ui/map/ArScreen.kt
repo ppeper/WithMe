@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import com.bonobono.domain.model.character.SaveCharacter
 import com.bonobono.domain.model.mission.IsSuccess
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.common.CancelButton
@@ -33,6 +34,7 @@ import com.bonobono.presentation.ui.main.component.PromptOXButtonRow
 import com.bonobono.presentation.ui.main.component.PromptTwoButtonRow
 import com.bonobono.presentation.ui.common.GifLoader
 import com.bonobono.presentation.utils.Constants
+import com.bonobono.presentation.viewmodel.CharacterViewModel
 import com.bonobono.presentation.viewmodel.MapViewModel
 import com.bonobono.presentation.viewmodel.MissionViewModel
 import com.google.ar.core.Config
@@ -45,6 +47,7 @@ import io.github.sceneview.ar.node.ArNode
 import io.github.sceneview.ar.node.PlacementMode
 
 private const val TAG = "ArScreen"
+
 object PromptString {
     const val chapterOneTitle = "???"
     const val chapterTwoTitle = "???"
@@ -70,17 +73,50 @@ data class Prompt(
 
 
 @Composable
-fun CameraScreen(mapViewModel: MapViewModel, missionViewModel: MissionViewModel = hiltViewModel(), navController: NavHostController) {
+fun CameraScreen(
+    mapViewModel: MapViewModel,
+    missionViewModel: MissionViewModel = hiltViewModel(),
+    navController: NavHostController,
+    characterViewModel: CharacterViewModel = hiltViewModel()
+) {
     missionViewModel.getMission(1, Constants.AR)
     val quiz by missionViewModel.mission.collectAsState()
     var isSuccess = missionViewModel.isSuccess.collectAsState()
 
     val promptsList = listOf(
         Prompt(PromptString.chapterOneTitle, PromptString.chapterOneContent, "", 0, "거절", "수락"),
-        Prompt(PromptString.chapterTwoTitle, PromptString.chapterTwoContent, "", 0, "뒤로", "다음"),
-        Prompt(PromptString.chapterThreeTitle, PromptString.chapterThreeContent + "\n\n" + quiz.problem, "", R.raw.animation_devil, "X", "O"),
-        Prompt(PromptString.chapterFourTitle, PromptString.chapterFourContent, "", R.raw.whale_lv2_happy, "이름..", "확인"),
-        Prompt(PromptString.chapterFourTitle, PromptString.chapterFiveContent, "", R.raw.whale_lv2_sad_edit, "", "나가기")
+        Prompt(
+            PromptString.chapterTwoTitle,
+            PromptString.chapterTwoContent + "\n\n" + quiz.commentary,
+            "",
+            0,
+            "뒤로",
+            "다음"
+        ),
+        Prompt(
+            PromptString.chapterThreeTitle,
+            PromptString.chapterThreeContent + "\n\n" + quiz.problem,
+            "",
+            R.raw.animation_devil,
+            "X",
+            "O"
+        ),
+        Prompt(
+            PromptString.chapterFourTitle,
+            PromptString.chapterFourContent,
+            "",
+            R.raw.whale_lv2_happy,
+            "이름..",
+            "확인"
+        ),
+        Prompt(
+            PromptString.chapterFourTitle,
+            PromptString.chapterFiveContent,
+            "",
+            R.raw.whale_lv2_sad_edit,
+            "",
+            "나가기"
+        )
     )
 
     var chapter = remember { mutableStateOf(0) }
@@ -94,9 +130,9 @@ fun CameraScreen(mapViewModel: MapViewModel, missionViewModel: MissionViewModel 
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             val currentModel = remember {
-                mutableStateOf("dolphin_animated")
+                mutableStateOf("acg_trash_can")
             }
-            if(chapter.value >= 2) {
+            if (chapter.value >= 2) {
                 AnimationScreen(modifier = Modifier.fillMaxSize(), prompt.animation)
             } else {
                 ARScreen(currentModel.value)
@@ -109,7 +145,7 @@ fun CameraScreen(mapViewModel: MapViewModel, missionViewModel: MissionViewModel 
                     .align(alignment = Alignment.BottomCenter),
                 // Row 넣기
             ) {
-                when(chapter.value) {
+                when (chapter.value) {
                     3 -> {
                         PromptInputRow(
                             modifier = Modifier.padding(4.dp),
@@ -118,9 +154,20 @@ fun CameraScreen(mapViewModel: MapViewModel, missionViewModel: MissionViewModel 
                             onValueChange = { newValue ->
                                 inputName = newValue
                             },
-                            prompt.rightButtonContent
+                            prompt.rightButtonContent,
+                            onClick = {
+                                characterViewModel.patchCharacter(
+                                    SaveCharacter(
+                                        inputName,
+                                        mapViewModel.location.value.name,
+                                        1,
+                                        mapViewModel.curCatchCharacter!!.ourCharacter.charOrdId
+                                    )
+                                )
+                            },
                         )
                     }
+
                     2 -> {
                         PromptOXButtonRow(modifier = Modifier, onClickX = {
                             missionViewModel.postIsSuccess(
@@ -131,7 +178,7 @@ fun CameraScreen(mapViewModel: MapViewModel, missionViewModel: MissionViewModel 
                                     quiz.problemId
                                 )
                             )
-                            if(quiz.answer == "X") {
+                            if (quiz.answer == "X") {
                                 chapter.value += 1;
                                 prompt = promptsList[chapter.value]
                             } else {
@@ -147,7 +194,7 @@ fun CameraScreen(mapViewModel: MapViewModel, missionViewModel: MissionViewModel 
                                     quiz.problemId
                                 )
                             )
-                            if(quiz.answer == "O") {
+                            if (quiz.answer == "O") {
                                 chapter.value += 1
                                 prompt = promptsList[chapter.value]
                             } else {
@@ -156,11 +203,12 @@ fun CameraScreen(mapViewModel: MapViewModel, missionViewModel: MissionViewModel 
                             }
                         })
                     }
+
                     else -> {
                         PromptTwoButtonRow(
                             modifier = Modifier.align(alignment = Alignment.BottomEnd),
                             leftButton = {
-                                if(chapter.value <= 3) {
+                                if (chapter.value <= 3) {
                                     CancelButton(
                                         modifier = Modifier,
                                         text = prompt.leftButtonContent,
@@ -170,7 +218,7 @@ fun CameraScreen(mapViewModel: MapViewModel, missionViewModel: MissionViewModel 
                                     }
                                 }
                             }, rightButton = {
-                                if(chapter.value <= 3) {
+                                if (chapter.value <= 3) {
                                     SubmitButton(
                                         modifier = Modifier,
                                         text = prompt.rightButtonContent,
@@ -198,7 +246,6 @@ fun CameraScreen(mapViewModel: MapViewModel, missionViewModel: MissionViewModel 
 }
 
 
-
 @Composable
 fun ARScreen(model: String) {
     val nodes = remember {
@@ -216,7 +263,7 @@ fun ARScreen(model: String) {
             nodes = nodes,
             planeRenderer = true,
             onCreate = { arSceneView ->
-                arSceneView.lightEstimationMode = Config.LightEstimationMode.DISABLED
+                arSceneView.lightEstimationMode = Config.LightEstimationMode.ENVIRONMENTAL_HDR
                 arSceneView.planeRenderer.isShadowReceiver = false
                 modelNode.value = ArModelNode(arSceneView.engine, PlacementMode.INSTANT).apply {
                     loadModelGlbAsync(
@@ -257,11 +304,13 @@ fun AnimationScreen(modifier: Modifier, source: Int) {
             cameraState = cameraState,
             camSelector = camSelector,
         ) {
-            GifLoader(modifier = Modifier
-                .fillMaxWidth()
-                .height(270.dp)
-                .padding(bottom = 64.dp)
-                .align(Alignment.Center), source = source)
+            GifLoader(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(270.dp)
+                    .padding(bottom = 64.dp)
+                    .align(Alignment.Center), source = source
+            )
         }
     }
 }

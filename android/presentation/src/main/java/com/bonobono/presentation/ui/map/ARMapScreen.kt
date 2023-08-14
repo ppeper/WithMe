@@ -20,6 +20,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -30,6 +31,7 @@ import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.CameraNav
 import com.bonobono.presentation.ui.MainActivity
 import com.bonobono.presentation.ui.common.text.CustomTextStyle
+import com.bonobono.presentation.ui.main.component.GamePromptBox
 import com.bonobono.presentation.ui.theme.PrimaryBlue
 import com.bonobono.presentation.ui.theme.White
 import com.bonobono.presentation.utils.characterList
@@ -55,11 +57,11 @@ import java.lang.Math.sin
 import java.lang.Math.sqrt
 
 private const val TAG = "ARMapScreen"
+
 @OptIn(ExperimentalNaverMapApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun ARMapScreen(
-    navController: NavHostController,
-    mapViewModel: MapViewModel
+    navController: NavHostController, mapViewModel: MapViewModel
 ) {
     var curLocation = mapViewModel.location.value
 
@@ -67,7 +69,8 @@ fun ARMapScreen(
     mapViewModel.getCatchCharacters(CatchKey(curLocation.name, 1))
 
     val cameraPositionState: CameraPositionState = rememberCameraPositionState {
-        position = CameraPosition(LatLng(curLocation.centerLatitude, curLocation.centerLongitude),  15.0)
+        position =
+            CameraPosition(LatLng(curLocation.centerLatitude, curLocation.centerLongitude), 15.0)
     }
 
     var mapUiSettings by remember {
@@ -87,9 +90,10 @@ fun ARMapScreen(
             while (isActive) {
                 // 위치 정보를 얻어오는 로직을 구현합니다. (예: FusedLocationProviderClient 사용)
                 getLocation(context, currentLocation)
-                if(currentLocation.value != null) {
-                    val curCatchCharacter =  findCharacterInRadius(catchCharacters, currentLocation.value!!, 50.0)
-                    if(curCatchCharacter != null) {
+                if (currentLocation.value != null) {
+                    val curCatchCharacter =
+                        findCharacterInRadius(catchCharacters, currentLocation.value!!, 50.0)
+                    if (curCatchCharacter != null) {
                         mapViewModel.curCatchCharacter = curCatchCharacter
                         navController.navigate(CameraNav.route)
                     }
@@ -107,10 +111,13 @@ fun ARMapScreen(
             locationSource = locationSource
         ) {
             CharacterMarkers(
-                characters = catchCharacters,
-                cameraPositionState = cameraPositionState
+                characters = catchCharacters, cameraPositionState = cameraPositionState
             )
         }
+        GamePromptBox(
+            name = "클로버 요정", content = "지도에 보이는 위치로 가서 저주에 걸린 동물들을 구해줘!",
+            modifier = Modifier.align(Alignment.TopCenter)
+        )
         ChipAR(navController = navController)
     }
 }
@@ -118,9 +125,7 @@ fun ARMapScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChipAR(navController: NavHostController) {
-    ElevatedFilterChip(
-        modifier = Modifier
-            .padding(4.dp),
+    ElevatedFilterChip(modifier = Modifier.padding(4.dp),
         colors = FilterChipDefaults.elevatedFilterChipColors(
             containerColor = PrimaryBlue
         ),
@@ -130,9 +135,7 @@ fun ChipAR(navController: NavHostController) {
         },
         label = {
             Text(
-                text = "AR",
-                style = CustomTextStyle.gameGuideTextStyle,
-                color = White
+                text = "AR", style = CustomTextStyle.gameGuideTextStyle, color = White
             )
         })
 }
@@ -145,18 +148,16 @@ fun CharacterMarkers(
 ) {
     characters.forEachIndexed { idx, item ->
         val getLocalCharacter = characterList.find { it.name == item.ourCharacter.name }
-        val icon = getLocalCharacter?.icon ?: R.drawable.character_beluga
-        Marker(
-            state = MarkerState(position = LatLng(item.charLatitude, item.charLongtitude)),
-            icon = OverlayImage.fromResource(icon),
-            width = 48.dp,
-            height = 48.dp,
+        val icon = getLocalCharacter?.icon ?: R.drawable.ic_beluga
+        Marker(state = MarkerState(position = LatLng(item.charLatitude, item.charLongtitude)),
+            icon = OverlayImage.fromResource(R.drawable.ic_pixel_icon),
+            width = 32.dp,
+            height = 32.dp,
             onClick = {
                 cameraPositionState.position =
                     CameraPosition(LatLng(item.charLatitude, item.charLongtitude), 11.0)
                 true
-            }
-        )
+            })
     }
 }
 
@@ -165,18 +166,18 @@ fun getLocation(context: Context, currentLocation: MutableState<Location?>) {
     val fusedLocationClient: FusedLocationProviderClient =
         LocationServices.getFusedLocationProviderClient(context)
 
-    fusedLocationClient.lastLocation
-        .addOnSuccessListener { location: Location? ->
-            // 위치 정보를 성공적으로 얻었을 때 콜백으로 전달
-            currentLocation.value = location
-            Log.d(TAG, "getLocation: $location")
-        }
-        .addOnFailureListener { exception: Exception ->
-            // 위치 정보를 얻어오는데 실패했을 때 예외 처리
-        }
+    fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+        // 위치 정보를 성공적으로 얻었을 때 콜백으로 전달
+        currentLocation.value = location
+        Log.d(TAG, "getLocation: $location")
+    }.addOnFailureListener { exception: Exception ->
+        // 위치 정보를 얻어오는데 실패했을 때 예외 처리
+    }
 }
 
-fun findCharacterInRadius(characterList: List<CatchCharacter>, location: Location, radiusMeters: Double): CatchCharacter? {
+fun findCharacterInRadius(
+    characterList: List<CatchCharacter>, location: Location, radiusMeters: Double
+): CatchCharacter? {
     val targetLatLng = LatLng(location.latitude, location.longitude)
     for (character in characterList) {
         val characterLatLng = LatLng(character.charLatitude, character.charLongtitude)
@@ -193,9 +194,9 @@ fun computeDistanceBetween(latLng1: LatLng, latLng2: LatLng): Double {
     val earthRadius = 6371000.0 // Earth's radius in meters
     val dLat = Math.toRadians(latLng2.latitude - latLng1.latitude)
     val dLng = Math.toRadians(latLng2.longitude - latLng1.longitude)
-    val a = sin(dLat / 2) * sin(dLat / 2) +
-            cos(Math.toRadians(latLng1.latitude)) * cos(Math.toRadians(latLng2.latitude)) *
-            sin(dLng / 2) * sin(dLng / 2)
+    val a = sin(dLat / 2) * sin(dLat / 2) + cos(Math.toRadians(latLng1.latitude)) * cos(
+        Math.toRadians(latLng2.latitude)
+    ) * sin(dLng / 2) * sin(dLng / 2)
     val c = 2 * atan2(sqrt(a), sqrt(1 - a))
     return earthRadius * c
 }

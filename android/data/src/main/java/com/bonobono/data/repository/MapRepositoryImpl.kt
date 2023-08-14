@@ -31,4 +31,8 @@ class MapRepositoryImpl @Inject constructor(
     override suspend fun getCatchCharacterList(key: CatchKey): NetworkResult<List<CatchCharacter>> {
         return handleApi { mapService.getCatchList(key).map { it.toDomain() } }
     }
+
+    override suspend fun postCampaign(campaign: Campaign): NetworkResult<Unit> {
+        return handleApi { mapService.postCampaign(campaign) }
+    }
 }

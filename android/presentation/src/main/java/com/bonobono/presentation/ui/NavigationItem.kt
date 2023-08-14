@@ -244,11 +244,17 @@ object NavigationRouteName {
     const val COMMUNITY_POST = "write_free"
     const val COMMUNITY_POST_WITH = "write_with"
     const val COMMUNITY_POST_REPORT = "write_report"
+    const val COMMUNITY_UPDATE = "update_free"
+    const val COMMUNITY_UPDATE_WITH = "update_with"
+    const val COMMUNITY_UPDATE_REPORT = "update_report"
 
     // Gallery Route
     const val GALLERY = "gallery"
     const val GALLERY_WITH = "gallery_with"
     const val GALLERY_REPORT = "gallery_report"
+    const val GALLERY_UPDATE = "gallery_update"
+    const val GALLERY_UPDATE_WITH = "gallery_update_with"
+    const val GALLERY_UPDATE_REPORT = "gallery_update_report"
 
     // Post Detail
     const val BOARD_DETAIL = "board_detail"

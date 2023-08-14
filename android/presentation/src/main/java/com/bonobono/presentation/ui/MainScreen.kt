@@ -34,14 +34,17 @@ import androidx.navigation.navigation
 import com.bonobono.presentation.ui.NavigationRouteName.COMMUNITY_FREE
 import com.bonobono.presentation.ui.NavigationRouteName.COMMUNITY_GRAPH
 import com.bonobono.presentation.ui.NavigationRouteName.COMMUNITY_REPORT
+import com.bonobono.presentation.ui.NavigationRouteName.COMMUNITY_UPDATE
+import com.bonobono.presentation.ui.NavigationRouteName.COMMUNITY_UPDATE_REPORT
+import com.bonobono.presentation.ui.NavigationRouteName.COMMUNITY_UPDATE_WITH
 import com.bonobono.presentation.ui.NavigationRouteName.COMMUNITY_WITH
 import com.bonobono.presentation.ui.NavigationRouteName.MAIN_COMMUNITY
 import com.bonobono.presentation.ui.chatting.MainChattingScreen
-import com.bonobono.presentation.ui.common.button.CommunityFloatingActionButton
 import com.bonobono.presentation.ui.common.button.HomeFloatingActionButton
 import com.bonobono.presentation.ui.common.topbar.SharedTopAppBar
 import com.bonobono.presentation.ui.common.topbar.rememberAppBarState
 import com.bonobono.presentation.ui.community.BoardDetailScreen
+import com.bonobono.presentation.ui.community.BoardUpdateScreen
 import com.bonobono.presentation.ui.community.CommunityScreen
 import com.bonobono.presentation.ui.community.BoardWriteScreen
 import com.bonobono.presentation.ui.community.GalleryScreen
@@ -94,27 +97,6 @@ fun MainScreen() {
             when (currentRoute) {
                 NavigationRouteName.MAIN_HOME -> {
                     MainFloatingActionButtons(navController)
-                }
-
-                NavigationRouteName.COMMUNITY_FREE -> {
-                    CommunityFloatingActionButton(
-                        navController = navController,
-                        item = CommunityFab.FREE
-                    )
-                }
-
-                NavigationRouteName.COMMUNITY_WITH -> {
-                    CommunityFloatingActionButton(
-                        navController = navController,
-                        item = CommunityFab.WITH
-                    )
-                }
-
-                NavigationRouteName.COMMUNITY_REPORT -> {
-                    CommunityFloatingActionButton(
-                        navController = navController,
-                        item = CommunityFab.REPORT
-                    )
                 }
             }
         }
@@ -327,6 +309,39 @@ fun MainNavigationScreen(
             )
         }
         composable(
+            route = NavigationRouteName.GALLERY_UPDATE
+        ) {
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry(navController.currentDestination?.route.toString())
+            }
+            GalleryScreen(
+                navController = navController,
+                photoViewModel = hiltViewModel(parentEntry)
+            )
+        }
+        composable(
+            route = NavigationRouteName.GALLERY_UPDATE_WITH
+        ) {
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry(navController.currentDestination?.route.toString())
+            }
+            GalleryScreen(
+                navController = navController,
+                photoViewModel = hiltViewModel(parentEntry)
+            )
+        }
+        composable(
+            route = NavigationRouteName.GALLERY_UPDATE_REPORT
+        ) {
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry(navController.currentDestination?.route.toString())
+            }
+            GalleryScreen(
+                navController = navController,
+                photoViewModel = hiltViewModel(parentEntry)
+            )
+        }
+        composable(
             route = CommunityFab.FREE.route
         ) {
             BoardWriteScreen(type = COMMUNITY_FREE, navController = navController)
@@ -357,6 +372,44 @@ fun MainNavigationScreen(
                 )
             }
         }
+
+        composable(
+            route = "$COMMUNITY_UPDATE/{type}/{articleId}"
+        ) {
+            val type = it.arguments?.getString("type")
+            val articleId = it.arguments?.getString("articleId")
+            if (articleId != null && type != null) {
+                val parentEntry = remember(it) {
+                    navController.getBackStackEntry("${BoardDetailNav.route}/$type/$articleId")
+                }
+                BoardUpdateScreen(type = COMMUNITY_FREE, navController = navController, communityViewModel = hiltViewModel(parentEntry))
+            }
+        }
+        composable(
+            route = "$COMMUNITY_UPDATE_WITH/{type}/{articleId}"
+        ) {
+            val type = it.arguments?.getString("type")
+            val articleId = it.arguments?.getString("articleId")
+            if (articleId != null && type != null) {
+                val parentEntry = remember(it) {
+                    navController.getBackStackEntry("${BoardDetailNav.route}/$type/$articleId")
+                }
+                BoardUpdateScreen(type = COMMUNITY_WITH, navController = navController, communityViewModel = hiltViewModel(parentEntry))
+            }
+        }
+        composable(
+            route = "$COMMUNITY_UPDATE_REPORT/{type}/{articleId}"
+        ) {
+            val type = it.arguments?.getString("type")
+            val articleId = it.arguments?.getString("articleId")
+            if (articleId != null && type != null) {
+                val parentEntry = remember(it) {
+                    navController.getBackStackEntry("${BoardDetailNav.route}/$type/$articleId")
+                }
+                BoardUpdateScreen(type = COMMUNITY_REPORT, navController = navController, communityViewModel = hiltViewModel(parentEntry))
+            }
+        }
+
         composable(
             route = "${NavigationRouteName.COMMUNITY_SEARCH}/{type}"
         ) {
@@ -387,6 +440,17 @@ fun MainNavigationScreen(
                 communityViewModel = hiltViewModel(parentEntry)
             )
         }
+
+        composable(
+            route = "${NavigationRouteName.REPORT_MAP}/{type}/{articleId}"
+        ) {
+            val type = it.arguments?.getString("type")
+            val articleId = it.arguments?.getString("articleId")
+            if (articleId != null && type != null) {
+                ReportMapView(navController = navController)
+            }
+        }
+
         // 마이페이지
         composable(
             route = SettingNav.route,

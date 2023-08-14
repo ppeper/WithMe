@@ -1,6 +1,5 @@
 package com.bonobono.presentation.ui.community.views.board
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -23,12 +22,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,6 +43,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -52,7 +51,10 @@ import com.bonobono.domain.model.NetworkResult
 import com.bonobono.domain.model.community.Article
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.BoardDetailNav
+import com.bonobono.presentation.ui.CommunityFab
+import com.bonobono.presentation.ui.NavigationRouteName
 import com.bonobono.presentation.ui.common.LoadingView
+import com.bonobono.presentation.ui.common.button.CommunityFloatingActionButton
 import com.bonobono.presentation.ui.community.util.DummyData.dummyArticle
 import com.bonobono.presentation.ui.community.util.freeLaunchEffect
 import com.bonobono.presentation.ui.community.util.reportLaunchEffect
@@ -88,21 +90,57 @@ fun CommonPostListView(
         is NetworkResult.Loading -> {
             LoadingView()
         }
+
         is NetworkResult.Success -> {
             val articleList = (state as NetworkResult.Success<List<Article>>).data
-            if (articleList.isEmpty()) {
-                EmptyListAnimation()
-            } else {
-                LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    contentPadding = PaddingValues(16.dp),
-                ) {
-                    items(articleList) { item ->
-                        BoardItemView(type = type, article = item, navController = navController)
+            val navBackStackEntry by navController.currentBackStackEntryAsState()
+            val currentRoute = navBackStackEntry?.destination?.route
+            Scaffold(
+                floatingActionButton = {
+                    when (currentRoute) {
+                        NavigationRouteName.COMMUNITY_FREE -> {
+                            CommunityFloatingActionButton(
+                                navController = navController,
+                                item = CommunityFab.FREE
+                            )
+                        }
+
+                        NavigationRouteName.COMMUNITY_WITH -> {
+                            CommunityFloatingActionButton(
+                                navController = navController,
+                                item = CommunityFab.WITH
+                            )
+                        }
+
+                        NavigationRouteName.COMMUNITY_REPORT -> {
+                            CommunityFloatingActionButton(
+                                navController = navController,
+                                item = CommunityFab.REPORT
+                            )
+                        }
+                    }
+                }
+            ) {
+                if (articleList.isEmpty()) {
+                    EmptyListAnimation()
+                } else {
+                    LazyColumn(
+                        modifier = Modifier.padding(it),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        contentPadding = PaddingValues(16.dp),
+                    ) {
+                        items(articleList) { item ->
+                            BoardItemView(
+                                type = type,
+                                article = item,
+                                navController = navController
+                            )
+                        }
                     }
                 }
             }
         }
+
         is NetworkResult.Error -> {}
     }
 }
@@ -145,7 +183,7 @@ fun BoardItemView(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 if (article.type == null) {
-                    article.adminConfirmStatus?.let {  status ->
+                    article.adminConfirmStatus?.let { status ->
                         ProceedingView(type = Constants.REPORT, isProceeding = status)
                     }
                 } else if (article.type == Constants.TOGETHER) {
@@ -290,26 +328,19 @@ fun ProceedingView(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        Box(modifier = modifier
-            .padding(1.dp)
-            .width(8.dp)
-            .height(8.dp)
-            .clip(CircleShape)
-            .background(
-                color = if (type == Constants.TOGETHER) {
-                    if (!isProceeding) {
-                        Green
+        Box(
+            modifier = modifier
+                .padding(1.dp)
+                .width(8.dp)
+                .height(8.dp)
+                .clip(CircleShape)
+                .background(
+                    color = if (type == Constants.TOGETHER) {
+                        if (!isProceeding) { Green } else { DarkGray }
                     } else {
-                        DarkGray
+                        if (!isProceeding) { DarkGray } else { Green }
                     }
-                } else {
-                    if (!isProceeding) {
-                        DarkGray
-                    } else {
-                        Green
-                    }
-                }
-            )
+                )
         )
         Text(
             text = if (type == Constants.TOGETHER) {
@@ -325,7 +356,8 @@ fun ProceedingView(
                 color = if (type == Constants.TOGETHER) {
                     if (!isProceeding) { Green } else { DarkGray }
                 } else {
-                    if (!isProceeding) { DarkGray } else { Green }
+                    if (!isProceeding) { DarkGray
+                    } else { Green }
                 },
                 textAlign = TextAlign.Center,
             )

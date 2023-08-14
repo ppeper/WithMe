@@ -3,6 +3,7 @@ package com.bonobono.presentation.ui.community.views.map
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -80,6 +81,7 @@ fun ReportMapView(
     navController: NavController,
     communityViewModel: CommunityViewModel = hiltViewModel()
 ) {
+    Log.d("TEST", "ReportMapView: 신고 맵 수정")
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val coroutineScope = rememberCoroutineScope()
@@ -276,11 +278,13 @@ fun MapTopContent(
     modifier: Modifier
 ) {
     Box(
-        modifier = modifier.wrapContentSize()
+        modifier = modifier
+            .wrapContentSize()
             .padding(top = 84.dp)
     ) {
         Box(
-            modifier = modifier.wrapContentSize()
+            modifier = modifier
+                .wrapContentSize()
                 .border(border = BorderStroke(1.dp, LightGray), shape = RoundedCornerShape(10.dp))
                 .clip(RoundedCornerShape(10.dp))
                 .background(White)
@@ -300,18 +304,21 @@ fun CircleBackButton(
     navController: NavController
 ) {
     Box(
-        modifier = Modifier.wrapContentSize()
+        modifier = Modifier
+            .wrapContentSize()
             .padding(16.dp)
     ) {
         Box(
-            modifier = Modifier.size(48.dp)
+            modifier = Modifier
+                .size(48.dp)
                 .border(border = BorderStroke(1.dp, LightGray), shape = CircleShape)
                 .clip(CircleShape)
                 .background(White)
                 .clickable { navController.popBackStack() }
         ) {
             Icon(
-                modifier = Modifier.size(32.dp)
+                modifier = Modifier
+                    .size(32.dp)
                     .align(Alignment.Center),
                 painter = painterResource(R.drawable.ic_back),
                 contentDescription = "뒤로가기"

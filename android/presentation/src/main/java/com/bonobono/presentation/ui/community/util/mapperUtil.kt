@@ -24,6 +24,9 @@ fun routeMapper(
         CommunityFab.FREE.route -> { NavigationRouteName.GALLERY }
         CommunityFab.WITH.route -> { NavigationRouteName.GALLERY_WITH }
         CommunityFab.REPORT.route -> { NavigationRouteName.GALLERY_REPORT }
+        (route?.startsWith(NavigationRouteName.COMMUNITY_UPDATE)).toString() -> { NavigationRouteName.GALLERY_UPDATE }
+        (route?.startsWith(NavigationRouteName.COMMUNITY_UPDATE_WITH)).toString() -> { NavigationRouteName.GALLERY_UPDATE_WITH }
+        (route?.startsWith(NavigationRouteName.COMMUNITY_UPDATE_REPORT)).toString() -> { NavigationRouteName.GALLERY_UPDATE_REPORT }
         else -> { NavigationRouteName.GALLERY }
     }
 }

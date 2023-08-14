@@ -13,6 +13,10 @@ class PhotoViewModel @Inject constructor(): ViewModel() {
     val selectedPhoto: SnapshotStateList<Photo>
         get() = _selectedPhoto
 
+    fun setPhotoList(photoList: List<Photo>) {
+        _selectedPhoto.addAll(photoList)
+    }
+
     fun removePhoto(photo: Photo) {
         _selectedPhoto.remove(photo)
     }

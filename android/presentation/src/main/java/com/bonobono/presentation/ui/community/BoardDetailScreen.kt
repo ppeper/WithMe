@@ -66,10 +66,8 @@ import com.bonobono.domain.model.community.Article
 import com.bonobono.domain.model.community.Image
 import com.bonobono.domain.model.community.Link
 import com.bonobono.presentation.R
-import com.bonobono.presentation.ui.BoardDetailNav
 import com.bonobono.presentation.ui.NavigationRouteName
 import com.bonobono.presentation.ui.common.LoadingView
-import com.bonobono.presentation.ui.community.util.DummyData
 import com.bonobono.presentation.ui.community.util.DummyData.dummyArticle
 import com.bonobono.presentation.ui.community.util.boardDetailLaunchEffect
 import com.bonobono.presentation.ui.community.views.board.DropDownMenuView
@@ -126,14 +124,17 @@ fun BoardDetailScreen(
     }
 
     when (articleState) {
-        is NetworkResult.Loading -> { LoadingView() }
+        is NetworkResult.Loading -> {
+            LoadingView()
+        }
 
         is NetworkResult.Success -> {
             val localViewModel: SharedLocalViewModel = hiltViewModel()
             val currentMemberId = localViewModel.getMemberId("member_id").toLong()
             val role = localViewModel.getRole("role")
 
-            val result = (articleState as NetworkResult.Success<Article>).data.copy(articleId = articleId)
+            val result =
+                (articleState as NetworkResult.Success<Article>).data.copy(articleId = articleId)
             val article by remember { mutableStateOf(result) }
             var recruitState by remember { mutableStateOf(article.recruitStatus) }
             var adminState by remember { mutableStateOf(article.adminConfirmStatus) }
@@ -157,7 +158,8 @@ fun BoardDetailScreen(
                     bottomBar = {
                         // 신고 게시판 -> 글쓴이, 관리자만 댓글 작성 가능
                         if (type == NavigationRouteName.COMMUNITY_REPORT &&
-                            (article.memberId != currentMemberId && role != Constants.ADMIN_ROLE)) {
+                            (article.memberId != currentMemberId && role != Constants.ADMIN_ROLE)
+                        ) {
                             NoValidUserView()
                         } else {
                             WriteCommentView(
@@ -167,16 +169,26 @@ fun BoardDetailScreen(
                                 onWriteCommentClicked = { comment ->
                                     // 대 댓글 작성
                                     if (comment.parentCommentId != null) {
-                                        val index = comments.indexOfFirst { it.id == comment.parentCommentId }
+                                        val index =
+                                            comments.indexOfFirst { it.id == comment.parentCommentId }
                                         if (index != -1) {
                                             comments = comments.apply {
-                                                comments[index].childComments = comments[index].childComments.toMutableList().apply { add(comment) }.toList()
+                                                comments[index].childComments =
+                                                    comments[index].childComments.toMutableList()
+                                                        .apply { add(comment) }.toList()
                                             }.toMutableList()
-                                            Log.d("TEST", "BoardDetailScreen: 대 댓글 추가 ${comments.hashCode()}")
+                                            Log.d(
+                                                "TEST",
+                                                "BoardDetailScreen: 대 댓글 추가 ${comments.hashCode()}"
+                                            )
                                         }
                                     } else {
-                                        comments = comments.toMutableList().apply { add(comment) }.toMutableList()
-                                        Log.d("TEST", "BoardDetailScreen: 댓글 추가 ${comments.hashCode()}")
+                                        comments = comments.toMutableList().apply { add(comment) }
+                                            .toMutableList()
+                                        Log.d(
+                                            "TEST",
+                                            "BoardDetailScreen: 댓글 추가 ${comments.hashCode()}"
+                                        )
                                     }
                                     // 댓글 수 증가
                                     commentCnt++
@@ -188,7 +200,7 @@ fun BoardDetailScreen(
                                 focusRequester = focusRequester
                             )
                         }
-                        }
+                    }
                 ) {
                     Box(
                         modifier = modifier
@@ -215,21 +227,23 @@ fun BoardDetailScreen(
                                         .then(modifier.padding(16.dp)),
                                     verticalArrangement = Arrangement.spacedBy(16.dp)
                                 ) {
-                                    // 작성자만 dropdown 볼 수 있음
-                                    if (currentMemberId == article.memberId) {
-                                        WriterView(role = role, memberId = currentMemberId, type = type, communityViewModel = communityViewModel, article = article, navController = navController,
-                                            adminCompleteState = adminState,
-                                            recruitCompleteState = recruitState,
-                                            onRecruitCompleteClicked = {
-                                                article.recruitStatus = true
-                                                recruitState = true
-                                            },
-                                            onAdminCompleteClicked = {
-                                                article.adminConfirmStatus = true
-                                                adminState = true
-                                            }
-                                        )
-                                    }
+                                    WriterView(role = role,
+                                        memberId = currentMemberId,
+                                        type = type,
+                                        communityViewModel = communityViewModel,
+                                        article = article,
+                                        navController = navController,
+                                        adminCompleteState = adminState,
+                                        recruitCompleteState = recruitState,
+                                        onRecruitCompleteClicked = {
+                                            article.recruitStatus = true
+                                            recruitState = true
+                                        },
+                                        onAdminCompleteClicked = {
+                                            article.adminConfirmStatus = true
+                                            adminState = true
+                                        }
+                                    )
 
                                     Text(
                                         text = article.title,
@@ -256,14 +270,22 @@ fun BoardDetailScreen(
                                             link = metaLink,
                                             R.drawable.ic_go
                                         ) {
-                                            val encodedUrl = URLEncoder.encode(metaLink.url, StandardCharsets.UTF_8.toString())
+                                            val encodedUrl = URLEncoder.encode(
+                                                metaLink.url,
+                                                StandardCharsets.UTF_8.toString()
+                                            )
                                             navController.navigate("${NavigationRouteName.LINK_WEB_VIEW}/$encodedUrl")
                                         }
                                     }
                                     // 신고 게시판 map view
                                     with(article) {
                                         if (latitude != null && longitude != null && locationName != null) {
-                                            ReportMapAndLocation(mapState = LatLng(latitude!!, longitude!!), locationName = locationName!!)
+                                            ReportMapAndLocation(
+                                                mapState = LatLng(
+                                                    latitude!!,
+                                                    longitude!!
+                                                ), locationName = locationName!!
+                                            )
                                         }
                                     }
                                     Text(
@@ -285,9 +307,14 @@ fun BoardDetailScreen(
                                 item { NoCommentView() }
                             } else {
                                 Log.d("TEST", "BoardDetailScreen: 댓글 다시 불림")
-                                items(comments, key = { comment -> comment.id }) { item ->
+                                items(comments) { item ->
                                     Log.d("TEST", "BoardDetailScreen: 댓글 다시 리컴포저블")
-                                    CommentView(type = type, articleId = articleId, comments = item, focusRequester = focusRequester)
+                                    CommentView(
+                                        type = type,
+                                        articleId = articleId,
+                                        comments = item,
+                                        focusRequester = focusRequester
+                                    )
                                 }
                             }
                         }
@@ -295,6 +322,7 @@ fun BoardDetailScreen(
                 }
             }
         }
+
         is NetworkResult.Error -> {}
     }
 }
@@ -348,31 +376,52 @@ fun WriterView(
         Spacer(modifier = modifier.weight(1f))
         // 함께 게시판
         if (article.type == Constants.TOGETHER) {
-            article.recruitStatus?.let { ProceedingView(type = article.type!!, isProceeding = recruitCompleteState!!) }
+            article.recruitStatus?.let {
+                ProceedingView(
+                    type = article.type!!,
+                    isProceeding = recruitCompleteState!!
+                )
+            }
         }
         // 신고 게시판
         Log.d("TEST", "WriterView: $article")
         if (article.type == null) {
-            article.adminConfirmStatus?.let { ProceedingView(type = Constants.REPORT, isProceeding = adminCompleteState!!) }
-        }
-        DropDownMenuView(
-            role = role,
-            memberId = memberId,
-            article = article,
-            onUpdateClick = {},
-            onDeleteClick = {
-                article.articleId?.let { communityViewModel.deleteArticle(type, it) }
-            },
-            onFinishClick = {
-                Log.d("TEST", "WriterView: onFinish $article")
-                Log.d("TEST", "WriterView: onFinish $type")
-                if (article.type == Constants.TOGETHER) {
-                    article.articleId?.let { communityViewModel.recruitComplete(type, it) }
-                } else {
-                    article.articleId?.let { communityViewModel.adminComplete(it) }
-                }
+            article.adminConfirmStatus?.let {
+                ProceedingView(
+                    type = Constants.REPORT,
+                    isProceeding = adminCompleteState!!
+                )
             }
-        )
+        }
+        if (article.memberId == memberId) {
+            DropDownMenuView(
+                role = role,
+                memberId = memberId,
+                article = article,
+                onUpdateClick = {
+                    communityViewModel.setCurrentArticle(article)
+                    Log.d("TEST", "WriterView: 값 ${communityViewModel.currentArticleDetail}")
+                    when (article.type) {
+                        Constants.FREE -> navController.navigate("${NavigationRouteName.COMMUNITY_UPDATE}/$type/${article.articleId}")
+                        Constants.TOGETHER -> navController.navigate("${NavigationRouteName.COMMUNITY_UPDATE_WITH}/$type/${article.articleId}")
+                        else -> navController.navigate("${NavigationRouteName.COMMUNITY_UPDATE_REPORT}/$type/${article.articleId}")
+                    }
+                },
+                onDeleteClick = {
+                    article.articleId?.let { communityViewModel.deleteArticle(type, it) }
+                },
+                onFinishClick = {
+                    Log.d("TEST", "WriterView: onFinish $article")
+                    Log.d("TEST", "WriterView: onFinish $type")
+                    if (article.type == Constants.TOGETHER) {
+                        article.articleId?.let { communityViewModel.recruitComplete(type, it) }
+                    } else {
+                        article.articleId?.let { communityViewModel.adminComplete(it) }
+                    }
+                }
+            )
+
+        }
     }
 }
 

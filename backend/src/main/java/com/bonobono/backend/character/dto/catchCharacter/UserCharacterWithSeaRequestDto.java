@@ -16,14 +16,12 @@ public class UserCharacterWithSeaRequestDto {
     private Long ourCharacterId;
     //custom_name넣어주기
     private String custom_name;
-    private Long memberId;
 
     @Builder
-    public UserCharacterWithSeaRequestDto(String location_name, Long ourCharacterId, String custom_name, Long memberId) {
+    public UserCharacterWithSeaRequestDto(String location_name, Long ourCharacterId, String custom_name) {
         this.custom_name=custom_name;
         this.ourCharacterId=ourCharacterId;
         this.location_name=location_name;
-        this.memberId=memberId;
     }
 
     public UserCharacter toEntity(String custom_name, OurCharacter ourCharacter, String location_name, Member member) {

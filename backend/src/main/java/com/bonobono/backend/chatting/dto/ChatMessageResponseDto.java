@@ -4,7 +4,9 @@ import com.bonobono.backend.chatting.domain.ChatMessage;
 import lombok.Data;
 import lombok.Getter;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
@@ -14,7 +16,7 @@ public class ChatMessageResponseDto {
     private String userName;
     private String msg;
     private String imageUrl;
-    private LocalDateTime createdDate;
+    private String createdDate;
 
 
 

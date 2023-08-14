@@ -8,6 +8,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,12 +23,17 @@ public class ChatRoomResponseDto {
     private String nickname;
     private String profileImgName;
     private String profileImgUrl;
+    private String msg;
+    private String messageCreatedDate;
 
-    public ChatRoomResponseDto(ChatRoom chatRoom) {
+    public ChatRoomResponseDto(ChatRoom chatRoom, ChatMessage lastMessage) {
         this.roomNumber = chatRoom.getRoomNumber();
         this.nickname = chatRoom.getOther().getNickname();
         this.profileImgName=chatRoom.getOther().getProfileImg().getImageName();
         this.profileImgUrl=chatRoom.getOther().getProfileImg().getImageUrl();
+        this.msg= lastMessage.getMsg();
+        this.messageCreatedDate = lastMessage.getCreatedTime();
     }
+
 
 }

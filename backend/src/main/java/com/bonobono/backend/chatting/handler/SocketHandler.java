@@ -101,7 +101,7 @@ public class SocketHandler extends TextWebSocketHandler {
         byteBuffer.get(bytes);
 
         String fileName = "chatting"+UUID.randomUUID()+".jpg";
-        String contentType = "image/jpeg";
+        String contentType = "image/jpg";
 
         ByteArrayMultipartFile multipartFile = new ByteArrayMultipartFile(bytes, contentType, fileName);
         String dirName = "chatting_images";

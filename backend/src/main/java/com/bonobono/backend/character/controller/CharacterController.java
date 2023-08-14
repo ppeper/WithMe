@@ -24,23 +24,23 @@ public class CharacterController {
 
     //도감 잡은 동물들 보여주기
     @GetMapping("/user/list")
-    public ResponseEntity<List<UserChracterResponseDto>> UserfindAll(@RequestParam Long memberId) {
-        List<UserChracterResponseDto> userChracterResponseDtoList = userCharacterService.UserfindByList(memberId);
+    public ResponseEntity<List<UserChracterResponseDto>> UserfindAll() {
+        List<UserChracterResponseDto> userChracterResponseDtoList = userCharacterService.UserfindByList();
         return ResponseEntity.ok(userChracterResponseDtoList);
     }
 
     // 기다리고 있는 친구들 리스트만 보내기(ourcharacter에서 user가 아닌애들만 = 모바일에서 처리할지 여부확인 후 수정)
     @GetMapping("/our/list")
-    public ResponseEntity<List<OurCharacterResponseDto>> OurfindAll(@RequestParam Long memberId) {
-        List<OurCharacterResponseDto> ourCharacterResponseDtoList = userCharacterService.OurfindByList(memberId);
+    public ResponseEntity<List<OurCharacterResponseDto>> OurfindAll() {
+        List<OurCharacterResponseDto> ourCharacterResponseDtoList = userCharacterService.OurfindByList();
         return ResponseEntity.ok(ourCharacterResponseDtoList);
     }
 
     // 각 상세 캐릭터들을 보여줌(잡은 해변위치나 이런건 나중에)
     @PostMapping("/user/{character_id}")
-    public ResponseEntity<UserChracterResponseDto> findById(@PathVariable Long character_id, @RequestParam Long memberId) {
+    public ResponseEntity<UserChracterResponseDto> findById(@PathVariable Long character_id) {
         // @AuthenticationPrincipal 사용하기
-        UserChracterResponseDto responseDto = userCharacterService.findById(character_id, memberId);
+        UserChracterResponseDto responseDto = userCharacterService.findById(character_id);
         return ResponseEntity.ok(responseDto);
     }
 

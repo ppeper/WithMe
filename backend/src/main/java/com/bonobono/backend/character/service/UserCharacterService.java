@@ -8,6 +8,7 @@ import com.bonobono.backend.character.dto.UserChracterResponseDto;
 import com.bonobono.backend.character.dto.catchCharacter.UserCharacterWithSeaRequestDto;
 import com.bonobono.backend.character.repository.OurCharacterRepository;
 import com.bonobono.backend.character.repository.UserCharacterRepository;
+import com.bonobono.backend.global.util.SecurityUtil;
 import com.bonobono.backend.member.domain.Member;
 import com.bonobono.backend.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,9 +27,10 @@ public class UserCharacterService {
     private final MemberRepository memberRepository;
 
     @Transactional(readOnly = true)
-    public List<UserChracterResponseDto> UserfindByList(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(()-> new IllegalArgumentException("해당 멤버가 없습니다. id =" + memberId));
+    public List<UserChracterResponseDto> UserfindByList() {
+        Member member = memberRepository
+                .findById(SecurityUtil.getLoginMemberId())
+                .orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다."));
 
         return userCharacterRepository.findByMemberId(member.getId())
                     .stream()
@@ -37,8 +39,12 @@ public class UserCharacterService {
     }
 
     @Transactional(readOnly = true)
-    public UserChracterResponseDto findById(Long character_id, Long memberId) {
-        UserCharacter userCharacter = userCharacterRepository.findByMemberIdAndId(memberId,character_id)
+    public UserChracterResponseDto findById(Long character_id) {
+        Member member = memberRepository
+                .findById(SecurityUtil.getLoginMemberId())
+                .orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다."));
+
+        UserCharacter userCharacter = userCharacterRepository.findByMemberIdAndId(member.getId(),character_id)
                 .orElseThrow(() -> new IllegalArgumentException("유저에게 캐릭터가 없습니다 id ="+character_id));
         return new UserChracterResponseDto(userCharacter);
     }
@@ -52,7 +58,10 @@ public class UserCharacterService {
 
     @Transactional
     public void updateMain(Long character_id, CharacterMainUpdateRequestDto memberRequestDto) {
-        UserCharacter userCharacter = userCharacterRepository.findByMemberIdAndId(memberRequestDto.getMemberId(),character_id)
+        Member member = memberRepository
+                .findById(SecurityUtil.getLoginMemberId())
+                .orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다."));
+        UserCharacter userCharacter = userCharacterRepository.findByMemberIdAndId(member.getId(),character_id)
                 .orElseThrow(()-> new IllegalArgumentException("해당 유저 캐릭터가 없습니다. id"+character_id));
 
         //다른 main캐릭터가 있으면, 다른 캐릭터는 false로 지정
@@ -72,11 +81,12 @@ public class UserCharacterService {
 
     // user가 가지고 있지 않은 our캐릭터
     @Transactional(readOnly = true)
-    public List<OurCharacterResponseDto> OurfindByList(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(()-> new IllegalArgumentException("해당 멤버가 없습니다. id =" + memberId));
+    public List<OurCharacterResponseDto> OurfindByList() {
+        Member member = memberRepository
+                .findById(SecurityUtil.getLoginMemberId())
+                .orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다."));
 
-        return ourCharacterRepository.findNotLinkedOurCharactersByMember(member.getId())
+        return ourCharacterRepository.findNotLinkedOurCharactersByMemberAndLevel(member.getId())
                 .stream()
                 .map(OurCharacterResponseDto::new)
                 .collect(Collectors.toList());
@@ -85,8 +95,9 @@ public class UserCharacterService {
     //LocationOurCharacter의 id와 custom한 이름을 주면, userchar을 save()
     @Transactional
     public void save(UserCharacterWithSeaRequestDto requestDto) {
-        Member member = memberRepository.findById(requestDto.getMemberId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 멤버가 없습니다. id =" + requestDto.getMemberId()));
+        Member member = memberRepository
+                .findById(SecurityUtil.getLoginMemberId())
+                .orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다."));
 
         OurCharacter ourCharacter = ourCharacterRepository.findById(requestDto.getOurCharacterId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 캐릭터가 없습니다. id =" + requestDto.getOurCharacterId()));

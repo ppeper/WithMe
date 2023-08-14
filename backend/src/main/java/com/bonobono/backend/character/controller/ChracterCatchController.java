@@ -35,8 +35,8 @@ public class ChracterCatchController {
 
     //유저가 a캐릭터 범위에 들어왔으니, 문제달라고 요청하면, 캐릭터 잡기용 ox퀴즈 넘겨주기(get)
     @GetMapping("/ox")
-    public ResponseEntity<QuizeResponseDto> oxQuiz(@RequestParam Long memberId) throws ParseException {
-        QuizeResponseDto quizResponseDto = quizService.checkoxQuiz("map",memberId);
+    public ResponseEntity<QuizeResponseDto> oxQuiz() throws ParseException {
+        QuizeResponseDto quizResponseDto = quizService.checkoxQuiz("map");
         return ResponseEntity.ok(quizResponseDto);
     }
 

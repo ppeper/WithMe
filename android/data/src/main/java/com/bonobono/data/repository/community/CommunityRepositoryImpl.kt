@@ -76,8 +76,8 @@ class CommunityRepositoryImpl @Inject constructor(
         return handleApi { communityService.deleteComment(type, articleId, commentId) }
     }
 
-    override suspend fun queryArticle(type: String, keyword: String): NetworkResult<List<Article>> {
-        return handleApi { communityService.queryArticle(type, keyword).map { it.toDomain() } }
+    override suspend fun queryArticle(type: String, keyword: String): List<Article> {
+        return communityService.queryArticle(type, keyword).map { it.toDomain() }
     }
 
 }

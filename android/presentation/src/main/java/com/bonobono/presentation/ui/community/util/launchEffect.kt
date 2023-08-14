@@ -3,6 +3,7 @@ package com.bonobono.presentation.ui.community.util
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavController
+import com.bonobono.presentation.ui.NavigationRouteName
 import com.bonobono.presentation.ui.common.topbar.screen.BoardDetailScreen
 import com.bonobono.presentation.ui.common.topbar.screen.CommunityFreeScreen
 import com.bonobono.presentation.ui.common.topbar.screen.CommunityReportScreen
@@ -12,15 +13,17 @@ import kotlinx.coroutines.flow.onEach
 
 @Composable
 fun freeLaunchEffect(
+    type: String,
     navController: NavController
+
 ) {
     LaunchedEffect(key1 = Unit) {
         CommunityFreeScreen.buttons
             .onEach { button ->
                 when (button) {
-                    CommunityFreeScreen.AppBarIcons.Search -> { /* TODO("서버에서 게시글 검색")*/
+                    CommunityFreeScreen.AppBarIcons.Search -> {
+                        navController.navigate("${NavigationRouteName.COMMUNITY_SEARCH}/$type")
                     }
-
                     CommunityFreeScreen.AppBarIcons.Alarm -> {}
                     CommunityFreeScreen.AppBarIcons.NavigationIcon -> {
                         navController.popBackStack()
@@ -32,13 +35,15 @@ fun freeLaunchEffect(
 
 @Composable
 fun withLaunchEffect(
+    type: String,
     navController: NavController
 ) {
     LaunchedEffect(key1 = Unit) {
         CommunityWithScreen.buttons
             .onEach { button ->
                 when (button) {
-                    CommunityWithScreen.AppBarIcons.Search -> { /* TODO("서버에서 게시글 검색")*/
+                    CommunityWithScreen.AppBarIcons.Search -> {
+                        navController.navigate("${NavigationRouteName.COMMUNITY_SEARCH}/$type")
                     }
 
                     CommunityWithScreen.AppBarIcons.Alarm -> {}
@@ -53,13 +58,15 @@ fun withLaunchEffect(
 }
 @Composable
 fun reportLaunchEffect(
+    type: String,
     navController: NavController
 ) {
     LaunchedEffect(key1 = Unit) {
         CommunityReportScreen.buttons
             .onEach { button ->
                 when (button) {
-                    CommunityReportScreen.AppBarIcons.Search -> { /* TODO("서버에서 게시글 검색")*/
+                    CommunityReportScreen.AppBarIcons.Search -> {
+                        navController.navigate("${NavigationRouteName.COMMUNITY_SEARCH}/$type")
                     }
 
                     CommunityReportScreen.AppBarIcons.Alarm -> {}

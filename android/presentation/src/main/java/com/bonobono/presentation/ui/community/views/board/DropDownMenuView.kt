@@ -26,10 +26,12 @@ import com.bonobono.presentation.utils.Constants
 
 @Composable
 fun DropDownMenuView(
+    role: String?,
+    memberId: Long,
+    article: Article,
     onUpdateClick: () -> Unit,
     onDeleteClick: () -> Unit,
     onFinishClick: () -> Unit,
-    article: Article
 ) {
     var menuExpanded by remember {
         mutableStateOf(false)
@@ -45,40 +47,25 @@ fun DropDownMenuView(
             onDismissRequest = { menuExpanded = !menuExpanded },
             modifier = Modifier.background(color = White)
         ) {
-            DropdownMenuItem(
-                text = {
-                    Text(text = "수정 하기")
-                },
-                onClick = { onUpdateClick() },
-            )
-            DropdownMenuItem(
-                text = {
-                    Text(text = "삭제 하기")
-                },
-                onClick = { onDeleteClick() }
-            )
-            if (article.type == Constants.TOGETHER && article.recruitStatus == false) {
+            // 글쓴이만 수정 삭제 가능
+            if (memberId == article.memberId) {
                 DropdownMenuItem(
                     text = {
-                        Text(
-                            text = "모집 마감",
-                            style = TextStyle(
-                                color = PrimaryBlue,
-                                fontWeight = FontWeight(700)
-                            )
-                        )
+                        Text(text = "수정 하기")
                     },
-                    onClick = {
-                        onFinishClick()
-                        menuExpanded = !menuExpanded
-                    }
+                    onClick = { onUpdateClick() },
                 )
-            } else {
-                if (article.adminConfirmStatus == false) {
+                DropdownMenuItem(
+                    text = {
+                        Text(text = "삭제 하기")
+                    },
+                    onClick = { onDeleteClick() }
+                )
+                if (article.type == Constants.TOGETHER && article.recruitStatus == false) {
                     DropdownMenuItem(
                         text = {
                             Text(
-                                text = "답변 완료",
+                                text = "모집 마감",
                                 style = TextStyle(
                                     color = PrimaryBlue,
                                     fontWeight = FontWeight(700)
@@ -86,10 +73,30 @@ fun DropDownMenuView(
                             )
                         },
                         onClick = {
-                            menuExpanded = !menuExpanded
                             onFinishClick()
+                            menuExpanded = !menuExpanded
                         }
                     )
+                }
+                // 관리자만 답변 완료 할 수 있음
+                if (role == Constants.ADMIN_ROLE) {
+                    if (article.adminConfirmStatus == false) {
+                        DropdownMenuItem(
+                            text = {
+                                Text(
+                                    text = "답변 완료",
+                                    style = TextStyle(
+                                        color = PrimaryBlue,
+                                        fontWeight = FontWeight(700)
+                                    )
+                                )
+                            },
+                            onClick = {
+                                menuExpanded = !menuExpanded
+                                onFinishClick()
+                            }
+                        )
+                    }
                 }
             }
         }

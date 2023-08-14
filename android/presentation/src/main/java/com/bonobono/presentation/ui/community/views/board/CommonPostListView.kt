@@ -57,6 +57,7 @@ import com.bonobono.presentation.ui.community.util.DummyData.dummyArticle
 import com.bonobono.presentation.ui.community.util.freeLaunchEffect
 import com.bonobono.presentation.ui.community.util.reportLaunchEffect
 import com.bonobono.presentation.ui.community.util.withLaunchEffect
+import com.bonobono.presentation.ui.mypage.view.EmptyListAnimation
 import com.bonobono.presentation.ui.theme.Black_100
 import com.bonobono.presentation.ui.theme.Black_70
 import com.bonobono.presentation.ui.theme.DarkGray
@@ -73,9 +74,9 @@ fun CommonPostListView(
     navController: NavController,
     communityViewModel: CommunityViewModel = hiltViewModel()
 ) {
-    freeLaunchEffect(navController = navController)
-    withLaunchEffect(navController = navController)
-    reportLaunchEffect(navController = navController)
+    freeLaunchEffect(type = type, navController = navController)
+    withLaunchEffect(type = type, navController = navController)
+    reportLaunchEffect(type = type, navController = navController)
 
     // 게시글 가져오기
     LaunchedEffect(Unit) {
@@ -89,12 +90,16 @@ fun CommonPostListView(
         }
         is NetworkResult.Success -> {
             val articleList = (state as NetworkResult.Success<List<Article>>).data
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                contentPadding = PaddingValues(16.dp),
-            ) {
-                items(articleList) { item ->
-                    BoardItemView(type = type, article = item, navController = navController)
+            if (articleList.isEmpty()) {
+                EmptyListAnimation()
+            } else {
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    contentPadding = PaddingValues(16.dp),
+                ) {
+                    items(articleList) { item ->
+                        BoardItemView(type = type, article = item, navController = navController)
+                    }
                 }
             }
         }
@@ -117,7 +122,6 @@ fun BoardItemView(
         ),
         shape = RoundedCornerShape(10.dp),
         onClick = {
-            Log.d("TEST", "BoardItemView: articleId: ${article.articleId}, reportId: ${article.reportId}")
             if (article.articleId == null) {
                 article.reportId?.let { navController.navigate("${BoardDetailNav.route}/$type/$it") }
             } else {

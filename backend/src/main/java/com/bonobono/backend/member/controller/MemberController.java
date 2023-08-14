@@ -114,7 +114,7 @@ public class MemberController {
 
     @Operation(
             summary = "프로필 이미지 업로드",
-            description = ""
+            description = "로그인을 했을 때 발급받은 accessToken을 헤더에 넣고, 이미지를 body에서 multipart 타입으로 넣어 요청을 보내면 해당 이미지로 프로필 이미지를 설정할 수 있습니다."
     )
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/img")
@@ -124,22 +124,6 @@ public class MemberController {
         Member member = memberService.getMemberById(SecurityUtil.getLoginMemberId());
         ProfileImg oldImg = member.getProfileImg();
         String imgDirName = "profile_images";
-
-//        String imageUrl = oldImg.getImageUrl(); // oldImg에서 URL 추출
-//        String s3BaseUrl = "https://bonobono.s3.ap-northeast-2.amazonaws.com";
-//
-//        String imgDirName;
-//        if(!imageUrl.equals("default") && imageUrl.contains(s3BaseUrl)) {
-//            // 이미지 파일이 S3에 업로드되어 있는 경우
-//            int index = imageUrl.indexOf(s3BaseUrl) + s3BaseUrl.length();
-//            String key = imageUrl.substring(index);
-//            String[] keyComponents = key.split("/");
-//            imgDirName = keyComponents[0];
-//        } else {
-//            // 이미지 파일이 S3에 업로드되어 있지 않은 경우
-//            imgDirName = "profile_images";
-//            imageUrl = awsS3Service.upload(image, imgDirName).getPath();
-//        }
 
         return ResponseEntity.ok(memberService.uploadProfileImg(member, image, oldImg, imgDirName));
     }

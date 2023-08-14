@@ -24,8 +24,8 @@ public class ProfileImgRequestDto {
 
     public ProfileImg toEntity(Member member) {
         return ProfileImg.builder()
-                .imageName(imgName)
-                .imageUrl(imgUrl)
+                .imgName(imgName)
+                .imgUrl(imgUrl)
                 .build();
     }
 }

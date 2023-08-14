@@ -95,8 +95,8 @@ public class MemberService {
         Member member = request.toMember(bCryptPasswordEncoder, set);
 
         ProfileImg profileImg = ProfileImg.builder()
-            .imageUrl("default")
-            .imageName("default")
+            .imgUrl("")
+            .imgName("")
             .member(member)
             .build();
 
@@ -237,7 +237,17 @@ public class MemberService {
             .imgName(img.getOriginalFilename())
             .imgUrl(imageUrl)
             .build();
-        ProfileImg profileImg = request.toEntity(member);
+
+        ProfileImg profileImg = imgRepository
+                .findByMember(member)
+                .orElse(null);
+
+        if (profileImg.equals("")) {
+            profileImg = request.toEntity(member);
+        } else {
+            profileImg.updateImage(request);
+        }
+
         imgRepository.save(profileImg);
 
         ProfileImgResponseDto response = ProfileImgResponseDto.builder()
@@ -255,9 +265,9 @@ public class MemberService {
         String s3BaseUrl = "https://bonobono.s3.ap-northeast-2.amazonaws.com";
 
         // oldImage가 null 이면 그냥 newImage 저장
-        if (oldImage.getImageName().equals("default")) {
-            imgRepository.deleteById(member.getId());
+        if (oldImage.getImageName().equals("") && oldImage.getImageUrl().equals("")) {
             ProfileImgResponseDto response = saveProfileImg(member, newImage, imageDirName);
+
             return response;
         }
         // oldImage가 null이 아니면 newImage 저장 후 oldImage 삭제
@@ -265,23 +275,10 @@ public class MemberService {
             // oldImage Url 추출
             String imageUrl = oldImage.getImageUrl();
 
-            boolean isChecked = newImage.getOriginalFilename().contains(s3BaseUrl);
-            if(isChecked) {
-                String newImageUrl = newImage.getOriginalFilename().split(imageDirName + "/")[1];
-                boolean isSame = imageUrl.contains(newImageUrl);
-                if (!isSame) {
-                    ProfileImgResponseDto response = saveProfileImg(member, newImage, imageDirName);
-                    deleteProfileImg(oldImage, imageUrl, imageDirName);
-                    return response;
-                }
-            } else {
-                ProfileImgResponseDto response = saveProfileImg(member, newImage, imageDirName);
-                deleteProfileImg(oldImage, imageUrl, imageDirName);
-                return response;
-            }
+            deleteProfileImg(oldImage, imageUrl, imageDirName);
+            ProfileImgResponseDto response = saveProfileImg(member, newImage, imageDirName);
+            return response;
         }
-
-        return null;
 
     }
 
@@ -291,7 +288,13 @@ public class MemberService {
     public void deleteProfileImg(ProfileImg profileImg, String imageUrl, String dirName) {
         // S3 이미지 삭제 후 DB에서 이미지 삭제
         awsS3Service.delete(imageUrl, dirName);
-        imgRepository.delete(profileImg);
+        ProfileImgRequestDto request = ProfileImgRequestDto.builder()
+                .imgName("")
+                .imgUrl("")
+                .build();
+
+        profileImg.updateImage(request);
+        imgRepository.save(profileImg);
     }
 
     /**

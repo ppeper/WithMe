@@ -108,9 +108,9 @@ public class Member extends BaseTimeEntity  {
             this.password = passwordEncoder.encode(dto.getNewPassword());
     }
 
-    public void setProfileImg(ProfileImg profileImg) {
-        this.profileImg = profileImg;
-    }
+//    public void setProfileImg(ProfileImg profileImg) {
+//        this.profileImg = profileImg;
+//    }
 
 
 }

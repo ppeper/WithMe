@@ -25,21 +25,19 @@ public class ProfileImg {
     private Member member;
 
     @Builder
-    public ProfileImg(Long imageId, String imageName, String imageUrl, Member member) {
-        this.imageId = imageId;
-        this.imageName = imageName;
-        this.imageUrl = imageUrl;
-        this.member = member;
-
-    }
-
-    @Builder(builderMethodName = "createProfileImg")
     public ProfileImg(String imgUrl, String imgName, Member member) {
         this.imageUrl = imgUrl;
         this.imageName = imgName;
         this.member = member;
-        member.setProfileImg(this);
     }
+
+//    @Builder(builderMethodName = "createProfileImg")
+//    public ProfileImg(String imgUrl, String imgName, Member member) {
+//        this.imageUrl = imgUrl;
+//        this.imageName = imgName;
+//        this.member = member;
+//        member.setProfileImg(this);
+//    }
 
     public void updateImage(ProfileImgRequestDto dto) {
         this.imageUrl = dto.getImgUrl();

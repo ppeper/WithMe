@@ -10,11 +10,13 @@ import com.bonobono.data.repository.MissionRepositoryImpl
 import com.bonobono.data.remote.RegisterService
 import com.bonobono.data.repository.CharacterRepositoryImpl
 import com.bonobono.data.repository.MapRepositoryImpl
+import com.bonobono.data.repository.SharedLocalRepositoryImpl
 import com.bonobono.data.repository.community.CommunityRepositoryImpl
 import com.bonobono.domain.repository.MissionRepository
 import com.bonobono.data.repository.register.RegisterRepositoryImpl
 import com.bonobono.domain.repository.CharacterRepository
 import com.bonobono.domain.repository.MapRepository
+import com.bonobono.domain.repository.SharedLocalRepository
 import com.bonobono.domain.repository.community.CommunityRepository
 import com.bonobono.domain.repository.registration.RegisterRepository
 import dagger.Module
@@ -37,6 +39,12 @@ object RepositoryModule {
     @Singleton
     fun provideRegisterRepository(registerService: RegisterService, preferenceDataSource: PreferenceDataSource) : RegisterRepository {
         return RegisterRepositoryImpl(registerService = registerService, preferenceDatasource = preferenceDataSource)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSharedLocalRepository(preferenceDataSource: PreferenceDataSource) : SharedLocalRepository {
+        return SharedLocalRepositoryImpl(preferenceDatasource = preferenceDataSource)
     }
 
     @Provides

@@ -30,16 +30,17 @@ public class Location {
     private double centerLongitude;
 
     @Column(nullable = false)
-    private double leftLatitude;
+    private double lowerLatitude;
 
     @Column(nullable = false)
     private double leftLongitude;
 
     @Column(nullable = false)
-    private double rightLatitude;
+    private double upperLatitude;
 
     @Column(nullable = false)
     private double rightLongitude;
+
 
     @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Report> reports = new ArrayList<>();
@@ -51,16 +52,16 @@ public class Location {
     public Location(String name,
                     double centerLatitude,
                     double centerLongitude,
-                    double leftLatitude,
+                    double lowerLatitude,
                     double leftLongitude,
-                    double rightLatitude,
+                    double upperLatitude,
                     double rightLongitude) {
         this.name = name;
         this.centerLatitude = centerLatitude;
         this.centerLongitude = centerLongitude;
-        this.leftLatitude = leftLatitude;
+        this.lowerLatitude = lowerLatitude;
         this.leftLongitude = leftLongitude;
-        this.rightLatitude = rightLatitude;
+        this.upperLatitude = upperLatitude;
         this.rightLongitude = rightLongitude;
     }
 

@@ -30,13 +30,13 @@ object NetworkModule {
         if (BuildConfig.DEBUG) {
             OkHttpClient.Builder()
                 .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-                .addNetworkInterceptor(xAccessTokenInterceptor) // JWT 자동 헤더 전송
+                .addInterceptor(xAccessTokenInterceptor) // JWT 자동 헤더 전송
                 .build()
         } else {
             OkHttpClient.Builder()
                 .readTimeout(5000, TimeUnit.MILLISECONDS)
                 .connectTimeout(5000, TimeUnit.MILLISECONDS)
-                .addNetworkInterceptor(xAccessTokenInterceptor) // JWT 자동 헤더 전송
+                .addInterceptor(xAccessTokenInterceptor) // JWT 자동 헤더 전송
                 .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build()
         }

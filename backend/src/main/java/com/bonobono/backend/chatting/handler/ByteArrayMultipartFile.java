@@ -52,11 +52,11 @@ public class ByteArrayMultipartFile implements MultipartFile {
 
     @Override
     public void transferTo(File file) throws IOException, IllegalStateException {
-        if (!file.exists() && !file.createNewFile()) {
-            throw new IOException("Failed to create the destination file");
-        }
-        try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
-            fileOutputStream.write(bytes);
-        }
+//        if (!file.exists() && !file.createNewFile()) {
+//            throw new IOException("로컬의 ");
+//        }
+//        try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
+//            fileOutputStream.write(bytes);
+//        }
     }
 }

@@ -1,8 +1,10 @@
 package com.bonobono.backend.chatting.service;
 
+import com.bonobono.backend.chatting.domain.ChatMessage;
 import com.bonobono.backend.chatting.domain.ChatRoom;
 import com.bonobono.backend.chatting.dto.ChatRoomRequestDto;
 import com.bonobono.backend.chatting.dto.ChatRoomResponseDto;
+import com.bonobono.backend.chatting.mongo.ChatMessageRepository;
 import com.bonobono.backend.chatting.repository.ChatRoomRepository;
 import com.bonobono.backend.global.util.SecurityUtil;
 import com.bonobono.backend.member.domain.Member;
@@ -24,6 +26,7 @@ public class ChatRoomService {
 
     private final ChatRoomRepository chatRoomRepository;// 채팅방조회
     private final MemberRepository memberRepository;
+    private final ChatMessageRepository chatMessageRepository;
 
 
 //    //채팅방 조회(이름으로 검색)
@@ -38,9 +41,14 @@ public class ChatRoomService {
     @Transactional(readOnly = true)
     public List<ChatRoomResponseDto> findByList() {
         return chatRoomRepository.findAll(Sort.by("id")).stream()
-                .map(ChatRoomResponseDto::new)
+                .map(chatRoom -> {ChatMessage lastMessage = chatMessageRepository.findTopByRoomNumberOrderByCreatedTimeDesc(chatRoom.getRoomNumber());
+                   return new ChatRoomResponseDto(chatRoom, lastMessage);
+                })
                 .collect(Collectors.toList());
     }
+
+
+
 
     //채팅방 개설
     @Transactional

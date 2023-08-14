@@ -14,6 +14,7 @@ import com.bonobono.backend.dailymission.repository.OXQuizRepository;
 import com.bonobono.backend.dailymission.repository.QuizProblemRepository;
 import com.bonobono.backend.dailymission.repository.QuizRepository;
 import com.bonobono.backend.global.exception.MainCharacterNotFoundException;
+import com.bonobono.backend.global.util.SecurityUtil;
 import com.bonobono.backend.member.domain.Member;
 import com.bonobono.backend.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -68,9 +69,10 @@ public class QuizService {
 
     //ox퀴즈
     @Transactional
-    public QuizeResponseDto checkoxQuiz(String type, Long memberId) throws ParseException {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("해당멤버가 존재하지 않습니다+id" + memberId));
+    public QuizeResponseDto checkoxQuiz(String type) throws ParseException {
+        Member member = memberRepository
+                .findById(SecurityUtil.getLoginMemberId())
+                .orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다."));
 
         if (type.equals("quiz")) {
 //        if (oxQuizRepository.existsByMemberIdAndCheckDate(memberId, checkDate)) {
@@ -99,8 +101,9 @@ public class QuizService {
     //맞는지 여부 체크
     @Transactional
     public boolean FourIsSuccess(QuizRequestDto quizRequestDto) {
-        Member member = memberRepository.findById(quizRequestDto.getMemberId())
-                .orElseThrow(()->new IllegalArgumentException("해당 멤버가 존재하지 않습니다 +id"+quizRequestDto.getMemberId()));
+        Member member = memberRepository
+                .findById(SecurityUtil.getLoginMemberId())
+                .orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다."));
 
         String answer = quizRequestDto.getAnswer();
         Long problemId = quizRequestDto.getProblemId();
@@ -134,8 +137,9 @@ public class QuizService {
 
     @Transactional
     public boolean oxIsSuccess(String type, QuizRequestDto quizRequestDto) {
-        Member member = memberRepository.findById(quizRequestDto.getMemberId())
-                .orElseThrow(()->new IllegalArgumentException("해당 멤버가 존재하지 않습니다 +id"+quizRequestDto.getMemberId()));
+        Member member = memberRepository
+                .findById(SecurityUtil.getLoginMemberId())
+                .orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다."));
 
         String answer = quizRequestDto.getAnswer();
         Long problemId = quizRequestDto.getProblemId();

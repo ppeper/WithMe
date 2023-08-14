@@ -11,6 +11,7 @@ import com.bonobono.backend.dailymission.exception.AlreadyParticipatedException;
 import com.bonobono.backend.dailymission.repository.IsMiniGameRepository;
 import com.bonobono.backend.dailymission.repository.MiniGameRepository;
 import com.bonobono.backend.global.exception.MainCharacterNotFoundException;
+import com.bonobono.backend.global.util.SecurityUtil;
 import com.bonobono.backend.member.domain.Member;
 import com.bonobono.backend.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -36,9 +37,10 @@ public class MiniGameService {
 
     //mini게임참여여부 체크하고, minigame랜덤으로 생성해서 전달
     @Transactional
-    public MiniGameResponseDto checkMiniGame(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(()->new IllegalArgumentException("해당 멤버가 존재하지 않습니다 +id"+memberId));
+    public MiniGameResponseDto checkMiniGame() {
+        Member member = memberRepository
+                .findById(SecurityUtil.getLoginMemberId())
+                .orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다."));
 
 //        if (isMiniGameRepository.existsByMemberIdAndCheckDate(memberId,checkDate)) {
 //            log.trace("이미 게임에 참여했습니다");
@@ -62,8 +64,9 @@ public class MiniGameService {
     // 문제와 답을 주면 맞는지 여부를 넘겨주고, 맞으면 경험치 UP
     @Transactional
     public boolean IsSuccess(MiniGameRequestDto miniGameRequestDto) {
-        Member member = memberRepository.findById(miniGameRequestDto.getMemberId())
-                .orElseThrow(()->new IllegalArgumentException("해당 멤버가 존재하지 않습니다 +id"+miniGameRequestDto.getMemberId()));
+        Member member = memberRepository
+                .findById(SecurityUtil.getLoginMemberId())
+                .orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다."));
 
         String answer = miniGameRequestDto.getAnswer();
         Long problemId = miniGameRequestDto.getProblemId();

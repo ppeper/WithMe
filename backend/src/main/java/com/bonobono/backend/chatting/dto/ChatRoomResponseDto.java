@@ -21,16 +21,16 @@ import java.util.stream.Collectors;
 public class ChatRoomResponseDto {
     private int roomNumber;
     private String nickname;
-    private String profileImgName;
-    private String profileImgUrl;
+//    private String profileImgName;
+//    private String profileImgUrl;
     private String msg;
     private String messageCreatedDate;
 
     public ChatRoomResponseDto(ChatRoom chatRoom, ChatMessage lastMessage) {
         this.roomNumber = chatRoom.getRoomNumber();
         this.nickname = chatRoom.getOther().getNickname();
-        this.profileImgName=chatRoom.getOther().getProfileImg().getImageName();
-        this.profileImgUrl=chatRoom.getOther().getProfileImg().getImageUrl();
+//        this.profileImgName=chatRoom.getOther().get().getImageName();
+//        this.profileImgUrl=chatRoom.getOther().getProfileImg().getImageUrl();
         this.msg= lastMessage.getMsg();
         this.messageCreatedDate = lastMessage.getCreatedTime();
     }

@@ -1,5 +1,6 @@
 package com.bonobono.presentation.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,12 +12,22 @@ import com.bonobono.domain.usecase.community.DeleteArticleUseCase
 import com.bonobono.domain.usecase.community.GetArticleByIdUseCase
 import com.bonobono.domain.usecase.community.GetArticleListUseCase
 import com.bonobono.domain.usecase.community.RecruitCompleteUseCase
+import com.bonobono.domain.usecase.community.SearchArticleUseCase
 import com.bonobono.domain.usecase.community.UpdateArticleLikeUseCase
 import com.bonobono.domain.usecase.community.WriteArticleUseCase
 import com.naver.maps.geometry.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,12 +40,15 @@ class CommunityViewModel @Inject constructor(
     private val deleteArticle: DeleteArticleUseCase,
     private val recruitComplete: RecruitCompleteUseCase,
     private val adminComplete: AdminCompleteUseCase,
-): ViewModel() {
+    private val searchArticle: SearchArticleUseCase
+) : ViewModel() {
 
-    private val _articleState = MutableStateFlow<NetworkResult<List<Article>>>(NetworkResult.Loading)
+    private val _articleState =
+        MutableStateFlow<NetworkResult<List<Article>>>(NetworkResult.Loading)
     val articleState = _articleState.asStateFlow()
 
-    private val _articleDetailState = MutableStateFlow<NetworkResult<Article>>(NetworkResult.Loading)
+    private val _articleDetailState =
+        MutableStateFlow<NetworkResult<Article>>(NetworkResult.Loading)
     val articleDetailState = _articleDetailState.asStateFlow()
 
     private val _writeArticleState = MutableStateFlow<NetworkResult<Unit>>(NetworkResult.Loading)
@@ -60,6 +74,49 @@ class CommunityViewModel @Inject constructor(
     private val _mapState = mutableStateOf<LatLng?>(null)
     val mapState = _mapState
 
+    private val _type = mutableStateOf("")
+    val type = _type
+
+    private val _isSearching = MutableStateFlow<Boolean?>(null)
+    val isSearching = _isSearching.asStateFlow()
+
+    private val _keyword = MutableStateFlow("")
+    val keyword = _keyword.asStateFlow()
+
+    fun onSearchTextChange(text: String) {
+        _keyword.value = text
+    }
+
+    fun setCommunityType(type: String) {
+        _type.value = type
+    }
+
+    // 게시글 검색
+    private val _searchArticleList = MutableStateFlow<List<Article>>(emptyList())
+    @OptIn(FlowPreview::class)
+    val searchArticleList = _keyword
+        .onEach {
+            Log.d("TEST", "게시글 찾아보기: TRUE")
+            _isSearching.update { true }
+        }
+        .debounce(100L)
+        .combine(_searchArticleList) { keyword, list ->
+            if (keyword.isBlank()) {
+                Log.d("TEST", "게시글 찾아보기: FALSE")
+                _isSearching.update { false }
+                list
+            } else {
+                _isSearching.update { false }
+                Log.d("TEST", "게시글 찾아보기: FALSE")
+                searchArticle.invoke(_type.value, keyword)
+            }
+        }.stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(2000),
+            _searchArticleList.value
+        )
+
+
     fun setMapPosition(latLng: LatLng) {
         _mapState.value = latLng
     }
@@ -76,9 +133,10 @@ class CommunityViewModel @Inject constructor(
         _articleDetailState.emit(getArticleById.invoke(type, articleId))
     }
 
-    fun writeArticle(type: String, images: List<String>?, article: Article) = viewModelScope.launch {
-        _writeArticleState.emit(writeArticle.invoke(type, images, article))
-    }
+    fun writeArticle(type: String, images: List<String>?, article: Article) =
+        viewModelScope.launch {
+            _writeArticleState.emit(writeArticle.invoke(type, images, article))
+        }
 
     fun updateArticleLike(type: String, articleId: Long) = viewModelScope.launch {
         _articleLikeState.emit(updateArticleLike.invoke(type, articleId))

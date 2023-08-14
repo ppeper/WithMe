@@ -33,5 +33,5 @@ interface CommunityRepository {
     // 댓글 삭제
     suspend fun deleteComment(type: String, articleId: Long, commentId: Long): NetworkResult<Unit>
     // 게시글 검색
-    suspend fun queryArticle(type: String, keyword: String): NetworkResult<List<Article>>
+    suspend fun queryArticle(type: String, keyword: String): List<Article>
 }

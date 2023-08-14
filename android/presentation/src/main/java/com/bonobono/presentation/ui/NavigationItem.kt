@@ -227,6 +227,7 @@ object NavigationRouteName {
     const val COMMUNITY_FREE = "free"
     const val COMMUNITY_WITH = "together"
     const val COMMUNITY_REPORT = "report"
+    const val COMMUNITY_SEARCH = "search"
     const val LINK_WEB_VIEW = "link_view"
     const val REPORT_MAP = "report_map"
 

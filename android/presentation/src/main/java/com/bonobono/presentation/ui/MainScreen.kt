@@ -46,6 +46,7 @@ import com.bonobono.presentation.ui.community.CommunityScreen
 import com.bonobono.presentation.ui.community.BoardWriteScreen
 import com.bonobono.presentation.ui.community.GalleryScreen
 import com.bonobono.presentation.ui.community.views.board.CommonPostListView
+import com.bonobono.presentation.ui.community.views.board.SearchView
 import com.bonobono.presentation.ui.main.mission.GameScreen
 import com.bonobono.presentation.ui.main.mission.QuizScreen
 import com.bonobono.presentation.ui.main.ecyclopedia.EncyclopediaScreen
@@ -346,6 +347,17 @@ fun MainNavigationScreen(
                 BoardDetailScreen(
                     type = type,
                     articleId = articleId.toLong(),
+                    navController = navController
+                )
+            }
+        }
+        composable(
+            route = "${NavigationRouteName.COMMUNITY_SEARCH}/{type}"
+        ) {
+            val type = it.arguments?.getString("type")
+            if (type != null) {
+                SearchView(
+                    type = type,
                     navController = navController
                 )
             }

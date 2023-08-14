@@ -128,14 +128,13 @@ fun BoardDetailScreen(
     when (articleState) {
         is NetworkResult.Loading -> { LoadingView() }
 
-        is NetworkResult.Error -> {
+        is NetworkResult.Success -> {
             val localViewModel: SharedLocalViewModel = hiltViewModel()
             val currentMemberId = localViewModel.getMemberId("member_id").toLong()
             val role = localViewModel.getRole("role")
 
-//            val result = (articleState as NetworkResult.Success<Article>).data.copy(articleId = articleId)
-//            val article by remember { mutableStateOf(result) }
-            val article = DummyData.dummyArticle
+            val result = (articleState as NetworkResult.Success<Article>).data.copy(articleId = articleId)
+            val article by remember { mutableStateOf(result) }
             var recruitState by remember { mutableStateOf(article.recruitStatus) }
             var adminState by remember { mutableStateOf(article.adminConfirmStatus) }
             var comments by remember { mutableStateOf(article.comments) }
@@ -296,7 +295,7 @@ fun BoardDetailScreen(
                 }
             }
         }
-        is NetworkResult.Success -> {}
+        is NetworkResult.Error -> {}
     }
 }
 

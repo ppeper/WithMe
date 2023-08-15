@@ -414,6 +414,18 @@ fun MainNavigationScreen(
                 ChattingRoomScreen(navController = navController, roomTitle = nickname)
             }
         }
+
+        composable(
+            route = NavigationRouteName.CHATTING_GALLERY
+        ) {
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry("${ChattingEditNav.route}/${it.arguments?.getString("nickname")}")
+            }
+            GalleryScreen(
+                navController = navController,
+                photoViewModel = hiltViewModel(parentEntry)
+            )
+        }
     }
 }
 

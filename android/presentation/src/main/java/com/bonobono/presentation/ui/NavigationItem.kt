@@ -249,6 +249,7 @@ object NavigationRouteName {
     const val FIND_PASSWORD = "find_password"
 
     const val CHATTING_EDIT = "chatting_edit"
+    const val CHATTING_GALLERY = "chatting_gallery"
 }
 
 object NavigationTitle {

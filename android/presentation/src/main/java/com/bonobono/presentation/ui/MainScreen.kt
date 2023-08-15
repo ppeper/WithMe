@@ -39,6 +39,7 @@ import com.bonobono.presentation.ui.NavigationRouteName.COMMUNITY_UPDATE_REPORT
 import com.bonobono.presentation.ui.NavigationRouteName.COMMUNITY_UPDATE_WITH
 import com.bonobono.presentation.ui.NavigationRouteName.COMMUNITY_WITH
 import com.bonobono.presentation.ui.NavigationRouteName.MAIN_COMMUNITY
+import com.bonobono.presentation.ui.chatting.ChattingRoomScreen
 import com.bonobono.presentation.ui.chatting.MainChattingScreen
 import com.bonobono.presentation.ui.common.button.HomeFloatingActionButton
 import com.bonobono.presentation.ui.common.topbar.SharedTopAppBar
@@ -58,8 +59,6 @@ import com.bonobono.presentation.ui.community.views.map.ReportMapView
 import com.bonobono.presentation.ui.main.MainHomeScreen
 import com.bonobono.presentation.ui.main.mission.MissionScreen
 import com.bonobono.presentation.ui.main.notice.NoticeScreen
-import com.bonobono.presentation.ui.map.ARMapScreen
-import com.bonobono.presentation.ui.map.ARScreen
 import com.bonobono.presentation.ui.map.CameraScreen
 import com.bonobono.presentation.ui.map.MainMapScreen
 import com.bonobono.presentation.ui.mypage.MainMyPageScreen
@@ -270,10 +269,7 @@ fun MainNavigationScreen(
             route = CameraNav.route,
             deepLinks = CameraNav.deepLinks
         ) {
-            val parentEntry = remember(it) {
-                navController.getBackStackEntry(NavigationRouteName.AR_MAP)
-            }
-            CameraScreen(hiltViewModel(parentEntry), navController = navController)
+            CameraScreen()
         }
         composable(
             route = NavigationRouteName.GALLERY
@@ -492,6 +488,28 @@ fun MainNavigationScreen(
                 navController.getBackStackEntry(NavigationRouteName.MAIN_MAP)
             }
             ARMapScreen(navController = navController, hiltViewModel(parentEntry))
+        }
+
+        composable(
+            route = "${ChattingEditNav.route}/{nickname}",
+            deepLinks = ChattingEditNav.deepLinks
+        ) {
+            val nickname = it.arguments?.getString("nickname")
+            if(nickname != null) {
+                ChattingRoomScreen(navController = navController, roomTitle = nickname)
+            }
+        }
+
+        composable(
+            route = NavigationRouteName.CHATTING_GALLERY
+        ) {
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry("${ChattingEditNav.route}/${it.arguments?.getString("nickname")}")
+            }
+            GalleryScreen(
+                navController = navController,
+                photoViewModel = hiltViewModel(parentEntry)
+            )
         }
     }
 }

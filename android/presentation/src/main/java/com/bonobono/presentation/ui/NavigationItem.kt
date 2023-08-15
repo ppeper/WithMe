@@ -169,13 +169,6 @@ object ChattingEditNav : Destination {
         navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${MainNav.Chatting.route}" })
 }
 
-object ChattingNav : Destination {
-    override val route: String = NavigationRouteName.CHATTING
-    override val title: String = NavigationTitle.CHATTING
-    override val deepLinks: List<NavDeepLink> = listOf(
-        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${MainNav.Chatting.route}" })
-}
-
 object QuizNav : Destination {
     override val route: String = NavigationRouteName.QUIZ
     override val title: String = NavigationTitle.QUIZ
@@ -271,7 +264,7 @@ object NavigationRouteName {
     const val FIND_PASSWORD = "find_password"
 
     const val CHATTING_EDIT = "chatting_edit"
-    const val CHATTING = "chatting"
+    const val CHATTING_GALLERY = "chatting_gallery"
 }
 
 object NavigationTitle {
@@ -305,5 +298,4 @@ object NavigationTitle {
     const val FIND_PASSWORD = "비밀번호 찾기"
 
     const val CHATTING_EDIT = "편집"
-    const val CHATTING = "채팅"
 }

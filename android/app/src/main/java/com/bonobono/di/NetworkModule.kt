@@ -4,6 +4,7 @@ import com.bonobono.BuildConfig
 import com.bonobono.data.interceptor.XAccessTokenInterceptor
 import com.bonobono.data.local.PreferenceDataSource
 import com.bonobono.data.remote.CharacterService
+import com.bonobono.data.remote.ChatService
 import com.bonobono.data.remote.CommunityService
 import com.bonobono.data.remote.MapService
 import com.bonobono.data.remote.MissionService
@@ -90,4 +91,13 @@ object NetworkModule {
             .build()
             .create(MapService::class.java)
 
+    @Singleton
+    @Provides
+    fun provideChatService(okHttpClient: OkHttpClient): ChatService =
+        Retrofit.Builder()
+            .baseUrl(BuildConfig.API_KEY)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
+            .build()
+            .create(ChatService::class.java)
 }

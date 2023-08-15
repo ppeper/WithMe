@@ -67,7 +67,6 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
     val snackbarHostState = remember {
         SnackbarHostState()
     }
-    viewModel.getFcmToken()
     Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) {
         Column(
             verticalArrangement = Arrangement.Center,

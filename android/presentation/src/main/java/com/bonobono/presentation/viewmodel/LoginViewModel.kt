@@ -16,6 +16,7 @@ import com.bonobono.domain.usecase.register.LoginUseCase
 import com.bonobono.domain.usecase.register.MemberInfoInputUseCase
 import com.bonobono.domain.usecase.register.PutLoginInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -53,6 +54,12 @@ class LoginViewModel @Inject constructor(
     }
 
     suspend fun login(): String {
+        val getFcmTokenJob = viewModelScope.async {
+            getFcmToken()
+        }
+        // fcmToken 가져오기를 기다림
+        getFcmTokenJob.await()
+
         val loginInput = LoginInput(fcmtoken = fcmToken, username = username, password = password)
         val result = loginUseCase.invoke(loginInput)
         return when (result) {

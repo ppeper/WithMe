@@ -33,7 +33,7 @@ import com.bonobono.presentation.ui.theme.White
 fun PasswordEditView(onDismiss: () -> Unit) {
     var currentPwd by remember { mutableStateOf("") }
     var changePwd by remember { mutableStateOf("") }
-    Dialog(onDismissRequest = { onDismiss() }) {
+    Dialog(onDismissRequest = onDismiss) {
         Box (modifier = Modifier
             .fillMaxWidth()
             .background(color = White, shape = RoundedCornerShape(8.dp))

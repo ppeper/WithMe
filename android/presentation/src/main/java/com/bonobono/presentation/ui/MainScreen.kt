@@ -59,6 +59,7 @@ import com.bonobono.presentation.ui.community.views.map.ReportMapView
 import com.bonobono.presentation.ui.main.MainHomeScreen
 import com.bonobono.presentation.ui.main.mission.MissionScreen
 import com.bonobono.presentation.ui.main.notice.NoticeScreen
+import com.bonobono.presentation.ui.map.ARMapScreen
 import com.bonobono.presentation.ui.map.CameraScreen
 import com.bonobono.presentation.ui.map.MainMapScreen
 import com.bonobono.presentation.ui.mypage.MainMyPageScreen
@@ -269,7 +270,10 @@ fun MainNavigationScreen(
             route = CameraNav.route,
             deepLinks = CameraNav.deepLinks
         ) {
-            CameraScreen()
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry(NavigationRouteName.AR_MAP)
+            }
+            CameraScreen(hiltViewModel(parentEntry), navController = navController)
         }
         composable(
             route = NavigationRouteName.GALLERY

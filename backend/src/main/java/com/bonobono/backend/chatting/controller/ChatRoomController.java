@@ -8,6 +8,7 @@ import com.bonobono.backend.chatting.dto.ChatRoomWithMessagesDto;
 import com.bonobono.backend.chatting.repository.ChatRoomRepository;
 import com.bonobono.backend.chatting.service.ChatMessageService;
 import com.bonobono.backend.chatting.service.ChatRoomService;
+import com.bonobono.backend.global.util.SecurityUtil;
 import com.bonobono.backend.member.domain.Member;
 import com.bonobono.backend.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,21 +34,26 @@ public class ChatRoomController {
      * 맴버정보도 들고오기*/
     @PostMapping("/room")
     public ResponseEntity<ChatRoomWithMessagesDto> makeRoom(@RequestBody ChatRoomRequestDto chatRoomRequestDto) {
-        Optional<ChatRoom> optionalChatRoom = chatRoomRepository.findByRoomNumber(chatRoomRequestDto.getRoomNumber());
+        Member member = memberRepository
+                .findById(SecurityUtil.getLoginMemberId())
+                .orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다."));
+        Member other = memberRepository.findByNickname(chatRoomRequestDto.getNickname())
+                .orElseThrow(() -> new RuntimeException("채팅 상대방 정보가 없습니다"));
+        Optional<ChatRoom> optionalChatRoom = chatRoomRepository.findByMemberAndOther(member, other);
         //고유한 값이어야 함
+
 
         //채팅방이 이미있으면, 반환
         if (optionalChatRoom.isPresent()) {
-            List<ChatMessageResponseDto> chatMessage = chatMessageService.findByRoomNumber(chatRoomRequestDto.getRoomNumber());
+            ChatRoom foundChatRoom = optionalChatRoom.get();
+            List<ChatMessageResponseDto> chatMessage = chatMessageService.findRoom(foundChatRoom.getRoomNumber());
             ChatRoom chatRoom = optionalChatRoom.get();
            ChatRoomWithMessagesDto chatRoomWithMessagesDto = new ChatRoomWithMessagesDto(chatRoom,chatMessage);
-
             return ResponseEntity.ok(chatRoomWithMessagesDto);
         //없으면 새로 만들기
         //other의 nickname을 받기(채팅 메시지에 user과 other이 있기 떄문에 member는 상관x)
         } else {
-            ChatRoomRequestDto requestDto = new ChatRoomRequestDto(chatRoomRequestDto.getNickname(), chatRoomRequestDto.getRoomNumber());
-            ChatRoom newChatRoom=chatRoomService.save(requestDto);
+            ChatRoom newChatRoom=chatRoomService.save(member, other);
             ChatRoomWithMessagesDto chatRoomWithMessagesDto = new ChatRoomWithMessagesDto(newChatRoom, new ArrayList<>());
             return ResponseEntity.ok(chatRoomWithMessagesDto);
         }

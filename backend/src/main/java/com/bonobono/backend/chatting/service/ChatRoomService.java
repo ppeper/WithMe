@@ -40,25 +40,27 @@ public class ChatRoomService {
     //전체 채팅방 목록 조회
     @Transactional(readOnly = true)
     public List<ChatRoomResponseDto> findByList() {
-        return chatRoomRepository.findAll(Sort.by("id")).stream()
+        return chatRoomRepository.findAll().stream()
                 .map(chatRoom -> {ChatMessage lastMessage = chatMessageRepository.findTopByRoomNumberOrderByCreatedTimeDesc(chatRoom.getRoomNumber());
-                   return new ChatRoomResponseDto(chatRoom, lastMessage);
+                   if (lastMessage!=null) {
+                       return new ChatRoomResponseDto(chatRoom, lastMessage.getMsg(), lastMessage.getCreatedTime());
+                   }
+                   else {
+                       return new ChatRoomResponseDto(chatRoom, "이 채팅방에 아직 메시지가 없습니다","00:00::");
+                   }
                 })
                 .collect(Collectors.toList());
     }
 
 
-
-
     //채팅방 개설
     @Transactional
-    public ChatRoom save(final ChatRoomRequestDto requestDto) {
-        Member member = memberRepository
-                .findById(SecurityUtil.getLoginMemberId())
-                .orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다."));
-        Member other = memberRepository.findByNickname(requestDto.getNickname())
-                .orElseThrow(() -> new RuntimeException("채팅 상대방 정보가 없습니다"));
-        return this.chatRoomRepository.save(requestDto.toEntity(member, other));
+    public ChatRoom save(Member member, Member other) {
+        ChatRoom chatRoom=ChatRoom.builder()
+                .member(member)
+                .other(other)
+                .build();
+        return this.chatRoomRepository.save(chatRoom);
     }
 
     //채팅방 삭제

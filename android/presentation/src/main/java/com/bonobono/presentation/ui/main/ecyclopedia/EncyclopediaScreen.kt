@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -46,7 +45,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.bonobono.domain.model.character.OurCharacter
 import com.bonobono.domain.model.character.UserCharacter
 import com.bonobono.presentation.R
-import com.bonobono.presentation.ui.common.button.PrimaryButton
 import com.bonobono.presentation.ui.common.text.CustomTextStyle
 import com.bonobono.presentation.ui.main.component.AnimatedProfile
 import com.bonobono.presentation.ui.main.component.BlindProfilePhoto
@@ -74,10 +72,12 @@ fun EncyclopediaScreen(
     }
     val userCharacterList by characterViewModel.userCharacterList.collectAsState()
     val ourCharacterList by characterViewModel.ourCharacterList.collectAsState()
+
     var selectedId = remember {
         mutableStateOf(mainId)
     }
 
+    Log.d(TAG, "EncyclopediaScreen: $mainId")
     Column(
         Modifier
             .fillMaxSize()
@@ -85,7 +85,7 @@ fun EncyclopediaScreen(
     ) {
         Box(modifier = Modifier) {
             AnimatedProfile(
-                profileImage = R.drawable.beluga_whale,
+                profileImage = characterList.find { it.id.toLong() ==  selectedId.value}!!.icon,
                 source = R.raw.animation_card
             )
             ElevatedFilterChip(
@@ -121,7 +121,6 @@ fun CurInformation(
     userCharacterList: List<UserCharacter>,
     ourCharacterList: List<OurCharacter>
 ) {
-    selectedId.value = 1
     var cur: UserCharacter =
         userCharacterList.find { it.id.toLong() == selectedId.value } ?: UserCharacter()
 

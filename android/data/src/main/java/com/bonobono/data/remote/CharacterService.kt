@@ -2,10 +2,7 @@ package com.bonobono.data.remote
 
 import com.bonobono.data.model.character.response.OurCharacterResponse
 import com.bonobono.data.model.character.response.UserCharacterResponse
-import com.bonobono.data.model.map.response.CampaignResponse
-import com.bonobono.data.model.map.response.RankingResponse
 import com.bonobono.domain.model.character.SaveCharacter
-import com.bonobono.domain.model.map.Campaign
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.PATCH
@@ -23,4 +20,7 @@ interface CharacterService {
 
     @PATCH("character/UserCharacter/save")
     suspend fun patchSaveCharacter(@Body saveCharacter: SaveCharacter)
+
+    @POST("character/user/{character_id}")
+    suspend fun getCharacter(@Path(value = "character_id") character_id: Int) : UserCharacterResponse
 }

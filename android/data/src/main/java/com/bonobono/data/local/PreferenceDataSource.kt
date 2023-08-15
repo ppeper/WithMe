@@ -60,7 +60,7 @@ class PreferenceDataSource @Inject constructor(
         return prefs.getInt(key, defValue)
     }
 
-    fun getLong(key: String, defValue: Long = 0) : Long {
+    fun getLong(key: String, defValue: Long = 12) : Long {
         return prefs.getLong(key, defValue)
     }
 

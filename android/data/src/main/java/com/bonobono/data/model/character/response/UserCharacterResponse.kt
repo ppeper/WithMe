@@ -11,7 +11,8 @@ data class UserCharacterResponse(
     val description: String,
     val experience: Int,
     val id: Int,
-    val is_main: Boolean,
     val level: String,
+    val location_name: String,
+    val main: Boolean,
     val memberId: Int
 ) : Parcelable

@@ -7,5 +7,5 @@ import kotlinx.parcelize.Parcelize
 data class RankingResponse(
     val count: Int,
     val nickname: String,
-    val profileImg: String
+    val profileImg: String?
 ) : Parcelable

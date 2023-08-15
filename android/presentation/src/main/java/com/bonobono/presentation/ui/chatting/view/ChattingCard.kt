@@ -1,9 +1,8 @@
 package com.bonobono.presentation.ui.chatting.view
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,7 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -24,38 +22,55 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.bonobono.domain.model.chatting.Chat
+import com.bonobono.domain.model.chatting.ChattingList
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.theme.ChatLightGray
-import com.bonobono.presentation.ui.theme.LightGray
 import com.bonobono.presentation.ui.theme.PrimaryBlue
-import com.bonobono.presentation.ui.theme.Red
-import com.bonobono.presentation.ui.theme.White
+import com.bonobono.presentation.viewmodel.ChattingViewModel
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 private const val TAG = "ChattingCard"
+
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ChattingCard(chat: Chat) {
+fun ChattingCard(
+    chattingList: ChattingList,
+    chattingViewModel: ChattingViewModel,
+    moveAction: () -> Unit,
+    exitAction: () -> Unit
+) {
     val currentDate = LocalDateTime.now()
-    var radioBtnCheck by remember { mutableStateOf(false) }
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+    val latestTime = chattingList.messagecreatedDate?.let {
+        LocalDateTime.parse(it, formatter)
+    } ?: LocalDateTime.now() // 만약 null이면 현재 시간으로 초기화
+
     val formattedDate = when {
-        LocalDate.from(chat.latestTime) == LocalDate.from(currentDate) -> chat.latestTime.format(DateTimeFormatter.ofPattern("hh : mm a"))
-        chat.latestTime == currentDate.minusDays(1) -> "어제"
-        (chat.latestTime.isBefore(currentDate.minusDays(1)) && chat.latestTime.year == currentDate.year) -> chat.latestTime.format(DateTimeFormatter.ofPattern("MM월 dd일"))
-        chat.latestTime.year != currentDate.year -> chat.latestTime.format(DateTimeFormatter.ofPattern("yyyy.MM.dd"))
-        else -> chat.latestTime.format((DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")))
+        LocalDate.from(latestTime) == LocalDate.from(currentDate) -> latestTime.format(
+            DateTimeFormatter.ofPattern("a  hh : mm")
+        )
+
+        latestTime == currentDate.minusDays(1) -> "어제"
+        (latestTime.isBefore(currentDate.minusDays(1)) && latestTime.year == currentDate.year) -> latestTime.format(
+            DateTimeFormatter.ofPattern("MM월 dd일")
+        )
+
+        latestTime.year != currentDate.year -> latestTime.format(
+            DateTimeFormatter.ofPattern(
+                "yyyy.MM.dd"
+            )
+        )
+        else -> latestTime.format((DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")))
     }
+    var isExitDialogVisible by remember { mutableStateOf(false) }
     Card(
         colors = CardDefaults.cardColors(
             containerColor = ChatLightGray
@@ -63,6 +78,9 @@ fun ChattingCard(chat: Chat) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
+            .combinedClickable(onClick = moveAction,
+                onLongClick = { isExitDialogVisible = true }) ,
+
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -75,50 +93,29 @@ fun ChattingCard(chat: Chat) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start
             ) {
-                if(chat.cardType == "edit") {
-                    Box(
-                        modifier = Modifier
-                            .size(32.dp)
-                            .clip(CircleShape)
-                            .background(color = Color.Transparent)
-                            .clickable {
-                                radioBtnCheck = !radioBtnCheck
-                            },
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        if (radioBtnCheck) {
-                            Icon(painter = painterResource(id = R.drawable.round_check_circle),
-                                tint = PrimaryBlue,
-                                modifier = Modifier.size(32.dp),
-                                contentDescription = "채팅방 선택")
-                        } else {
-                             Icon(painter = painterResource(id = R.drawable.radio_button_unchecked),
-                                 tint = LightGray,
-                                 modifier = Modifier.size(32.dp),
-                                 contentDescription = "채팅방 미선택")
-                        }
-                    }
-                }
+                ChatProfileImg(profileImg = chattingList.profileImgUrl, profileImgDesc = chattingList.profileImgName)
                 Spacer(modifier = Modifier.width(16.dp))
-                ChatProfileImg(profileImg = chat.profileImg)
-                Spacer(modifier = Modifier.width(16.dp))
-                Column(verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.Start) {
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.Start
+                ) {
                     Text(
-                        text = chat.name,
+                        text = chattingList.nickname,
                         style = TextStyle(
                             fontWeight = FontWeight.Bold,
                             fontSize = 20.sp
                         )
                     )
                     Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = chat.latestChatStr,
-                        style = TextStyle(
-                            fontWeight = FontWeight.Normal,
-                            fontSize = 14.sp
+                    chattingList.msg?.let {
+                        Text(
+                            text = it,
+                            style = TextStyle(
+                                fontWeight = FontWeight.Normal,
+                                fontSize = 14.sp
+                            )
                         )
-                    )
+                    }
                 }
             }
             Column(
@@ -132,21 +129,16 @@ fun ChattingCard(chat: Chat) {
                     )
                 )
                 Spacer(modifier = Modifier.height(6.dp))
-                Box(
-                    modifier = Modifier
-                        .size(24.dp)
-                        .clip(CircleShape)
-                        .background(color = Red),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = chat.latestCnt.toString(),
-                        style = TextStyle(
-                            color = White,
-                            textAlign = TextAlign.Center
-                        )
-                    )
+                Icon(painter = painterResource(id = R.drawable.ic_bell),
+                    modifier = Modifier.size(20.dp),
+                    tint = PrimaryBlue,
+                    contentDescription = "채팅 알림")
+
+                if (isExitDialogVisible) {
+                    ExitDialog(onDismiss = { isExitDialogVisible = false },
+                        chattingViewModel = chattingViewModel,
+                        roomNumber = chattingList.roomNumber,
+                        exitAction = exitAction)
                 }
             }
         }
@@ -156,12 +148,13 @@ fun ChattingCard(chat: Chat) {
 @Preview(showBackground = true)
 @Composable
 fun ChattingCardPreview() {
-    ChattingCard( Chat(
-        name = "황신운",
-        profileImg = R.drawable.profile_test,
-        latestChatStr = "이번에 언제 만나나요?",
-        latestTime = LocalDateTime.now(),
-        latestCnt = 3,
-        cardType = "normal")
-    )
+//    ChattingCard( ChattingList(
+//        nickname = "황신운",
+//        roomNumber = 1,
+//        profileImgUrl = "",
+//        profileImgName = "프로필 이미지",
+//        latestMsg = "이번에 언제 만나나요?",
+//        latestTime = ""
+//    ), {}
+//    )
 }

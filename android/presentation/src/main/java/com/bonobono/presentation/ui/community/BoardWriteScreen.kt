@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
@@ -44,6 +45,7 @@ import com.bonobono.presentation.ui.CommunityFab
 import com.bonobono.presentation.ui.NavigationRouteName
 import com.bonobono.presentation.ui.NavigationRouteName.COMMUNITY_REPORT
 import com.bonobono.presentation.ui.common.CheckCountDialog
+import com.bonobono.presentation.ui.common.LoadingView
 import com.bonobono.presentation.ui.community.util.routeMapper
 import com.bonobono.presentation.ui.community.util.textMapper
 import com.bonobono.presentation.ui.community.views.board.BoardWriteBottomView
@@ -62,6 +64,9 @@ import com.bonobono.presentation.viewmodel.MapViewModel
 import com.bonobono.presentation.viewmodel.PhotoViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
+
+const val MAX_TITLE_LENGTH = 20
+const val MAX_CONTENT_LENGTH = 1000
 
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalComposeUiApi::class)
 @Composable
@@ -195,9 +200,12 @@ fun BoardWriteScreen(
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     BasicTextField(
-                        modifier = modifier.fillMaxWidth(),
+                        modifier = modifier.fillMaxWidth()
+                            .wrapContentHeight(),
                         value = titleTextState,
-                        onValueChange = { titleTextState = it },
+                        onValueChange = {
+                            if (it.length <= MAX_TITLE_LENGTH) titleTextState = it
+                        },
                         textStyle = TextStyle(
                             fontSize = 20.sp,
                             lineHeight = 18.sp,
@@ -224,13 +232,14 @@ fun BoardWriteScreen(
                     BasicTextField(
                         modifier = modifier.fillMaxWidth(),
                         value = contentTextState,
-                        onValueChange = { contentTextState = it },
+                        onValueChange = {
+                            if (it.length <= MAX_CONTENT_LENGTH) contentTextState = it
+                        },
                         textStyle = TextStyle(
                             fontSize = 16.sp,
                             fontWeight = FontWeight(400),
                             color = Black_100,
                         ),
-                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                         decorationBox = { innerTextField ->
                             if (contentTextState.isEmpty()) {
                                 Text(

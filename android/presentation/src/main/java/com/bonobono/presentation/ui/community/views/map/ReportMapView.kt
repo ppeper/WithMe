@@ -3,6 +3,7 @@ package com.bonobono.presentation.ui.community.views.map
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -80,6 +81,7 @@ fun ReportMapView(
     navController: NavController,
     communityViewModel: CommunityViewModel = hiltViewModel()
 ) {
+    Log.d("TEST", "ReportMapView: 신고 맵 수정")
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val coroutineScope = rememberCoroutineScope()
@@ -98,7 +100,7 @@ fun ReportMapView(
             Manifest.permission.ACCESS_COARSE_LOCATION
         ) != PackageManager.PERMISSION_GRANTED
     ) {
-        return
+        isSuccess = false
     } else {
         fusedLocationClient.lastLocation.addOnSuccessListener { location ->
             location?.let {
@@ -106,7 +108,6 @@ fun ReportMapView(
                 isSuccess = true
             }
         }
-
     }
 
     val mapView =
@@ -162,40 +163,45 @@ fun ReportMapView(
     DisposableEffect(true) {
         lifecycleOwner.lifecycle.addObserver(lifecycleObserver)
         onDispose {
+            // 뷰가 해제될 때 리스너 remove
             lifecycleOwner.lifecycle.removeObserver(lifecycleObserver)
         }
     }
 
     if (locationPermission.allPermissionsGranted) {
-        // 뷰가 해제될 때 리스너 remove
-        Box(modifier.fillMaxSize()) {
-            if (isSuccess) {
+        if (isSuccess) {
+            Box(modifier.fillMaxSize()) {
                 AndroidView(factory = { mapView })
-            }
-            CircleBackButton(
-                modifier = modifier.align(Alignment.TopStart),
-                navController = navController
-            )
-            MapTopContent(
-                modifier = modifier.align(Alignment.TopCenter),
-            )
-            Box(
-                modifier = modifier
-                    .wrapContentSize()
-                    .padding(start = 16.dp, end = 16.dp, bottom = 48.dp)
-                    .align(Alignment.BottomCenter)
-            ) {
-                SubmitButton(
+                CircleBackButton(
+                    modifier = modifier.align(Alignment.TopStart),
+                    navController = navController
+                )
+                MapTopContent(
+                    modifier = modifier.align(Alignment.TopCenter),
+                )
+                Box(
                     modifier = modifier
-                        .fillMaxWidth()
-                        .height(48.dp),
-                    text = "선택",
-                    textStyle = TextStyle(color = White)
+                        .wrapContentSize()
+                        .padding(start = 16.dp, end = 16.dp, bottom = 48.dp)
+                        .align(Alignment.BottomCenter)
                 ) {
-                    communityViewModel.setMapPosition(marker.position)
-                    navController.popBackStack()
+                    SubmitButton(
+                        modifier = modifier
+                            .fillMaxWidth()
+                            .height(48.dp),
+                        text = "선택",
+                        textStyle = TextStyle(color = White)
+                    ) {
+                        communityViewModel.setMapPosition(marker.position)
+                        navController.popBackStack()
+                    }
                 }
             }
+        } else {
+            PermissionView(
+                title = "위치 권한이 필요합니다!",
+                navController = navController
+            )
         }
     } else {
         PermissionView(
@@ -276,11 +282,13 @@ fun MapTopContent(
     modifier: Modifier
 ) {
     Box(
-        modifier = modifier.wrapContentSize()
+        modifier = modifier
+            .wrapContentSize()
             .padding(top = 84.dp)
     ) {
         Box(
-            modifier = modifier.wrapContentSize()
+            modifier = modifier
+                .wrapContentSize()
                 .border(border = BorderStroke(1.dp, LightGray), shape = RoundedCornerShape(10.dp))
                 .clip(RoundedCornerShape(10.dp))
                 .background(White)
@@ -300,18 +308,21 @@ fun CircleBackButton(
     navController: NavController
 ) {
     Box(
-        modifier = Modifier.wrapContentSize()
+        modifier = Modifier
+            .wrapContentSize()
             .padding(16.dp)
     ) {
         Box(
-            modifier = Modifier.size(48.dp)
+            modifier = Modifier
+                .size(48.dp)
                 .border(border = BorderStroke(1.dp, LightGray), shape = CircleShape)
                 .clip(CircleShape)
                 .background(White)
                 .clickable { navController.popBackStack() }
         ) {
             Icon(
-                modifier = Modifier.size(32.dp)
+                modifier = Modifier
+                    .size(32.dp)
                     .align(Alignment.Center),
                 painter = painterResource(R.drawable.ic_back),
                 contentDescription = "뒤로가기"

@@ -421,15 +421,6 @@ fun WriterView(
                 role = role,
                 memberId = memberId,
                 article = article,
-                onUpdateClick = {
-                    communityViewModel.setCurrentArticle(article)
-                    Log.d("TEST", "WriterView: 값 ${communityViewModel.currentArticleDetail}")
-                    when (article.type) {
-                        Constants.FREE -> navController.navigate("${NavigationRouteName.COMMUNITY_UPDATE}/$type/${article.articleId}")
-                        Constants.TOGETHER -> navController.navigate("${NavigationRouteName.COMMUNITY_UPDATE_WITH}/$type/${article.articleId}")
-                        else -> navController.navigate("${NavigationRouteName.COMMUNITY_UPDATE_REPORT}/$type/${article.articleId}")
-                    }
-                },
                 onDeleteClick = {
                     article.articleId?.let { communityViewModel.deleteArticle(type, it) }
                 },

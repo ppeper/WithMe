@@ -9,6 +9,7 @@ public class SecurityUtil {
 
     // 현재 로그인 되어있는 유저 정보 ID 가져오기
     public static Long getLoginMemberId() {
+
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || authentication.getName() == null) {
@@ -16,6 +17,7 @@ public class SecurityUtil {
         }
 
         Long LoginId = Long.parseLong(authentication.getName());
+
         return LoginId;
     }
 }

@@ -7,18 +7,19 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 
 @AllArgsConstructor
 @Getter
-@Schema(description = "회원 로그인 요청 Dto")
+@Schema(description = "회원 로그인 요청 Dto 입니다.")
 public class MemberLoginRequestDto {
-
 
     private String fcmtoken;
 
     @Schema(description = "아이디")
     private String username;
+
     @Schema(description = "비밀번호")
     private String password;
 
     public UsernamePasswordAuthenticationToken toAuthentication() {
+
         return new UsernamePasswordAuthenticationToken(username, password);
     }
 }

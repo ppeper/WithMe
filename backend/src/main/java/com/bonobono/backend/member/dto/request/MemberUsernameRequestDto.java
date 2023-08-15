@@ -10,10 +10,9 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "아이디 중복검사 요청 Dto")
+@Schema(description = "아이디 중복검사 요청 Dto 입니다.")
 public class MemberUsernameRequestDto {
 
     @Schema(description = "아이디")
     private String username;
-
 }

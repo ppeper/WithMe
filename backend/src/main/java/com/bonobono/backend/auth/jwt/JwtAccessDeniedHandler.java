@@ -12,10 +12,9 @@ import org.springframework.stereotype.Component;
 public class JwtAccessDeniedHandler implements AccessDeniedHandler {
 
     @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException)
-        throws IOException, ServletException {
+    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
+
         // 권한 없이 접근시 403 응답
         response.sendError(HttpServletResponse.SC_FORBIDDEN);
     }
-
 }

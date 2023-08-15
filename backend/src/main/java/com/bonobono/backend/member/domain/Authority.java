@@ -16,11 +16,13 @@ public class Authority {
     private Role role;
 
     public String getRole() {
+
         return this.role.toString();
     }
 
     @Builder
     public Authority(Role role) {
+
         this.role = role;
     }
 }

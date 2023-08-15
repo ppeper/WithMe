@@ -18,6 +18,7 @@ public class ProfileImg {
     private Long imageId;
 
     private String imageName;
+
     private String imageUrl;
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -26,20 +27,14 @@ public class ProfileImg {
 
     @Builder
     public ProfileImg(String imgUrl, String imgName, Member member) {
+
         this.imageUrl = imgUrl;
         this.imageName = imgName;
         this.member = member;
     }
 
-//    @Builder(builderMethodName = "createProfileImg")
-//    public ProfileImg(String imgUrl, String imgName, Member member) {
-//        this.imageUrl = imgUrl;
-//        this.imageName = imgName;
-//        this.member = member;
-//        member.setProfileImg(this);
-//    }
-
     public void updateImage(ProfileImgRequestDto dto) {
+
         this.imageUrl = dto.getImgUrl();
         this.imageName = dto.getImgName();
     }

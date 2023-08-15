@@ -11,10 +11,11 @@ import lombok.Setter;
 @Data
 @Builder
 @NoArgsConstructor
-@Schema(description = "프로필 업로드 응답 Dto")
+@Schema(description = "프로필 업로드 응답 Dto 입니다.")
 public class ProfileImgResponseDto {
 
     private Long memberId;
+
     private ProfileImgRequestDto img;
 
     public ProfileImgResponseDto(Long memberId, ProfileImgRequestDto img) {

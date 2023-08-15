@@ -58,6 +58,7 @@ public class MemberService {
      * 현재 로그인한 사용자 조회
      */
     public Member getMemberById(Long memberId) {
+
         Optional<Member> memberOptional = memberRepository.findById(memberId);
 
         if (memberOptional.isPresent()) {
@@ -73,13 +74,12 @@ public class MemberService {
      */
     @Transactional
     public MemberResponseDto signup(MemberRequestDto request) {
-        // 아이디 중복 검증
+
         memberRepository.findByUsername(request.getUsername())
                 .ifPresent(member -> {
                     throw new AppException(ErrorCode.USERNAME_DUPLICATED, "이미 존재하는 아이디입니다.");
                 });
 
-        // 닉네임 중복 검증
         memberRepository.findByNickname(request.getNickname())
                 .ifPresent(member -> {
                     throw new AppException(ErrorCode.NICKNAME_DUPLICATED, "이미 존재하는 닉네임입니다.");
@@ -125,13 +125,12 @@ public class MemberService {
      */
     @Transactional
     public LoginResponseDto login(MemberLoginRequestDto request) {
-        // 아이디가 틀렸을 때
+
         Member member = memberRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> {
                     throw new AppException(ErrorCode.USERNAME_NOTFOUND, "존재하지 않는 아이디입니다.");
                 });
 
-        // 비밀번호를 틀렸을 때
         if (!bCryptPasswordEncoder.matches(request.getPassword(), member.getPassword())) {
             throw new AppException(ErrorCode.INVALID_PASSWORD, "잘못된 비밀번호입니다.");
         }
@@ -144,12 +143,10 @@ public class MemberService {
 
         Set<Authority> role = member.getRole();
 
-        // 토큰 생성
         TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
 
         LoginResponseDto loginResponseDto = new LoginResponseDto(memberId, tokenDto, role);
 
-        // refreshToken 저장
         Token refreshToken = Token.builder()
                 .key(authentication.getName())
                 .value(tokenDto.getRefreshToken())
@@ -166,31 +163,25 @@ public class MemberService {
      */
     @Transactional
     public TokenDto reissue(TokenRequestDto request) {
-        // refresh Token 검증
+
         if (!tokenProvider.validateToken(request.getRefreshToken())) {
             throw new RuntimeException("Refresh Token이 유효하지 않습니다.");
         }
 
-        // access Token에서 Authentication 객체 가져오기
         Authentication authentication = tokenProvider.getAuthentication(request.getAccessToken());
 
-        // DB에서 member_id를 기반으로 Refresh Token 값 가져옴
         Token refreshToken = tokenRepository.findByKey(authentication.getName())
                 .orElseThrow(() -> new RuntimeException("로그아웃 된 사용자입니다."));
 
-        // refresh token이 다르면
         if (!refreshToken.getValue().equals(request.getRefreshToken())) {
             throw new RuntimeException("토큰의 유저 정보가 일치하지 않습니다.");
         }
 
-        // 새로운 토큰 생성
         TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
 
-        // refreshToken 업데이트
         Token newRefreshToken = refreshToken.updateValue(tokenDto.getRefreshToken());
         tokenRepository.save(newRefreshToken);
 
-        // 토큰 발급
         return tokenDto;
     }
 
@@ -199,6 +190,7 @@ public class MemberService {
      */
     @Transactional(readOnly = true)
     public MemberResponseDto myProfile() {
+
         return memberRepository.findById(SecurityUtil.getLoginMemberId())
                 .map(MemberResponseDto::of)
                 .orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다."));
@@ -209,6 +201,7 @@ public class MemberService {
      */
     @Transactional
     public void updateMyInfo(MemberUpdateRequestDto dto) {
+
         Member member = memberRepository
                 .findById(SecurityUtil.getLoginMemberId())
                 .orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다."));
@@ -221,6 +214,7 @@ public class MemberService {
      */
     @Transactional
     public void passwordChange(PasswordChangeRequestDto request) {
+
         Member member = memberRepository
                 .findById(SecurityUtil.getLoginMemberId())
                 .orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다."));
@@ -232,7 +226,9 @@ public class MemberService {
      * 프로필 이미지 저장
      */
     public ProfileImgResponseDto saveProfileImg(Member member, MultipartFile img, String imageDirName) {
+
         String imageUrl = awsS3Service.upload(img, imageDirName).getPath();
+
         ProfileImgRequestDto request = ProfileImgRequestDto.builder()
             .imgName(img.getOriginalFilename())
             .imgUrl(imageUrl)
@@ -262,38 +258,35 @@ public class MemberService {
      * 프로필 이미지 수정
      */
     public ProfileImgResponseDto uploadProfileImg(Member member, MultipartFile newImage, ProfileImg oldImage, String imageDirName) {
-        String s3BaseUrl = "https://bonobono.s3.ap-northeast-2.amazonaws.com";
 
-        // oldImage가 null 이면 그냥 newImage 저장
         if (oldImage.getImageName().equals("") && oldImage.getImageUrl().equals("")) {
             ProfileImgResponseDto response = saveProfileImg(member, newImage, imageDirName);
 
             return response;
-        }
-        // oldImage가 null이 아니면 newImage 저장 후 oldImage 삭제
-        else {
-            // oldImage Url 추출
+        } else {
+
             String imageUrl = oldImage.getImageUrl();
 
             deleteProfileImg(oldImage, imageUrl, imageDirName);
             ProfileImgResponseDto response = saveProfileImg(member, newImage, imageDirName);
             return response;
         }
-
     }
 
     /**
      * 프로필 이미지 삭제
      */
     public void deleteProfileImg(ProfileImg profileImg, String imageUrl, String dirName) {
-        // S3 이미지 삭제 후 DB에서 이미지 삭제
+
         awsS3Service.delete(imageUrl, dirName);
+
         ProfileImgRequestDto request = ProfileImgRequestDto.builder()
                 .imgName("")
                 .imgUrl("")
                 .build();
 
         profileImg.updateImage(request);
+
         imgRepository.save(profileImg);
     }
 
@@ -302,10 +295,11 @@ public class MemberService {
      */
     @Transactional
     public void logout(HttpServletRequest request) {
-        // accessToken을 다른 Table에 등록해서 해당 테이블에 accessToken이 존재하면 로그아웃된 사용자로 인식
-        // 나중에 구현해야할 필요가 있음
 
-        // refreshToken 삭제
+        // 로그아웃 시 해당 멤버가 로그인 시 발급받은 accessToken을 다른 Table에 등록
+        // 추 후 Table에 등록된 accessToken으로 요청을 보낼 시에 로그아웃된 사용자로 인식
+        // 나중에 해당 로직 구현해야할 필요가 있음
+
         tokenRepository.deleteByKey(String.valueOf(SecurityUtil.getLoginMemberId()))
                 .orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다."));
     }
@@ -315,11 +309,13 @@ public class MemberService {
      */
     @Transactional
     public void deleteMember() {
+
         Long loginMemberId = SecurityUtil.getLoginMemberId();
+
         if (loginMemberId == null) {
             throw new RuntimeException("로그인 유저 정보가 없습니다.");
         }
+
         memberRepository.deleteById(loginMemberId);
     }
-
 }

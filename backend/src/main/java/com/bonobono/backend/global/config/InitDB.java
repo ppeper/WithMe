@@ -21,6 +21,7 @@ public class InitDB {
 
     @PostConstruct
     public void init() {
+
         initService.dbInit();
     }
 
@@ -28,12 +29,13 @@ public class InitDB {
     @Transactional
     @RequiredArgsConstructor
     static class InitService {
+
         private final AuthorityRepository authorityRepository;
 
         public void dbInit() {
+
             authorityRepository.save(new Authority(Role.ADMIN));
             authorityRepository.save(new Authority(Role.USER));
         }
     }
-
 }

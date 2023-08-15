@@ -25,12 +25,14 @@ public class MemberDetailsService implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
         return memberRepository.findByUsername(username)
             .map(this::createUserDetails)
             .orElseThrow(() -> new UsernameNotFoundException(username + ": 데이터베이스에서 찾을 수 없습니다."));
     }
 
     private UserDetails createUserDetails(Member member) {
+
         List<SimpleGrantedAuthority> authList = member.getRole()
             .stream()
             .map(Authority::getRole)
@@ -45,5 +47,4 @@ public class MemberDetailsService implements UserDetailsService {
             authList
         );
     }
-
 }

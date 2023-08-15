@@ -8,21 +8,24 @@ import lombok.*;
 @Getter
 @Setter
 @NoArgsConstructor
-@Schema(description = "프로필 사진 Dto")
+@Schema(description = "프로필 사진 Dto 입니다.")
 public class ProfileImgRequestDto {
 
     @Schema(name = "이미지 이름")
     private String imgName;
+
     @Schema(name = "이미지 url")
     private String imgUrl;
 
     @Builder
     public ProfileImgRequestDto(String imgName, String imgUrl) {
+
         this.imgName = imgName;
         this.imgUrl = imgUrl;
     }
 
     public ProfileImg toEntity(Member member) {
+
         return ProfileImg.builder()
                 .imgName(imgName)
                 .imgUrl(imgUrl)

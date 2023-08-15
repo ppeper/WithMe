@@ -40,11 +40,11 @@ public class Member extends BaseTimeEntity  {
 
     private String phoneNumber;
 
-    @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
-    private ProfileImg profileImg;
-
     @Enumerated(EnumType.STRING)
     private Provider provider;
+
+    @OneToOne(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private ProfileImg profileImg;
 
     @ManyToMany
     @JoinTable(
@@ -62,8 +62,9 @@ public class Member extends BaseTimeEntity  {
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL,  orphanRemoval = true)
     private Set<Article> articleLikes;
 
+    //주인은 외래키를 가지는 chatting, map을 당하는 member
     @JsonIgnore
-    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL) //주인은 외래키를 가지는 chatting, map을 당하는 member
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ChatRoom> chatRooms = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "member")
@@ -71,7 +72,6 @@ public class Member extends BaseTimeEntity  {
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL,  orphanRemoval = true)
     private List<Reward> rewards = new ArrayList<>();
-
 
     public UserCharacter getMainCharacter() {
         for (UserCharacter character : this.userCharacters) {
@@ -83,19 +83,21 @@ public class Member extends BaseTimeEntity  {
     }
 
     @Builder
-    public Member(String username, String password, String name, String nickname, String phoneNumber, ProfileImg profileImg, Provider provider, Set<Authority> role) {
+    public Member(String username, String password, String name, String nickname, String phoneNumber, Provider provider, ProfileImg profileImg, Set<Authority> role) {
+
         this.username = username;
         this.password = password;
         this.name = name;
         this.nickname = nickname;
         this.phoneNumber = phoneNumber;
-        this.profileImg = profileImg;
         this.provider = provider;
+        this.profileImg = profileImg;
         this.role = role;
     }
 
     // 회원 정보 수정
     public void updateMember(MemberUpdateRequestDto dto) {
+
         if(dto.getName() != null) this.name = dto.getName();
         if(dto.getNickname() != null) this.nickname = dto.getNickname();
         if(dto.getPhoneNumber() != null) this.phoneNumber = dto.getPhoneNumber();
@@ -107,10 +109,4 @@ public class Member extends BaseTimeEntity  {
         if((passwordEncoder.matches(dto.getPassword(), this.password)) && dto.getNewPassword() != null)
             this.password = passwordEncoder.encode(dto.getNewPassword());
     }
-
-//    public void setProfileImg(ProfileImg profileImg) {
-//        this.profileImg = profileImg;
-//    }
-
-
 }

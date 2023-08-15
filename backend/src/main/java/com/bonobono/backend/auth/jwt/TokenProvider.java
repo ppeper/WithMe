@@ -43,6 +43,7 @@ public class TokenProvider {
     String secretKey;
 
     public TokenDto generateTokenDto(Authentication authentication) {
+
         // 권한 가져오기
         String authorities = authentication.getAuthorities().stream()
             .map(GrantedAuthority::getAuthority)
@@ -50,9 +51,9 @@ public class TokenProvider {
 
         long now = (new Date()).getTime();
 
-
         // Access Token 생성
         Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
+
         String accessToken = Jwts.builder()
             .setSubject(authentication.getName())
             .claim(AUTHORITIES_KEY, authorities)
@@ -75,10 +76,12 @@ public class TokenProvider {
     }
 
     public Authentication getAuthentication(String accessToken) {
+
         // 토큰 복호화
         Claims claims = parseClaims(accessToken);
 
         if (claims.get(AUTHORITIES_KEY) == null) {
+
             throw new RuntimeException("권한 정보가 없는 토큰입니다.");
         }
 
@@ -95,10 +98,12 @@ public class TokenProvider {
     }
 
     public boolean validateToken(String token) {
+
         try {
             Jwts.parser()
                 .setSigningKey(secretKey)
                 .parseClaimsJws(token);
+
             return true;
         } catch (SecurityException | MalformedJwtException e) {
             log.info("잘못된 서명입니다.");
@@ -109,10 +114,12 @@ public class TokenProvider {
         } catch (IllegalArgumentException e) {
             log.info("토큰이 잘못되었습니다.");
         }
+
         return false;
     }
 
     private Claims parseClaims(String accessToken) {
+
         try {
             return Jwts.parser()
                 .setSigningKey(secretKey)

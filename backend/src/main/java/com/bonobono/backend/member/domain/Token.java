@@ -13,6 +13,7 @@ import javax.persistence.Id;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Token {
+
     @Id
     @Column(name = "rt_key")
     private String key;
@@ -25,12 +26,14 @@ public class Token {
 
     @Builder
     public Token(String key, String value, String fcmtoken) {
+
         this.key = key;
         this.value = value;
         this.fcmtoken=fcmtoken;
     }
 
     public Token updateValue(String token) {
+
         this.value = token;
         return this;
     }

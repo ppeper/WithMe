@@ -32,10 +32,9 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping("/member")
 @RequiredArgsConstructor
 public class MemberController {
+
     private final MemberService memberService;
     private final MemberRepository memberRepository;
-    private final ProfileImgRepository imgRepository;
-    private final AwsS3Service awsS3Service;
 
     @Operation(
             summary = "회원가입",
@@ -43,6 +42,7 @@ public class MemberController {
     )
     @PostMapping("/signup")
     public ResponseEntity<MemberResponseDto> signup(@RequestBody MemberRequestDto memberRequestDto) {
+
         return ResponseEntity.ok(memberService.signup(memberRequestDto));
     }
 
@@ -52,12 +52,13 @@ public class MemberController {
     )
     @PostMapping("/username")
     public boolean username(@RequestBody MemberUsernameRequestDto request) {
+
         memberRepository.findByUsername(request.getUsername())
                 .ifPresent(member -> {
                     throw new AppException(ErrorCode.USERNAME_DUPLICATED, "이미 존재하는 아이디입니다.");
                 });
 
-        return true; // 중복검사 통과
+        return true;
     }
 
     @Operation(
@@ -66,12 +67,13 @@ public class MemberController {
     )
     @PostMapping("/nickname")
     public boolean nickname(@RequestBody MemberNicknameRequestDto request) {
+
         memberRepository.findByNickname(request.getNickname())
                 .ifPresent(member -> {
                     throw new AppException(ErrorCode.NICKNAME_DUPLICATED, "이미 존재하는 닉네임입니다.");
                 });
 
-        return true; // 중복검사 통과
+        return true;
     }
 
     @Operation(
@@ -80,6 +82,7 @@ public class MemberController {
     )
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> login(@RequestBody MemberLoginRequestDto memberRequestDto) {
+
         return ResponseEntity.ok(memberService.login(memberRequestDto));
     }
 
@@ -89,6 +92,7 @@ public class MemberController {
     )
     @PostMapping("/reissue")
     public ResponseEntity<TokenDto> reissue(@RequestBody TokenRequestDto tokenRequestDto) {
+
         return ResponseEntity.ok(memberService.reissue(tokenRequestDto));
     }
 
@@ -96,9 +100,10 @@ public class MemberController {
             summary = "프로필 조회",
             description = "로그인을 했을 때 발급받은 accessToken을 헤더에 넣어 해당 사용자의 프로필을 조회합니다."
     )
-    @PreAuthorize("isAuthenticated()") // AccessToken을 헤더에 넣어서 인증된 사용자임을 검증받아야함
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/profile")
     public ResponseEntity<MemberResponseDto> myProfile() {
+
         return ResponseEntity.ok(memberService.myProfile());
     }
 
@@ -109,7 +114,9 @@ public class MemberController {
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/update")
     public ResponseEntity<MemberResponseDto> updateMyInfo(@RequestBody MemberUpdateRequestDto dto) {
+
         memberService.updateMyInfo(dto);
+
         return ResponseEntity.ok(memberService.myProfile());
     }
 
@@ -122,6 +129,7 @@ public class MemberController {
     public ResponseEntity<ProfileImgResponseDto> uploadImg(
             @RequestPart("image") MultipartFile image
     ) {
+
         Member member = memberService.getMemberById(SecurityUtil.getLoginMemberId());
         ProfileImg oldImg = member.getProfileImg();
         String imgDirName = "profile_images";
@@ -131,11 +139,12 @@ public class MemberController {
 
     @Operation(
             summary = "프로필 이미지 삭제",
-            description = ""
+            description = "요청을 보내면 프로필 이미지를 삭제합니다."
     )
     @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/img")
     public ResponseEntity<String> deleteImg() {
+
         Member member = memberService.getMemberById(SecurityUtil.getLoginMemberId());
         ProfileImg img = member.getProfileImg();
         String url = img.getImageUrl();
@@ -153,7 +162,9 @@ public class MemberController {
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/password")
     public ResponseEntity<MemberResponseDto> passwordChange(@RequestBody PasswordChangeRequestDto dto) {
+
         memberService.passwordChange(dto);
+
         return ResponseEntity.ok(memberService.myProfile());
     }
 
@@ -164,8 +175,10 @@ public class MemberController {
     @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/profile")
     public ResponseEntity<String> deleteMember(HttpServletRequest request) {
+
         memberService.logout(request);
         memberService.deleteMember();
+
         return new ResponseEntity<>("회원 탈퇴 성공", HttpStatus.OK);
     }
 
@@ -176,7 +189,9 @@ public class MemberController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/logout")
     public ResponseEntity<String> logout(HttpServletRequest request) {
+
         memberService.logout(request);
+
         return new ResponseEntity<>("로그아웃 성공", HttpStatus.OK);
     }
 }

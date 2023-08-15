@@ -22,7 +22,7 @@ object OnBoardingContent {
 
 object OnBoardingAnimation {
     val AR = R.raw.animation_four_quiz_card
-    val MISSION = R.raw.animation_ox_quiz_card
-    val CAMPAIGN = R.raw.animation_game_background
+    val MISSION = R.raw.onboarding_mission
+    val CAMPAIGN = R.raw.onboarding_campaign
     val COMMUNITY = R.raw.onboarding_community
 }

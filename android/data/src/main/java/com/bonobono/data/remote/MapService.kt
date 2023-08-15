@@ -28,5 +28,4 @@ interface MapService {
     @POST("catch/list")
     suspend fun getCatchList(@Body key: CatchKey): List<CatchCharacterResponse>
 
-
 }

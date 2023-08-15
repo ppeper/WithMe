@@ -1,6 +1,8 @@
 package com.bonobono.presentation.ui.map
 
 import android.util.Log
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,6 +23,7 @@ import androidx.compose.material3.BottomSheetScaffoldState
 import androidx.compose.material3.ElevatedFilterChip
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
@@ -34,6 +37,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -45,11 +50,15 @@ import com.bonobono.domain.model.map.Location
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.ARMapNav
 import com.bonobono.presentation.ui.CameraNav
+import com.bonobono.presentation.ui.NavigationRouteName
 import com.bonobono.presentation.ui.QuizNav
 import com.bonobono.presentation.ui.common.text.CustomTextStyle
+import com.bonobono.presentation.ui.community.views.link.WebView
 import com.bonobono.presentation.ui.main.component.CampaignCard
 import com.bonobono.presentation.ui.main.component.RankingCard
+import com.bonobono.presentation.ui.theme.LightGray
 import com.bonobono.presentation.ui.theme.PrimaryBlue
+import com.bonobono.presentation.ui.theme.TextGray
 import com.bonobono.presentation.ui.theme.White
 import com.bonobono.presentation.utils.Constants
 import com.bonobono.presentation.viewmodel.MapViewModel
@@ -65,6 +74,8 @@ import com.naver.maps.map.compose.rememberCameraPositionState
 import com.naver.maps.map.compose.rememberFusedLocationSource
 import com.naver.maps.map.overlay.OverlayImage
 import kotlinx.coroutines.launch
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import java.util.Date
 
 private const val TAG = "MapScreen"
@@ -80,9 +91,9 @@ fun MainMapScreen(navController: NavHostController, mapViewModel: MapViewModel =
         mutableStateOf(0)
     }
 
-    mapViewModel.getLocations()
-
-    Log.d(TAG, "MainMapScreen: $locations")
+    LaunchedEffect(Unit) {
+        mapViewModel.getLocations()
+    }
 
     BottomSheetScaffold(
         scaffoldState = scaffoldState,
@@ -155,7 +166,7 @@ fun MainMapScreen(navController: NavHostController, mapViewModel: MapViewModel =
                                 })
                         }
                         if (selectedChipIndex == 0) {
-                            BottomSheetCampaignContent(mapViewModel, locations, selectedIdx)
+                            BottomSheetCampaignContent(mapViewModel, locations, selectedIdx, navController)
                         } else {
                             BottomSheetRankingContent(mapViewModel, locations, selectedIdx)
                         }
@@ -163,9 +174,9 @@ fun MainMapScreen(navController: NavHostController, mapViewModel: MapViewModel =
                 }
             }
         }) { innerPadding ->
-        Box(Modifier.padding(innerPadding)) {
+
             MapScreen(navController = navController, scaffoldState, locations, selectedIdx)
-        }
+
     }
 }
 
@@ -297,31 +308,58 @@ fun BottomSheetRankingContent(
 fun BottomSheetCampaignContent(
     mapViewModel: MapViewModel,
     locations: List<Location>,
-    selectedIdx: MutableState<Int>
+    selectedIdx: MutableState<Int>,
+    navController: NavHostController
 ) {
     mapViewModel.getCampaign(locations[selectedIdx.value].id)
     val campaignList by mapViewModel.campaign.collectAsState()
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 24.dp, horizontal = 12.dp)
+            .padding(vertical = 24.dp, horizontal = 16.dp)
             .verticalScroll(rememberScrollState())
-
     ) {
         Text(text = "진행중", style = CustomTextStyle.mapTitleTextStyle)
-        LazyRow() {
-            items(campaignList) {
-                CampaignCard(modifier = Modifier.zIndex(1f), campaign = it)
+        if(campaignList.filter { !it.completionStatus }.isNullOrEmpty()) {
+            NoDataView(title = "진행중인 캠페인")
+        } else {
+            LazyRow() {
+                items(campaignList.filter { !it.completionStatus }) {
+                    CampaignCard(modifier = Modifier
+                        .zIndex(1f)
+                        .clickable {
+                            val encodedUrl =
+                                URLEncoder.encode(it.url, StandardCharsets.UTF_8.toString())
+                            navController.navigate("${NavigationRouteName.LINK_WEB_VIEW}/${encodedUrl}")
+                        }, campaign = it)
+                }
             }
         }
-        Spacer(modifier = Modifier.size(4.dp))
+        Spacer(modifier = Modifier.size(8.dp))
         Text(text = "완료", style = CustomTextStyle.mapTitleTextStyle)
-        LazyRow() {
-            items(campaignList) {
-                CampaignCard(campaign = it)
+        if(campaignList.filter { it.completionStatus }.isNullOrEmpty()) {
+            NoDataView(title = "완료된 캠페인")
+        } else {
+            LazyRow() {
+                items(campaignList.filter { it.completionStatus }) {
+                    CampaignCard(campaign = it)
+                }
             }
         }
     }
+}
+
+@Composable
+fun NoDataView(title: String) {
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .padding(12.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        Icon(painter = painterResource(id = R.drawable.ic_info), contentDescription = "없음", tint = TextGray)
+        Spacer(modifier = Modifier.size(4.dp))
+        Text(text = "${title}이 없습니다.", style = CustomTextStyle.mapGrayTextStyle)
+    }
+
 }
 
 @Preview

@@ -63,6 +63,7 @@ import com.bonobono.presentation.ui.mypage.MainMyPageScreen
 import com.bonobono.presentation.ui.mypage.PointStoreScreen
 import com.bonobono.presentation.ui.mypage.ProfileEditScreen
 import com.bonobono.presentation.ui.mypage.SettingScreen
+import com.bonobono.presentation.ui.onboarding.OnBoardingScreen
 import com.bonobono.presentation.ui.theme.PrimaryBlue
 import com.bonobono.presentation.ui.theme.TextGray
 import com.bonobono.presentation.ui.theme.White
@@ -276,7 +277,7 @@ fun MainNavigationScreen(
             route = EncyclopediaNav.route,
             deepLinks = EncyclopediaNav.deepLinks
         ) {
-            EncyclopediaScreen()
+            EncyclopediaScreen(navController = navController)
         }
         composable(
             route = NoticeNav.route,

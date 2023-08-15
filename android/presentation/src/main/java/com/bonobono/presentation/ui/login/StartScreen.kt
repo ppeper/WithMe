@@ -10,6 +10,8 @@ import com.bonobono.presentation.ui.FindPasswordNav
 import com.bonobono.presentation.ui.JoinNav
 import com.bonobono.presentation.ui.LoginNav
 import com.bonobono.presentation.ui.MainScreen
+import com.bonobono.presentation.ui.OnBoardingNav
+import com.bonobono.presentation.ui.onboarding.OnBoardingScreen
 
 @Composable
 fun StartScreen() {
@@ -51,6 +53,11 @@ fun LoginNavigationScreen(
         }
         composable("main_screen") {
             MainScreen()
+        }
+        composable(
+            route = OnBoardingNav.route,
+        ) {
+            OnBoardingScreen(navController = navController)
         }
     }
 }

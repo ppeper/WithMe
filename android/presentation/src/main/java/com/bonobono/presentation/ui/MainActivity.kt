@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.compose.rememberNavController
 import com.bonobono.presentation.ui.login.StartScreen
+import com.bonobono.presentation.ui.map.CampaignWriteScreen
 import com.bonobono.presentation.ui.onboarding.OnBoardingScreen
 import com.bonobono.presentation.ui.theme.AndroidTheme
 import com.bonobono.presentation.viewmodel.LoginViewModel
@@ -28,12 +30,13 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val loginViewModel : LoginViewModel = hiltViewModel()
                     loginViewModel.getLoginInfo()
-                    if(loginViewModel.username.isNotBlank() && loginViewModel.password.isNotBlank()) {
-                        // 자동 로그인 시킴
-                        MainScreen()
-                    } else {
-                        StartScreen()
-                    }
+//                    if(loginViewModel.username.isNotBlank() && loginViewModel.password.isNotBlank()) {
+//                        // 자동 로그인 시킴
+//                        MainScreen()
+//                    } else {
+//                        StartScreen()
+//                    }
+                    CampaignWriteScreen(navController = rememberNavController())
 //                    MainScreen()
 //                    StartScreen()
                 }

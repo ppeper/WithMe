@@ -43,23 +43,40 @@ import com.bonobono.presentation.ui.main.component.CircularProgressBar
 import com.bonobono.presentation.ui.main.component.LargeSquareCardWithAnimation
 import com.bonobono.presentation.ui.main.component.LinearProgressBar
 import com.bonobono.presentation.ui.common.LottieLoader
+import com.bonobono.presentation.ui.common.topbar.screen.MissionScreen
+import com.bonobono.presentation.ui.common.topbar.screen.SettingScreen
 import com.bonobono.presentation.ui.main.component.ProfilePhoto
 import com.bonobono.presentation.ui.theme.LightGray
 import com.bonobono.presentation.ui.theme.White
 import com.bonobono.presentation.utils.Constants
 import com.bonobono.presentation.viewmodel.MissionViewModel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 private const val TAG = "MissionScreen"
+
 @Composable
-fun MissionScreen(navController: NavHostController, missionViewModel: MissionViewModel = hiltViewModel()) {
+fun MissionScreen(
+    navController: NavHostController,
+    missionViewModel: MissionViewModel = hiltViewModel()
+) {
+    LaunchedEffect(key1 = Unit) {
+        MissionScreen.buttons
+            .onEach { button ->
+                when (button) {
+                    MissionScreen.AppBarIcons.NavigationIcon -> {
+                        navController.popBackStack()
+                    }
+                }
+            }.launchIn(this)
+    }
+
     missionViewModel.removeCompletedTime() // 하루 지나면 삭제
     val completedTimeOX = missionViewModel.getLong(Constants.OX_QUIZ)
     val completedTimeFour = missionViewModel.getLong(Constants.FOUR_QUIZ)
     val completedGame = missionViewModel.getLong(Constants.GAME)
     val completedTimeAttendance = missionViewModel.getLong(Constants.ATTENDANCE)
 
-    Log.d(TAG, "MissionScreen: $completedTimeOX")
-    Log.d(TAG, "MissionScreen: $completedTimeAttendance")
     val totalScore by missionViewModel.totalScore.collectAsState()
 
     var attendanceIsEnabled = remember { mutableStateOf(completedTimeAttendance == 0L) }
@@ -106,7 +123,7 @@ fun MissionScreen(navController: NavHostController, missionViewModel: MissionVie
             ) {
                 navController.navigate("${QuizNav.route}/${Constants.OX_QUIZ}")
             }
-        } else if(completedTimeFour == 0L) {
+        } else if (completedTimeFour == 0L) {
             LargeSquareCardWithAnimation(
                 R.raw.animation_four_quiz_card,
                 stringResource(R.string.four_quiz_guide)
@@ -189,7 +206,7 @@ fun UserInformationItem(totalScore: TotalScore) {
             Row() {
                 CircularProgressBar(percent = totalScore.attendanceScore * 0.01f, "출셕율")
                 Spacer(modifier = Modifier.size(24.dp))
-                CircularProgressBar(percent = totalScore.totalScore * 0.01f , "미션달성율")
+                CircularProgressBar(percent = totalScore.totalScore * 0.01f, "미션달성율")
             }
         }
         LinearProgressBar(

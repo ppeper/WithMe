@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -30,7 +31,10 @@ import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.common.LottieLoader
 import com.bonobono.presentation.ui.common.button.PrimaryButton
 import com.bonobono.presentation.ui.common.text.CustomTextStyle
+import com.bonobono.presentation.ui.theme.TextGray
 import com.bonobono.presentation.ui.theme.White
+import com.bonobono.presentation.utils.DateUtils
+import com.google.android.gms.common.util.DataUtils
 
 
 @Composable
@@ -68,7 +72,11 @@ fun LargeSquareCardWithAnimation(
                 style = CustomTextStyle.missionGuideTextStyle
             )
 
-            PrimaryButton(content = "미션 해결하기", modifier = Modifier.align(Alignment.BottomEnd), isEnabled) {
+            PrimaryButton(
+                content = "미션 해결하기",
+                modifier = Modifier.align(Alignment.BottomEnd),
+                isEnabled
+            ) {
                 onClick()
             }
         }
@@ -133,22 +141,34 @@ fun CampaignCard(modifier: Modifier = Modifier, campaign: Campaign) {
             .fillMaxWidth()
             .padding(4.dp),
         elevation = CardDefaults.cardElevation(4.dp),
-        colors = CardDefaults.cardColors(White)
+        colors = CardDefaults.cardColors(containerColor = White)
     ) {
         Column(
-            modifier = Modifier.padding(12.dp)
+            modifier = Modifier
+                .padding(12.dp)
+                .fillMaxSize()
         ) {
             Text(text = campaign.name, style = CustomTextStyle.mapTitleTextStyle)
             Spacer(modifier = Modifier.size(4.dp))
-            Text(text = campaign.startDate.toString())
+            Text(
+                text = "${DateUtils.dateToCampaignString(campaign.startDate)} ~ ${
+                    DateUtils.dateToCampaignString(
+                        campaign.endDate
+                    )
+                }"
+            )
             Spacer(modifier = Modifier.size(4.dp))
-            Row {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 val completed = if (campaign.completionStatus) "완료" else "진행중"
                 val image =
                     if (campaign.completionStatus) R.drawable.ic_star_black else R.drawable.ic_stars
                 Image(painter = painterResource(id = image), contentDescription = "별")
                 Spacer(modifier = Modifier.size(4.dp))
-                Text(text = completed, style = CustomTextStyle.gameGuideTextStyle)
+                val style =
+                    if (campaign.completionStatus) CustomTextStyle.gameGuideTextStyle.copy(color = TextGray) else CustomTextStyle.gameGuideTextStyle
+                Text(text = completed, style = style)
                 Spacer(modifier = Modifier.size(4.dp))
                 Text(text = "by ${campaign.authority}", style = CustomTextStyle.mapGrayTextStyle)
             }

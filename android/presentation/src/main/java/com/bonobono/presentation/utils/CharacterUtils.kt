@@ -33,7 +33,7 @@ object CharacterName {
     const val TURTLE = "거북"
     const val WHALE = "고래"
     const val DOLPHIN = "돌고래"
-    const val SEA_ELEPHANT = "바다사자"
+    const val SEA_ELEPHANT = "바다코끼리"
     const val PENGUIN = "펭귄"
 }
 
@@ -151,5 +151,13 @@ fun getSeaElephantAnimation(level: String, state: String): Int {
                 else -> -1
             }
         } else -> -1
+    }
+}
+
+fun getCharacterAnimation(id: Int, level: String, state: String) : Int {
+    return when(id) {
+        11 -> { getWhaleAnimation(level, state) }
+        12 -> { getDolphinAnimation(level, state) }
+        else -> getSeaElephantAnimation(level, state)
     }
 }

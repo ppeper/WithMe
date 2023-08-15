@@ -1,15 +1,12 @@
 package com.bonobono.data.repository
 
 import com.bonobono.data.mapper.toDomain
-import com.bonobono.data.model.character.response.UserCharacterResponse
 import com.bonobono.data.remote.CharacterService
 import com.bonobono.data.remote.handleApi
 import com.bonobono.domain.model.NetworkResult
 import com.bonobono.domain.model.character.OurCharacter
 import com.bonobono.domain.model.character.SaveCharacter
 import com.bonobono.domain.model.character.UserCharacter
-import com.bonobono.domain.model.map.Campaign
-import com.bonobono.domain.model.map.Ranking
 import com.bonobono.domain.repository.CharacterRepository
 import javax.inject.Inject
 
@@ -26,5 +23,9 @@ class CharacterRepositoryImpl @Inject constructor(
 
     override suspend fun patchSavaCharacter(character: SaveCharacter): NetworkResult<Unit> {
         return handleApi { characterService.patchSaveCharacter(character) }
+    }
+
+    override suspend fun getCharacter(characterId: Int): NetworkResult<UserCharacter> {
+        return handleApi { characterService.getCharacter(characterId).toDomain() }
     }
 }

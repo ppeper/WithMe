@@ -282,11 +282,11 @@ fun BottomSheetRankingContent(
     val rankingList by mapViewModel.ranking.collectAsState()
     LazyColumn() {
         var ranking = 1
-        items(rankingList) {
+        items(rankingList.sortedByDescending { it.count }) {
             RankingCard(
                 profileImage = R.drawable.beluga_whale,
-                nickName = "주용가리",
-                count = 3,
+                nickName = it.nickname,
+                count = it.count,
                 ranking = ranking++
             )
         }

@@ -2,10 +2,10 @@ package com.bonobono.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bonobono.domain.model.NetworkResult
 import com.bonobono.domain.model.character.OurCharacter
 import com.bonobono.domain.model.character.SaveCharacter
 import com.bonobono.domain.model.character.UserCharacter
+import com.bonobono.domain.usecase.character.GetCharacterUseCase
 import com.bonobono.domain.usecase.character.GetOurCharacterListUseCase
 import com.bonobono.domain.usecase.character.GetUserCharacterListUseCase
 import com.bonobono.domain.usecase.character.PatchCharacterUseCase
@@ -19,13 +19,17 @@ import javax.inject.Inject
 class CharacterViewModel @Inject constructor(
     private val getUserCharacterListUseCase: GetUserCharacterListUseCase,
     private val getOurCharacterListUseCase: GetOurCharacterListUseCase,
-    private val patchCharacterUseCase: PatchCharacterUseCase
+    private val patchCharacterUseCase: PatchCharacterUseCase,
+    private val getCharacterUseCase: GetCharacterUseCase
 ) : ViewModel() {
     private val _userCharacterList = MutableStateFlow<List<UserCharacter>>(listOf())
     val userCharacterList: StateFlow<List<UserCharacter>> = _userCharacterList
 
     private val _ourCharacterList = MutableStateFlow<List<OurCharacter>>(listOf())
     val ourCharacterList: StateFlow<List<OurCharacter>> = _ourCharacterList
+
+    private val _character = MutableStateFlow<UserCharacter>(UserCharacter())
+    val character: StateFlow<UserCharacter> = _character
 
     private val _saveSuccess = MutableStateFlow<Boolean>(false)
     val saveSuccess: StateFlow<Boolean> = _saveSuccess
@@ -40,5 +44,9 @@ class CharacterViewModel @Inject constructor(
 
     fun patchCharacter(character: SaveCharacter) = viewModelScope.launch {
         _saveSuccess.emit(patchCharacterUseCase.invoke(character = character))
+    }
+
+    fun getCharacter(characterId: Int) = viewModelScope.launch {
+        _character.emit(getCharacterUseCase.invoke(characterId))
     }
 }

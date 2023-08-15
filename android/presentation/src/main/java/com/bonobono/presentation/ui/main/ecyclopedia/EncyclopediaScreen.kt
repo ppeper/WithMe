@@ -63,9 +63,12 @@ private const val TAG = "EncyclopediaScreen"
 @Composable
 fun EncyclopediaScreen(
     characterViewModel: CharacterViewModel = hiltViewModel(),
-    missionViewModel: MissionViewModel = hiltViewModel()
+    missionViewModel: MissionViewModel = hiltViewModel(),
 ) {
-    val mainId = missionViewModel.getCompletedTime(Constants.MAIN_CHARACTER)
+    var mainId = missionViewModel.getLong(Constants.MAIN_CHARACTER)
+    if(mainId.toInt() == 0) {
+        mainId = 12
+    }
     LaunchedEffect(Unit) {
         characterViewModel.getUserCharacterList()
         characterViewModel.getOurCharacterList()
@@ -94,7 +97,7 @@ fun EncyclopediaScreen(
                     .align(Alignment.TopEnd),
                 selected = false,
                 onClick = {
-                    missionViewModel.putCompletedTime(
+                    missionViewModel.putLong(
                         Constants.MAIN_CHARACTER,
                         selectedId.value + 1
                     )

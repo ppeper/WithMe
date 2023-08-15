@@ -1,5 +1,6 @@
 package com.bonobono.presentation.ui.main.mission
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -52,11 +53,13 @@ private const val TAG = "MissionScreen"
 @Composable
 fun MissionScreen(navController: NavHostController, missionViewModel: MissionViewModel = hiltViewModel()) {
     missionViewModel.removeCompletedTime() // 하루 지나면 삭제
-    val completedTimeOX = missionViewModel.getCompletedTime(Constants.OX_QUIZ)
-    val completedTimeFour = missionViewModel.getCompletedTime(Constants.FOUR_QUIZ)
-    val completedGame = missionViewModel.getCompletedTime(Constants.GAME)
-    val completedTimeAttendance = missionViewModel.getCompletedTime(Constants.ATTENDANCE)
+    val completedTimeOX = missionViewModel.getLong(Constants.OX_QUIZ)
+    val completedTimeFour = missionViewModel.getLong(Constants.FOUR_QUIZ)
+    val completedGame = missionViewModel.getLong(Constants.GAME)
+    val completedTimeAttendance = missionViewModel.getLong(Constants.ATTENDANCE)
 
+    Log.d(TAG, "MissionScreen: $completedTimeOX")
+    Log.d(TAG, "MissionScreen: $completedTimeAttendance")
     val totalScore by missionViewModel.totalScore.collectAsState()
 
     var attendanceIsEnabled = remember { mutableStateOf(completedTimeAttendance == 0L) }
@@ -83,7 +86,7 @@ fun MissionScreen(navController: NavHostController, missionViewModel: MissionVie
             attendanceIsEnabled
         ) {
             missionViewModel.postAttendance(1)
-            missionViewModel.putCompletedTime(Constants.ATTENDANCE, System.currentTimeMillis())
+            missionViewModel.putLong(Constants.ATTENDANCE, System.currentTimeMillis())
             attendanceIsEnabled.value = false
         }
         Spacer(modifier = Modifier.size(12.dp))

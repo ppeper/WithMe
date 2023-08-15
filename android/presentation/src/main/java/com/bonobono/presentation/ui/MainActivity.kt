@@ -9,6 +9,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bonobono.presentation.ui.login.StartScreen
+import com.bonobono.presentation.ui.onboarding.OnBoardingScreen
 import com.bonobono.presentation.ui.theme.AndroidTheme
 import com.bonobono.presentation.viewmodel.LoginViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi

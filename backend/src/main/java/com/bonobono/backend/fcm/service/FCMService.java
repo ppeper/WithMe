@@ -22,7 +22,7 @@ public class FCMService {
         // firebase로 부터 access token을 가져온다.
 
         GoogleCredentials googleCredentials = GoogleCredentials
-            .fromStream(new ClassPathResource("firebase/bonobono-eb51c-firebase-adminsdk-bnkb3-e799aa93b3.json").getInputStream())
+            .fromStream(new ClassPathResource("firebase/bonobono-2a773-firebase-adminsdk-70319-9beeb00ab4.json").getInputStream())
             .createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
 
         googleCredentials.refreshIfExpired();

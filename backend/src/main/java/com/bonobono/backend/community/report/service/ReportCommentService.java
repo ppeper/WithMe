@@ -6,7 +6,7 @@ import com.bonobono.backend.community.report.entity.Report;
 import com.bonobono.backend.community.report.entity.ReportComment;
 import com.bonobono.backend.community.report.repository.ReportCommentRepository;
 import com.bonobono.backend.community.report.repository.ReportRepository;
-import com.bonobono.backend.fcm.dto.FCMNotificationRequestDto;
+import com.bonobono.backend.fcm.dto.FCMReportNotificationRequestDto;
 import com.bonobono.backend.fcm.service.FCMNotificationService;
 import com.bonobono.backend.global.exception.UserNotAuthorizedException;
 import com.bonobono.backend.member.domain.Member;
@@ -58,13 +58,14 @@ public class ReportCommentService {
         }
 
         if (!memberId.equals(report.getMember().getId())) {
-            FCMNotificationRequestDto fcmNotificationRequestDto = FCMNotificationRequestDto.builder()
+            FCMReportNotificationRequestDto fcmReportNotificationRequestDto = FCMReportNotificationRequestDto.builder()
                     .memberId(report.getMember().getId())
                     .title("게시물에 댓글이 작성되었습니다.")
                     .body(requestDto.getContent())
+                    .reportId(reportId)
                     .build();
 
-            fcmNotificationService.sendNotificationByToken(fcmNotificationRequestDto);
+            fcmNotificationService.sendReportNotificationByToken(fcmReportNotificationRequestDto);
         }
         return new ReportCommentResponseDto(reportComment, member);
     }

@@ -36,7 +36,7 @@ fun DropDownMenuView(
     var menuExpanded by remember {
         mutableStateOf(false)
     }
-    IconButton(onClick = { menuExpanded = !menuExpanded }) {
+    IconButton(onClick = { menuExpanded = true }) {
         Icon(
             painter = painterResource(id = R.drawable.ic_more),
             contentDescription = "더보기",
@@ -44,7 +44,7 @@ fun DropDownMenuView(
         // 더보기 아이템 리스트
         DropdownMenu(
             expanded = menuExpanded,
-            onDismissRequest = { menuExpanded = !menuExpanded },
+            onDismissRequest = { menuExpanded = false },
             modifier = Modifier.background(color = White)
         ) {
             // 글쓴이만 수정 삭제 가능
@@ -74,7 +74,7 @@ fun DropDownMenuView(
                         },
                         onClick = {
                             onFinishClick()
-                            menuExpanded = !menuExpanded
+                            menuExpanded = false
                         }
                     )
                 }
@@ -92,7 +92,7 @@ fun DropDownMenuView(
                                 )
                             },
                             onClick = {
-                                menuExpanded = !menuExpanded
+                                menuExpanded = false
                                 onFinishClick()
                             }
                         )

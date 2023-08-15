@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.CommunityFab
+import com.bonobono.presentation.ui.NavigationRouteName.COMMUNITY_UPDATE_REPORT
 import com.bonobono.presentation.ui.theme.DividerGray
 import com.bonobono.presentation.ui.theme.TextGray
 
@@ -45,7 +46,7 @@ fun BoardWriteBottomView(
                 "사진",
                 onPhotoClick
             )
-            if (route == CommunityFab.REPORT.route) {
+            if (route == CommunityFab.REPORT.route || route.startsWith(COMMUNITY_UPDATE_REPORT)) {
                 IconTextView(
                     modifier = modifier,
                     R.drawable.ic_map_pin,

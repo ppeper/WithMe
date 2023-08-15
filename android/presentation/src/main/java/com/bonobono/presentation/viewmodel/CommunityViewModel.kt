@@ -23,8 +23,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -65,6 +63,10 @@ class CommunityViewModel @Inject constructor(
 
     private val _adminCompleteState = MutableStateFlow<NetworkResult<Unit>>(NetworkResult.Loading)
     val adminCompleteState = _adminCompleteState.asStateFlow()
+
+    // 글 수정 현재 내용
+    private val _currentArticleDetail = mutableStateOf<Article?>(null)
+    val currentArticleDetail = _currentArticleDetail
 
     // 링크 리스트
     private val _link = mutableStateOf(Link())
@@ -116,6 +118,14 @@ class CommunityViewModel @Inject constructor(
             _searchArticleList.value
         )
 
+
+    fun setCurrentArticle(article: Article) {
+        _currentArticleDetail.value = article
+    }
+
+    fun setCurrentLink(link: Link) {
+        _link.value = link
+    }
 
     fun setMapPosition(latLng: LatLng) {
         _mapState.value = latLng

@@ -107,7 +107,7 @@ public class MemberController {
             description = "로그인을 했을 때 발급받은 accessToken을 헤더에 넣어 해당 사용자의 실명, 닉네임, 휴대폰번호를 수정할 수 있습니다."
     )
     @PreAuthorize("isAuthenticated()")
-    @PutMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping("/update")
     public ResponseEntity<MemberResponseDto> updateMyInfo(@RequestBody MemberUpdateRequestDto dto) {
         memberService.updateMyInfo(dto);
         return ResponseEntity.ok(memberService.myProfile());
@@ -118,7 +118,7 @@ public class MemberController {
             description = "로그인을 했을 때 발급받은 accessToken을 헤더에 넣고, 이미지를 body에서 multipart 타입으로 넣어 요청을 보내면 해당 이미지로 프로필 이미지를 설정할 수 있습니다."
     )
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/img")
+    @PostMapping(value = "/img", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ProfileImgResponseDto> uploadImg(
             @RequestPart("image") MultipartFile image
     ) {
@@ -127,6 +127,23 @@ public class MemberController {
         String imgDirName = "profile_images";
 
         return ResponseEntity.ok(memberService.uploadProfileImg(member, image, oldImg, imgDirName));
+    }
+
+    @Operation(
+            summary = "프로필 이미지 삭제",
+            description = ""
+    )
+    @PreAuthorize("isAuthenticated()")
+    @DeleteMapping("/img")
+    public ResponseEntity<String> deleteImg() {
+        Member member = memberService.getMemberById(SecurityUtil.getLoginMemberId());
+        ProfileImg img = member.getProfileImg();
+        String url = img.getImageUrl();
+        String imgDirName = "profile_images";
+
+        memberService.deleteProfileImg(img, url, imgDirName);
+
+        return new ResponseEntity<>("프로필 삭제 성공", HttpStatus.OK);
     }
 
     @Operation(

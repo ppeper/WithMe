@@ -56,6 +56,7 @@ import com.bonobono.presentation.ui.main.mission.QuizScreen
 import com.bonobono.presentation.ui.main.ecyclopedia.EncyclopediaScreen
 import com.bonobono.presentation.ui.community.views.link.WebView
 import com.bonobono.presentation.ui.community.views.map.ReportMapView
+import com.bonobono.presentation.ui.login.LoginScreen
 import com.bonobono.presentation.ui.main.MainHomeScreen
 import com.bonobono.presentation.ui.main.mission.MissionScreen
 import com.bonobono.presentation.ui.main.notice.NoticeScreen
@@ -515,6 +516,18 @@ fun MainNavigationScreen(
                 photoViewModel = hiltViewModel(parentEntry)
             )
         }
+
+        composable(
+            route = NavigationRouteName.PROFILE_EDIT_GALLERY
+        ) {
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry(NavigationRouteName.PROFILE_EDIT)
+            }
+            GalleryScreen(
+                navController = navController,
+                photoViewModel = hiltViewModel(parentEntry)
+            )
+        }
     }
 }
 
@@ -540,8 +553,13 @@ fun NavGraphBuilder.communityNavigation(
         ) {
             CommonPostListView(type = CommunityReportNav.route, navController = navController)
         }
+        composable(
+            route = LoginNav.route,
+            deepLinks = LoginNav.deepLinks
+        ) {
+            LoginScreen(navController = rememberNavController())
+        }
     }
-
 }
 
 

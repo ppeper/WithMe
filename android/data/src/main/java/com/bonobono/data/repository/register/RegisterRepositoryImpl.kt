@@ -24,13 +24,6 @@ class RegisterRepositoryImpl @Inject constructor(
     private val  preferenceDatasource: PreferenceDataSource,
     private val registerService: RegisterService
 ) : RegisterRepository {
-    override suspend fun updateMember(member: Member): NetworkResult<Member> {
-        return handleApi { registerService.updateMember(member).toDomain() }
-    }
-
-    override suspend fun updatePassword(password: Password): NetworkResult<Member> {
-        return handleApi { registerService.passwordChange(password).toDomain() }
-    }
 
     override suspend fun checkUserName(username: Member): NetworkResult<String> {
         return handleApi { registerService.checkUserName(username) }
@@ -49,21 +42,7 @@ class RegisterRepositoryImpl @Inject constructor(
         return handleApi { registerService.login(loginInput).toDomain() }
     }
 
-    override suspend fun logout(): NetworkResult<String> {
-        return handleApi { registerService.logout() }
-    }
 
-    override suspend fun reissue(token: Token): NetworkResult<Token> {
-        return handleApi { registerService.reissue(token).toDomain() }
-    }
-
-    override suspend fun getMember(): NetworkResult<Member> {
-        return handleApi { registerService.getMember().toDomain() }
-    }
-
-    override suspend fun deleteMember(): NetworkResult<String> {
-        return handleApi { registerService.deleteMember() }
-    }
 
     override suspend fun putLoginResult(loginResult: LoginResult) {
         preferenceDatasource.putString("access_token", loginResult.tokenDto.accessToken)
@@ -102,5 +81,11 @@ class RegisterRepositoryImpl @Inject constructor(
                     continuation.resume(token ?: "")
                 }
             }
+    }
+
+    override suspend fun deleteLoginInfo() {
+        preferenceDatasource.putString("username", null)
+        preferenceDatasource.putString("password", null)
+        preferenceDatasource.putString("fcmtoken", null)
     }
 }

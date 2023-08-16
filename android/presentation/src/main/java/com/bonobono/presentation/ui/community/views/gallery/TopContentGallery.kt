@@ -1,5 +1,6 @@
 package com.bonobono.presentation.ui.community.views.gallery
 
+import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -13,6 +14,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.textInputServiceFactory
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -29,6 +31,7 @@ import com.bonobono.presentation.ui.theme.PrimaryBlue
 import com.bonobono.presentation.ui.theme.TextGray
 import com.bonobono.presentation.viewmodel.PhotoViewModel
 
+private const val TAG = "싸피"
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopContentGallery(
@@ -37,6 +40,8 @@ fun TopContentGallery(
     currentSelectedPhoto: SnapshotStateList<Photo>,
     photoViewModel: PhotoViewModel = hiltViewModel()
 ) {
+    val pageBefore = navController.currentDestination?.route
+    Log.d(TAG, "TopContentGallery: ${pageBefore}")
     CenterAlignedTopAppBar(
         modifier = Modifier.graphicsLayer {
             shadowElevation = 10f
@@ -61,7 +66,11 @@ fun TopContentGallery(
             TextButton(
                 onClick = {
                     // 현재 선택된 사진 추가
-                    photoViewModel.selectedPhoto.addAll(currentSelectedPhoto)
+                    if(pageBefore == "chatting_gallery" || pageBefore == "profile_edit_gallery") {
+                        photoViewModel.setOnePhoto(currentSelectedPhoto[0])
+                    } else {
+                        photoViewModel.selectedPhoto.addAll(currentSelectedPhoto)
+                    }
                     navController.popBackStack()
                 },
                 colors = ButtonDefaults.textButtonColors(
@@ -70,17 +79,31 @@ fun TopContentGallery(
                 ),
                 enabled = 0 < currentSelectedPhoto.size
             ) {
-                if (0 < currentSelectedPhoto.size) {
-                    Text(
-                        modifier = Modifier.padding(end = 4.dp),
-                        text = currentSelectedPhoto.size.toString(),
-                        style = TextStyle(
-                            fontSize = 14.sp,
-                            lineHeight = 18.sp,
-                            fontWeight = FontWeight(700),
-                            color = PrimaryBlue,
+                if(pageBefore == "chatting_gallery" || pageBefore == "profile_edit_gallery") {
+                    if(currentSelectedPhoto.size == 1) {    // 사진 1개만 접근
+                        Text(
+                            text = "완료",
+                            style = TextStyle(
+                                fontSize = 14.sp,
+                                lineHeight = 18.sp,
+                                fontWeight = FontWeight(400),
+                            ),
                         )
-                    )
+                    }
+                } else {
+                    // 게시판에서 접근
+                    if (0 < currentSelectedPhoto.size) {
+                        Text(
+                            modifier = Modifier.padding(end = 4.dp),
+                            text = currentSelectedPhoto.size.toString(),
+                            style = TextStyle(
+                                fontSize = 14.sp,
+                                lineHeight = 18.sp,
+                                fontWeight = FontWeight(700),
+                                color = PrimaryBlue,
+                            )
+                        )
+                    }
                 }
                 Text(
                     text = "완료",
@@ -98,5 +121,5 @@ fun TopContentGallery(
 @Preview
 @Composable
 fun PreviewCommunityWriteView() {
-    TopContentGallery("사진", navController = rememberNavController(), mutableStateListOf())
+    TopContentGallery("사진", navController = rememberNavController(),mutableStateListOf())
 }

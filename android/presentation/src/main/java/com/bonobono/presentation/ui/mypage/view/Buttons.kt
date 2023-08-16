@@ -34,14 +34,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.bonobono.presentation.R
+import com.bonobono.presentation.ui.LoginNav
 import com.bonobono.presentation.ui.PointStoreNav
 import com.bonobono.presentation.ui.ProfileEditNav
 import com.bonobono.presentation.ui.mypage.PasswordEditView
 import com.bonobono.presentation.ui.mypage.WithdrawView
 import com.bonobono.presentation.ui.theme.DarkGray
 import com.bonobono.presentation.ui.theme.White
+import com.bonobono.presentation.viewmodel.LoginViewModel
 
 @Composable
 fun SettingOptions(
@@ -63,12 +66,15 @@ fun SettingOptions(
                         "권한설정" -> {
                             navigateToAppSettings(context)
                         }
+
                         "비밀번호" -> {
                             isPasswordDialogVisible = true
                         }
+
                         "회원탈퇴" -> {
                             isWithdrawDialogVisible = true
                         }
+
                         else -> {
 
                         }
@@ -107,6 +113,7 @@ fun navigateToAppSettings(context: Context) {
 
 @Composable
 fun MyPageButton(buttonType: String, iconName: String, navController: NavController) {
+    val loginViewModel : LoginViewModel = hiltViewModel()
     Row(verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
@@ -117,14 +124,19 @@ fun MyPageButton(buttonType: String, iconName: String, navController: NavControl
                     "포인트 상점" -> {
                         navController.navigate(PointStoreNav.route)
                     }
+
                     "나의 글" -> {
                     }
+
                     "회원정보 수정" -> {
                         navController.navigate(ProfileEditNav.route)
                     }
-                    "로그아웃" -> {
 
+                    "로그아웃" -> {
+                        loginViewModel.logout()
+                        navController.navigate(LoginNav.route)
                     }
+
                     else -> {
 
                     }

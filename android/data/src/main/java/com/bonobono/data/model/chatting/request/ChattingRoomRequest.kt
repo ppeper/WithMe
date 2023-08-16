@@ -5,6 +5,5 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ChattingRoomRequest (
-    val nickname : String,
-    val roomNumber : Int
+    val nickname : String
 ) : Parcelable

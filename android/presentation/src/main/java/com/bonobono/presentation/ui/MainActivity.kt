@@ -34,19 +34,20 @@ class MainActivity : ComponentActivity() {
                     loginViewModel.getLoginInfo()
                     if(loginViewModel.username.isNotBlank() && loginViewModel.password.isNotBlank()) {
                         // 자동 로그인 시킴
-                        val coroutineScope = rememberCoroutineScope()
-                        var result = ""
-                        LaunchedEffect(key1 = Unit) {
-                            result = loginViewModel.login()
-                        }
-                        // 결과에 따라 다른 화면을 렌더링
-                        if (result == "SUCCESS") {
-                            Log.d(TAG, "onCreate: $result")
-                            MainScreen()
-                        } else {
-                            Log.d(TAG, "onCreate: $result")
-                            StartScreen()
-                        }
+//                        val coroutineScope = rememberCoroutineScope()
+//                        var result = ""
+//                        LaunchedEffect(key1 = Unit) {
+//                            result = loginViewModel.login()
+//                        }
+//                        // 결과에 따라 다른 화면을 렌더링
+//                        if (result == "SUCCESS") {
+//                            Log.d(TAG, "onCreate: $result")
+//                            MainScreen()
+//                        } else {
+//                            Log.d(TAG, "onCreate: $result")
+//                            StartScreen()
+//                        }
+                        MainScreen()
                     } else {
                         StartScreen()
                     }

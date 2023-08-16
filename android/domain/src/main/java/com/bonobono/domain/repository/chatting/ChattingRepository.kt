@@ -15,4 +15,12 @@ interface ChattingRepository {
     // 채팅방 삭제
     suspend fun deleteChattingRoom(roomNumber : Int) : NetworkResult<Unit>
 
+    // websocket 연결
+    suspend fun connectWebSocket(url: String) : NetworkResult<Unit>
+
+    // websocket 끊기
+    suspend fun disconnectWebSocket() : NetworkResult<Unit>
+
+    // websocket 소통
+    suspend fun sendMessage(message : String) : NetworkResult<Unit>
 }

@@ -76,32 +76,52 @@ fun GalleryScreen(
     val currentSelectedPhoto = remember {
         mutableStateListOf<Photo>()
     }
-    if (galleryPermission.allPermissionsGranted) {
-        Scaffold(
-            modifier = modifier.fillMaxWidth(),
-            topBar = {
-                TopContentGallery(
-                    title = "사진", navController,
-                    photoViewModel = photoViewModel,
-                    currentSelectedPhoto = currentSelectedPhoto
-                )
-            }
-        ) {
-            Surface(
-                modifier = modifier.padding(it)
-            ) {
-                GalleryGridListView(
-                    photoList = photoList,
-                    photoViewModel = photoViewModel,
-                    currentSelectedPhoto = currentSelectedPhoto
-                )
-            }
+//    if (galleryPermission.allPermissionsGranted) {
+//        Scaffold(
+//            modifier = modifier.fillMaxWidth(),
+//            topBar = {
+//                TopContentGallery(
+//                    title = "사진", navController,
+//                    photoViewModel = photoViewModel,
+//                    currentSelectedPhoto = currentSelectedPhoto
+//                )
+//            }
+//        ) {
+//            Surface(
+//                modifier = modifier.padding(it)
+//            ) {
+//                GalleryGridListView(
+//                    photoList = photoList,
+//                    photoViewModel = photoViewModel,
+//                    currentSelectedPhoto = currentSelectedPhoto
+//                )
+//            }
+//        }
+//    } else {
+//        PermissionView(
+//            title = "사진 권한이 필요합니다!",
+//            navController = navController
+//        )
+//    }
+    Scaffold(
+        modifier = modifier.fillMaxWidth(),
+        topBar = {
+            TopContentGallery(
+                title = "사진", navController,
+                photoViewModel = photoViewModel,
+                currentSelectedPhoto = currentSelectedPhoto
+            )
         }
-    } else {
-        PermissionView(
-            title = "사진 권한이 필요합니다!",
-            navController = navController
-        )
+    ) {
+        Surface(
+            modifier = modifier.padding(it)
+        ) {
+            GalleryGridListView(
+                photoList = photoList,
+                photoViewModel = photoViewModel,
+                currentSelectedPhoto = currentSelectedPhoto
+            )
+        }
     }
 }
 

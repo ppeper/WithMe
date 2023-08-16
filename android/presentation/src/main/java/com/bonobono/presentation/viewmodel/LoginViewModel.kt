@@ -8,11 +8,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bonobono.domain.model.NetworkResult
 import com.bonobono.domain.model.registration.LoginInput
+import com.bonobono.domain.usecase.register.DeleteLoginInfoUseCase
 import com.bonobono.domain.usecase.register.GetFCMTokenUseCase
 import com.bonobono.domain.usecase.register.GetLoginInfoUseCase
 import com.bonobono.domain.usecase.register.GetMemberUseCase
 import com.bonobono.domain.usecase.register.LoginResultInputUseCase
 import com.bonobono.domain.usecase.register.LoginUseCase
+import com.bonobono.domain.usecase.register.LogoutUseCase
 import com.bonobono.domain.usecase.register.MemberInfoInputUseCase
 import com.bonobono.domain.usecase.register.PutLoginInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,7 +32,9 @@ class LoginViewModel @Inject constructor(
     private val getMemberUseCase: GetMemberUseCase,
     private val putLoginInfoUseCase: PutLoginInfoUseCase,
     private val getLoginInfoUseCase: GetLoginInfoUseCase,
-    private val getFCMTokenUseCase: GetFCMTokenUseCase
+    private val getFCMTokenUseCase: GetFCMTokenUseCase,
+    private val logoutUseCase: LogoutUseCase,
+    private val deleteLoginInfoUseCase: DeleteLoginInfoUseCase
 ) : ViewModel() {
     var username by mutableStateOf("")
         private set
@@ -100,6 +104,11 @@ class LoginViewModel @Inject constructor(
         password = result.password
         fcmToken = result.fcmtoken
         Log.d(TAG, "getLoginInfo: $username , $password , $fcmToken")
+    }
+
+    fun logout() = viewModelScope.launch {
+        logoutUseCase.invoke()
+        deleteLoginInfoUseCase.invoke()
     }
 
 }

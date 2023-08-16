@@ -12,13 +12,12 @@ import com.bonobono.domain.model.chatting.ChattingMessage
 fun ChattingRoomRequest.toDomain(): ChatRoom {
     return ChatRoom(
         nickname = nickname,
-        roomNumber = roomNumber
     )
 }
 
 fun ChatMessageResponse.toDomain(): ChattingMessage {
     return ChattingMessage(
-        username = username,
+        userName = userName,
         msg = msg,
         imageUrl = imageUrl,
         createdDate = createdDate
@@ -42,6 +41,6 @@ fun ChattingListResponse.toDomain(): ChattingList {
         profileImgName = profileImgName,
         profileImgUrl = profileImgUrl,
         msg = msg,
-        messagecreatedDate = messagecreatedDate
+        messageCreatedDate = messageCreatedDate
     )
 }

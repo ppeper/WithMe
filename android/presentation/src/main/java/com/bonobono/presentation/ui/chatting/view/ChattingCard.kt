@@ -11,6 +11,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -25,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -49,7 +53,7 @@ fun ChattingCard(
 ) {
     val currentDate = LocalDateTime.now()
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-    val latestTime = chattingList.messagecreatedDate?.let {
+    val latestTime = chattingList.messageCreatedDate?.let {
         LocalDateTime.parse(it, formatter)
     } ?: LocalDateTime.now() // 만약 null이면 현재 시간으로 초기화
 
@@ -93,9 +97,22 @@ fun ChattingCard(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start
             ) {
-                ChatProfileImg(profileImg = chattingList.profileImgUrl, profileImgDesc = chattingList.profileImgName)
+                Column (modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .weight(1f),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally){
+                    ChatProfileImg(
+                        profileImg = chattingList.profileImgUrl,
+                        profileImgDesc = chattingList.profileImgName)
+                }
                 Spacer(modifier = Modifier.width(16.dp))
                 Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .weight(7f),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.Start
                 ) {
@@ -110,6 +127,8 @@ fun ChattingCard(
                     chattingList.msg?.let {
                         Text(
                             text = it,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
                             style = TextStyle(
                                 fontWeight = FontWeight.Normal,
                                 fontSize = 14.sp
@@ -119,6 +138,10 @@ fun ChattingCard(
                 }
             }
             Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .weight(2f),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {

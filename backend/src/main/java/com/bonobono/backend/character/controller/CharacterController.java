@@ -20,7 +20,6 @@ import java.util.List;
 public class CharacterController {
 
     private final UserCharacterService userCharacterService;
-    private final OurCharacterService ourCharacterService;
 
     //도감 잡은 동물들 보여주기
     @GetMapping("/user/list")
@@ -37,7 +36,7 @@ public class CharacterController {
     }
 
     // 각 상세 캐릭터들을 보여줌(잡은 해변위치나 이런건 나중에)
-    @PostMapping("/user/{character_id}")
+    @GetMapping("/user/{character_id}")
     public ResponseEntity<UserChracterResponseDto> findById(@PathVariable Long character_id) {
         // @AuthenticationPrincipal 사용하기
         UserChracterResponseDto responseDto = userCharacterService.findById(character_id);

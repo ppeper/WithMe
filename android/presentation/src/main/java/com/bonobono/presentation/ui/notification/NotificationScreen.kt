@@ -78,7 +78,6 @@ fun NotificationScreen(
             ) {
                 items(notificationList.value) { item ->
                     NotificationView(notification = item, isEdit = isEdit, navController = navController) {
-                        Log.d("TEST", "NotificationScreen: 삭제 $item")
                         notificationViewModel.deleteNotification(item.id)
                     }
                 }

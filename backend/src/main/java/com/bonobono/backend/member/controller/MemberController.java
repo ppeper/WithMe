@@ -122,7 +122,7 @@ public class MemberController {
 
     @Operation(
         summary = "프로필 이미지 조회",
-        description = "로그인을 했을 때 발급받은 accessToken을 헤더에 넣고, 해당 멤버의 프로필 이미지를 조회할 수 있다."
+        description = "로그인을 했을 때 발급받은 accessToken을 헤더에 넣고, 해당 멤버의 프로필 이미지를 조회할 수 있습니다."
     )
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/img")

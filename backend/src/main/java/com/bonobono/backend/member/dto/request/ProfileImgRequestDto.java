@@ -31,4 +31,13 @@ public class ProfileImgRequestDto {
                 .imgUrl(imgUrl)
                 .build();
     }
+
+    public static ProfileImgRequestDto toRequestDto(ProfileImg img) {
+
+        ProfileImgRequestDto request = new ProfileImgRequestDto();
+        request.setImgName(img.getImageName());
+        request.setImgUrl(img.getImageUrl());
+
+        return request;
+    }
 }

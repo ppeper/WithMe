@@ -121,6 +121,25 @@ public class MemberController {
     }
 
     @Operation(
+        summary = "프로필 이미지 조회",
+        description = "로그인을 했을 때 발급받은 accessToken을 헤더에 넣고, 해당 멤버의 프로필 이미지를 조회할 수 있다."
+    )
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/img")
+    public ResponseEntity<ProfileImgResponseDto> getImg() {
+
+        Member member = memberService.getMemberById(SecurityUtil.getLoginMemberId());
+        ProfileImg img = member.getProfileImg();
+
+        ProfileImgResponseDto response = ProfileImgResponseDto.builder()
+            .memberId(member.getId())
+            .img(img.toRequestDto())
+            .build();
+
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(
             summary = "프로필 이미지 업로드",
             description = "로그인을 했을 때 발급받은 accessToken을 헤더에 넣고, 이미지를 body에서 multipart 타입으로 넣어 요청을 보내면 해당 이미지로 프로필 이미지를 설정할 수 있습니다."
     )

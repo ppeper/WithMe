@@ -29,7 +29,6 @@ fun DropDownMenuView(
     role: String?,
     memberId: Long,
     article: Article,
-    onUpdateClick: () -> Unit,
     onDeleteClick: () -> Unit,
     onFinishClick: () -> Unit,
 ) {
@@ -49,12 +48,6 @@ fun DropDownMenuView(
         ) {
             // 글쓴이만 수정 삭제 가능
             if (memberId == article.memberId) {
-                DropdownMenuItem(
-                    text = {
-                        Text(text = "수정 하기")
-                    },
-                    onClick = { onUpdateClick() },
-                )
                 DropdownMenuItem(
                     text = {
                         Text(text = "삭제 하기")

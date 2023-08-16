@@ -15,4 +15,7 @@ object Constants {
     const val MAIN_CHARACTER = "main_character"
     const val ADMIN_ROLE = "ADMIN"
     const val ONBOADING = "ONBOARDING"
+    // Notification
+    const val CHANNEL_ID = "with_me_channel"
+    const val CHANNEL_NAME = "나랑해"
 }

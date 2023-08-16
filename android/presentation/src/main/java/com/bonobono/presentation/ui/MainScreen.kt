@@ -1,5 +1,6 @@
 package com.bonobono.presentation.ui
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,12 +15,14 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -41,6 +44,7 @@ import com.bonobono.presentation.ui.NavigationRouteName.COMMUNITY_WITH
 import com.bonobono.presentation.ui.NavigationRouteName.MAIN_COMMUNITY
 import com.bonobono.presentation.ui.chatting.ChattingRoomScreen
 import com.bonobono.presentation.ui.chatting.MainChattingScreen
+import com.bonobono.presentation.ui.common.button.CommunityFloatingActionButton
 import com.bonobono.presentation.ui.common.button.HomeFloatingActionButton
 import com.bonobono.presentation.ui.common.topbar.SharedTopAppBar
 import com.bonobono.presentation.ui.common.topbar.rememberAppBarState
@@ -67,6 +71,7 @@ import com.bonobono.presentation.ui.mypage.PointStoreScreen
 import com.bonobono.presentation.ui.mypage.ProfileEditScreen
 import com.bonobono.presentation.ui.mypage.SettingScreen
 import com.bonobono.presentation.ui.onboarding.OnBoardingScreen
+import com.bonobono.presentation.ui.notification.NotificationScreen
 import com.bonobono.presentation.ui.theme.PrimaryBlue
 import com.bonobono.presentation.ui.theme.TextGray
 import com.bonobono.presentation.ui.theme.White
@@ -75,10 +80,14 @@ import com.bonobono.presentation.utils.NavigationUtils
 import com.bonobono.presentation.viewmodel.MapViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import java.util.Locale
 
 
 @Composable
-fun MainScreen() {
+fun MainScreen(
+    type: String? = null,
+    articleId: String? = null
+) {
     val navController = rememberNavController()
     val appBarState = rememberAppBarState(navController = navController)
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -131,6 +140,12 @@ fun MainScreen() {
             innerPaddings = it,
             navController = navController,
         )
+        LaunchedEffect(Unit) {
+            if (type != null && articleId != null) {
+                Log.d("TEST", "MainScreen: PendingIntent 호출")
+                navController.navigate("${BoardDetailNav.route}/${type.lowercase(Locale.getDefault())}/$articleId")
+            }
+        }
     }
 }
 
@@ -405,6 +420,14 @@ fun MainNavigationScreen(
                 )
             }
         }
+
+        composable(
+            route = NavigationRouteName.COMMUNITY_NOTIFICATION
+        ) {
+            NotificationScreen(navController = navController)
+        }
+
+
         composable(
             route = "${NavigationRouteName.COMMUNITY_SEARCH}/{type}"
         ) {

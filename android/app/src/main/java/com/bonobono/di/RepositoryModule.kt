@@ -2,6 +2,7 @@ package com.bonobono.di
 
 import android.content.Context
 import com.bonobono.data.local.PreferenceDataSource
+import com.bonobono.data.local.dao.NotificationDao
 import com.bonobono.data.remote.CharacterService
 import com.bonobono.data.remote.ChatService
 import com.bonobono.data.remote.CommunityService
@@ -12,6 +13,7 @@ import com.bonobono.data.remote.RegisterService
 import com.bonobono.data.repository.CharacterRepositoryImpl
 import com.bonobono.data.repository.ChatRepositoryImpl
 import com.bonobono.data.repository.MapRepositoryImpl
+import com.bonobono.data.repository.NotificationRepositoryImpl
 import com.bonobono.data.repository.SharedLocalRepositoryImpl
 import com.bonobono.data.repository.community.CommunityRepositoryImpl
 import com.bonobono.domain.repository.MissionRepository
@@ -19,6 +21,7 @@ import com.bonobono.data.repository.register.RegisterRepositoryImpl
 import com.bonobono.domain.repository.CharacterRepository
 import com.bonobono.domain.repository.MapRepository
 import com.bonobono.domain.repository.chatting.ChattingRepository
+import com.bonobono.domain.repository.NotificationRepository
 import com.bonobono.domain.repository.SharedLocalRepository
 import com.bonobono.domain.repository.community.CommunityRepository
 import com.bonobono.domain.repository.registration.RegisterRepository
@@ -84,5 +87,11 @@ object RepositoryModule {
     @Singleton
     fun provideChattingRepository(chatService: ChatService) : ChattingRepository {
         return ChatRepositoryImpl(chatService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideNotificationRepository(notificationDao: NotificationDao): NotificationRepository {
+        return NotificationRepositoryImpl(notificationDao)
     }
 }

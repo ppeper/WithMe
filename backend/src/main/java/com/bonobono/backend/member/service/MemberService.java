@@ -14,6 +14,7 @@ import com.bonobono.backend.member.domain.Token;
 import com.bonobono.backend.member.domain.enumtype.Role;
 import com.bonobono.backend.member.dto.request.*;
 import com.bonobono.backend.member.dto.response.LoginResponseDto;
+import com.bonobono.backend.member.dto.response.MemberProfileResponseDto;
 import com.bonobono.backend.member.dto.response.MemberResponseDto;
 import com.bonobono.backend.member.dto.response.ProfileImgResponseDto;
 import com.bonobono.backend.member.dto.response.TokenDto;
@@ -25,6 +26,7 @@ import com.bonobono.backend.member.repository.ProfileImgRepository;
 import com.bonobono.backend.member.repository.TokenRepository;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
@@ -189,11 +191,29 @@ public class MemberService {
      * 회원 정보 조회
      */
     @Transactional(readOnly = true)
-    public MemberResponseDto myProfile() {
+    public MemberProfileResponseDto myProfile() {
 
-        return memberRepository.findById(SecurityUtil.getLoginMemberId())
-                .map(MemberResponseDto::of)
-                .orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다."));
+        Member member = memberRepository.findById(SecurityUtil.getLoginMemberId())
+            .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 멤버입니다."));
+
+        List<UserCharacter> userCharacters = userCharacterRepository.findByMemberId(member.getId());
+        int experience = userCharacters.stream()
+            .mapToInt(UserCharacter::getExperience)
+            .sum();
+
+        MemberRequestDto request = MemberRequestDto.builder()
+            .memberId(member.getId())
+            .name(member.getName())
+            .nickname(member.getNickname())
+            .username(member.getUsername())
+            .phoneNumber(member.getPhoneNumber())
+            .role(member.getRole())
+            .build();
+
+        return MemberProfileResponseDto.builder()
+            .member(request)
+            .experience(experience)
+            .build();
     }
 
     /**

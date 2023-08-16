@@ -8,6 +8,7 @@ import com.bonobono.backend.member.domain.Member;
 import com.bonobono.backend.member.domain.ProfileImg;
 import com.bonobono.backend.member.dto.request.*;
 import com.bonobono.backend.member.dto.response.LoginResponseDto;
+import com.bonobono.backend.member.dto.response.MemberProfileResponseDto;
 import com.bonobono.backend.member.dto.response.MemberResponseDto;
 import com.bonobono.backend.member.dto.response.ProfileImgResponseDto;
 import com.bonobono.backend.member.dto.response.TokenDto;
@@ -102,7 +103,7 @@ public class MemberController {
     )
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/profile")
-    public ResponseEntity<MemberResponseDto> myProfile() {
+    public ResponseEntity<MemberProfileResponseDto> myProfile() {
 
         return ResponseEntity.ok(memberService.myProfile());
     }
@@ -113,7 +114,7 @@ public class MemberController {
     )
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/update")
-    public ResponseEntity<MemberResponseDto> updateMyInfo(@RequestBody MemberUpdateRequestDto dto) {
+    public ResponseEntity<MemberProfileResponseDto> updateMyInfo(@RequestBody MemberUpdateRequestDto dto) {
 
         memberService.updateMyInfo(dto);
 
@@ -180,7 +181,7 @@ public class MemberController {
     )
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/password")
-    public ResponseEntity<MemberResponseDto> passwordChange(@RequestBody PasswordChangeRequestDto dto) {
+    public ResponseEntity<MemberProfileResponseDto> passwordChange(@RequestBody PasswordChangeRequestDto dto) {
 
         memberService.passwordChange(dto);
 

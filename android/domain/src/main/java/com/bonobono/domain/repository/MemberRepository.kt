@@ -3,6 +3,7 @@ package com.bonobono.domain.repository
 import com.bonobono.domain.model.NetworkResult
 import com.bonobono.domain.model.registration.Member
 import com.bonobono.domain.model.registration.Password
+import com.bonobono.domain.model.registration.ProfileImgResult
 import com.bonobono.domain.model.registration.Token
 
 interface MemberRepository {
@@ -26,4 +27,7 @@ interface MemberRepository {
 
     // 프로필 이미지 업데이트
     suspend fun updateProfileImg(img : String) : NetworkResult<Unit>
+
+    // 프로필 이미지 가져오기
+    suspend fun getProfileImg() : NetworkResult<ProfileImgResult>
 }

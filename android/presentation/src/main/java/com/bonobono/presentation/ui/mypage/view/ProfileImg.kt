@@ -26,15 +26,16 @@ import com.bonobono.presentation.R
 @Composable
 fun ProfileEdit(profileImage: String?, clickAction : () -> Unit) {
     Box(
-        modifier = Modifier.clickable{clickAction}
+        modifier = Modifier.clickable{clickAction()}
     ) {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
                 .data(profileImage)
                 .error(R.drawable.default_profile)
                 .build(),
+            contentScale = ContentScale.Crop,
             modifier = Modifier
-                .size(120.dp)
+                .size(100.dp)
                 .clip(CircleShape),
             contentDescription = "프로필 이미지"
         )
@@ -42,24 +43,20 @@ fun ProfileEdit(profileImage: String?, clickAction : () -> Unit) {
 }
 
 @Composable
-fun MyPageProfileImg() {
-    val imagePainter = painterResource(id = R.drawable.sea_turtle)
+fun MyPageProfileImg(profileImage: String?) {
     Surface(
         modifier = Modifier
-            .size(130.dp)
+            .size(100.dp)
             .clip(CircleShape)
     ) {
-        Box(
-            modifier = Modifier
-                .size(128.dp)
-                .background(Color.LightGray))
-        Image(
-            painter = imagePainter,
-            contentDescription = "profileImg",
-            modifier = Modifier
-                .aspectRatio(1f)
-                .fillMaxSize(),
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(profileImage)
+                .error(R.drawable.default_profile)
+                .build(),
             contentScale = ContentScale.Crop,
+            modifier = Modifier.size(100.dp).clip(CircleShape),
+            contentDescription = "프로필 이미지"
         )
     }
 }

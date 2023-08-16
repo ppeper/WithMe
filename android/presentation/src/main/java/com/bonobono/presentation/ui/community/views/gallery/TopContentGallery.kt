@@ -10,7 +10,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
@@ -23,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.community.Photo
@@ -32,6 +35,7 @@ import com.bonobono.presentation.ui.theme.TextGray
 import com.bonobono.presentation.viewmodel.PhotoViewModel
 
 private const val TAG = "싸피"
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopContentGallery(
@@ -40,8 +44,8 @@ fun TopContentGallery(
     currentSelectedPhoto: SnapshotStateList<Photo>,
     photoViewModel: PhotoViewModel = hiltViewModel()
 ) {
-    val pageBefore = navController.currentDestination?.route
-    Log.d(TAG, "TopContentGallery: ${pageBefore}")
+    val pagePathBefore = navController.previousBackStackEntry?.destination?.route
+    Log.d(TAG, "TopContentGallery: ${pagePathBefore}")
     CenterAlignedTopAppBar(
         modifier = Modifier.graphicsLayer {
             shadowElevation = 10f
@@ -65,11 +69,11 @@ fun TopContentGallery(
         actions = {
             TextButton(
                 onClick = {
-                    // 현재 선택된 사진 추가
-                    if(pageBefore == "chatting_gallery" || pageBefore == "profile_edit_gallery") {
+                    if(pagePathBefore == "chatting_edit" || pagePathBefore == "profile_edit") {
                         photoViewModel.setOnePhoto(currentSelectedPhoto[0])
                     } else {
-                        photoViewModel.selectedPhoto.addAll(currentSelectedPhoto)
+                    // 현재 선택된 사진 추가
+                    photoViewModel.selectedPhoto.addAll(currentSelectedPhoto)
                     }
                     navController.popBackStack()
                 },
@@ -79,8 +83,8 @@ fun TopContentGallery(
                 ),
                 enabled = 0 < currentSelectedPhoto.size
             ) {
-                if(pageBefore == "chatting_gallery" || pageBefore == "profile_edit_gallery") {
-                    if(currentSelectedPhoto.size == 1) {    // 사진 1개만 접근
+                if(pagePathBefore == "chatting_edit" || pagePathBefore == "profile_edit") {
+                    if (currentSelectedPhoto.size == 1) {
                         Text(
                             text = "완료",
                             style = TextStyle(
@@ -104,15 +108,15 @@ fun TopContentGallery(
                             )
                         )
                     }
+                    Text(
+                        text = "완료",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            lineHeight = 18.sp,
+                            fontWeight = FontWeight(400),
+                        ),
+                    )
                 }
-                Text(
-                    text = "완료",
-                    style = TextStyle(
-                        fontSize = 14.sp,
-                        lineHeight = 18.sp,
-                        fontWeight = FontWeight(400),
-                    ),
-                )
             }
         }
     )
@@ -121,5 +125,5 @@ fun TopContentGallery(
 @Preview
 @Composable
 fun PreviewCommunityWriteView() {
-    TopContentGallery("사진", navController = rememberNavController(),mutableStateListOf())
+    TopContentGallery("사진", navController = rememberNavController(), mutableStateListOf())
 }

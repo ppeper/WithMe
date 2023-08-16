@@ -13,9 +13,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -23,24 +28,39 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.bonobono.domain.model.community.Link
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.SettingNav
+import com.bonobono.presentation.ui.community.views.link.getMetaData
 import com.bonobono.presentation.ui.mypage.view.MyPageButton
 import com.bonobono.presentation.ui.mypage.view.MyPageInfoCard
 import com.bonobono.presentation.ui.mypage.view.MyPageProfileImg
 import com.bonobono.presentation.ui.mypage.view.WaveAnimation
 import com.bonobono.presentation.ui.theme.WaveBlue
 import com.bonobono.presentation.ui.theme.White
+import com.bonobono.presentation.viewmodel.MyPageViewModel
+import kotlinx.coroutines.launch
 
 @Composable
-fun MainMyPageScreen(navController: NavController) {
+fun MainMyPageScreen(
+    navController: NavController,
+    myPageViewModel: MyPageViewModel = hiltViewModel()) {
+    val scope = rememberCoroutineScope()
+    var metaLink by remember { mutableStateOf(Link()) }
+    LaunchedEffect(key1 = Unit ) {
+        myPageViewModel.getProfileImg()
+        scope.launch {
+            metaLink = getMetaData(Link(myPageViewModel.profileImg ?: "https://",  "프로필 이미지"))
+        }
+    }
+
     LazyColumn() {
         item {
             // blue wave background
-            WaveBackGround(navController)
+            WaveBackGround(navController, myPageViewModel)
             // experience and money info box
             MyPageInfoCard(seaAnimalExp = 1000, rewardMoney = 1000)
             // rest buttons
@@ -78,7 +98,10 @@ fun MainMyPageScreen(navController: NavController) {
 }
 
 @Composable
-fun WaveBackGround(navController: NavController) {  // blue wave background, setting button, profile image, nickname
+fun WaveBackGround(
+    navController: NavController,
+    myPageViewModel: MyPageViewModel,
+) {  // blue wave background, setting button, profile image, nickname
     Box(modifier = Modifier.fillMaxWidth()) {
         Image(
             painter = painterResource(id = R.drawable.blue_wave_background),
@@ -108,7 +131,7 @@ fun WaveBackGround(navController: NavController) {  // blue wave background, set
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Spacer(modifier = Modifier.height(32.dp))
-                MyPageProfileImg()
+                MyPageProfileImg(myPageViewModel.profileImg)
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = "test",

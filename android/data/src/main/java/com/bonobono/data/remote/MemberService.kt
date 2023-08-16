@@ -1,6 +1,7 @@
 package com.bonobono.data.remote
 
 import com.bonobono.data.model.registration.response.MemberResponse
+import com.bonobono.data.model.registration.response.ProfileImgResponse
 import com.bonobono.data.model.registration.response.TokenResponse
 import com.bonobono.domain.model.registration.Member
 import com.bonobono.domain.model.registration.Password
@@ -10,9 +11,11 @@ import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Part
+import retrofit2.http.Query
 
 interface MemberService {
     @PUT("member/update")
@@ -39,8 +42,12 @@ interface MemberService {
         @Body token : Token
     ) : TokenResponse
 
+    @Multipart
     @POST("member/img")
     suspend fun updateProfileImg(
-        @Part("image") image : MultipartBody.Part
+        @Part image : MultipartBody.Part
     )
+
+    @GET("member/img")
+    suspend fun getProfileImg() : ProfileImgResponse
 }

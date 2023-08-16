@@ -1,5 +1,6 @@
 package com.bonobono.presentation.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -9,6 +10,7 @@ import com.bonobono.presentation.ui.community.Photo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
+private const val TAG = "PhotoViewModel"
 @HiltViewModel
 class PhotoViewModel @Inject constructor(): ViewModel() {
     private val _selectedPhoto: SnapshotStateList<Photo> = mutableStateListOf()
@@ -21,6 +23,7 @@ class PhotoViewModel @Inject constructor(): ViewModel() {
 
     fun setOnePhoto(photo : Photo) {
         _selectedOnePhoto.value = photo
+        Log.d(TAG, "setOnePhoto: ${selectedOnePhoto.value}")
     }
 
     fun setPhotoList(photoList: List<Photo>) {

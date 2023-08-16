@@ -87,7 +87,7 @@ object RepositoryModule {
     @Provides
     @Singleton
     fun provideChattingRepository(chatService: ChatService) : ChattingRepository {
-        return ChatRepositoryImpl(chatService, webSocketListener = WebSocketListener())
+        return ChatRepositoryImpl(chatService)
     }
 
     @Provides

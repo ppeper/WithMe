@@ -54,7 +54,8 @@ fun ChattingCard(
     val currentDate = LocalDateTime.now()
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
     val latestTime = chattingList.messageCreatedDate?.let {
-        LocalDateTime.parse(it, formatter)
+        if(it == "00:00:00") LocalDateTime.now()
+        else LocalDateTime.parse(it, formatter)
     } ?: LocalDateTime.now() // 만약 null이면 현재 시간으로 초기화
 
     val formattedDate = when {

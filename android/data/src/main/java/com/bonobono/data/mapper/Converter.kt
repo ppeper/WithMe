@@ -13,4 +13,10 @@ object Converter {
         val requestFile = file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
         return requestFile.let { MultipartBody.Part.createFormData("imageFiles", file.name, it) }
     }
+
+    fun createMultipartBodyPartOnePhoto(imagePath: String): MultipartBody.Part {
+        val file = File(imagePath)
+        val requestFile = file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+        return requestFile.let { MultipartBody.Part.createFormData("image", file.name, it) }
+    }
 }

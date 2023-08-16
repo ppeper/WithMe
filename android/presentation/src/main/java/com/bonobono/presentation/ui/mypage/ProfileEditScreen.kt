@@ -1,5 +1,6 @@
 package com.bonobono.presentation.ui.mypage
 
+import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,12 +22,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.bonobono.presentation.R
+import com.bonobono.presentation.ui.NavigationRouteName
 import com.bonobono.presentation.ui.common.button.PrimaryColorButton
 import com.bonobono.presentation.ui.common.topbar.screen.ProfileEditScreen
 import com.bonobono.presentation.ui.community.util.routeMapper
@@ -34,8 +37,10 @@ import com.bonobono.presentation.ui.mypage.view.ProfileEdit
 import com.bonobono.presentation.ui.theme.Black_100
 import com.bonobono.presentation.ui.theme.Black_70
 import com.bonobono.presentation.ui.theme.PrimaryBlue
+import com.bonobono.presentation.utils.Converter
 import com.bonobono.presentation.utils.PermissionUtils
 import com.bonobono.presentation.viewmodel.MyPageViewModel
+import com.bonobono.presentation.viewmodel.PhotoViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import kotlinx.coroutines.flow.launchIn
@@ -45,11 +50,14 @@ import kotlinx.coroutines.flow.onEach
 @Composable
 fun ProfileEditScreen(
     navController: NavController,
-    myPageViewModel: MyPageViewModel = hiltViewModel()
+    myPageViewModel: MyPageViewModel = hiltViewModel(),
+    photoViewModel: PhotoViewModel = hiltViewModel()
 ) {
     val galleryPermission =
         rememberMultiplePermissionsState(permissions = PermissionUtils.GALLERY_PERMISSIONS)
 
+    val profileImage = if(photoViewModel.selectedOnePhoto.value.url.isBlank()) myPageViewModel.profileImg else photoViewModel.selectedOnePhoto.value.url
+    val context = LocalContext.current
     LaunchedEffect(key1 = Unit) {
         ProfileEditScreen.buttons
             .onEach { button ->
@@ -72,8 +80,13 @@ fun ProfileEditScreen(
                 .padding(horizontal = 16.dp, vertical = 32.dp)
         ) {
             item {
-                ProfileEdit(profileImage = myPageViewModel.profileImg, clickAction = {
+                ProfileEdit(profileImage = profileImage, clickAction = {
                     galleryPermission.launchMultiplePermissionRequest()
+                    Log.d(
+                        "TEST",
+                        "BoardUpdateScreen: 현재 라우트 ${navController.currentDestination?.route}"
+                    )
+                    navController.navigate(NavigationRouteName.PROFILE_EDIT_GALLERY)
 //                    if (previousCount == 10) {
 //                        showDialog = true
 //                    } else {
@@ -101,7 +114,11 @@ fun ProfileEditScreen(
                     enabled = true,
                     backgroundColor = PrimaryBlue
                 ) {
-//                    myPageViewModel.updateProfileImg()
+                    val photo = Converter.getRealPathFromUriOrNull(context, Uri.parse(photoViewModel.selectedOnePhoto.value.url))
+                    if (photo != null) {
+                        myPageViewModel.updateProfileImg(photo)
+                    }
+                    navController.popBackStack()
                 }
             }
         }

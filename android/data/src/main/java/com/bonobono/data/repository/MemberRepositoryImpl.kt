@@ -7,6 +7,7 @@ import com.bonobono.data.remote.handleApi
 import com.bonobono.domain.model.NetworkResult
 import com.bonobono.domain.model.registration.Member
 import com.bonobono.domain.model.registration.Password
+import com.bonobono.domain.model.registration.ProfileImgResult
 import com.bonobono.domain.model.registration.Token
 import com.bonobono.domain.repository.MemberRepository
 import javax.inject.Inject
@@ -39,7 +40,11 @@ class MemberRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateProfileImg(img : String): NetworkResult<Unit> {
-        val image = Converter.createMultipartBodyPart(img)
+        val image = Converter.createMultipartBodyPartOnePhoto(img)
         return handleApi { memberService.updateProfileImg(image) }
+    }
+
+    override suspend fun getProfileImg(): NetworkResult<ProfileImgResult> {
+        return handleApi { memberService.getProfileImg().toDomain() }
     }
 }

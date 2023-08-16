@@ -1,16 +1,21 @@
 package com.bonobono.data.mapper
 
+import com.bonobono.data.BuildConfig
 import com.bonobono.data.model.registration.request.LoginRequest
 import com.bonobono.data.model.registration.request.MemberRequest
 import com.bonobono.data.model.registration.request.RoleRequest
 import com.bonobono.data.model.registration.response.AuthoritySetResponse
+import com.bonobono.data.model.registration.response.ImgResponse
 import com.bonobono.data.model.registration.response.LoginResponse
 import com.bonobono.data.model.registration.response.MemberResponse
+import com.bonobono.data.model.registration.response.ProfileImgResponse
 import com.bonobono.data.model.registration.response.TokenResponse
 import com.bonobono.domain.model.registration.Authority
+import com.bonobono.domain.model.registration.Img
 import com.bonobono.domain.model.registration.LoginInput
 import com.bonobono.domain.model.registration.LoginResult
 import com.bonobono.domain.model.registration.Member
+import com.bonobono.domain.model.registration.ProfileImgResult
 import com.bonobono.domain.model.registration.Register
 import com.bonobono.domain.model.registration.Role
 import com.bonobono.domain.model.registration.Token
@@ -74,3 +79,16 @@ fun LoginResponse.toDomain(): LoginResult {
     )
 }
 
+fun ProfileImgResponse.toDomain() : ProfileImgResult {
+    return ProfileImgResult(
+        memberId = memberId,
+        img = img.toDomain()
+    )
+}
+
+fun ImgResponse.toDomain() : Img {
+    return Img(
+        imgName = imgName,
+        imgUrl = BuildConfig.IMAGE_BASE_URL + imgUrl
+    )
+}

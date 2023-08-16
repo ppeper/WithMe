@@ -1,13 +1,7 @@
 package com.bonobono.presentation.viewmodel
 
-import android.util.Log
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bonobono.domain.model.NetworkResult
 import com.bonobono.domain.model.mission.IsSuccess
 import com.bonobono.domain.model.mission.MiniGame
 import com.bonobono.domain.model.mission.Mission
@@ -83,11 +77,11 @@ class MissionViewModel @Inject constructor(
         postAttendanceUseCase.invoke(memberId)
     }
 
-    fun putCompletedTime(key: String, time: Long) = viewModelScope.launch {
+    fun putLong(key: String, time: Long) = viewModelScope.launch {
         putCompletedTimeUseCase.invoke(key, time)
     }
 
-    fun getCompletedTime(key: String): Long {
+    fun getLong(key: String): Long {
         return getCompletedTimeUseCase(key)
     }
 

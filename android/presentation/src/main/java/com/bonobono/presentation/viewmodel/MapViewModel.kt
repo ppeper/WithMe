@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bonobono.domain.model.NetworkResult
 import com.bonobono.domain.model.map.Campaign
 import com.bonobono.domain.model.map.CatchCharacter
 import com.bonobono.domain.model.map.CatchKey
@@ -18,6 +19,7 @@ import com.bonobono.domain.usecase.map.PostCampaignUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -35,6 +37,9 @@ class MapViewModel @Inject constructor(
 
     private var _selectedLocation = MutableStateFlow<Location?>(null)
     val selectedLocation = _selectedLocation
+
+    private var _writeCampaignState = MutableStateFlow<NetworkResult<Unit>?>(null)
+    var writeCampaignState: StateFlow<NetworkResult<Unit>?> = _writeCampaignState
 
     fun setSelectedLocation(location: Location) {
         _selectedLocation.value = location
@@ -70,6 +75,10 @@ class MapViewModel @Inject constructor(
     }
 
     fun postCampaign(campaign: Campaign) = viewModelScope.launch {
-        postCampaignUseCase.invoke(campaign)
+        _writeCampaignState.emit(postCampaignUseCase.invoke(campaign))
+    }
+
+    fun setLoading() {
+        _writeCampaignState.value = NetworkResult.Loading
     }
 }

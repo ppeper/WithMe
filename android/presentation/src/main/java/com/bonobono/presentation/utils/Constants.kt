@@ -14,4 +14,5 @@ object Constants {
     const val AR = "ar"
     const val MAIN_CHARACTER = "main_character"
     const val ADMIN_ROLE = "ADMIN"
+    const val ONBOADING = "ONBOARDING"
 }

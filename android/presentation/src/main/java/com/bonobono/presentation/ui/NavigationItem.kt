@@ -190,6 +190,13 @@ object ARMapNav: Destination {
         navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${ARMapNav.route}" })
 }
 
+object OnBoardingNav: Destination {
+    override val route: String = NavigationRouteName.ONBOARDING
+    override val title: String = ""
+    override val deepLinks: List<NavDeepLink> = listOf(
+        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${OnBoardingNav.route}" })
+}
+
 
 interface Destination {
     val route: String
@@ -207,14 +214,16 @@ interface DestinationArg<T> : Destination {
 }
 
 object NavigationRouteName {
+    const val ONBOARDING = "onboarding"
+
     const val DEEP_LINK_SCHEME = "bonobono://"
     const val MAIN_HOME = "main_home"
     const val MAIN_COMMUNITY = "main_community"
     const val MAIN_MY_PAGE = "main_my_page"
     const val MAIN_CHATTING = "main_chat"
     const val MAIN_MAP = "main_map"
-
     const val AR_MAP = "ar_map"
+    const val POST_CAMPAIGN = "post_campaign"
     // Mission
     const val MISSION = "mission"
     const val QUIZ = "quiz"

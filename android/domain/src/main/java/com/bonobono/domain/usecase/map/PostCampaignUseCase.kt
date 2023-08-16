@@ -8,10 +8,7 @@ import javax.inject.Inject
 class PostCampaignUseCase @Inject constructor(
     private val mapRepository: MapRepository
 ) {
-    suspend operator fun invoke(campaign: Campaign): Boolean {
-        return when (val result = mapRepository.postCampaign(campaign = campaign)) {
-            is NetworkResult.Success -> true
-            else -> false
-        }
+    suspend operator fun invoke(campaign: Campaign): NetworkResult<Unit> {
+        return mapRepository.postCampaign(campaign = campaign)
     }
 }

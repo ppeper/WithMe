@@ -1,8 +1,11 @@
 package com.bonobono.presentation.utils
 
+import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
+import java.util.Date
+import java.util.Locale
 
 object DateUtils {
     private const val MINUTE = 60L
@@ -27,5 +30,15 @@ object DateUtils {
             timeDifference < YEAR -> "${timeDifference / MONTH}달 전"
             else -> "${timeDifference / YEAR}년 전"
         }
+    }
+
+    fun dateToCampaignString(inputDateStr: String): String {
+        return inputDateStr.substring(2, 10).replace("-", ".")
+    }
+
+    fun convertMillisToYymmdd(millis: Long): String {
+        val dateFormat = SimpleDateFormat("yy.MM.dd")
+        val date = Date(millis)
+        return dateFormat.format(date)
     }
 }

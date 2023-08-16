@@ -11,7 +11,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.compose.rememberNavController
 import com.bonobono.presentation.ui.login.StartScreen
+import com.bonobono.presentation.ui.map.CampaignWriteScreen
+import com.bonobono.presentation.ui.onboarding.OnBoardingScreen
 import com.bonobono.presentation.ui.theme.AndroidTheme
 import com.bonobono.presentation.viewmodel.LoginViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi

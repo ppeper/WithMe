@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -107,7 +108,9 @@ fun GamePromptBox(name: String, content: String, modifier: Modifier) {
         modifier = modifier.padding(12.dp),
         elevation = CardDefaults.cardElevation(4.dp),
     ) {
-        Row(modifier = Modifier.fillMaxWidth().background(White), verticalAlignment = Alignment.CenterVertically) {
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .background(White), verticalAlignment = Alignment.CenterVertically) {
             GifLoader(modifier = Modifier.size(100.dp), source = R.raw.animation_fairy)
             Column(modifier = Modifier.fillMaxWidth()) {
                 Text(
@@ -140,15 +143,14 @@ fun ARPromptBox(
                 shape = RoundedCornerShape(topEnd = 10.dp, topStart = 10.dp)
             )
             .fillMaxWidth()
-            .fillMaxHeight(0.32f)
+            .wrapContentHeight()
             .padding(12.dp),
     ) {
         Text(text = name, style = CustomTextStyle.quizTitleStyle)
         Divider(thickness = 1.dp, modifier = Modifier.padding(4.dp))
         Text(text = content, style = CustomTextStyle.quizContentStyle.copy(fontSize = 18.sp))
-        Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.size(64.dp))
         Row(modifier = Modifier.fillMaxWidth()) {
-            Spacer(modifier = Modifier.weight(1f))
             bottomRow()
         }
     }

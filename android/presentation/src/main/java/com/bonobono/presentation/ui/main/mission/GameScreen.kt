@@ -136,13 +136,13 @@ fun GameScreen(
     if (isSuccess == true) {
         timeLeft = -1
         OverDialog(title = "정답!!", content = "+Exp 10", source = R.raw.animation_fairy) {
-            missionViewModel.putCompletedTime(Constants.GAME, System.currentTimeMillis())
+            missionViewModel.putLong(Constants.GAME, System.currentTimeMillis())
             navController.popBackStack()
         }
     } else if (isSuccess == false) {
         timeLeft = -1
         OverDialog(title = "실패..", content = "", source = R.raw.animation_devil) {
-            missionViewModel.putCompletedTime(Constants.GAME, System.currentTimeMillis())
+            missionViewModel.putLong(Constants.GAME, System.currentTimeMillis())
             navController.popBackStack()
         }
     }

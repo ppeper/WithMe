@@ -101,7 +101,7 @@ fun QuizPromptBox(
                         )
                     )
 
-                    missionViewModel.putCompletedTime(
+                    missionViewModel.putLong(
                         Constants.OX_QUIZ,
                         System.currentTimeMillis()
                     )
@@ -115,7 +115,7 @@ fun QuizPromptBox(
                             mission.problemId
                         )
                     )
-                    missionViewModel.putCompletedTime(
+                    missionViewModel.putLong(
                         Constants.OX_QUIZ,
                         System.currentTimeMillis()
                     )
@@ -149,7 +149,7 @@ fun QuizPromptBox(
                     mission.problemId
                 ), type = Constants.FOUR_QUIZ)
 
-                missionViewModel.putCompletedTime(
+                missionViewModel.putLong(
                     Constants.FOUR_QUIZ,
                     System.currentTimeMillis()
                 )
@@ -162,12 +162,12 @@ fun QuizPromptBox(
 fun checkAnswer(isSuccess: Boolean?, mission: Mission, navController: NavController, missionViewModel: MissionViewModel) {
     if (isSuccess == true) {
         OverDialog(title = "정답!!", content = "+Exp 10", source = R.raw.animation_fairy, commentary = mission.commentary) {
-            missionViewModel.putCompletedTime(Constants.OX_QUIZ, System.currentTimeMillis())
+            missionViewModel.putLong(Constants.OX_QUIZ, System.currentTimeMillis())
             navController.popBackStack()
         }
     } else if (isSuccess == false) {
         OverDialog(title = "실패..", content = "", source = R.raw.animation_devil,  commentary = mission.commentary) {
-            missionViewModel.putCompletedTime(Constants.OX_QUIZ, System.currentTimeMillis())
+            missionViewModel.putLong(Constants.OX_QUIZ, System.currentTimeMillis())
             navController.popBackStack()
         }
     }

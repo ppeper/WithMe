@@ -41,7 +41,8 @@ import com.bonobono.presentation.viewmodel.MapViewModel
 @Composable
 fun ReportDropDown(
     locations: List<Location>,
-    mapViewModel: MapViewModel
+    mapViewModel: MapViewModel,
+    hint: String = "신고할 해변을 선택해주세요"
 ) {
     var expandedState by remember { mutableStateOf(false) }
     var selectedOption = mapViewModel.selectedLocation.collectAsStateWithLifecycle()
@@ -54,7 +55,7 @@ fun ReportDropDown(
             modifier = Modifier
                 .fillMaxWidth()
                 .menuAnchor(),
-            value = selectedOption.value?.name ?: "신고할 해변을 선택해주세요",
+            value = selectedOption.value?.name ?: hint,
             onValueChange = {},
             colors = OutlinedTextFieldDefaults.colors(
                 focusedTextColor = Black_100,

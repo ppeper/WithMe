@@ -73,7 +73,8 @@ import java.io.IOException
 @Composable
 fun LinkView(
     modifier: Modifier = Modifier,
-    communityViewModel: CommunityViewModel = hiltViewModel()
+    communityViewModel: CommunityViewModel = hiltViewModel(),
+    hint: String = "같이 하고 싶은 캠페인 혹은 오픈카톡방\n링크를 추가해주세요."
 ) {
     var titleState by rememberSaveable { mutableStateOf("") }
     var linkState by rememberSaveable { mutableStateOf("") }
@@ -135,7 +136,7 @@ fun LinkView(
 
         if (currentLink == Link()) {
             Text(
-                text = "같이 하고 싶은 캠페인 혹은 오픈카톡방\n링크를 추가해주세요.",
+                text = hint,
                 style = TextStyle(
                     fontSize = 14.sp,
                     fontWeight = FontWeight(400),

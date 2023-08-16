@@ -105,4 +105,13 @@ class MissionRepositoryImpl @Inject constructor(
             }
         }
     }
+
+    override fun getBoolean(key: String): Boolean {
+        return preferenceDatasource.getBoolean(key)
+    }
+
+    override fun putBoolean(key: String, value: Boolean) {
+        preferenceDatasource.putBoolean(key, value)
+    }
+
 }

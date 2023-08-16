@@ -41,11 +41,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import androidx.navigation.compose.rememberNavController
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.FindIdNav
 import com.bonobono.presentation.ui.FindPasswordNav
 import com.bonobono.presentation.ui.JoinNav
+import com.bonobono.presentation.ui.OnBoardingNav
 import com.bonobono.presentation.ui.common.BasicTextField
 import com.bonobono.presentation.ui.common.button.PrimaryColorButton
 import com.bonobono.presentation.ui.common.text.CustomTextStyle.appNameText
@@ -54,14 +56,20 @@ import com.bonobono.presentation.ui.login.view.LoginTextButton
 import com.bonobono.presentation.ui.login.view.SNSButton
 import com.bonobono.presentation.ui.theme.LightGray
 import com.bonobono.presentation.ui.theme.PrimaryBlue
+import com.bonobono.presentation.utils.Constants
 import com.bonobono.presentation.viewmodel.LoginViewModel
+import com.bonobono.presentation.viewmodel.MainViewModel
 import kotlinx.coroutines.launch
 
 private const val TAG = "LoginScreen"
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltViewModel()) {
+fun LoginScreen(
+    navController: NavController,
+    viewModel: LoginViewModel = hiltViewModel(),
+    mainViewModel: MainViewModel = hiltViewModel()
+) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember {
@@ -108,11 +116,15 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                             val result = viewModel.login()
                             if (result == "SUCCESS") {
                                 Log.d(TAG, "LoginScreen: 로그인 성공")
-                                if(viewModel.autoLoginState) {
+                                if (viewModel.autoLoginState) {
                                     // 자동 로그인 누른 상태 -> 저장해서 자동 로그인 시키자
                                     viewModel.putLoginInfo()
                                 }
-                                navController.navigate("main_screen")
+                                if (!mainViewModel.getBoolean(Constants.ONBOADING)) {
+                                    navController.navigate(OnBoardingNav.route)
+                                } else {
+                                    navController.navigate("main_screen")
+                                }
                             } else {
                                 Log.d(TAG, "LoginScreen: 로그인 실패")
                                 snackbarHostState.showSnackbar("아이디 비밀번호 입력 값을 다시 확인해주세요.")

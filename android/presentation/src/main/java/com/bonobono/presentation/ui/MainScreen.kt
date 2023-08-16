@@ -61,11 +61,13 @@ import com.bonobono.presentation.ui.main.mission.MissionScreen
 import com.bonobono.presentation.ui.main.notice.NoticeScreen
 import com.bonobono.presentation.ui.map.ARMapScreen
 import com.bonobono.presentation.ui.map.CameraScreen
+import com.bonobono.presentation.ui.map.CampaignWriteScreen
 import com.bonobono.presentation.ui.map.MainMapScreen
 import com.bonobono.presentation.ui.mypage.MainMyPageScreen
 import com.bonobono.presentation.ui.mypage.PointStoreScreen
 import com.bonobono.presentation.ui.mypage.ProfileEditScreen
 import com.bonobono.presentation.ui.mypage.SettingScreen
+import com.bonobono.presentation.ui.onboarding.OnBoardingScreen
 import com.bonobono.presentation.ui.theme.PrimaryBlue
 import com.bonobono.presentation.ui.theme.TextGray
 import com.bonobono.presentation.ui.theme.White
@@ -97,6 +99,31 @@ fun MainScreen() {
             when (currentRoute) {
                 NavigationRouteName.MAIN_HOME -> {
                     MainFloatingActionButtons(navController)
+                }
+
+                NavigationRouteName.MAIN_MAP -> {
+                    CommunityFloatingActionButton(navController = navController, item = CommunityFab.MAP)
+                }
+
+                NavigationRouteName.COMMUNITY_FREE -> {
+                    CommunityFloatingActionButton(
+                        navController = navController,
+                        item = CommunityFab.FREE
+                    )
+                }
+
+                NavigationRouteName.COMMUNITY_WITH -> {
+                    CommunityFloatingActionButton(
+                        navController = navController,
+                        item = CommunityFab.WITH
+                    )
+                }
+
+                NavigationRouteName.COMMUNITY_REPORT -> {
+                    CommunityFloatingActionButton(
+                        navController = navController,
+                        item = CommunityFab.REPORT
+                    )
                 }
             }
         }
@@ -252,13 +279,16 @@ fun MainNavigationScreen(
             route = MissionNav.route,
             deepLinks = MissionNav.deepLinks
         ) {
-            MissionScreen(navController)
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry(NavigationRouteName.MAIN_HOME)
+            }
+            MissionScreen(navController, characterViewModel = hiltViewModel(parentEntry))
         }
         composable(
             route = EncyclopediaNav.route,
             deepLinks = EncyclopediaNav.deepLinks
         ) {
-            EncyclopediaScreen()
+            EncyclopediaScreen(navController = navController)
         }
         composable(
             route = NoticeNav.route,
@@ -356,7 +386,11 @@ fun MainNavigationScreen(
         ) {
             BoardWriteScreen(type = COMMUNITY_REPORT, navController = navController)
         }
-
+        composable(
+            route = CommunityFab.MAP.route
+        ) {
+            CampaignWriteScreen(navController = navController)
+        }
         communityNavigation(navController = navController)
 
         composable(

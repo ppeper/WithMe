@@ -26,10 +26,10 @@ import com.bonobono.presentation.ui.theme.LightGray
 @Composable
 fun ProfilePhoto(profileImage: Int, modifier: Modifier) {
     Image(
-        modifier = modifier,
+        modifier = modifier.padding(12.dp),
         painter = painterResource(id = profileImage),
         contentDescription = "프로필 사진",
-        contentScale = ContentScale.FillHeight
+        contentScale = ContentScale.FillBounds
     )
 }
 

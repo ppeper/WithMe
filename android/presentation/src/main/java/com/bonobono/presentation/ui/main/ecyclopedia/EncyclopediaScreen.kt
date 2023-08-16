@@ -42,10 +42,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.bonobono.domain.model.character.OurCharacter
 import com.bonobono.domain.model.character.UserCharacter
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.common.text.CustomTextStyle
+import com.bonobono.presentation.ui.common.topbar.screen.EncyclopediaScreen
+import com.bonobono.presentation.ui.common.topbar.screen.SettingScreen
 import com.bonobono.presentation.ui.main.component.AnimatedProfile
 import com.bonobono.presentation.ui.main.component.BlindProfilePhoto
 import com.bonobono.presentation.ui.main.component.ProfilePhoto
@@ -56,6 +60,8 @@ import com.bonobono.presentation.utils.Constants
 import com.bonobono.presentation.utils.characterList
 import com.bonobono.presentation.viewmodel.CharacterViewModel
 import com.bonobono.presentation.viewmodel.MissionViewModel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 // 현재 대표 동물 이미지로
 private const val TAG = "EncyclopediaScreen"
@@ -63,9 +69,23 @@ private const val TAG = "EncyclopediaScreen"
 @Composable
 fun EncyclopediaScreen(
     characterViewModel: CharacterViewModel = hiltViewModel(),
-    missionViewModel: MissionViewModel = hiltViewModel()
+    missionViewModel: MissionViewModel = hiltViewModel(),
+    navController: NavHostController
 ) {
-    val mainId = missionViewModel.getCompletedTime(Constants.MAIN_CHARACTER)
+    LaunchedEffect(key1 = Unit) {
+        EncyclopediaScreen.buttons
+            .onEach { button ->
+                when (button) {
+                    EncyclopediaScreen.AppBarIcons.NavigationIcon -> {
+                        navController.popBackStack()
+                    }
+                }
+            }.launchIn(this)
+    }
+    var mainId = missionViewModel.getLong(Constants.MAIN_CHARACTER)
+    if(mainId.toInt() == 0) {
+        mainId = 12
+    }
     LaunchedEffect(Unit) {
         characterViewModel.getUserCharacterList()
         characterViewModel.getOurCharacterList()
@@ -77,7 +97,6 @@ fun EncyclopediaScreen(
         mutableStateOf(mainId)
     }
 
-    Log.d(TAG, "EncyclopediaScreen: $mainId")
     Column(
         Modifier
             .fillMaxSize()
@@ -88,24 +107,26 @@ fun EncyclopediaScreen(
                 profileImage = characterList.find { it.id.toLong() ==  selectedId.value}!!.icon,
                 source = R.raw.animation_card
             )
-            ElevatedFilterChip(
-                modifier = Modifier
-                    .padding(12.dp)
-                    .align(Alignment.TopEnd),
-                selected = false,
-                onClick = {
-                    missionViewModel.putCompletedTime(
-                        Constants.MAIN_CHARACTER,
-                        selectedId.value + 1
-                    )
+            if(userCharacterList.find { it.id.toLong() == selectedId.value } != null) {
+                ElevatedFilterChip(
+                    modifier = Modifier
+                        .padding(12.dp)
+                        .align(Alignment.TopEnd),
+                    selected = false,
+                    onClick = {
+                        missionViewModel.putLong(
+                            Constants.MAIN_CHARACTER,
+                            selectedId.value
+                        )
 
-                },
-                label = {
-                    Text(
-                        text = "대표 캐릭터 설정",
-                        style = CustomTextStyle.gameGuideTextStyle
-                    )
-                })
+                    },
+                    label = {
+                        Text(
+                            text = "대표 캐릭터 설정",
+                            style = CustomTextStyle.gameGuideTextStyle
+                        )
+                    })
+            }
         }
         CurInformation(selectedId, userCharacterList, ourCharacterList)
         Spacer(modifier = Modifier.size(12.dp))
@@ -200,9 +221,7 @@ fun OurCharacters(ourCharacterList: List<OurCharacter>, selectedId: MutableState
             // 보유중 / 아닌 것들 나눠서 표시
             items(ourCharacterList) { item ->
                 characterList.find { it.name == item.name }?.let {
-                    BlindProfilePhoto(it.icon, Modifier.clickable {
-                        selectedId.value = item.id
-                    })
+                    BlindProfilePhoto(it.icon, Modifier)
                 }
             }
         }

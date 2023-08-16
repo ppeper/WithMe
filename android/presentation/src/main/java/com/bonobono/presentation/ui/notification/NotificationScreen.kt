@@ -3,6 +3,8 @@ package com.bonobono.presentation.ui.notification
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,8 +40,10 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.bonobono.domain.model.notification.Notification
 import com.bonobono.presentation.R
+import com.bonobono.presentation.ui.BoardDetailNav
 import com.bonobono.presentation.ui.mypage.view.EmptyListAnimation
 import com.bonobono.presentation.ui.theme.Black_100
 import com.bonobono.presentation.ui.theme.DividerGray
@@ -73,7 +77,7 @@ fun NotificationScreen(
                 modifier = modifier.padding(it)
             ) {
                 items(notificationList.value) { item ->
-                    NotificationView(notification = item, isEdit = isEdit) {
+                    NotificationView(notification = item, isEdit = isEdit, navController = navController) {
                         Log.d("TEST", "NotificationScreen: 삭제 $item")
                         notificationViewModel.deleteNotification(item.id)
                     }
@@ -86,6 +90,7 @@ fun NotificationScreen(
 @Composable
 fun NotificationView(
     modifier: Modifier = Modifier,
+    navController: NavController,
     notification: Notification,
     isEdit: Boolean,
     onDeleteClicked: () -> Unit
@@ -95,7 +100,14 @@ fun NotificationView(
             modifier = modifier.padding(16.dp)
         ) {
             Column(
-                modifier = modifier.weight(1f),
+                modifier = modifier
+                    .weight(1f)
+                    .clickable(
+                        interactionSource = MutableInteractionSource(),
+                        indication = null
+                    ) {
+                        navController.navigate("${BoardDetailNav.route}/${notification.type}/${notification.articleId}")
+                    },
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 Row(
@@ -167,7 +179,8 @@ fun NotificationView(
 fun Preview() {
     NotificationView(
         notification = Notification(0, "FREE", "1", "게시물에 댓글이 작성되었습니다.", "안녕하세요~", LocalDateTime.now().toString()),
-        isEdit = true
+        isEdit = true,
+        navController = rememberNavController()
     ) {}
 }
 

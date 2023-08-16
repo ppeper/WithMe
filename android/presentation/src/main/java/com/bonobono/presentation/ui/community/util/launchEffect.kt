@@ -57,8 +57,6 @@ fun withLaunchEffect(
                     CommunityWithScreen.AppBarIcons.NavigationIcon -> {
                         navController.popBackStack()
                     }
-                    CommunityWithScreen.AppBarIcons.ALL -> {}
-                    CommunityWithScreen.AppBarIcons.RECRUIT -> {}
                 }
             }.launchIn(this)
     }

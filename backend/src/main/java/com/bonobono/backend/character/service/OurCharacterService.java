@@ -44,8 +44,8 @@ public class OurCharacterService {
         List<OurChacracterWithSeaResponseDto> bound = new ArrayList<>();
         if (!locationOurCharacterList.isEmpty()) {
             //리스트의 캐릭터의 하나하나의 위치를, 그 해변의 위경도를 중심으로 랜덤으로 지정해서  OurChacracterWithSeaResponseDto에 넣는다
-            double incrementLatitude=0.0001;
-            double incrementLogitude=0.001;
+            double incrementLatitude=0.000000000001;
+            double incrementLogitude=0.0000000001;
 
             double leftLongtitude = location.getLeftLongitude();
             double rightLongtitude = location.getRightLongitude();

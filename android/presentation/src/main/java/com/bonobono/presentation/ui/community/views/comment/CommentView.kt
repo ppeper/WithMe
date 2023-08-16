@@ -201,45 +201,5 @@ fun CommentRow(
                 )
             }
         }
-        // 일반 댓글 -> 대댓글을 달 수 있다.
-        if (comments.parentCommentId == null) {
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    modifier = modifier.size(20.dp),
-                    painter = painterResource(R.drawable.ic_chat),
-                    contentDescription = "댓글 아이콘",
-                    tint = TextGray
-                )
-                Spacer(modifier = modifier.size(4.dp))
-                Text(
-                    text = "답글 달기",
-                    style = TextStyle(
-                        fontSize = 10.sp,
-                        color = TextGray,
-                        textAlign = TextAlign.Center,
-                    ),
-                    modifier = modifier.clickable {
-                        // 대 댓글의 부모 id 값 viewmodel에 저장
-                        focusRequester.requestFocus()
-                        commentViewModel.setCommentId(comments.id)
-                        keyboardController?.show()
-                    }
-                )
-                Spacer(modifier = modifier.size(4.dp))
-                if (0 < commentCntState) {
-                    Text(
-                        text = commentCntState.toString(),
-                        style = TextStyle(
-                            fontSize = 10.sp,
-                            color = TextGray,
-                            textAlign = TextAlign.Center,
-                        )
-                    )
-                }
-            }
-        }
     }
 }

@@ -41,28 +41,28 @@ VALUES ('펭귄',1,'펭귄은 물 에서도 뛰어난 수영 실력을 가진 �
 
 
 INSERT INTO quiz_problem (problem, answer, commentary)
-VALUES ('어떤 폐기물이 해양 동물에 가장 위험한 영향을 미칠까요?', '1','플라스틱 쓰레기는 해양 동물에 심각한 피해를 주며 해양 환경 오염의 주요 원인 중 하나입니다. 어린이들은 플라스틱 사용 줄이기와 재활용을 통해 이 문제를 함께 해결할 수 있습니다.');
+VALUES ('다음 중 바다를 깨끗하게 유지하기 위한 활동이 아닌 것은?', '3','쓰레기를 줍고, 분리수거하는 활동은 해양생물을 아껴주는 행동이에요. 노래부르기는 해양환경을 깨끗하게 하는 활동은 아닙니다');
 
 INSERT INTO quiz_problem_choice (content, quizproblem_id)
-VALUES ('플라스틱 쓰레기',1);
+VALUES ('쓰레기 분리수거하기',1);
 INSERT INTO quiz_problem_choice (content, quizproblem_id)
-VALUES ('유기적 노출물',1);
+VALUES ('해양 생물 아껴주기',1);
 INSERT INTO quiz_problem_choice (content, quizproblem_id)
-VALUES ('화학 물질 누출',1);
+VALUES ('노래부르기',1);
 INSERT INTO quiz_problem_choice (content, quizproblem_id)
-VALUES ('금속 오염',1);
+VALUES ('나랑해 어플로 쓰레기 줍기',1);
 
 INSERT INTO quiz_problem (problem, answer, commentary)
-VALUES ('퀴즈2', '1','퀴즈2답');
+VALUES ('다음 중 해양 쓰레기 발생량이 가장 많은 종류는?', '플라스틱','전 세계적으로 플라스틱은 해양쓰레기 발생량에 가장 큰 비중을 차지하고 있어요! 그러니, 함부로 플라스틱 버리지 말기!');
 
 INSERT INTO quiz_problem_choice (content, quizproblem_id)
-VALUES ('플라스틱 쓰레기',2);
+VALUES ('플라스틱',2);
 INSERT INTO quiz_problem_choice (content, quizproblem_id)
-VALUES ('유기적 노출물',2);
+VALUES ('유리',2);
 INSERT INTO quiz_problem_choice (content, quizproblem_id)
-VALUES ('화학 물질 누출',2);
+VALUES ('금속',2);
 INSERT INTO quiz_problem_choice (content, quizproblem_id)
-VALUES ('금속 오염',2);
+VALUES ('종이',2);
 
 INSERT INTO quiz_problem (problem, answer, commentary)
 VALUES ('퀴즈3', '1','퀴즈3답');

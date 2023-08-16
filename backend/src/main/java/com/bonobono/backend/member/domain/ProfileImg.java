@@ -33,6 +33,12 @@ public class ProfileImg {
         this.member = member;
     }
 
+    // ProfileImgDto 객체로 변환
+    public ProfileImgRequestDto toRequestDto() {
+
+        return ProfileImgRequestDto.toRequestDto(this);
+    }
+
     public void updateImage(ProfileImgRequestDto dto) {
 
         this.imageUrl = dto.getImgUrl();

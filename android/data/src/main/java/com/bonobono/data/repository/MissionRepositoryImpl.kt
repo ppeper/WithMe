@@ -1,6 +1,6 @@
 package com.bonobono.data.repository
 
-import com.bonobono.data.Constants
+import com.bonobono.data.utils.Constants
 import com.bonobono.data.local.PreferenceDataSource
 import com.bonobono.data.mapper.toDomain
 import com.bonobono.data.remote.MissionService

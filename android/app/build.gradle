@@ -76,4 +76,7 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:32.2.2')
     implementation 'com.google.firebase:firebase-messaging-ktx'
     apply plugin: 'com.google.gms.google-services'
+    // Room DataBase
+    implementation "androidx.room:room-ktx:2.5.2"
+    kapt "androidx.room:room-compiler:2.5.2"
 }

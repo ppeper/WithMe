@@ -1,5 +1,6 @@
 package com.bonobono.presentation.ui
 
+import android.app.NotificationManager
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -16,8 +17,10 @@ import com.bonobono.presentation.ui.login.StartScreen
 import com.bonobono.presentation.ui.map.CampaignWriteScreen
 import com.bonobono.presentation.ui.onboarding.OnBoardingScreen
 import com.bonobono.presentation.ui.theme.AndroidTheme
+import com.bonobono.presentation.utils.Constants.CHANNEL_ID
+import com.bonobono.presentation.utils.Constants.CHANNEL_NAME
+import com.bonobono.presentation.utils.createNotificationChannel
 import com.bonobono.presentation.viewmodel.LoginViewModel
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -25,9 +28,17 @@ import kotlinx.coroutines.launch
 private const val TAG = "싸피"
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    @OptIn(ExperimentalPermissionsApi::class)
+    private val notificationManager: NotificationManager by lazy {
+        getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+    }
+    private val type by lazy { intent.getStringExtra("type") }
+    private val articleId by lazy { intent.getStringExtra("articleId") }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        createNotificationChannel(notificationManager, CHANNEL_ID, CHANNEL_NAME)
+
         setContent {
             AndroidTheme {
                 Surface(
@@ -45,7 +56,7 @@ class MainActivity : ComponentActivity() {
                         // 결과에 따라 다른 화면을 렌더링
                         if (result == "SUCCESS") {
                             Log.d(TAG, "onCreate: $result")
-                            MainScreen()
+                            MainScreen(type, articleId)
                         } else {
                             Log.d(TAG, "onCreate: $result")
                             StartScreen()
@@ -53,6 +64,8 @@ class MainActivity : ComponentActivity() {
                     } else {
                         StartScreen()
                     }
+//                    MainScreen()
+//                    StartScreen()
                 }
             }
         }

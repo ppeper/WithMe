@@ -44,6 +44,7 @@ import com.bonobono.presentation.ui.NavigationRouteName.COMMUNITY_WITH
 import com.bonobono.presentation.ui.NavigationRouteName.MAIN_COMMUNITY
 import com.bonobono.presentation.ui.chatting.ChattingRoomScreen
 import com.bonobono.presentation.ui.chatting.MainChattingScreen
+import com.bonobono.presentation.ui.common.button.CommunityFloatingActionButton
 import com.bonobono.presentation.ui.common.button.HomeFloatingActionButton
 import com.bonobono.presentation.ui.common.topbar.SharedTopAppBar
 import com.bonobono.presentation.ui.common.topbar.rememberAppBarState
@@ -426,42 +427,6 @@ fun MainNavigationScreen(
             NotificationScreen(navController = navController)
         }
 
-        composable(
-            route = "$COMMUNITY_UPDATE/{type}/{articleId}"
-        ) {
-            val type = it.arguments?.getString("type")
-            val articleId = it.arguments?.getString("articleId")
-            if (articleId != null && type != null) {
-                val parentEntry = remember(it) {
-                    navController.getBackStackEntry("${BoardDetailNav.route}/$type/$articleId")
-                }
-                BoardUpdateScreen(type = COMMUNITY_FREE, navController = navController, communityViewModel = hiltViewModel(parentEntry))
-            }
-        }
-        composable(
-            route = "$COMMUNITY_UPDATE_WITH/{type}/{articleId}"
-        ) {
-            val type = it.arguments?.getString("type")
-            val articleId = it.arguments?.getString("articleId")
-            if (articleId != null && type != null) {
-                val parentEntry = remember(it) {
-                    navController.getBackStackEntry("${BoardDetailNav.route}/$type/$articleId")
-                }
-                BoardUpdateScreen(type = COMMUNITY_WITH, navController = navController, communityViewModel = hiltViewModel(parentEntry))
-            }
-        }
-        composable(
-            route = "$COMMUNITY_UPDATE_REPORT/{type}/{articleId}"
-        ) {
-            val type = it.arguments?.getString("type")
-            val articleId = it.arguments?.getString("articleId")
-            if (articleId != null && type != null) {
-                val parentEntry = remember(it) {
-                    navController.getBackStackEntry("${BoardDetailNav.route}/$type/$articleId")
-                }
-                BoardUpdateScreen(type = COMMUNITY_REPORT, navController = navController, communityViewModel = hiltViewModel(parentEntry))
-            }
-        }
 
         composable(
             route = "${NavigationRouteName.COMMUNITY_SEARCH}/{type}"

@@ -13,8 +13,8 @@ import java.time.LocalDateTime;
 public class CampaignSaveRequestDto {
 
     private String name;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+    private String startDate;
+    private String endDate;
     private boolean completionStatus;
     private String authority;
     private String url;
@@ -22,8 +22,8 @@ public class CampaignSaveRequestDto {
 
     @Builder
     public CampaignSaveRequestDto(String name,
-                                  LocalDateTime startDate,
-                                  LocalDateTime endDate,
+                                  String startDate,
+                                  String endDate,
                                   boolean completionStatus,
                                   String authority,
                                   String url,
@@ -40,8 +40,8 @@ public class CampaignSaveRequestDto {
     public Campaign toEntity(Location location){
         return Campaign.builder()
                 .name(name)
-                .startDate(startDate)
-                .endDate(endDate)
+                .startDate(LocalDateTime.parse(startDate))
+                .endDate(LocalDateTime.parse(endDate))
                 .authority(authority)
                 .url(url)
                 .location(location)

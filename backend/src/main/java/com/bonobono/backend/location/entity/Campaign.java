@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @NoArgsConstructor
@@ -20,9 +20,9 @@ public class Campaign {
     @Column(nullable = false)
     private String name;
 
-    private LocalDateTime startDate;
+    private LocalDate startDate;
 
-    private LocalDateTime endDate;
+    private LocalDate endDate;
 
     private boolean completionStatus;
 
@@ -36,7 +36,7 @@ public class Campaign {
     private Location location;
 
     @Builder
-    public Campaign(String name, LocalDateTime startDate, LocalDateTime endDate, String authority, String url, Location location){
+    public Campaign(String name, LocalDate startDate, LocalDate endDate, String authority, String url, Location location){
         this.name = name;
         this.startDate = startDate;
         this.endDate = endDate;

@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @NoArgsConstructor
@@ -40,8 +40,8 @@ public class CampaignSaveRequestDto {
     public Campaign toEntity(Location location){
         return Campaign.builder()
                 .name(name)
-                .startDate(LocalDateTime.parse(startDate))
-                .endDate(LocalDateTime.parse(endDate))
+                .startDate(LocalDate.parse(startDate))
+                .endDate(LocalDate.parse(endDate))
                 .authority(authority)
                 .url(url)
                 .location(location)

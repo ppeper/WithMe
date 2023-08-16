@@ -247,6 +247,7 @@ object NavigationRouteName {
     const val COMMUNITY_UPDATE = "update_free"
     const val COMMUNITY_UPDATE_WITH = "update_with"
     const val COMMUNITY_UPDATE_REPORT = "update_report"
+    const val COMMUNITY_NOTIFICATION = "community_notification"
 
     // Gallery Route
     const val GALLERY = "gallery"

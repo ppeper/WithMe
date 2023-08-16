@@ -7,14 +7,18 @@ import com.bonobono.domain.model.notification.Notification
 import com.bonobono.domain.repository.NotificationRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 class NotificationRepositoryImpl @Inject constructor(
     private val notificationDao: NotificationDao
 ): NotificationRepository {
 
-    override fun getAllNotifications(): Flow<List<Notification>> = flow {
-        notificationDao.getAllNotifications()
+    override fun getAllNotifications(): Flow<List<Notification>> {
+        return notificationDao.getAllNotifications().map {
+            it.map { notificationEntity ->  notificationEntity.toDomain() }
+        }
     }
 
     override suspend fun getNotification(id: Long): Notification {
@@ -25,7 +29,7 @@ class NotificationRepositoryImpl @Inject constructor(
         notificationDao.insertNotification(notification.toModel())
     }
 
-    override suspend fun deleteNotification(notification: Notification) {
-        notificationDao.deleteNotification(notification.toModel())
+    override suspend fun deleteNotification(id: Int) {
+        notificationDao.deleteNotification(id)
     }
 }

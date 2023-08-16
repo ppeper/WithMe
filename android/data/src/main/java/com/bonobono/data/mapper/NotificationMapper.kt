@@ -7,6 +7,8 @@ import java.time.LocalDateTime
 fun NotificationEntity.toDomain(): Notification =
     Notification(
         id = id,
+        type = type,
+        articleId = articleId,
         title = title,
         body = body,
         receiveTime = LocalDateTime.now().toString()
@@ -14,7 +16,8 @@ fun NotificationEntity.toDomain(): Notification =
 
 fun Notification.toModel(): NotificationEntity =
     NotificationEntity(
-        id = -1,
+        type = type,
+        articleId = articleId,
         title = title,
         body = body,
         receiveTime = receiveTime

@@ -20,6 +20,6 @@ interface NotificationDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertNotification(notification: NotificationEntity)
 
-    @Delete
-    suspend fun deleteNotification(notification:  NotificationEntity)
+    @Query("DELETE FROM notifications where id = (:id)")
+    suspend fun deleteNotification(id: Int)
 }

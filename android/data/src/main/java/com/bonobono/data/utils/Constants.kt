@@ -1,4 +1,4 @@
-package com.bonobono.data
+package com.bonobono.data.utils
 
 object Constants {
     // Mission Key
@@ -8,6 +8,8 @@ object Constants {
     const val ATTENDANCE = "attendance"
     // Notification
     const val CHANNEL_ID = "with_me_channel"
-    const val TITLE = "title"
-    const val BODY = "body"
+    const val ARTICLE_ID = "articleId"
+    const val REPORT_ID = "reportId"
+    const val TYPE = "type"
+    const val TYPE_REPORT = "report"
 }

@@ -12,4 +12,6 @@ public interface ChatMessageRepository extends MongoRepository<ChatMessage, Stri
     List<ChatMessage> findByRoomNumber(int roomNumber);
 
     ChatMessage findTopByRoomNumberOrderByCreatedTimeDesc(int roomNumber);
+
+    List<ChatMessage> findAllByRoomNumber(int roomNumber);
 }

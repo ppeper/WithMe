@@ -46,7 +46,7 @@ public class ChatRoomService {
                        return new ChatRoomResponseDto(chatRoom, lastMessage.getMsg(), lastMessage.getCreatedTime());
                    }
                    else {
-                       return new ChatRoomResponseDto(chatRoom, "이 채팅방에 아직 메시지가 없습니다","00:00::");
+                       return new ChatRoomResponseDto(chatRoom, "이 채팅방에 아직 메시지가 없습니다","00:00:00");
                    }
                 })
                 .collect(Collectors.toList());
@@ -68,6 +68,9 @@ public class ChatRoomService {
     public void delete(final int roomNumber) {
         ChatRoom chatRoom = this.chatRoomRepository.findByRoomNumber(roomNumber).orElseThrow(
                 ()->new IllegalArgumentException("해당 chatroom이 존재하지 않습니다 +id"+roomNumber));
+        //ChatRoom에 해당하는 chatroommessage들도 함께 삭제되도록
+        List<ChatMessage> messagesToDelete = chatMessageRepository.findAllByRoomNumber(roomNumber);
+        this.chatMessageRepository.deleteAll(messagesToDelete);
         this.chatRoomRepository.delete(chatRoom);
     }
 

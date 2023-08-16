@@ -229,8 +229,8 @@ object NavigationRouteName {
     const val MAIN_MY_PAGE = "main_my_page"
     const val MAIN_CHATTING = "main_chat"
     const val MAIN_MAP = "main_map"
-
     const val AR_MAP = "ar_map"
+    const val POST_CAMPAIGN = "post_campaign"
     // Mission
     const val MISSION = "mission"
     const val QUIZ = "quiz"

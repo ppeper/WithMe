@@ -1,6 +1,5 @@
 package com.bonobono.presentation.ui.main.mission
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -33,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.bonobono.domain.model.character.UserCharacter
 import com.bonobono.domain.model.mission.TotalScore
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.GameNav
@@ -44,11 +44,12 @@ import com.bonobono.presentation.ui.main.component.LargeSquareCardWithAnimation
 import com.bonobono.presentation.ui.main.component.LinearProgressBar
 import com.bonobono.presentation.ui.common.LottieLoader
 import com.bonobono.presentation.ui.common.topbar.screen.MissionScreen
-import com.bonobono.presentation.ui.common.topbar.screen.SettingScreen
 import com.bonobono.presentation.ui.main.component.ProfilePhoto
 import com.bonobono.presentation.ui.theme.LightGray
 import com.bonobono.presentation.ui.theme.White
 import com.bonobono.presentation.utils.Constants
+import com.bonobono.presentation.utils.characterList
+import com.bonobono.presentation.viewmodel.CharacterViewModel
 import com.bonobono.presentation.viewmodel.MissionViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -58,8 +59,10 @@ private const val TAG = "MissionScreen"
 @Composable
 fun MissionScreen(
     navController: NavHostController,
-    missionViewModel: MissionViewModel = hiltViewModel()
+    missionViewModel: MissionViewModel = hiltViewModel(),
+    characterViewModel: CharacterViewModel
 ) {
+    val curMainCharacter by characterViewModel.character.collectAsState()
     LaunchedEffect(key1 = Unit) {
         MissionScreen.buttons
             .onEach { button ->
@@ -70,7 +73,7 @@ fun MissionScreen(
                 }
             }.launchIn(this)
     }
-
+    val mainId = missionViewModel.getLong(Constants.MAIN_CHARACTER)
     missionViewModel.removeCompletedTime() // 하루 지나면 삭제
     val completedTimeOX = missionViewModel.getLong(Constants.OX_QUIZ)
     val completedTimeFour = missionViewModel.getLong(Constants.FOUR_QUIZ)
@@ -94,7 +97,7 @@ fun MissionScreen(
             .verticalScroll(rememberScrollState())
             .padding(12.dp)
     ) {
-        UserInformationItem(totalScore)
+        UserInformationItem(totalScore, curMainCharacter)
         Spacer(modifier = Modifier.size(12.dp))
         DailyGameItem(
             R.raw.animation_check,
@@ -181,7 +184,7 @@ fun DailyGameItem(
 }
 
 @Composable
-fun UserInformationItem(totalScore: TotalScore) {
+fun UserInformationItem(totalScore: TotalScore, curCharacter: UserCharacter) {
     Card(
         modifier = Modifier
             .fillMaxWidth(),
@@ -197,8 +200,9 @@ fun UserInformationItem(totalScore: TotalScore) {
                 .fillMaxWidth()
                 .padding(8.dp)
         ) {
+            val image = characterList.find { it.id == curCharacter.char_ord_id }?.icon ?: R.drawable.default_profile
             ProfilePhoto(
-                profileImage = R.drawable.beluga_whale, modifier = Modifier
+                profileImage = image, modifier = Modifier
                     .clip(CircleShape)
                     .background(White)
                     .border(BorderStroke(1.dp, LightGray), shape = CircleShape)
@@ -212,13 +216,7 @@ fun UserInformationItem(totalScore: TotalScore) {
         LinearProgressBar(
             source = R.drawable.ic_check,
             title = stringResource(R.string.exp_txt),
-            percent = 0.3f
+            percent = curCharacter.experience * 0.01f
         )
     }
-}
-
-@Preview
-@Composable
-fun PreviewMissionScreen() {
-    MissionScreen(navController = rememberNavController())
 }

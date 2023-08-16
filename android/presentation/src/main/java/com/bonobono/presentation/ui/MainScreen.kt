@@ -58,6 +58,7 @@ import com.bonobono.presentation.ui.main.notice.NoticeScreen
 import com.bonobono.presentation.ui.map.ARMapScreen
 import com.bonobono.presentation.ui.map.ARScreen
 import com.bonobono.presentation.ui.map.CameraScreen
+import com.bonobono.presentation.ui.map.CampaignWriteScreen
 import com.bonobono.presentation.ui.map.MainMapScreen
 import com.bonobono.presentation.ui.mypage.MainMyPageScreen
 import com.bonobono.presentation.ui.mypage.PointStoreScreen
@@ -95,6 +96,10 @@ fun MainScreen() {
             when (currentRoute) {
                 NavigationRouteName.MAIN_HOME -> {
                     MainFloatingActionButtons(navController)
+                }
+
+                NavigationRouteName.MAIN_MAP -> {
+                    CommunityFloatingActionButton(navController = navController, item = CommunityFab.MAP)
                 }
 
                 NavigationRouteName.COMMUNITY_FREE -> {
@@ -271,7 +276,10 @@ fun MainNavigationScreen(
             route = MissionNav.route,
             deepLinks = MissionNav.deepLinks
         ) {
-            MissionScreen(navController)
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry(NavigationRouteName.MAIN_HOME)
+            }
+            MissionScreen(navController, characterViewModel = hiltViewModel(parentEntry))
         }
         composable(
             route = EncyclopediaNav.route,
@@ -342,7 +350,11 @@ fun MainNavigationScreen(
         ) {
             BoardWriteScreen(type = COMMUNITY_REPORT, navController = navController)
         }
-
+        composable(
+            route = CommunityFab.MAP.route
+        ) {
+            CampaignWriteScreen(navController = navController)
+        }
         communityNavigation(navController = navController)
 
         composable(

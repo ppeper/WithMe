@@ -30,13 +30,12 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val loginViewModel : LoginViewModel = hiltViewModel()
                     loginViewModel.getLoginInfo()
-//                    if(loginViewModel.username.isNotBlank() && loginViewModel.password.isNotBlank()) {
-//                        // 자동 로그인 시킴
-//                        MainScreen()
-//                    } else {
-//                        StartScreen()
-//                    }
-                    CampaignWriteScreen(navController = rememberNavController())
+                    if(loginViewModel.username.isNotBlank() && loginViewModel.password.isNotBlank()) {
+                        // 자동 로그인 시킴
+                        MainScreen()
+                    } else {
+                        StartScreen()
+                    }
 //                    MainScreen()
 //                    StartScreen()
                 }

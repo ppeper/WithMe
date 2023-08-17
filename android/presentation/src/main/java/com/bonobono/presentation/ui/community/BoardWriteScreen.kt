@@ -14,6 +14,8 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -76,7 +78,8 @@ fun BoardWriteScreen(
     navController: NavController,
     photoViewModel: PhotoViewModel = hiltViewModel(),
     communityViewModel: CommunityViewModel = hiltViewModel(),
-    mapViewModel: MapViewModel = hiltViewModel()
+    mapViewModel: MapViewModel = hiltViewModel(),
+    showSnackBar: () -> Unit
 ) {
     val route = navController.currentDestination?.route ?: CommunityFab.FREE.route
     val context = LocalContext.current
@@ -105,6 +108,7 @@ fun BoardWriteScreen(
             is NetworkResult.Success -> {
                 Log.d("TEST", "BoardWriteScreen: 뒤로가기")
                 navController.popBackStack()
+                showSnackBar()
             }
             is NetworkResult.Loading -> {
                 Log.d("TEST", "글쓰기: 로딩중~~~~~~~~~~~")
@@ -279,5 +283,5 @@ fun BoardWriteScreen(
 @Preview
 @Composable
 fun Preview() {
-    BoardWriteScreen(type = "free", navController = rememberNavController())
+    BoardWriteScreen(type = "free", navController = rememberNavController()) {}
 }

@@ -13,11 +13,14 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
@@ -80,6 +83,7 @@ import com.bonobono.presentation.utils.NavigationUtils
 import com.bonobono.presentation.viewmodel.MapViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 
@@ -89,10 +93,13 @@ fun MainScreen(
     articleId: String? = null
 ) {
     val navController = rememberNavController()
+    val snackBarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
     val appBarState = rememberAppBarState(navController = navController)
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
     Scaffold(
+        snackbarHost = { SnackbarHost(snackBarHostState) },
         topBar = {
             if (appBarState.isVisible) {
                 SharedTopAppBar(appBarState = appBarState)
@@ -139,6 +146,11 @@ fun MainScreen(
         MainNavigationScreen(
             innerPaddings = it,
             navController = navController,
+            showSnackBar = { message ->
+                scope.launch {
+                    snackBarHostState.showSnackbar(message)
+                }
+            }
         )
         LaunchedEffect(Unit) {
             if (type != null && articleId != null) {
@@ -253,6 +265,7 @@ fun parseCommunityRoute(route: String): String {
 fun MainNavigationScreen(
     innerPaddings: PaddingValues,
     navController: NavHostController,
+    showSnackBar: (String) -> Unit
 ) {
     NavHost(
         modifier = Modifier.padding(innerPaddings),
@@ -388,17 +401,23 @@ fun MainNavigationScreen(
         composable(
             route = CommunityFab.FREE.route
         ) {
-            BoardWriteScreen(type = COMMUNITY_FREE, navController = navController)
+            BoardWriteScreen(type = COMMUNITY_FREE, navController = navController) {
+                showSnackBar("자유 게시글이 등록되었습니다.")
+            }
         }
         composable(
             route = CommunityFab.WITH.route
         ) {
-            BoardWriteScreen(type = COMMUNITY_WITH, navController = navController)
+            BoardWriteScreen(type = COMMUNITY_WITH, navController = navController) {
+                showSnackBar("함께 게시글이 등록되었습니다.")
+            }
         }
         composable(
             route = CommunityFab.REPORT.route
         ) {
-            BoardWriteScreen(type = COMMUNITY_REPORT, navController = navController)
+            BoardWriteScreen(type = COMMUNITY_REPORT, navController = navController) {
+                showSnackBar("신고 게시글이 등록되었습니다.")
+            }
         }
         composable(
             route = CommunityFab.MAP.route
@@ -417,7 +436,9 @@ fun MainNavigationScreen(
                     type = type,
                     articleId = articleId.toLong(),
                     navController = navController
-                )
+                ) {
+                    showSnackBar("삭제 되었습니다.")
+                }
             }
         }
 

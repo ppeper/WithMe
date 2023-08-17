@@ -13,9 +13,7 @@ object CommunityWithScreen: Screen {
     enum class AppBarIcons {
         NavigationIcon,
         Search,
-        Alarm,
-        ALL,
-        RECRUIT
+        Alarm
     }
 
     private val _buttons = MutableSharedFlow<AppBarIcons>(extraBufferCapacity = 1)
@@ -46,19 +44,6 @@ object CommunityWithScreen: Screen {
             },
             icon = R.drawable.ic_alarm,
             contentDescription = "좋아요"
-        ),
-        ActionMenuItem.NeverShown(
-            title = "전체 보기",
-            onClick = {
-                _buttons.tryEmit(AppBarIcons.ALL)
-            },
-        ),
-        ActionMenuItem.NeverShown(
-            title = "모집중 보기",
-            onClick = {
-                _buttons.tryEmit(AppBarIcons.RECRUIT)
-            },
-        ),
-
+        )
     )
 }

@@ -11,7 +11,7 @@ fun NotificationEntity.toDomain(): Notification =
         articleId = articleId,
         title = title,
         body = body,
-        receiveTime = LocalDateTime.now().toString()
+        receiveTime = receiveTime
     )
 
 fun Notification.toModel(): NotificationEntity =

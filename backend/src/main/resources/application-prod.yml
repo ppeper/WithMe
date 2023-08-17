@@ -1,4 +1,3 @@
-# S3 image upload setting
 cloud:
   aws:
     credentials:
@@ -23,3 +22,7 @@ spring:
   data:
     mongodb:
       uri: mongodb+srv://S09P12D105:YMliQn07tW@ssafy.ngivl.mongodb.net/S09P12D105?authSource=admin
+
+jwt:
+  header: Authorization
+  secret-key: q1w2e3r4

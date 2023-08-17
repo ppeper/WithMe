@@ -25,12 +25,19 @@ import com.bonobono.presentation.ui.theme.LightGray
 
 @Composable
 fun ProfilePhoto(profileImage: Int, modifier: Modifier) {
-    Image(
-        modifier = modifier.padding(12.dp),
-        painter = painterResource(id = profileImage),
-        contentDescription = "프로필 사진",
-        contentScale = ContentScale.FillBounds
-    )
+    Box {
+        Image(
+            modifier = modifier
+                .clip(CircleShape)
+                .border(BorderStroke(1.dp, DarkGray), shape = CircleShape)
+                .background(LightGray)
+                .size(80.dp)
+                .padding(8.dp),
+            painter = painterResource(id = profileImage),
+            contentDescription = "프로필 사진",
+            contentScale = ContentScale.Fit
+        )
+    }
 }
 
 @Composable

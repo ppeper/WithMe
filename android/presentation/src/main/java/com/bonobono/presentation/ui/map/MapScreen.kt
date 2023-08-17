@@ -97,7 +97,7 @@ fun MainMapScreen(navController: NavHostController, mapViewModel: MapViewModel =
 
     BottomSheetScaffold(
         scaffoldState = scaffoldState,
-        sheetPeekHeight = 60.dp,
+        sheetPeekHeight = 36.dp,
         containerColor = White,
         sheetShadowElevation = 0.dp,
         sheetTonalElevation = 0.dp,
@@ -238,7 +238,7 @@ fun MapMarkers(
     locations.forEachIndexed { idx, item ->
         Marker(
             state = MarkerState(position = LatLng(item.centerLatitude, item.centerLongitude)),
-            icon = OverlayImage.fromResource(R.drawable.ic_beach_pin),
+            icon = OverlayImage.fromResource(R.drawable.ic_blue_marker),
             width = 48.dp,
             height = 48.dp,
             onClick = {

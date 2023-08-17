@@ -15,6 +15,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,15 +26,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.bonobono.domain.model.character.UserCharacter
 import com.bonobono.domain.model.mission.TotalScore
 import com.bonobono.presentation.R
@@ -53,6 +55,7 @@ import com.bonobono.presentation.viewmodel.CharacterViewModel
 import com.bonobono.presentation.viewmodel.MissionViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 private const val TAG = "MissionScreen"
 
@@ -73,7 +76,6 @@ fun MissionScreen(
                 }
             }.launchIn(this)
     }
-    val mainId = missionViewModel.getLong(Constants.MAIN_CHARACTER)
     missionViewModel.removeCompletedTime() // 하루 지나면 삭제
     val completedTimeOX = missionViewModel.getLong(Constants.OX_QUIZ)
     val completedTimeFour = missionViewModel.getLong(Constants.FOUR_QUIZ)
@@ -82,64 +84,77 @@ fun MissionScreen(
 
     val totalScore by missionViewModel.totalScore.collectAsState()
 
+
     var attendanceIsEnabled = remember { mutableStateOf(completedTimeAttendance == 0L) }
     var gameIsEnabled = remember { mutableStateOf(completedGame == 0L) }
     var quizIsEnabled = remember {
         mutableStateOf(completedTimeOX == 0L && completedTimeFour == 0L)
     }
 
-    LaunchedEffect(Unit) {
-        missionViewModel.getScore(1)
+    val coroutineScope = rememberCoroutineScope()
+    val snackBarHostState = remember {
+        SnackbarHostState()
     }
 
-    Column(
-        Modifier
-            .verticalScroll(rememberScrollState())
-            .padding(12.dp)
-    ) {
-        UserInformationItem(totalScore, curMainCharacter)
-        Spacer(modifier = Modifier.size(12.dp))
-        DailyGameItem(
-            R.raw.animation_check,
-            stringResource(R.string.attendance_guide),
-            stringResource(R.string.attendance_btn),
-            attendanceIsEnabled
+    LaunchedEffect(Unit) {
+        val mainId = missionViewModel.getLong(Constants.MAIN_CHARACTER)
+        missionViewModel.getScore(1)
+    }
+    Scaffold(snackbarHost = { SnackbarHost(snackBarHostState) }) {
+        it
+        Column(
+            Modifier
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp)
         ) {
-            missionViewModel.postAttendance(1)
-            missionViewModel.putLong(Constants.ATTENDANCE, System.currentTimeMillis())
-            attendanceIsEnabled.value = false
-        }
-        Spacer(modifier = Modifier.size(12.dp))
-        DailyGameItem(
-            R.raw.game,
-            stringResource(R.string.game_guide),
-            stringResource(R.string.game_btn),
-            gameIsEnabled,
-        ) {
-            navController.navigate(GameNav.route)
-        }
-        Spacer(modifier = Modifier.size(12.dp))
-        if (completedTimeOX == 0L) {
-            LargeSquareCardWithAnimation(
-                R.raw.animation_ox_quiz_card,
-                stringResource(R.string.ox_quiz_guide)
+            UserInformationItem(totalScore, curMainCharacter)
+            Spacer(modifier = Modifier.size(12.dp))
+            DailyGameItem(
+                R.raw.animation_check,
+                stringResource(R.string.attendance_guide),
+                stringResource(R.string.attendance_btn),
+                attendanceIsEnabled
             ) {
-                navController.navigate("${QuizNav.route}/${Constants.OX_QUIZ}")
+                missionViewModel.postAttendance(1)
+                missionViewModel.putLong(Constants.ATTENDANCE, System.currentTimeMillis())
+                attendanceIsEnabled.value = false
+                coroutineScope.launch {
+                    snackBarHostState.showSnackbar("출석체크 완료! +Exp 5")
+                }
+
             }
-        } else if (completedTimeFour == 0L) {
-            LargeSquareCardWithAnimation(
-                R.raw.animation_four_quiz_card,
-                stringResource(R.string.four_quiz_guide)
+            Spacer(modifier = Modifier.size(12.dp))
+            DailyGameItem(
+                R.raw.game,
+                stringResource(R.string.game_guide),
+                stringResource(R.string.game_btn),
+                gameIsEnabled,
             ) {
-                navController.navigate("${QuizNav.route}/${Constants.FOUR_QUIZ}")
+                navController.navigate(GameNav.route)
             }
-        } else {
-            LargeSquareCardWithAnimation(
-                R.raw.animation_four_quiz_card,
-                stringResource(R.string.four_quiz_guide),
-                quizIsEnabled
-            ) {
-                navController.navigate(QuizNav.route)
+            Spacer(modifier = Modifier.size(12.dp))
+            if (completedTimeOX == 0L) {
+                LargeSquareCardWithAnimation(
+                    R.raw.animation_ox_quiz_card,
+                    stringResource(R.string.ox_quiz_guide)
+                ) {
+                    navController.navigate("${QuizNav.route}/${Constants.OX_QUIZ}")
+                }
+            } else if (completedTimeFour == 0L) {
+                LargeSquareCardWithAnimation(
+                    R.raw.animation_four_quiz_card,
+                    stringResource(R.string.four_quiz_guide)
+                ) {
+                    navController.navigate("${QuizNav.route}/${Constants.FOUR_QUIZ}")
+                }
+            } else {
+                LargeSquareCardWithAnimation(
+                    R.raw.animation_four_quiz_card,
+                    stringResource(R.string.four_quiz_guide),
+                    quizIsEnabled
+                ) {
+                    navController.navigate(QuizNav.route)
+                }
             }
         }
     }

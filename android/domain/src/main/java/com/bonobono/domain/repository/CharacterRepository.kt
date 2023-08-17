@@ -10,4 +10,5 @@ interface CharacterRepository {
     suspend fun getOurCharacterList() : NetworkResult<List<OurCharacter>>
     suspend fun patchSavaCharacter(character: SaveCharacter) : NetworkResult<Unit>
     suspend fun getCharacter(characterId: Int) : NetworkResult<UserCharacter>
+    suspend fun patchMainCharacter(characterId: Int) : NetworkResult<Unit>
 }

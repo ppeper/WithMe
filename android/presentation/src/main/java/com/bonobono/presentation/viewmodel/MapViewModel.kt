@@ -56,7 +56,8 @@ class MapViewModel @Inject constructor(
     private val _catchCharacters = MutableStateFlow<List<CatchCharacter>>(listOf())
     val catchCharacters: StateFlow<List<CatchCharacter>> = _catchCharacters
 
-    var curCatchCharacter: CatchCharacter? = null
+    private val _curCatchCharacter = MutableStateFlow<CatchCharacter?>(null)
+    val curCatchCharacter: StateFlow<CatchCharacter?> = _curCatchCharacter
 
     fun getLocations() = viewModelScope.launch {
         _locations.emit(getLocationsUseCase.invoke())
@@ -80,5 +81,9 @@ class MapViewModel @Inject constructor(
 
     fun setLoading() {
         _writeCampaignState.value = NetworkResult.Loading
+    }
+
+    fun setCurCatchCharacter(catchCharacter: CatchCharacter) {
+        _curCatchCharacter.value = catchCharacter
     }
 }

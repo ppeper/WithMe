@@ -4,12 +4,18 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Location
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ElevatedFilterChip
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchColors
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -66,7 +72,7 @@ fun ARMapScreen(
     var curLocation = mapViewModel.location.value
 
     val catchCharacters by mapViewModel.catchCharacters.collectAsState()
-    mapViewModel.getCatchCharacters(CatchKey(curLocation.name, 1))
+
 
     val cameraPositionState: CameraPositionState = rememberCameraPositionState {
         position =
@@ -80,25 +86,37 @@ fun ARMapScreen(
     }
 
     val locationSource = rememberFusedLocation()
-
+    var switchCheckedState by remember { mutableStateOf(false) }
     val context = LocalContext.current as MainActivity
     // 10초마다 위치 업데이트를 처리합니다.
     val locationUpdateScope = rememberCoroutineScope()
     var currentLocation: MutableState<Location?> = remember { mutableStateOf(null) }
+
     LaunchedEffect(Unit) {
-        val locationUpdateJob = locationUpdateScope.launch {
-            while (isActive) {
-                // 위치 정보를 얻어오는 로직을 구현합니다. (예: FusedLocationProviderClient 사용)
-                getLocation(context, currentLocation)
-                if (currentLocation.value != null) {
-                    val curCatchCharacter =
-                        findCharacterInRadius(catchCharacters, currentLocation.value!!, 50.0)
-                    if (curCatchCharacter != null) {
-                        mapViewModel.curCatchCharacter = curCatchCharacter
-                        navController.navigate(CameraNav.route)
+        mapViewModel.getCatchCharacters(CatchKey(curLocation.name, 1))
+    }
+
+    if(switchCheckedState) {
+        LaunchedEffect(Unit) {
+            val locationUpdateJob = locationUpdateScope.launch {
+                Log.d(TAG, "ARMapScreen: $switchCheckedState")
+                while (isActive) {
+                    if(!switchCheckedState) {
+                        return@launch
                     }
+                    getLocation(context, currentLocation)
+                    // 위치 정보를 얻어오는 로직을 구현합니다. (예: FusedLocationProviderClient 사용)
+                    if (currentLocation.value != null) {
+                        val curCatchCharacter =
+                            findCharacterInRadius(catchCharacters, currentLocation.value!!, 50.0)
+                        if (curCatchCharacter != null) {
+                            mapViewModel.setCurCatchCharacter(catchCharacter = curCatchCharacter)
+                            Log.d(TAG, "juyong: ${mapViewModel.curCatchCharacter.value}")
+                            navController.navigate(CameraNav.route)
+                        }
+                    }
+                    delay(2000) // 10초 대기
                 }
-                delay(2000) // 10초 대기
             }
         }
     }
@@ -114,11 +132,31 @@ fun ARMapScreen(
                 characters = catchCharacters, cameraPositionState = cameraPositionState
             )
         }
-        GamePromptBox(
-            name = "클로버 요정", content = "지도에 보이는 위치로 가서 저주에 걸린 동물들을 구해줘!",
-            modifier = Modifier.align(Alignment.TopCenter)
-        )
-        ChipAR(navController = navController)
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.TopCenter)
+        ) {
+            GamePromptBox(
+                name = "클로버 요정", content = "지도에 보이는 위치로 가서 저주에 걸린 동물들을 구해줘!",
+                modifier = Modifier
+            )
+
+            Column (
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .padding(horizontal = 12.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                Switch(
+                    checked = switchCheckedState,
+                    onCheckedChange = { switchCheckedState = it },
+                    colors = SwitchDefaults.colors(uncheckedTrackColor = White),
+                )
+                Text(text = "50m 이내 감지", style = CustomTextStyle.quizContentStyle)
+            }
+        }
     }
 }
 

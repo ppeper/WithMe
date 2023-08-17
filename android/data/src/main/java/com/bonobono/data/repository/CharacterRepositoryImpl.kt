@@ -1,6 +1,7 @@
 package com.bonobono.data.repository
 
 import com.bonobono.data.mapper.toDomain
+import com.bonobono.data.model.character.request.MainCharacterRequest
 import com.bonobono.data.remote.CharacterService
 import com.bonobono.data.remote.handleApi
 import com.bonobono.domain.model.NetworkResult
@@ -27,5 +28,9 @@ class CharacterRepositoryImpl @Inject constructor(
 
     override suspend fun getCharacter(characterId: Int): NetworkResult<UserCharacter> {
         return handleApi { characterService.getCharacter(characterId).toDomain() }
+    }
+
+    override suspend fun patchMainCharacter(characterId: Int) : NetworkResult<Unit> {
+        return handleApi { characterService.patchMainCharacter(characterId, MainCharacterRequest(true)) }
     }
 }

@@ -35,7 +35,7 @@ fun ProfilePhoto(profileImage: Int, modifier: Modifier) {
                 .padding(8.dp),
             painter = painterResource(id = profileImage),
             contentDescription = "프로필 사진",
-            contentScale = ContentScale.FillBounds
+            contentScale = ContentScale.Fit
         )
     }
 }

@@ -9,6 +9,7 @@ import com.bonobono.domain.usecase.character.GetCharacterUseCase
 import com.bonobono.domain.usecase.character.GetOurCharacterListUseCase
 import com.bonobono.domain.usecase.character.GetUserCharacterListUseCase
 import com.bonobono.domain.usecase.character.PatchCharacterUseCase
+import com.bonobono.domain.usecase.character.PatchMainCharacterUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,7 +22,8 @@ class CharacterViewModel @Inject constructor(
     private val getUserCharacterListUseCase: GetUserCharacterListUseCase,
     private val getOurCharacterListUseCase: GetOurCharacterListUseCase,
     private val patchCharacterUseCase: PatchCharacterUseCase,
-    private val getCharacterUseCase: GetCharacterUseCase
+    private val getCharacterUseCase: GetCharacterUseCase,
+    private val patchMainCharacterUseCase: PatchMainCharacterUseCase
 ) : ViewModel() {
     private val _userCharacterList = MutableStateFlow<List<UserCharacter>>(listOf())
     val userCharacterList: StateFlow<List<UserCharacter>> = _userCharacterList
@@ -34,6 +36,9 @@ class CharacterViewModel @Inject constructor(
 
     private val _saveSuccess = MutableStateFlow<Boolean>(false)
     val saveSuccess: StateFlow<Boolean> = _saveSuccess
+
+    private val _changeMainCharacter = MutableStateFlow<Boolean>(false)
+    val changeMainCharacter: StateFlow<Boolean> = _changeMainCharacter
 
     fun getUserCharacterList() = viewModelScope.launch {
         _userCharacterList.emit(getUserCharacterListUseCase.invoke(1))
@@ -54,5 +59,9 @@ class CharacterViewModel @Inject constructor(
                 _character.value = it
             }
         }
+    }
+
+    fun patchMainCharacter(characterId: Int) = viewModelScope.launch {
+        _changeMainCharacter.emit(patchMainCharacterUseCase.invoke(characterId))
     }
 }

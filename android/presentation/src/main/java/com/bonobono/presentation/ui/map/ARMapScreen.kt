@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Location
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -140,16 +141,22 @@ fun ARMapScreen(
                 name = "클로버 요정", content = "지도에 보이는 위치로 가서 저주에 걸린 동물들을 구해줘!",
                 modifier = Modifier
             )
-            Switch(
-                checked = switchCheckedState,
-                onCheckedChange = { switchCheckedState = it },
+
+            Column (
                 modifier = Modifier
                     .align(Alignment.End)
                     .padding(horizontal = 12.dp),
-                colors = SwitchDefaults.colors(disabledUncheckedTrackColor = White)
-            )
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                Switch(
+                    checked = switchCheckedState,
+                    onCheckedChange = { switchCheckedState = it },
+                    colors = SwitchDefaults.colors(uncheckedTrackColor = White),
+                )
+                Text(text = "50m 이내 감지", style = CustomTextStyle.quizContentStyle)
+            }
         }
-        ChipAR(navController = navController)
     }
 }
 

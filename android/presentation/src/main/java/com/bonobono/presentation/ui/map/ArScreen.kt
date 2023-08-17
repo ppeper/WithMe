@@ -83,17 +83,19 @@ fun CameraScreen(
     navController: NavHostController,
     characterViewModel: CharacterViewModel = hiltViewModel()
 ) {
-    missionViewModel.getMission(1, Constants.AR)
+    LaunchedEffect(Unit) {
+        missionViewModel.getMission(1, Constants.AR)
+    }
+
     val quiz by missionViewModel.mission.collectAsState()
     val curCharacter by mapViewModel.curCatchCharacter.collectAsState()
 
-    Log.d(TAG, "juyong: ${curCharacter}")
     val happy = when (curCharacter!!.ourCharacter.charOrdId) {
         12 -> {
             getDolphinAnimation("LEVEL_1", "happy")
         }
 
-        13 -> getWhaleAnimation("LEVEL_1", "happy")
+        11 -> getWhaleAnimation("LEVEL_1", "happy")
         else -> getSeaElephantAnimation("LEVEL_1", "happy")
     }
     val sad = when (curCharacter!!.ourCharacter.charOrdId) {
@@ -101,7 +103,7 @@ fun CameraScreen(
             getDolphinAnimation("LEVEL_1", "sad")
         }
 
-        13 -> getWhaleAnimation("LEVEL_1", "sad")
+        11 -> getWhaleAnimation("LEVEL_1", "sad")
         else -> getSeaElephantAnimation("LEVEL_1", "sad")
     }
     val promptsList = listOf(
@@ -123,7 +125,7 @@ fun CameraScreen(
             "O"
         ),
         Prompt(
-            PromptString.chapterFourTitle,
+            curCharacter!!.ourCharacter.name,
             PromptString.chapterFourContent,
             "",
             happy,

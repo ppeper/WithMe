@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -26,6 +27,9 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedFilterChip
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -34,6 +38,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -60,6 +65,7 @@ import com.bonobono.presentation.viewmodel.CharacterViewModel
 import com.bonobono.presentation.viewmodel.MissionViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 // 현재 대표 동물 이미지로
 private const val TAG = "EncyclopediaScreen"
@@ -85,6 +91,7 @@ fun EncyclopediaScreen(
     val userCharacterList by characterViewModel.userCharacterList.collectAsState()
     val ourCharacterList by characterViewModel.ourCharacterList.collectAsState()
     val mainCharacter by characterViewModel.character.collectAsState()
+    val changeMainCharacter by characterViewModel.changeMainCharacter.collectAsState()
 
     var initId = missionViewModel.getLong(Constants.MAIN_CHARACTER)
     if (initId.toInt() == 0) initId = 12
@@ -95,50 +102,60 @@ fun EncyclopediaScreen(
         mutableStateOf(mainCharacter)
     }
 
+
+    val coroutineScope = rememberCoroutineScope()
+    val snackBarHostState = remember {
+        SnackbarHostState()
+    }
+
     LaunchedEffect(Unit) {
         characterViewModel.getUserCharacterList()
         characterViewModel.getOurCharacterList()
         characterViewModel.getMainCharacter()
+
     }
 
-
-    Column(
-        Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackBarHostState) }
     ) {
-        val image =
-            characterList.find { it.id.toLong() == selectedId.value }?.icon ?: R.drawable.ic_profile
-        Box(modifier = Modifier) {
-            AnimatedProfile(
-                profileImage = image,
-                source = R.raw.animation_card
-            )
-            if (userCharacterList.find { it.id.toLong() == selectedId.value } != null) {
-                ElevatedFilterChip(
-                    modifier = Modifier
-                        .padding(12.dp)
-                        .align(Alignment.TopEnd),
-                    selected = false,
-                    onClick = {
-                        missionViewModel.putLong(
-                            Constants.MAIN_CHARACTER,
-                            selectedId.value.toLong()
-                        )
-
-                    },
-                    label = {
-                        Text(
-                            text = "대표 캐릭터 설정",
-                            style = CustomTextStyle.gameGuideTextStyle
-                        )
-                    })
+        it
+        Column(
+            Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+        ) {
+            val image =
+                characterList.find { it.id.toLong() == selectedId.value }?.icon ?: R.drawable.ic_profile
+            Box(modifier = Modifier) {
+                AnimatedProfile(
+                    profileImage = image,
+                    source = R.raw.animation_card
+                )
+                if (userCharacterList.find { it.id.toLong() == selectedId.value } != null) {
+                    ElevatedFilterChip(
+                        modifier = Modifier
+                            .padding(12.dp)
+                            .align(Alignment.TopEnd),
+                        selected = false,
+                        onClick = {
+                            characterViewModel.patchMainCharacter(selectedId.value.toInt())
+                            coroutineScope.launch {
+                                snackBarHostState.showSnackbar("대표 캐릭터 변경!")
+                            }
+                        },
+                        label = {
+                            Text(
+                                text = "대표 캐릭터 설정",
+                                style = CustomTextStyle.gameGuideTextStyle
+                            )
+                        })
+                }
             }
+            CurInformation(selectedId, userCharacterList, selectedCharacter = selectedCharacter)
+            Spacer(modifier = Modifier.size(12.dp))
+            UserCharacters(userCharacterList, selectedId, selectedCharacter)
+            OurCharacters(ourCharacterList, selectedId)
         }
-        CurInformation(selectedId, userCharacterList, selectedCharacter = selectedCharacter)
-        Spacer(modifier = Modifier.size(12.dp))
-        UserCharacters(userCharacterList, selectedId, selectedCharacter)
-        OurCharacters(ourCharacterList, selectedId)
     }
 }
 

@@ -11,8 +11,10 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bonobono.domain.model.NetworkResult
 import com.bonobono.domain.model.registration.Member
+import com.bonobono.domain.model.registration.NickName
 import com.bonobono.domain.model.registration.Register
 import com.bonobono.domain.model.registration.Role
+import com.bonobono.domain.model.registration.UserName
 import com.bonobono.domain.usecase.register.CheckNickNameUseCase
 import com.bonobono.domain.usecase.register.CheckUserNameUseCase
 import com.bonobono.domain.usecase.register.SignUpUseCase
@@ -51,22 +53,48 @@ class SignUpViewModel @Inject constructor(
 
     fun updateUserName(input: String) {
         username = input
-    }
-
-    private val _checkUserNameState = MutableStateFlow<String>("test")
-
-    val checkUserNameState = _checkUserNameState.asStateFlow()
-    fun checkUserName() = viewModelScope.launch {
-        val member = Member(listOf(), name, nickName, phoneNum, username)
-        
-        _checkUserNameState.emit(checkUserNameUseCase.invoke(member))
-        Log.d(TAG, "checkUserName: ${_checkUserNameState.value}")
+        checkUserNameState = false
         updateButtonState()
     }
-    // 아이디 중복 확인 여부 판단용
-    var checkUserNameValid by mutableStateOf(_checkUserNameState)
+
+    var checkUserNameState by mutableStateOf(false)
+        private set
+    var checkNickNameState by mutableStateOf(false)
         private set
 
+    suspend fun checkUserName(): String {
+        val result = checkUserNameUseCase.invoke(UserName(username))
+
+        return when (result) {
+            is NetworkResult.Success -> {
+                Log.d(TAG, "checkUserName: ${result.data}")
+                checkUserNameState = true
+                Log.d(TAG, "checkUserName: username success")
+                "success"
+            }
+            else -> {
+                Log.d(TAG, "checkUserName: username fail")
+                "fail"
+            }
+        }
+    }
+
+
+    suspend fun checkNickName(): String {
+        val result = checkNickNameUseCase.invoke(NickName(nickName))
+
+        return when (result) {
+            is NetworkResult.Success -> {
+                Log.d(TAG, "checkNickName: nickname success")
+                checkNickNameState = true
+                "success"
+            }
+            else -> {
+                Log.d(TAG, "checkNickName: nickname fail")
+                "fail"
+            }
+        }
+    }
 
     var name by mutableStateOf("")
         private set
@@ -81,6 +109,7 @@ class SignUpViewModel @Inject constructor(
 
     fun updateNickName(input: String) {
         nickName = input
+        checkNickNameState = false
         updateButtonState()
     }
 
@@ -119,11 +148,7 @@ class SignUpViewModel @Inject constructor(
 
     // 인증코드 발급 && 인증 코드 입력 시 받은 인증코드와 같은지 확인
     var validationCode by mutableStateOf("")
-//    fun updateValidationCode(input: String) {
-//        // 인증 번호는 서버에서 받은 인증 코드랑 같은지 비교
-//        if (validationCode == input) phoneNumValid = true
-//        updateButtonState()
-//    }
+
     fun updateValidationCode(input: String) {
         // 인증 번호는 서버에서 받은 인증 코드랑 같은지 비교
         validationCode == input
@@ -136,18 +161,14 @@ class SignUpViewModel @Inject constructor(
 
     // 회원가입 정보 전부 기입 및 인증 전부 확인 시 버튼 활성화
     fun updateButtonState() {
-        if (name.isNotBlank() && nickName.isNotBlank()
-//            && checkPwdValid
-            ) {
+        if (name.isNotBlank() && nickName.isNotBlank() && checkPwdValid && checkNickNameState && checkUserNameState) {
             checkAllAllowed = true
             buttonColor = PrimaryBlue
         } else {
             checkAllAllowed = false
             buttonColor = LightGray
         }
-        Log.d(TAG, "updateButtonState: ${checkUserNameValid.value}")
     }
-
 
     private val _signUpState = MutableStateFlow<NetworkResult<Member>>(NetworkResult.Loading)
     val signUpState : StateFlow<NetworkResult<Member>> = _signUpState
@@ -156,9 +177,8 @@ class SignUpViewModel @Inject constructor(
         // 비밀번호 check 부분은 값이 없으면 회원가입이 안되므로 임시로 데이터 넣음
         // role도 일단 다 USER로 지정해버림 아니면 회원가입 안됨
         val role = Role("USER")
-        val register = Register(0, name,nickName,password,  "01012345678", listOf(role), username)
+        val register = Register(0, name = name, nickname = nickName, password = password,  phoneNumber = phoneNum, role = listOf(role), username = username)
         _signUpState.emit(signUpUseCase.invoke(register))
         Log.d(TAG, "signUp: ${signUpState.value}")
     }
-
 }

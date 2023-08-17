@@ -46,11 +46,12 @@ import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
+private const val TAG = "ProfileEditScreen"
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun ProfileEditScreen(
     navController: NavController,
-    myPageViewModel: MyPageViewModel = hiltViewModel(),
+    myPageViewModel: MyPageViewModel,
     photoViewModel: PhotoViewModel = hiltViewModel()
 ) {
     val galleryPermission =
@@ -87,27 +88,19 @@ fun ProfileEditScreen(
                         "BoardUpdateScreen: 현재 라우트 ${navController.currentDestination?.route}"
                     )
                     navController.navigate(NavigationRouteName.PROFILE_EDIT_GALLERY)
-//                    if (previousCount == 10) {
-//                        showDialog = true
-//                    } else {
-//                        Log.d("TEST", "BoardUpdateScreen: 현재 라우트 ${navController.currentDestination?.route}")
-//                        navController.navigate(routeMapper(navController))
-//                    }
                 })
                 Spacer(modifier = Modifier.height(32.dp))
-                ProfileEditInfo(
+                ProfileEditInfo (
                     infoType = "닉네임",
-                    info = "test",
-                    readOnly = false,
-                    singleLine = true
-                )
-                ProfileEditInfo(infoType = "이름", info = "test1", readOnly = true, singleLine = true)
-                ProfileEditInfo(
-                    infoType = "휴대폰 번호",
-                    info = "1234-1234",
+                    info = myPageViewModel.memberNickname,
                     readOnly = true,
                     singleLine = true
                 )
+                ProfileEditInfo (
+                    infoType = "이름",
+                    info = myPageViewModel.memberName,
+                    readOnly = true,
+                    singleLine = true)
                 Spacer(modifier = Modifier.height(16.dp))
                 PrimaryColorButton(
                     text = R.string.edit_profile_done,
@@ -132,6 +125,7 @@ fun ProfileEditInfo(
     readOnly: Boolean,
     singleLine: Boolean
 ) {
+    Log.d(TAG, "ProfileEditInfo: $info")
     var txt by remember {
         mutableStateOf(info)
     }

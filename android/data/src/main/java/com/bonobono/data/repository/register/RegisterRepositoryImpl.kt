@@ -3,15 +3,18 @@ package com.bonobono.data.repository.register
 import android.util.Log
 import com.bonobono.data.local.PreferenceDataSource
 import com.bonobono.data.mapper.toDomain
+import com.bonobono.data.remote.FCMService
 import com.bonobono.data.remote.RegisterService
 import com.bonobono.data.remote.handleApi
 import com.bonobono.domain.model.NetworkResult
 import com.bonobono.domain.model.registration.LoginInput
 import com.bonobono.domain.model.registration.LoginResult
 import com.bonobono.domain.model.registration.Member
+import com.bonobono.domain.model.registration.NickName
 import com.bonobono.domain.model.registration.Password
 import com.bonobono.domain.model.registration.Register
 import com.bonobono.domain.model.registration.Token
+import com.bonobono.domain.model.registration.UserName
 import com.bonobono.domain.repository.registration.RegisterRepository
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
@@ -25,11 +28,11 @@ class RegisterRepositoryImpl @Inject constructor(
     private val registerService: RegisterService
 ) : RegisterRepository {
 
-    override suspend fun checkUserName(username: Member): NetworkResult<String> {
+    override suspend fun checkUserName(username: UserName): NetworkResult<Boolean> {
         return handleApi { registerService.checkUserName(username) }
     }
 
-    override suspend fun checkNickName(nickname: Member): NetworkResult<String> {
+    override suspend fun checkNickName(nickname: NickName): NetworkResult<Boolean> {
         return handleApi { registerService.checkNickName(nickname) }
     }
 
@@ -63,6 +66,7 @@ class RegisterRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getLoginInfo(): LoginInput {
+
         val fcmtoken = preferenceDatasource.getString("fcmtoken", "")
         val username = preferenceDatasource.getString("username", "")
         val password = preferenceDatasource.getString("password", "")

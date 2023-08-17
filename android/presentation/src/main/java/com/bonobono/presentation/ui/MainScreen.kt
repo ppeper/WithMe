@@ -469,7 +469,10 @@ fun MainNavigationScreen(
             route = ProfileEditNav.route,
             deepLinks = ProfileEditNav.deepLinks
         ) {
-            ProfileEditScreen(navController = navController)
+            val parentEntry = remember(it) {
+            navController.getBackStackEntry(NavigationRouteName.MAIN_MY_PAGE)
+        }
+            ProfileEditScreen(navController = navController, myPageViewModel = hiltViewModel(parentEntry))
         }
         composable(
             route = "${QuizNav.route}/{type}",

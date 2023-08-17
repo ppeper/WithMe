@@ -47,13 +47,21 @@ class MyPageViewModel @Inject constructor(
     var memberExp by mutableStateOf(0)
         private set
 
+    var  memberName by mutableStateOf("")
+        private set
+
+    var memberPhone by mutableStateOf("")
+        private set
+
     fun getMemberInfo() = viewModelScope.launch {
         val result = getMemberUseCase.invoke()
         when(result) {
             is NetworkResult.Success -> {
+                Log.d(TAG, "getMemberInfo: ${result.data}")
                 memberNickname = result.data.member.nickname
-                Log.d(TAG, "getMemberInfo: ${memberNickname}")
                 memberExp = result.data.experience
+                memberName = result.data.member.name
+                memberPhone = result.data.member.phoneNumber
             }
             else -> {
 

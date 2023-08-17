@@ -4,17 +4,19 @@ import com.bonobono.domain.model.NetworkResult
 import com.bonobono.domain.model.registration.LoginInput
 import com.bonobono.domain.model.registration.LoginResult
 import com.bonobono.domain.model.registration.Member
+import com.bonobono.domain.model.registration.NickName
 import com.bonobono.domain.model.registration.Password
 import com.bonobono.domain.model.registration.Register
 import com.bonobono.domain.model.registration.Token
+import com.bonobono.domain.model.registration.UserName
 
 interface RegisterRepository {
 
     // 아이디 중복 확인
-    suspend fun checkUserName(username: Member): NetworkResult<String>
+    suspend fun checkUserName(username: UserName): NetworkResult<Boolean>
 
     // 닉네임 중복 확인
-    suspend fun checkNickName(nickname : Member) : NetworkResult<String>
+    suspend fun checkNickName(nickname : NickName) : NetworkResult<Boolean>
 
     // 회원가입
     suspend fun signUp(register: Register) : NetworkResult<Member>

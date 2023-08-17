@@ -60,21 +60,25 @@ fun MainMyPageScreen(
                 MyPageButton(
                     buttonType = "포인트 상점",
                     iconName = "ic_point_store",
+                    myPageViewModel = myPageViewModel,
                     navController = navController
                 )
                 MyPageButton(
                     buttonType = "나의 글",
                     iconName = "ic_feed_history",
+                    myPageViewModel = myPageViewModel,
                     navController = navController
                 )
                 MyPageButton(
                     buttonType = "회원정보 수정",
                     iconName = "ic_profile_edit",
+                    myPageViewModel = myPageViewModel,
                     navController = navController
                 )
                 MyPageButton(
                     buttonType = "로그아웃",
                     iconName = "ic_logout",
+                    myPageViewModel = myPageViewModel,
                     navController = navController
                 )
             }

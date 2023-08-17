@@ -45,6 +45,7 @@ import com.bonobono.presentation.ui.mypage.WithdrawView
 import com.bonobono.presentation.ui.theme.DarkGray
 import com.bonobono.presentation.ui.theme.White
 import com.bonobono.presentation.viewmodel.LoginViewModel
+import com.bonobono.presentation.viewmodel.MyPageViewModel
 
 @Composable
 fun SettingOptions(
@@ -112,7 +113,7 @@ fun navigateToAppSettings(context: Context) {
 
 
 @Composable
-fun MyPageButton(buttonType: String, iconName: String, navController: NavController) {
+fun MyPageButton(buttonType: String, iconName: String, navController: NavController, myPageViewModel: MyPageViewModel) {
     val loginViewModel : LoginViewModel = hiltViewModel()
     Row(verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,

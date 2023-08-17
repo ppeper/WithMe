@@ -79,12 +79,12 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    fun putMemberInfo() = viewModelScope.launch {
-        val memberInfo = getMemberUseCase.invoke()
-        if (memberInfo is NetworkResult.Success) {
-            memberInfoInputUseCase.invoke(memberInfo.data)
-        }
-    }
+//    fun putMemberInfo() = viewModelScope.launch {
+//        val memberInfo = getMemberUseCase.invoke()
+//        if (memberInfo is NetworkResult.Success) {
+//            memberInfoInputUseCase.invoke(memberInfo.data)
+//        }
+//    }
 
     var autoLoginState by mutableStateOf(false)
         private set

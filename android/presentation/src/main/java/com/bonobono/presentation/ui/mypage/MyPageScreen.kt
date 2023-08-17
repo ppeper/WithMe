@@ -16,11 +16,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -31,10 +26,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.bonobono.domain.model.community.Link
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.SettingNav
-import com.bonobono.presentation.ui.community.views.link.getMetaData
 import com.bonobono.presentation.ui.mypage.view.MyPageButton
 import com.bonobono.presentation.ui.mypage.view.MyPageInfoCard
 import com.bonobono.presentation.ui.mypage.view.MyPageProfileImg
@@ -42,27 +35,21 @@ import com.bonobono.presentation.ui.mypage.view.WaveAnimation
 import com.bonobono.presentation.ui.theme.WaveBlue
 import com.bonobono.presentation.ui.theme.White
 import com.bonobono.presentation.viewmodel.MyPageViewModel
-import kotlinx.coroutines.launch
 
 @Composable
 fun MainMyPageScreen(
     navController: NavController,
     myPageViewModel: MyPageViewModel = hiltViewModel()) {
-    val scope = rememberCoroutineScope()
-    var metaLink by remember { mutableStateOf(Link()) }
     LaunchedEffect(key1 = Unit ) {
         myPageViewModel.getProfileImg()
-        scope.launch {
-            metaLink = getMetaData(Link(myPageViewModel.profileImg ?: "https://",  "프로필 이미지"))
-        }
+        myPageViewModel.getMemberInfo()
     }
-
     LazyColumn() {
         item {
             // blue wave background
             WaveBackGround(navController, myPageViewModel)
             // experience and money info box
-            MyPageInfoCard(seaAnimalExp = 1000, rewardMoney = 1000)
+            MyPageInfoCard(seaAnimalExp = myPageViewModel.memberExp, rewardMoney = 1000)
             // rest buttons
             Spacer(modifier = Modifier.height(16.dp))
             Column(
@@ -134,7 +121,7 @@ fun WaveBackGround(
                 MyPageProfileImg(myPageViewModel.profileImg)
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = "test",
+                    text = myPageViewModel.memberNickname,
                     color = White,
                     fontWeight = FontWeight.Bold,
                     fontSize = 24.sp

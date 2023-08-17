@@ -4,6 +4,7 @@ import com.bonobono.domain.model.NetworkResult
 import com.bonobono.domain.model.registration.Member
 import com.bonobono.domain.model.registration.Password
 import com.bonobono.domain.model.registration.ProfileImgResult
+import com.bonobono.domain.model.registration.ProfileInfo
 import com.bonobono.domain.model.registration.Token
 
 interface MemberRepository {
@@ -20,7 +21,7 @@ interface MemberRepository {
     suspend fun reissue(token: Token) : NetworkResult<Token>
 
     // 회원 정보 가져오기
-    suspend fun getMember() : NetworkResult<Member>
+    suspend fun getMember() : NetworkResult<ProfileInfo>
 
     // 회원 정보 삭제
     suspend fun deleteMember() : NetworkResult<String>

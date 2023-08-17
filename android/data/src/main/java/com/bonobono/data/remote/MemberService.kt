@@ -1,5 +1,6 @@
 package com.bonobono.data.remote
 
+import com.bonobono.data.model.registration.response.MemberProfileResponse
 import com.bonobono.data.model.registration.response.MemberResponse
 import com.bonobono.data.model.registration.response.ProfileImgResponse
 import com.bonobono.data.model.registration.response.TokenResponse
@@ -24,7 +25,7 @@ interface MemberService {
     ) : MemberResponse
 
     @GET("member/profile")
-    suspend fun getMember() : MemberResponse
+    suspend fun getMember() : MemberProfileResponse
 
     @PUT("member/password")
     suspend fun passwordChange(

@@ -1,6 +1,9 @@
 package com.bonobono.presentation.viewmodel
 
 import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bonobono.domain.model.NetworkResult
@@ -27,15 +30,29 @@ class ChattingRoomViewModel @Inject constructor(
 ): ViewModel() {
     private val _messageList = MutableStateFlow<NetworkResult<Chatting>>(NetworkResult.Loading)
     val messageList = _messageList.asStateFlow()
+
+    var roomNumber by mutableStateOf(0)
+        private set
+
     fun enterChattingRoom(nickName : String) = viewModelScope.launch {
         val chatRoom = ChatRoom(nickname = nickName)
         Log.d(TAG, "enterChattingRoom: nickname is ${nickName}")
         _messageList.emit(postChattingUseCase.invoke(chatRoom))
         Log.d(TAG, "enterChattingRoom: ${messageList.value}")
+        val result = messageList.value
+        when(result) {
+            is NetworkResult.Success -> {
+                roomNumber = result.data.roomNumber
+            }
+            else -> {
+            }
+        }
+        Log.d(TAG, "enterChattingRoom: ${roomNumber}")
+        connectWebSocket()
     }
 
-    fun connectWebSocket(url : String, listener: WebSocketListener) = viewModelScope.launch {
-        connectWebSocketUseCase.invoke(url)
+    fun connectWebSocket() = viewModelScope.launch {
+        connectWebSocketUseCase.invoke("https://i9d105.p.ssafy.io:8081/ws/chat/${roomNumber}")
     }
 
     fun disconnectSocket() = viewModelScope.launch {

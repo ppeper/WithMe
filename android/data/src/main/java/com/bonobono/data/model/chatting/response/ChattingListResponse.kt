@@ -10,5 +10,5 @@ data class ChattingListResponse (
     val profileImgName : String,
     val profileImgUrl : String,
     val msg : String,
-    val messagecreatedDate : String
+    val messageCreatedDate : String
 ) : Parcelable

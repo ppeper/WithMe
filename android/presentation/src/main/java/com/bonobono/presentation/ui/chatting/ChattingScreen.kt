@@ -16,6 +16,7 @@
 //import com.bonobono.presentation.ui.chatting.view.ChattingCard
 //import com.bonobono.presentation.ui.common.LoadingView
 //import com.bonobono.presentation.ui.common.topbar.screen.ChattingScreen
+//import com.bonobono.presentation.viewmodel.ChattingRoomViewModel
 //import com.bonobono.presentation.viewmodel.ChattingViewModel
 //import kotlinx.coroutines.flow.launchIn
 //import kotlinx.coroutines.flow.onEach
@@ -23,7 +24,11 @@
 //import java.time.format.DateTimeFormatter
 //
 //@Composable
-//fun MainChattingScreen(navController: NavController, chattingViewModel: ChattingViewModel = hiltViewModel()) {
+//fun MainChattingScreen(
+//    navController: NavController,
+//    chattingViewModel: ChattingViewModel = hiltViewModel(),
+//    chattingRoomViewModel: ChattingRoomViewModel = hiltViewModel()
+//) {
 //    LaunchedEffect(key1 = Unit) {
 //        ChattingScreen.buttons
 //            .onEach { button ->
@@ -35,29 +40,45 @@
 //        chattingViewModel.getChattingList()
 //    }
 //    val chattingState by chattingViewModel.chattingList.collectAsStateWithLifecycle()
-//    when(chattingState) {
+//    when (chattingState) {
 //        is NetworkResult.Loading -> {
 //            LoadingView()
 //        }
+//
 //        is NetworkResult.Success -> {
 //            val chattingRoomList = (chattingState as NetworkResult.Success<List<ChattingList>>).data
-//            ChatRoomList(chatList = chattingRoomList, navController = navController, chattingViewModel = chattingViewModel)
+//            ChatRoomList(
+//                chatList = chattingRoomList,
+//                navController = navController,
+//                chattingViewModel = chattingViewModel,
+//                chattingRoomViewModel = chattingRoomViewModel
+//            )
 //        }
+//
 //        else -> {}
 //    }
 //}
 //
 //@Composable
-//fun ChatRoomList(chatList : List<ChattingList>, navController: NavController, chattingViewModel: ChattingViewModel) {
-//    LazyColumn (
+//fun ChatRoomList(
+//    chatList: List<ChattingList>,
+//    navController: NavController,
+//    chattingViewModel: ChattingViewModel,
+//    chattingRoomViewModel: ChattingRoomViewModel
+//) {
+//    LazyColumn(
 //        modifier = Modifier.fillMaxSize()
-//    ){
+//    ) {
 //        items(chatList) { item ->
 //            ChattingCard(
 //                chattingList = item,
-//                moveAction = { navController.navigate("${ChattingEditNav.route}/${item.nickname}") },
+//                moveAction = {
+//                    chattingRoomViewModel.enterChattingRoom(item.nickname)
+//                    navController.navigate("${ChattingEditNav.route}/${item.nickname}")
+//                },
 //                exitAction = { chattingViewModel.deleteChattingItem(item) },
-//                chattingViewModel = chattingViewModel)
+//                chattingViewModel = chattingViewModel
+//            )
 //        }
 //    }
 //}
@@ -74,7 +95,7 @@
 //            profileImgName = "",
 //            profileImgUrl = "",
 //            msg = "test",
-//            messagecreatedDate = formattedString,
+//            messageCreatedDate = formattedString,
 //        )
 //    }
 //}

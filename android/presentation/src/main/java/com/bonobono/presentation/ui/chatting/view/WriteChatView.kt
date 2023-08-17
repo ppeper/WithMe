@@ -136,6 +136,7 @@ fun PicIcon(
 ) {
     Box(
         modifier = modifier
+            .padding(0.dp,0.dp,16.dp,0.dp)
             .clip(CircleShape)
             .clickable(
                 interactionSource = MutableInteractionSource(),
@@ -146,8 +147,7 @@ fun PicIcon(
     ) {
         Row(
             modifier = modifier
-                .wrapContentHeight()
-                .padding(start = 16.dp, top = 16.dp, bottom = 16.dp),
+                .wrapContentHeight(),
             horizontalArrangement = Arrangement.spacedBy(4.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {

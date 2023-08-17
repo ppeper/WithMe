@@ -1,7 +1,9 @@
 package com.bonobono.presentation.ui.community
 
+import android.annotation.SuppressLint
 import android.content.ContentUris
 import android.provider.MediaStore
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -72,36 +74,61 @@ fun GalleryScreen(
     val galleryPermission =
         rememberMultiplePermissionsState(permissions = PermissionUtils.GALLERY_PERMISSIONS)
 
+    var previousSelectedPhoto = remember {
+        mutableStateOf(Photo("", false, true))
+    }
     val photoList = loadPhotos()
     val currentSelectedPhoto = remember {
         mutableStateListOf<Photo>()
     }
-    if (galleryPermission.allPermissionsGranted) {
-        Scaffold(
-            modifier = modifier.fillMaxWidth(),
-            topBar = {
-                TopContentGallery(
-                    title = "사진", navController,
-                    photoViewModel = photoViewModel,
-                    currentSelectedPhoto = currentSelectedPhoto
-                )
-            }
-        ) {
-            Surface(
-                modifier = modifier.padding(it)
-            ) {
-                GalleryGridListView(
-                    photoList = photoList,
-                    photoViewModel = photoViewModel,
-                    currentSelectedPhoto = currentSelectedPhoto
-                )
-            }
+//    if (galleryPermission.allPermissionsGranted) {
+//        Scaffold(
+//            modifier = modifier.fillMaxWidth(),
+//            topBar = {
+//                TopContentGallery(
+//                    title = "사진", navController,
+//                    photoViewModel = photoViewModel,
+//                    currentSelectedPhoto = currentSelectedPhoto
+//                )
+//            }
+//        ) {
+//            Surface(
+//                modifier = modifier.padding(it)
+//            ) {
+//                GalleryGridListView(
+//                    photoList = photoList,
+//                    photoViewModel = photoViewModel,
+//                    currentSelectedPhoto = currentSelectedPhoto
+//                )
+//            }
+//        }
+//    } else {
+//        PermissionView(
+//            title = "사진 권한이 필요합니다!",
+//            navController = navController
+//        )
+//    }
+    Scaffold(
+        modifier = modifier.fillMaxWidth(),
+        topBar = {
+            TopContentGallery(
+                title = "사진", navController,
+                photoViewModel = photoViewModel,
+                currentSelectedPhoto = currentSelectedPhoto
+            )
         }
-    } else {
-        PermissionView(
-            title = "사진 권한이 필요합니다!",
-            navController = navController
-        )
+    ) {
+        Surface(
+            modifier = modifier.padding(it)
+        ) {
+            GalleryGridListView(
+                photoList = photoList,
+                photoViewModel = photoViewModel,
+                currentSelectedPhoto = currentSelectedPhoto,
+                previousSelectedPhoto = previousSelectedPhoto.value,
+                navController = navController
+            )
+        }
     }
 }
 
@@ -115,7 +142,9 @@ fun PreviewGalleryScreen() {
 fun GalleryGridListView(
     photoList: List<Photo>,
     photoViewModel: PhotoViewModel,
-    currentSelectedPhoto: SnapshotStateList<Photo>
+    currentSelectedPhoto: SnapshotStateList<Photo>,
+    previousSelectedPhoto: Photo,
+    navController: NavController
 ) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
@@ -126,7 +155,9 @@ fun GalleryGridListView(
             GalleryPhotoView(
                 photo = photo,
                 currentSelectedPhoto = currentSelectedPhoto,
+                previousSelectedPhoto = previousSelectedPhoto,
                 photoViewModel = photoViewModel,
+                navController = navController,
                 onPhotoSelected = { photo ->
                     if (photo.isSelected) {
                         currentSelectedPhoto.add(photo)
@@ -139,22 +170,22 @@ fun GalleryGridListView(
     }
 }
 
-@Preview
-@Composable
-fun PreviewGalleryGridListView() {
-    GalleryGridListView(
-        photoList = mutableListOf<Photo>()
-            .apply {
-                repeat(20) {
-                    add(Photo(url = "https://images.unsplash.com/photo-1689852484069-3e0fe82cc7c1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1887&q=80"))
-                }
-            },
-        photoViewModel = PhotoViewModel(),
-        currentSelectedPhoto = remember {
-            mutableStateListOf()
-        }
-    )
-}
+//@Preview
+//@Composable
+//fun PreviewGalleryGridListView() {
+//    GalleryGridListView(
+//        photoList = mutableListOf<Photo>()
+//            .apply {
+//                repeat(20) {
+//                    add(Photo(url = "https://images.unsplash.com/photo-1689852484069-3e0fe82cc7c1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1887&q=80"))
+//                }
+//            },
+//        photoViewModel = PhotoViewModel(),
+//        currentSelectedPhoto = remember {
+//            mutableStateListOf()
+//        }
+//    )
+//}
 
 @Composable
 fun GalleryPhotoView(
@@ -162,15 +193,24 @@ fun GalleryPhotoView(
     photo: Photo,
     photoViewModel: PhotoViewModel,
     currentSelectedPhoto: SnapshotStateList<Photo>,
+    previousSelectedPhoto: Photo,
+    navController: NavController,
     onPhotoSelected: (Photo) -> Unit,
 ) {
     var isCheck by rememberSaveable { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf(false) }
     val previousCount = photoViewModel.selectedPhoto.size
 
-    if (showDialog) {
-        CheckCountDialog(count = (10 - previousCount)) {
-            showDialog = !showDialog
+    val pagePathBefore = navController.previousBackStackEntry?.destination?.route
+    Log.d(TAG, "TopContentGallery: ${pagePathBefore}")
+
+    if (pagePathBefore == "chatting_edit" || pagePathBefore == "profile_edit") {
+
+    } else {    // 게시판에서 접근
+        if (showDialog) {
+            CheckCountDialog(count = (10 - previousCount)) {
+                showDialog = !showDialog
+            }
         }
     }
 
@@ -181,13 +221,27 @@ fun GalleryPhotoView(
                 interactionSource = MutableInteractionSource(),
                 indication = null
             ) {
-                // 이미지는 최대 10장 업로드 가능하도록 설정
-                if (!isCheck && 10 <= previousCount + currentSelectedPhoto.size) {
-                    showDialog = true
-                } else {
-                    isCheck = !isCheck
-                    photo.isSelected = isCheck
-                    onPhotoSelected(photo)
+                if (pagePathBefore == "chatting_edit" || pagePathBefore == "profile_edit") {
+//                    isCheck = !isCheck
+//                    photo.isSelected = isCheck
+//                    onPhotoSelected(photo)
+//                    previousSelectedPhoto.isSelected = !isCheck
+                    if (!isCheck && 1 <= previousCount + currentSelectedPhoto.size) {
+
+                    } else {
+                        isCheck = !isCheck
+                        photo.isSelected = isCheck
+                        onPhotoSelected(photo)
+                    }
+                } else {    // 게시판에서 접근
+                    // 이미지는 최대 10장 업로드 가능하도록 설정
+                    if (!isCheck && 10 <= previousCount + currentSelectedPhoto.size) {
+                        showDialog = true
+                    } else {
+                        isCheck = !isCheck
+                        photo.isSelected = isCheck
+                        onPhotoSelected(photo)
+                    }
                 }
             }
     ) {

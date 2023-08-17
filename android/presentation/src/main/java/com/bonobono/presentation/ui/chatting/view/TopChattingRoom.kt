@@ -1,5 +1,6 @@
 package com.bonobono.presentation.ui.chatting.view
 
+import androidx.compose.foundation.background
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -18,6 +19,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.bonobono.presentation.R
+import com.bonobono.presentation.ui.theme.White
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -59,6 +61,7 @@ fun TopChattingRoom(
                 )
             }
             DropdownMenu(
+                modifier = Modifier.background(White),
                 expanded = dropdownMenuExpanded,
                 onDismissRequest = { dropdownMenuExpanded = false },
             ) {

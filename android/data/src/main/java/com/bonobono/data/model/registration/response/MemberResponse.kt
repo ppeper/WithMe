@@ -1,6 +1,7 @@
 package com.bonobono.data.model.registration.response
 
 import android.os.Parcelable
+import com.bonobono.domain.model.registration.Password
 import kotlinx.parcelize.Parcelize
 
 @Parcelize

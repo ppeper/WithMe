@@ -2,14 +2,13 @@ package com.bonobono.di
 
 import com.bonobono.BuildConfig
 import com.bonobono.data.interceptor.XAccessTokenInterceptor
-import com.bonobono.data.local.PreferenceDataSource
 import com.bonobono.data.remote.CharacterService
 import com.bonobono.data.remote.ChatService
 import com.bonobono.data.remote.CommunityService
 import com.bonobono.data.remote.MapService
+import com.bonobono.data.remote.MemberService
 import com.bonobono.data.remote.MissionService
 import com.bonobono.data.remote.RegisterService
-import com.bonobono.presentation.utils.Character
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -100,4 +99,14 @@ object NetworkModule {
             .client(okHttpClient)
             .build()
             .create(ChatService::class.java)
+
+    @Singleton
+    @Provides
+    fun provideMemberService(okHttpClient: OkHttpClient): MemberService =
+        Retrofit.Builder()
+            .baseUrl(BuildConfig.API_KEY)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
+            .build()
+            .create(MemberService::class.java)
 }

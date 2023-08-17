@@ -92,6 +92,7 @@ import com.bonobono.presentation.ui.theme.TextGray
 import com.bonobono.presentation.ui.theme.White
 import com.bonobono.presentation.utils.Constants
 import com.bonobono.presentation.utils.DateUtils
+import com.bonobono.presentation.viewmodel.ChattingRoomViewModel
 import com.bonobono.presentation.viewmodel.CommentViewModel
 import com.bonobono.presentation.viewmodel.CommunityViewModel
 import com.bonobono.presentation.viewmodel.SharedLocalViewModel
@@ -129,6 +130,7 @@ fun BoardDetailScreen(
 
         is NetworkResult.Success -> {
             val localViewModel: SharedLocalViewModel = hiltViewModel()
+            val chattingRoomViewModel : ChattingRoomViewModel = hiltViewModel()
             val currentMemberId = localViewModel.getMemberId("member_id").toLong()
             val role = localViewModel.getRole("role")
             var showSheet by remember { mutableStateOf(false) }
@@ -154,7 +156,7 @@ fun BoardDetailScreen(
             }
 
             // 프로필 바텀 시트 뷰
-            if (showSheet) {
+            if (showSheet && (article.memberId != currentMemberId)) {
                 ModalBottomSheet(
                     onDismissRequest = { showSheet = false },
                     containerColor = White,
@@ -165,7 +167,7 @@ fun BoardDetailScreen(
                         modifier = modifier,
                         article = article,
                     ) {
-                         /* TODO("해당 유저와 채팅하기") */
+                        chattingRoomViewModel.enterChattingRoom(nickName = article.nickname)
                     }
                 }
             }
@@ -417,7 +419,7 @@ fun WriterView(
                 )
             }
         }
-        if (article.memberId == memberId) {
+        if (article.memberId == memberId || role == Constants.ADMIN_ROLE) {
             DropDownMenuView(
                 role = role,
                 memberId = memberId,

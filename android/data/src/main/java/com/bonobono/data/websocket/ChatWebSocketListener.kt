@@ -6,7 +6,7 @@ import okhttp3.WebSocket
 import okhttp3.WebSocketListener
 
 private const val TAG = "싸피"
-class WebSocketListener : WebSocketListener() {
+class ChatWebSocketListener : WebSocketListener() {
     override fun onOpen(webSocket: WebSocket, response: Response) {
         super.onOpen(webSocket, response)
         webSocket.send("test")

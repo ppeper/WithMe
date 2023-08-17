@@ -25,7 +25,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -40,29 +39,26 @@ import androidx.navigation.navigation
 import com.bonobono.presentation.ui.NavigationRouteName.COMMUNITY_FREE
 import com.bonobono.presentation.ui.NavigationRouteName.COMMUNITY_GRAPH
 import com.bonobono.presentation.ui.NavigationRouteName.COMMUNITY_REPORT
-import com.bonobono.presentation.ui.NavigationRouteName.COMMUNITY_UPDATE
-import com.bonobono.presentation.ui.NavigationRouteName.COMMUNITY_UPDATE_REPORT
-import com.bonobono.presentation.ui.NavigationRouteName.COMMUNITY_UPDATE_WITH
 import com.bonobono.presentation.ui.NavigationRouteName.COMMUNITY_WITH
 import com.bonobono.presentation.ui.NavigationRouteName.MAIN_COMMUNITY
-import com.bonobono.presentation.ui.chatting.ChattingRoomScreen
 import com.bonobono.presentation.ui.common.button.CommunityFloatingActionButton
 import com.bonobono.presentation.ui.common.button.HomeFloatingActionButton
 import com.bonobono.presentation.ui.common.topbar.SharedTopAppBar
 import com.bonobono.presentation.ui.common.topbar.rememberAppBarState
 import com.bonobono.presentation.ui.community.BoardDetailScreen
-import com.bonobono.presentation.ui.community.CommunityScreen
 import com.bonobono.presentation.ui.community.BoardWriteScreen
+import com.bonobono.presentation.ui.community.CommunityScreen
 import com.bonobono.presentation.ui.community.GalleryScreen
 import com.bonobono.presentation.ui.community.views.board.CommonPostListView
 import com.bonobono.presentation.ui.community.views.board.SearchView
-import com.bonobono.presentation.ui.main.mission.GameScreen
-import com.bonobono.presentation.ui.main.mission.QuizScreen
-import com.bonobono.presentation.ui.main.ecyclopedia.EncyclopediaScreen
 import com.bonobono.presentation.ui.community.views.link.WebView
 import com.bonobono.presentation.ui.community.views.map.ReportMapView
+import com.bonobono.presentation.ui.login.LoginScreen
 import com.bonobono.presentation.ui.main.MainHomeScreen
+import com.bonobono.presentation.ui.main.ecyclopedia.EncyclopediaScreen
+import com.bonobono.presentation.ui.main.mission.GameScreen
 import com.bonobono.presentation.ui.main.mission.MissionScreen
+import com.bonobono.presentation.ui.main.mission.QuizScreen
 import com.bonobono.presentation.ui.main.notice.NoticeScreen
 import com.bonobono.presentation.ui.map.ARMapScreen
 import com.bonobono.presentation.ui.map.CameraScreen
@@ -72,14 +68,11 @@ import com.bonobono.presentation.ui.mypage.MainMyPageScreen
 import com.bonobono.presentation.ui.mypage.PointStoreScreen
 import com.bonobono.presentation.ui.mypage.ProfileEditScreen
 import com.bonobono.presentation.ui.mypage.SettingScreen
-import com.bonobono.presentation.ui.onboarding.OnBoardingScreen
 import com.bonobono.presentation.ui.notification.NotificationScreen
 import com.bonobono.presentation.ui.theme.PrimaryBlue
 import com.bonobono.presentation.ui.theme.TextGray
 import com.bonobono.presentation.ui.theme.White
-import com.bonobono.presentation.utils.Constants
 import com.bonobono.presentation.utils.NavigationUtils
-import com.bonobono.presentation.viewmodel.MapViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import kotlinx.coroutines.launch
@@ -116,7 +109,10 @@ fun MainScreen(
                 }
 
                 NavigationRouteName.MAIN_MAP -> {
-                    CommunityFloatingActionButton(navController = navController, item = CommunityFab.MAP)
+                    CommunityFloatingActionButton(
+                        navController = navController,
+                        item = CommunityFab.MAP
+                    )
                 }
 
                 NavigationRouteName.COMMUNITY_FREE -> {
@@ -316,7 +312,10 @@ fun MainNavigationScreen(
             val parentEntry = remember(it) {
                 navController.getBackStackEntry(NavigationRouteName.MAIN_HOME)
             }
-            EncyclopediaScreen(navController = navController, characterViewModel = hiltViewModel(parentEntry))
+            EncyclopediaScreen(
+                navController = navController,
+                characterViewModel = hiltViewModel(parentEntry)
+            )
         }
         composable(
             route = NoticeNav.route,
@@ -508,7 +507,13 @@ fun MainNavigationScreen(
             route = ProfileEditNav.route,
             deepLinks = ProfileEditNav.deepLinks
         ) {
-            ProfileEditScreen(navController = navController)
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry(NavigationRouteName.MAIN_MY_PAGE)
+            }
+            ProfileEditScreen(
+                navController = navController,
+                myPageViewModel = hiltViewModel(parentEntry)
+            )
         }
         composable(
             route = "${QuizNav.route}/{type}",
@@ -548,13 +553,31 @@ fun MainNavigationScreen(
 //            route = NavigationRouteName.CHATTING_GALLERY
 //        ) {
 //            val parentEntry = remember(it) {
-//                navController.getBackStackEntry("${ChattingEditNav.route}/${it.arguments?.getString("nickname")}")
+//                navController.getBackStackEntry(
+//                    "${ChattingEditNav.route}/${
+//                        it.arguments?.getString(
+//                            "nickname"
+//                        )
+//                    }"
+//                )
 //            }
 //            GalleryScreen(
 //                navController = navController,
 //                photoViewModel = hiltViewModel(parentEntry)
 //            )
 //        }
+
+        composable(
+            route = NavigationRouteName.PROFILE_EDIT_GALLERY
+        ) {
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry(NavigationRouteName.PROFILE_EDIT)
+            }
+            GalleryScreen(
+                navController = navController,
+                photoViewModel = hiltViewModel(parentEntry)
+            )
+        }
     }
 }
 
@@ -579,6 +602,12 @@ fun NavGraphBuilder.communityNavigation(
             deepLinks = CommunityReportNav.deepLinks
         ) {
             CommonPostListView(type = CommunityReportNav.route, navController = navController)
+        }
+        composable(
+            route = LoginNav.route,
+            deepLinks = LoginNav.deepLinks
+        ) {
+            LoginScreen(navController = rememberNavController())
         }
     }
 

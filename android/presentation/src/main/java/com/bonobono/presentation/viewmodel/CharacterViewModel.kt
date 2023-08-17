@@ -12,6 +12,7 @@ import com.bonobono.domain.usecase.character.PatchCharacterUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -46,7 +47,12 @@ class CharacterViewModel @Inject constructor(
         _saveSuccess.emit(patchCharacterUseCase.invoke(character = character))
     }
 
-    fun getCharacter(characterId: Int) = viewModelScope.launch {
-        _character.emit(getCharacterUseCase.invoke(characterId))
+    fun getMainCharacter() = viewModelScope.launch {
+        _userCharacterList.collect { userCharacters ->
+            val mainCharacter = userCharacters.find { it.is_main }
+            mainCharacter?.let {
+                _character.value = it
+            }
+        }
     }
 }

@@ -18,7 +18,7 @@ interface CharacterService {
     @GET("character/our/list")
     suspend fun getOurCharacterList(@Query(value = "memberId") memberId: Int) : List<OurCharacterResponse>
 
-    @PATCH("character/UserCharacter/save")
+    @PATCH("catch/UserCharacter/save")
     suspend fun patchSaveCharacter(@Body saveCharacter: SaveCharacter)
 
     @POST("character/user/{character_id}")

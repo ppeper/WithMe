@@ -18,7 +18,7 @@ sealed class Character(
     object SHRIMP : Character(CharacterName.SHRIMP, CharacterImage.SHRIMP, 9)
     object TURTLE : Character(CharacterName.TURTLE, CharacterImage.TURTLE, 10)
     object DOLPHIN : Character(CharacterName.DOLPHIN, CharacterImage.DOLPHIN, 12)
-    object SEA_ELEPHANT : Character(CharacterName.SEA_ELEPHANT, CharacterImage.SEA_ELEPHANT, 7)
+    object SEA_ELEPHANT : Character(CharacterName.SEA_ELEPHANT, CharacterImage.SEA_ELEPHANT, 13)
     object PENGUIN : Character(CharacterName.PENGUIN, CharacterImage.PENGUIN, 1)
 }
 
@@ -81,7 +81,7 @@ fun getDolphinAnimation(level: String, state: String): Int {
             when (state) {
                 "sad" -> R.raw.dolphin_lv2_sad
                 "happy" -> R.raw.dolphin_lv2_happy
-                "normal" -> R.raw.dolphin_lv2_normal
+                "normal" -> R.raw.dolphin_lv3_normal
                 else -> -1
             }
         }

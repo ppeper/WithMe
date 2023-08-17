@@ -32,7 +32,7 @@ interface MissionService {
     @POST("minigame/IsSuccess")
     suspend fun postMiniGame(@Body isSuccess: IsSuccess) : Boolean
 
-    @POST("attendance")
+    @GET("attendance")
     suspend fun postAttendance(@Query(value = "memberId") memberId: Int)
 
     @GET("dailymission")

@@ -263,7 +263,7 @@ fun MainNavigationScreen(
             route = MainNav.Home.route,
             deepLinks = MainNav.Home.deepLinks
         ) {
-            MainHomeScreen(navController)
+            MainHomeScreen()
         }
         composable(
             route = MainNav.Map.route,
@@ -302,7 +302,10 @@ fun MainNavigationScreen(
             route = EncyclopediaNav.route,
             deepLinks = EncyclopediaNav.deepLinks
         ) {
-            EncyclopediaScreen(navController = navController)
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry(NavigationRouteName.MAIN_HOME)
+            }
+            EncyclopediaScreen(navController = navController, characterViewModel = hiltViewModel(parentEntry))
         }
         composable(
             route = NoticeNav.route,
@@ -315,9 +318,9 @@ fun MainNavigationScreen(
             deepLinks = CameraNav.deepLinks
         ) {
             val parentEntry = remember(it) {
-                navController.getBackStackEntry(NavigationRouteName.AR_MAP)
+                navController.getBackStackEntry(NavigationRouteName.MAIN_MAP)
             }
-            CameraScreen(hiltViewModel(parentEntry), navController = navController)
+            CameraScreen(mapViewModel = hiltViewModel(parentEntry), navController = navController)
         }
         composable(
             route = NavigationRouteName.GALLERY

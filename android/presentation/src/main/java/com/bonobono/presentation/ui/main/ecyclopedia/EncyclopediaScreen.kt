@@ -1,6 +1,5 @@
 package com.bonobono.presentation.ui.main.ecyclopedia
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -35,6 +34,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,14 +42,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.bonobono.domain.model.character.OurCharacter
 import com.bonobono.domain.model.character.UserCharacter
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.common.text.CustomTextStyle
 import com.bonobono.presentation.ui.common.topbar.screen.EncyclopediaScreen
-import com.bonobono.presentation.ui.common.topbar.screen.SettingScreen
 import com.bonobono.presentation.ui.main.component.AnimatedProfile
 import com.bonobono.presentation.ui.main.component.BlindProfilePhoto
 import com.bonobono.presentation.ui.main.component.ProfilePhoto
@@ -65,6 +63,7 @@ import kotlinx.coroutines.flow.onEach
 
 // 현재 대표 동물 이미지로
 private const val TAG = "EncyclopediaScreen"
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EncyclopediaScreen(
@@ -82,32 +81,40 @@ fun EncyclopediaScreen(
                 }
             }.launchIn(this)
     }
-    var mainId = missionViewModel.getLong(Constants.MAIN_CHARACTER)
-    if(mainId.toInt() == 0) {
-        mainId = 12
+
+    val userCharacterList by characterViewModel.userCharacterList.collectAsState()
+    val ourCharacterList by characterViewModel.ourCharacterList.collectAsState()
+    val mainCharacter by characterViewModel.character.collectAsState()
+
+    var initId = missionViewModel.getLong(Constants.MAIN_CHARACTER)
+    if (initId.toInt() == 0) initId = 12
+    var selectedId = remember {
+        mutableStateOf(initId)
     }
+    var selectedCharacter = remember {
+        mutableStateOf(mainCharacter)
+    }
+
     LaunchedEffect(Unit) {
         characterViewModel.getUserCharacterList()
         characterViewModel.getOurCharacterList()
+        characterViewModel.getMainCharacter()
     }
-    val userCharacterList by characterViewModel.userCharacterList.collectAsState()
-    val ourCharacterList by characterViewModel.ourCharacterList.collectAsState()
 
-    var selectedId = remember {
-        mutableStateOf(mainId)
-    }
 
     Column(
         Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
+        val image =
+            characterList.find { it.id.toLong() == selectedId.value }?.icon ?: R.drawable.ic_profile
         Box(modifier = Modifier) {
             AnimatedProfile(
-                profileImage = characterList.find { it.id.toLong() ==  selectedId.value}!!.icon,
+                profileImage = image,
                 source = R.raw.animation_card
             )
-            if(userCharacterList.find { it.id.toLong() == selectedId.value } != null) {
+            if (userCharacterList.find { it.id.toLong() == selectedId.value } != null) {
                 ElevatedFilterChip(
                     modifier = Modifier
                         .padding(12.dp)
@@ -116,7 +123,7 @@ fun EncyclopediaScreen(
                     onClick = {
                         missionViewModel.putLong(
                             Constants.MAIN_CHARACTER,
-                            selectedId.value
+                            selectedId.value.toLong()
                         )
 
                     },
@@ -128,9 +135,9 @@ fun EncyclopediaScreen(
                     })
             }
         }
-        CurInformation(selectedId, userCharacterList, ourCharacterList)
+        CurInformation(selectedId, userCharacterList, selectedCharacter = selectedCharacter)
         Spacer(modifier = Modifier.size(12.dp))
-        UserCharacters(userCharacterList, selectedId)
+        UserCharacters(userCharacterList, selectedId, selectedCharacter)
         OurCharacters(ourCharacterList, selectedId)
     }
 }
@@ -140,36 +147,35 @@ fun EncyclopediaScreen(
 fun CurInformation(
     selectedId: MutableState<Long>,
     userCharacterList: List<UserCharacter>,
-    ourCharacterList: List<OurCharacter>
+    selectedCharacter: MutableState<UserCharacter>
 ) {
-    var cur: UserCharacter =
-        userCharacterList.find { it.id.toLong() == selectedId.value } ?: UserCharacter()
 
-    Log.d(TAG, "CurInformation: $selectedId")
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.img_pixel_chat),
-            contentDescription = null,
-            contentScale = ContentScale.FillWidth,
+    if (userCharacterList.find { it.id.toLong() == selectedId.value } != null) {
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-        )
-        Text(
-            text = "${cur.custom_name}  ${cur.level} \nExp: ${cur.experience}\n${cur.description}",
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(24.dp)
-                .align(Alignment.Center)
-        )
+                .wrapContentHeight()
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.img_pixel_chat),
+                contentDescription = null,
+                contentScale = ContentScale.FillWidth,
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+            Text(
+                text = "${selectedCharacter.value.custom_name}  ${selectedCharacter.value.level} \nExp: ${selectedCharacter.value.experience}\n${selectedCharacter.value.description}",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(24.dp)
+                    .align(Alignment.Center)
+            )
+        }
     }
 }
 
 @Composable
-fun UserCharacters(userCharacterList: List<UserCharacter>, selectedId: MutableState<Long>) {
+fun UserCharacters(userCharacterList: List<UserCharacter>, selectedId: MutableState<Long>, selectedCharacter: MutableState<UserCharacter>) {
     Card(
         modifier = Modifier.padding(12.dp),
         elevation = CardDefaults.cardElevation(4.dp),
@@ -186,15 +192,14 @@ fun UserCharacters(userCharacterList: List<UserCharacter>, selectedId: MutableSt
             userScrollEnabled = false
         ) {
             // 보유중 / 아닌 것들 나눠서 표시
-            items(userCharacterList) {item ->
+            items(userCharacterList) { item ->
                 ProfilePhoto(
-                    profileImage = characterList.find { it.id ==  item.char_ord_id}!!.icon, modifier = Modifier
-                        .size(80.dp)
-                        .padding(8.dp)
-                        .clip(CircleShape)
-                        .background(LightGray)
-                        .border(BorderStroke(1.dp, DarkGray), shape = CircleShape)
-                        .clickable { selectedId.value = item.char_ord_id.toLong() }
+                    profileImage = characterList.find { it.id == item.char_ord_id }!!.icon,
+                    modifier = Modifier
+                        .clickable {
+                            selectedId.value = item.id.toLong()
+                            selectedCharacter.value = item
+                        }
                 )
             }
         }

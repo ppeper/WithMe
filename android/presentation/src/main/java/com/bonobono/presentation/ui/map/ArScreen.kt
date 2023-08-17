@@ -35,6 +35,9 @@ import com.bonobono.presentation.ui.main.component.PromptOXButtonRow
 import com.bonobono.presentation.ui.main.component.PromptTwoButtonRow
 import com.bonobono.presentation.ui.common.GifLoader
 import com.bonobono.presentation.utils.Constants
+import com.bonobono.presentation.utils.getDolphinAnimation
+import com.bonobono.presentation.utils.getSeaElephantAnimation
+import com.bonobono.presentation.utils.getWhaleAnimation
 import com.bonobono.presentation.viewmodel.CharacterViewModel
 import com.bonobono.presentation.viewmodel.MapViewModel
 import com.bonobono.presentation.viewmodel.MissionViewModel
@@ -82,8 +85,25 @@ fun CameraScreen(
 ) {
     missionViewModel.getMission(1, Constants.AR)
     val quiz by missionViewModel.mission.collectAsState()
-    var isSuccess = missionViewModel.isSuccess.collectAsState()
+    val curCharacter by mapViewModel.curCatchCharacter.collectAsState()
 
+    Log.d(TAG, "juyong: ${curCharacter}")
+    val happy = when (curCharacter!!.ourCharacter.charOrdId) {
+        12 -> {
+            getDolphinAnimation("LEVEL_1", "happy")
+        }
+
+        13 -> getWhaleAnimation("LEVEL_1", "happy")
+        else -> getSeaElephantAnimation("LEVEL_1", "happy")
+    }
+    val sad = when (curCharacter!!.ourCharacter.charOrdId) {
+        12 -> {
+            getDolphinAnimation("LEVEL_1", "sad")
+        }
+
+        13 -> getWhaleAnimation("LEVEL_1", "sad")
+        else -> getSeaElephantAnimation("LEVEL_1", "sad")
+    }
     val promptsList = listOf(
         Prompt(PromptString.chapterOneTitle, PromptString.chapterOneContent, "", 0, "거절", "수락"),
         Prompt(
@@ -106,7 +126,7 @@ fun CameraScreen(
             PromptString.chapterFourTitle,
             PromptString.chapterFourContent,
             "",
-            R.raw.whale_lv2_happy,
+            happy,
             "이름..",
             "확인"
         ),
@@ -114,7 +134,7 @@ fun CameraScreen(
             PromptString.chapterFourTitle,
             PromptString.chapterFiveContent,
             "",
-            R.raw.whale_lv2_sad_edit,
+            sad,
             "",
             "나가기"
         )
@@ -126,124 +146,123 @@ fun CameraScreen(
         mutableStateOf("")
     }
 
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-    ) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            val currentModel = remember {
-                mutableStateOf("acg_trash_can")
-            }
-            if (chapter.value >= 2) {
-                AnimationScreen(modifier = Modifier.fillMaxSize(), prompt.animation)
-            } else {
-                ARScreen(currentModel.value)
-            }
-            ARPromptBox(
-                name = prompt.title,
-                content = prompt.content,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .align(alignment = Alignment.BottomCenter),
-                // Row 넣기
-            ) {
-                when (chapter.value) {
-                    3 -> {
-                        PromptInputRow(
-                            modifier = Modifier.padding(4.dp),
-                            value = inputName,
-                            hint = "이름을 입력하세요..",
-                            onValueChange = { newValue ->
-                                inputName = newValue
-                            },
-                            prompt.rightButtonContent,
-                            onClick = {
-                                characterViewModel.patchCharacter(
-                                    SaveCharacter(
-                                        inputName,
-                                        mapViewModel.location.value.name,
-                                        1,
-                                        mapViewModel.curCatchCharacter!!.ourCharacter.charOrdId
-                                    )
+    Box(modifier = Modifier.fillMaxSize()) {
+        val currentModel = remember {
+            mutableStateOf("acg_trash_can")
+        }
+        if (chapter.value >= 2) {
+            AnimationScreen(modifier = Modifier.fillMaxSize(), prompt.animation)
+        } else {
+            ARScreen(currentModel.value)
+        }
+        ARPromptBox(
+            name = prompt.title,
+            content = prompt.content,
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .align(alignment = Alignment.BottomCenter),
+            // Row 넣기
+        ) {
+            when (chapter.value) {
+                3 -> {
+                    PromptInputRow(
+                        modifier = Modifier.padding(4.dp),
+                        value = inputName,
+                        hint = "이름을 입력하세요..",
+                        onValueChange = { newValue ->
+                            inputName = newValue
+                        },
+                        prompt.rightButtonContent,
+                        onClick = {
+                            characterViewModel.patchCharacter(
+                                SaveCharacter(
+                                    inputName,
+                                    mapViewModel.location.value.name,
+                                    1,
+                                    curCharacter!!.ourCharacter.charOrdId
                                 )
-                            },
+                            )
+                            navController.popBackStack()
+                        },
+                    )
+                }
+
+                2 -> {
+                    PromptOXButtonRow(modifier = Modifier, onClickX = {
+                        missionViewModel.postIsSuccess(
+                            type = Constants.AR,
+                            isSuccess = IsSuccess(
+                                "X",
+                                1,
+                                quiz.problemId
+                            )
                         )
-                    }
-
-                    2 -> {
-                        PromptOXButtonRow(modifier = Modifier, onClickX = {
-                            missionViewModel.postIsSuccess(
-                                type = Constants.AR,
-                                isSuccess = IsSuccess(
-                                    "X",
-                                    1,
-                                    quiz.problemId
-                                )
+                        if (quiz.answer == "X") {
+                            chapter.value += 1;
+                            prompt = promptsList[chapter.value]
+                        } else {
+                            chapter.value += 2;
+                            prompt = promptsList[chapter.value]
+                        }
+                    }, onClickO = {
+                        missionViewModel.postIsSuccess(
+                            type = Constants.OX_QUIZ,
+                            isSuccess = IsSuccess(
+                                "O",
+                                1,
+                                quiz.problemId
                             )
-                            if (quiz.answer == "X") {
-                                chapter.value += 1;
-                                prompt = promptsList[chapter.value]
-                            } else {
-                                chapter.value += 2;
-                                prompt = promptsList[chapter.value]
-                            }
-                        }, onClickO = {
-                            missionViewModel.postIsSuccess(
-                                type = Constants.OX_QUIZ,
-                                isSuccess = IsSuccess(
-                                    "O",
-                                    1,
-                                    quiz.problemId
-                                )
-                            )
-                            if (quiz.answer == "O") {
-                                chapter.value += 1
-                                prompt = promptsList[chapter.value]
-                            } else {
-                                chapter.value += 2
-                                prompt = promptsList[chapter.value]
-                            }
-                        })
-                    }
+                        )
+                        if (quiz.answer == "O") {
+                            chapter.value += 1
+                            prompt = promptsList[chapter.value]
+                        } else {
+                            chapter.value += 2
+                            prompt = promptsList[chapter.value]
+                        }
+                    })
+                }
 
-                    else -> {
-                        PromptTwoButtonRow(
-                            modifier = Modifier.align(alignment = Alignment.BottomEnd),
-                            leftButton = {
-                                if (chapter.value <= 3) {
-                                    CancelButton(
-                                        modifier = Modifier,
-                                        text = prompt.leftButtonContent,
-                                        textStyle = CustomTextStyle.quizContentStyle
-                                    ) {
-
-                                    }
-                                }
-                            }, rightButton = {
-                                if (chapter.value <= 3) {
-                                    SubmitButton(
-                                        modifier = Modifier,
-                                        text = prompt.rightButtonContent,
-                                        textStyle = CustomTextStyle.quizContentStyle
-                                    ) {
-                                        chapter.value = (chapter.value + 1) % 4
-                                        prompt = promptsList[chapter.value]
-                                    }
-                                } else {
-                                    SubmitButton(
-                                        modifier = Modifier,
-                                        text = prompt.rightButtonContent,
-                                        textStyle = CustomTextStyle.quizContentStyle
-                                    ) {
+                else -> {
+                    PromptTwoButtonRow(
+                        modifier = Modifier.align(alignment = Alignment.BottomEnd),
+                        leftButton = {
+                            if (chapter.value <= 3) {
+                                CancelButton(
+                                    modifier = Modifier,
+                                    text = prompt.leftButtonContent,
+                                    textStyle = CustomTextStyle.quizContentStyle
+                                ) {
+                                    if(chapter.value == 0) {
                                         navController.popBackStack()
                                     }
+                                    chapter.value.dec()
                                 }
-                            })
-                    }
+                            }
+                        }, rightButton = {
+                            if (chapter.value <= 3) {
+                                SubmitButton(
+                                    modifier = Modifier,
+                                    text = prompt.rightButtonContent,
+                                    textStyle = CustomTextStyle.quizContentStyle
+                                ) {
+                                    chapter.value = (chapter.value + 1) % 4
+                                    prompt = promptsList[chapter.value]
+                                }
+                            } else {
+                                SubmitButton(
+                                    modifier = Modifier,
+                                    text = prompt.rightButtonContent,
+                                    textStyle = CustomTextStyle.quizContentStyle
+                                ) {
+                                    navController.popBackStack()
+                                }
+                            }
+                        })
                 }
             }
         }
-
     }
 }
 
@@ -311,7 +330,8 @@ fun AnimationScreen(modifier: Modifier, source: Int) {
                     .fillMaxWidth()
                     .height(270.dp)
                     .padding(bottom = 64.dp)
-                    .align(Alignment.Center), source = source
+                    .align(Alignment.Center),
+                source = source
             )
         }
     }

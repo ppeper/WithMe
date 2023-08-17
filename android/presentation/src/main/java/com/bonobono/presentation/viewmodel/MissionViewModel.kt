@@ -66,9 +66,15 @@ class MissionViewModel @Inject constructor(
 
     fun postIsSuccess(isSuccess: IsSuccess, type: String) = viewModelScope.launch {
         when (type) {
-            Constants.OX_QUIZ -> _isSuccess.emit(postIsSuccessOXQuizUseCase.invoke(isSuccess))
-            Constants.FOUR_QUIZ -> _isSuccess.emit(postIsSuccessFourQuizUseCase.invoke(isSuccess))
-            Constants.GAME -> _isSuccess.emit(postIsSuccessMiniGameUseCase.invoke(isSuccess))
+            Constants.OX_QUIZ ->  {
+                _isSuccess.emit(postIsSuccessOXQuizUseCase.invoke(isSuccess))
+            }
+            Constants.FOUR_QUIZ -> {
+                _isSuccess.emit(postIsSuccessFourQuizUseCase.invoke(isSuccess))
+            }
+            Constants.GAME -> {
+                _isSuccess.emit(postIsSuccessMiniGameUseCase.invoke(isSuccess))
+            }
             Constants.AR -> _isSuccess.emit(postIsSuccessCatchOXQuizUseCase(isSuccess))
         }
     }

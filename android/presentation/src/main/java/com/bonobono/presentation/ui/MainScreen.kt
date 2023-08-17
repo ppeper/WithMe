@@ -46,7 +46,6 @@ import com.bonobono.presentation.ui.NavigationRouteName.COMMUNITY_UPDATE_WITH
 import com.bonobono.presentation.ui.NavigationRouteName.COMMUNITY_WITH
 import com.bonobono.presentation.ui.NavigationRouteName.MAIN_COMMUNITY
 import com.bonobono.presentation.ui.chatting.ChattingRoomScreen
-import com.bonobono.presentation.ui.chatting.MainChattingScreen
 import com.bonobono.presentation.ui.common.button.CommunityFloatingActionButton
 import com.bonobono.presentation.ui.common.button.HomeFloatingActionButton
 import com.bonobono.presentation.ui.common.topbar.SharedTopAppBar
@@ -186,7 +185,7 @@ fun MainBottomNavigationBar(navController: NavHostController, currentRoute: Stri
         MainNav.Home,
         MainNav.Map,
         MainNav.Community,
-        MainNav.Chatting,
+//        MainNav.Chatting,
         MainNav.MyPage,
     )
 
@@ -290,12 +289,12 @@ fun MainNavigationScreen(
         ) {
             CommunityScreen(navController)
         }
-        composable(
-            route = MainNav.Chatting.route,
-            deepLinks = MainNav.Chatting.deepLinks
-        ) {
-            MainChattingScreen(navController)
-        }
+//        composable(
+//            route = MainNav.Chatting.route,
+//            deepLinks = MainNav.Chatting.deepLinks
+//        ) {
+//            MainChattingScreen(navController)
+//        }
         composable(
             route = MainNav.MyPage.route,
             deepLinks = MainNav.MyPage.deepLinks
@@ -536,27 +535,27 @@ fun MainNavigationScreen(
             ARMapScreen(navController = navController, hiltViewModel(parentEntry))
         }
 
-        composable(
-            route = "${ChattingEditNav.route}/{nickname}",
-            deepLinks = ChattingEditNav.deepLinks
-        ) {
-            val nickname = it.arguments?.getString("nickname")
-            if(nickname != null) {
-                ChattingRoomScreen(navController = navController, roomTitle = nickname)
-            }
-        }
+//        composable(
+//            route = "${ChattingEditNav.route}/{nickname}",
+//            deepLinks = ChattingEditNav.deepLinks
+//        ) {
+//            val nickname = it.arguments?.getString("nickname")
+//            if(nickname != null) {
+//                ChattingRoomScreen(navController = navController, roomTitle = nickname)
+//            }
+//        }
 
-        composable(
-            route = NavigationRouteName.CHATTING_GALLERY
-        ) {
-            val parentEntry = remember(it) {
-                navController.getBackStackEntry("${ChattingEditNav.route}/${it.arguments?.getString("nickname")}")
-            }
-            GalleryScreen(
-                navController = navController,
-                photoViewModel = hiltViewModel(parentEntry)
-            )
-        }
+//        composable(
+//            route = NavigationRouteName.CHATTING_GALLERY
+//        ) {
+//            val parentEntry = remember(it) {
+//                navController.getBackStackEntry("${ChattingEditNav.route}/${it.arguments?.getString("nickname")}")
+//            }
+//            GalleryScreen(
+//                navController = navController,
+//                photoViewModel = hiltViewModel(parentEntry)
+//            )
+//        }
     }
 }
 

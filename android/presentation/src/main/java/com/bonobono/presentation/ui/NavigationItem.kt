@@ -29,7 +29,7 @@ sealed class MainNav(
     object Community :
         MainNav(MAIN_COMMUNITY, R.drawable.ic_community, NavigationTitle.MAIN_COMMUNITY)
 
-    object Chatting : MainNav(MAIN_CHATTING, R.drawable.ic_chat, NavigationTitle.MAIN_CHATTING)
+//    object Chatting : MainNav(MAIN_CHATTING, R.drawable.ic_chat, NavigationTitle.MAIN_CHATTING)
     object MyPage : MainNav(MAIN_MY_PAGE, R.drawable.ic_profile, NavigationTitle.MAIN_MY_PAGE)
 
     override val deepLinks: List<NavDeepLink> = listOf(
@@ -162,12 +162,12 @@ object JoinNav : Destination {
         navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${LoginNav.route}" })
 }
 
-object ChattingEditNav : Destination {
-    override val route: String = NavigationRouteName.CHATTING_EDIT
-    override val title: String = NavigationTitle.CHATTING_EDIT
-    override val deepLinks: List<NavDeepLink> = listOf(
-        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${MainNav.Chatting.route}" })
-}
+//object ChattingEditNav : Destination {
+//    override val route: String = NavigationRouteName.CHATTING_EDIT
+//    override val title: String = NavigationTitle.CHATTING_EDIT
+//    override val deepLinks: List<NavDeepLink> = listOf(
+//        navDeepLink { uriPattern = "$DEEP_LINK_SCHEME${MainNav.Chatting.route}" })
+//}
 
 object QuizNav : Destination {
     override val route: String = NavigationRouteName.QUIZ

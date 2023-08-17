@@ -26,7 +26,7 @@ object NavigationUtils {
     fun findDestination(route : String?) : Destination {
         return when(route) {
             NavigationRouteName.MAIN_MY_PAGE -> MainNav.MyPage
-            NavigationRouteName.MAIN_CHATTING -> MainNav.Chatting
+//            NavigationRouteName.MAIN_CHATTING -> MainNav.Chatting
             NavigationRouteName.MAIN_HOME -> MainNav.Home
             NavigationRouteName.MAIN_MAP -> MainNav.Map
             NavigationRouteName.MAIN_COMMUNITY -> MainNav.Community

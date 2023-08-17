@@ -23,7 +23,7 @@ fun ArticleResponse.toDomain(): Article {
         commentCnt = comments,
         likes = likes,
         nickname = nickname,
-        profileImg = profileImg ?: "",
+        profileImg = (BuildConfig.IMAGE_BASE_URL + profileImg) ?: "",
         createdDate = createdDate,
         views = views,
         //일반 게시판
@@ -53,7 +53,7 @@ fun ArticleDetailResponse.toDomain(): Article {
         likes = likes,
         liked = liked,
         nickname = nickname,
-        profileImg = profileImg ?: "",
+        profileImg = (BuildConfig.IMAGE_BASE_URL + profileImg) ?: "",
         createdDate = createdDate,
         views = views,
         //일반 게시판

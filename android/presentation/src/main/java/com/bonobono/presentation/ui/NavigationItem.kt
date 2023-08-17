@@ -275,6 +275,7 @@ object NavigationRouteName {
 
     const val CHATTING_EDIT = "chatting_edit"
     const val CHATTING_GALLERY = "chatting_gallery"
+    const val PROFILE_EDIT_GALLERY = "profile_edit_gallery"
 }
 
 object NavigationTitle {

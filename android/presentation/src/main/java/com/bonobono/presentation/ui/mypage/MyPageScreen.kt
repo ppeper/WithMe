@@ -13,9 +13,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -23,7 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.bonobono.presentation.R
@@ -34,15 +34,22 @@ import com.bonobono.presentation.ui.mypage.view.MyPageProfileImg
 import com.bonobono.presentation.ui.mypage.view.WaveAnimation
 import com.bonobono.presentation.ui.theme.WaveBlue
 import com.bonobono.presentation.ui.theme.White
+import com.bonobono.presentation.viewmodel.MyPageViewModel
 
 @Composable
-fun MainMyPageScreen(navController: NavController) {
+fun MainMyPageScreen(
+    navController: NavController,
+    myPageViewModel: MyPageViewModel = hiltViewModel()) {
+    LaunchedEffect(key1 = Unit ) {
+        myPageViewModel.getProfileImg()
+        myPageViewModel.getMemberInfo()
+    }
     LazyColumn() {
         item {
             // blue wave background
-            WaveBackGround(navController)
+            WaveBackGround(navController, myPageViewModel)
             // experience and money info box
-            MyPageInfoCard(seaAnimalExp = 1000, rewardMoney = 1000)
+            MyPageInfoCard(seaAnimalExp = myPageViewModel.memberExp, rewardMoney = 1000)
             // rest buttons
             Spacer(modifier = Modifier.height(16.dp))
             Column(
@@ -53,21 +60,25 @@ fun MainMyPageScreen(navController: NavController) {
                 MyPageButton(
                     buttonType = "포인트 상점",
                     iconName = "ic_point_store",
+                    myPageViewModel = myPageViewModel,
                     navController = navController
                 )
                 MyPageButton(
                     buttonType = "나의 글",
                     iconName = "ic_feed_history",
+                    myPageViewModel = myPageViewModel,
                     navController = navController
                 )
                 MyPageButton(
                     buttonType = "회원정보 수정",
                     iconName = "ic_profile_edit",
+                    myPageViewModel = myPageViewModel,
                     navController = navController
                 )
                 MyPageButton(
                     buttonType = "로그아웃",
                     iconName = "ic_logout",
+                    myPageViewModel = myPageViewModel,
                     navController = navController
                 )
             }
@@ -78,7 +89,10 @@ fun MainMyPageScreen(navController: NavController) {
 }
 
 @Composable
-fun WaveBackGround(navController: NavController) {  // blue wave background, setting button, profile image, nickname
+fun WaveBackGround(
+    navController: NavController,
+    myPageViewModel: MyPageViewModel,
+) {  // blue wave background, setting button, profile image, nickname
     Box(modifier = Modifier.fillMaxWidth()) {
         Image(
             painter = painterResource(id = R.drawable.blue_wave_background),
@@ -108,10 +122,10 @@ fun WaveBackGround(navController: NavController) {  // blue wave background, set
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Spacer(modifier = Modifier.height(32.dp))
-                MyPageProfileImg()
+                MyPageProfileImg(myPageViewModel.profileImg)
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = "test",
+                    text = myPageViewModel.memberNickname,
                     color = White,
                     fontWeight = FontWeight.Bold,
                     fontSize = 24.sp

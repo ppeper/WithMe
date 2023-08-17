@@ -20,7 +20,6 @@ import javax.inject.Inject
 private const val TAG = "싸피"
 @HiltViewModel
 class ChattingViewModel@Inject constructor(
-    private val postChattingUseCase: PostChattingUseCase,
     private val getChattingListUseCase: GetChattingListUseCase,
     private val deleteChattingRoomUseCase: DeleteChattingRoomUseCase
 ): ViewModel() {

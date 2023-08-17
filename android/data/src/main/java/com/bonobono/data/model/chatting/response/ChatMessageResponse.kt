@@ -5,7 +5,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ChatMessageResponse (
-    val username : String,
+    val userName : String,
     val msg : String,
     val imageUrl : String,
     val createdDate : String

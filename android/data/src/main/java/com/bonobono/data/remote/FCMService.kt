@@ -9,6 +9,7 @@ import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.bonobono.data.R
 import com.bonobono.data.utils.Constants
 import com.bonobono.data.utils.Constants.TYPE_REPORT
 import com.bonobono.domain.model.notification.Notification
@@ -46,10 +47,6 @@ class FCMService : FirebaseMessagingService() {
         // background 에 있을경우 혹은 foreground에 있을경우 두 경우 모두
         val notification = remoteMessage.notification
         val data = remoteMessage.data
-        Log.d(TAG, "notification.title: ${notification?.title}")
-        Log.d(TAG, "notification.body: ${notification?.body}")
-        Log.d(TAG, "data.Id: ${data[Constants.ARTICLE_ID]}")
-        Log.d(TAG, "data.type: ${data[Constants.TYPE]}")
         messageTitle = notification?.title.toString()
         messageBody = notification?.body.toString()
         type = data[Constants.TYPE] ?: TYPE_REPORT
@@ -68,7 +65,7 @@ class FCMService : FirebaseMessagingService() {
         val summaryNotification = NotificationCompat.Builder(this, Constants.CHANNEL_ID)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setDefaults(NotificationCompat.DEFAULT_SOUND or NotificationCompat.DEFAULT_VIBRATE)
-            .setSmallIcon(com.google.android.material.R.drawable.ic_arrow_back_black_24)
+            .setSmallIcon(R.drawable.ic_logo)
             .setContentTitle(messageTitle)
             .setContentText(messageBody)
             .setContentIntent(mainPendingIntent)

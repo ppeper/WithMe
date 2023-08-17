@@ -204,7 +204,9 @@ fun BoardItemView(
                         fontSize = 16.sp,
                         fontWeight = FontWeight(400),
                         color = Black_100,
-                    )
+                    ),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
                 Text(
                     text = article.content,

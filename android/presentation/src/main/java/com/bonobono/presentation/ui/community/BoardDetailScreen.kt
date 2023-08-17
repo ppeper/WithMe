@@ -31,6 +31,8 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -106,20 +108,14 @@ fun BoardDetailScreen(
     articleId: Long,
     navController: NavController,
     communityViewModel: CommunityViewModel = hiltViewModel(),
+    showSnackBar: () -> Unit
 ) {
     boardDetailLaunchEffect(navController = navController)
 
-//    val imeState = rememberImeState()
     val keyboardController = LocalSoftwareKeyboardController.current
+    val snackBarHostState = remember { SnackbarHostState() }
     val scrollState = rememberLazyListState()
     val articleState by communityViewModel.articleDetailState.collectAsStateWithLifecycle()
-
-//    LaunchedEffect(key1 = imeState.value) {
-//        if (imeState.value) {
-//            scrollState.animateScrollToItem(scrollState.layoutInfo.totalItemsCount - 1)
-//        }
-//    }
-
 
     // 게시글 정보 불러오기
     LaunchedEffect(Unit) {
@@ -176,6 +172,7 @@ fun BoardDetailScreen(
             // Meta Url 파싱 완료
             if (metaLink.isSuccess) {
                 Scaffold(
+                    snackbarHost = { SnackbarHost(snackBarHostState) },
                     bottomBar = {
                         // 신고 게시판 -> 글쓴이, 관리자만 댓글 작성 가능
                         if (type == NavigationRouteName.COMMUNITY_REPORT &&
@@ -198,21 +195,16 @@ fun BoardDetailScreen(
                                                     comments[index].childComments.toMutableList()
                                                         .apply { add(comment) }.toList()
                                             }.toMutableList()
-                                            Log.d(
-                                                "TEST",
-                                                "BoardDetailScreen: 대 댓글 추가 ${comments.hashCode()}"
-                                            )
                                         }
                                     } else {
                                         comments = comments.toMutableList().apply { add(comment) }
                                             .toMutableList()
-                                        Log.d(
-                                            "TEST",
-                                            "BoardDetailScreen: 댓글 추가 ${comments.hashCode()}"
-                                        )
                                     }
                                     // 댓글 수 증가
                                     commentCnt++
+                                    scope.launch {
+                                        snackBarHostState.showSnackbar("댓글이 작성되었습니다.")
+                                    }
                                 },
                                 onFocusChanged = {
                                     keyboardController?.show()
@@ -259,12 +251,19 @@ fun BoardDetailScreen(
                                         onRecruitCompleteClicked = {
                                             article.recruitStatus = true
                                             recruitState = true
+                                            scope.launch {
+                                                snackBarHostState.showSnackbar("모집완료 되었습니다.")
+                                            }
                                         },
                                         onAdminCompleteClicked = {
                                             article.adminConfirmStatus = true
                                             adminState = true
+                                            scope.launch {
+                                                snackBarHostState.showSnackbar("답변완료 되었습니다.")
+                                            }
                                         },
-                                        onProfileClicked = { showSheet = true }
+                                        onProfileClicked = { showSheet = true },
+                                        showSnackBar = { showSnackBar() }
                                     )
 
                                     Text(
@@ -362,7 +361,8 @@ fun WriterView(
     navController: NavController,
     onRecruitCompleteClicked: () -> Unit,
     onAdminCompleteClicked: () -> Unit,
-    onProfileClicked: () -> Unit
+    onProfileClicked: () -> Unit,
+    showSnackBar: () -> Unit
 ) {
 
     val deleteState by communityViewModel.deleteArticleState.collectAsStateWithLifecycle()
@@ -373,6 +373,7 @@ fun WriterView(
         if (deleteState is NetworkResult.Success<Unit>) {
             Log.d("TEST", "WriterView: $deleteState")
             navController.popBackStack()
+            showSnackBar()
         }
     }
 
@@ -425,8 +426,6 @@ fun WriterView(
                     article.articleId?.let { communityViewModel.deleteArticle(type, it) }
                 },
                 onFinishClick = {
-                    Log.d("TEST", "WriterView: onFinish $article")
-                    Log.d("TEST", "WriterView: onFinish $type")
                     if (article.type == Constants.TOGETHER) {
                         article.articleId?.let { communityViewModel.recruitComplete(type, it) }
                     } else {
@@ -623,7 +622,7 @@ fun PreviewWriterView() {
         onRecruitCompleteClicked = {},
         onAdminCompleteClicked = {},
         onProfileClicked = {}
-    )
+    ) {}
 }
 
 @Preview
@@ -633,7 +632,7 @@ fun PreviewBoardDetail() {
         type = "free",
         articleId = 1,
         navController = rememberNavController()
-    )
+    ) {}
 }
 
 @OptIn(ExperimentalFoundationApi::class)

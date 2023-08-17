@@ -14,7 +14,6 @@ object CommunityReportScreen: Screen {
         NavigationIcon,
         Search,
         Alarm
-        // TODO("해변 나중에 추가")
     }
 
     private val _buttons = MutableSharedFlow<AppBarIcons>(extraBufferCapacity = 1)

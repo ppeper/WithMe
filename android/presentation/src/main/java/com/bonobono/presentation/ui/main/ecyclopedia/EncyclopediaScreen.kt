@@ -1,5 +1,6 @@
 package com.bonobono.presentation.ui.main.ecyclopedia
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -114,24 +115,23 @@ fun EncyclopediaScreen(
         characterViewModel.getMainCharacter()
 
     }
-
+    val image =
+        characterList.find { it.id == selectedCharacter.value.char_ord_id }?.icon ?: R.drawable.ic_profile
     Scaffold(
         snackbarHost = { SnackbarHost(snackBarHostState) }
-    ) {
+    ) { it ->
         it
         Column(
             Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-            val image =
-                characterList.find { it.id.toLong() == selectedId.value }?.icon ?: R.drawable.ic_profile
             Box(modifier = Modifier) {
                 AnimatedProfile(
                     profileImage = image,
                     source = R.raw.animation_card
                 )
-                if (userCharacterList.find { it.id.toLong() == selectedId.value } != null) {
+                if (userCharacterList.find { character -> character.id.toLong() == selectedId.value } != null) {
                     ElevatedFilterChip(
                         modifier = Modifier
                             .padding(12.dp)
@@ -151,7 +151,7 @@ fun EncyclopediaScreen(
                         })
                 }
             }
-            CurInformation(selectedId, userCharacterList, selectedCharacter = selectedCharacter)
+            CurInformation(selectedCharacter = selectedCharacter)
             Spacer(modifier = Modifier.size(12.dp))
             UserCharacters(userCharacterList, selectedId, selectedCharacter)
             OurCharacters(ourCharacterList, selectedId)
@@ -162,32 +162,29 @@ fun EncyclopediaScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CurInformation(
-    selectedId: MutableState<Long>,
-    userCharacterList: List<UserCharacter>,
     selectedCharacter: MutableState<UserCharacter>
 ) {
 
-    if (userCharacterList.find { it.id.toLong() == selectedId.value } != null) {
-        Box(
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.img_pixel_chat),
+            contentDescription = null,
+            contentScale = ContentScale.FillWidth,
             modifier = Modifier
                 .fillMaxWidth()
-                .wrapContentHeight()
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.img_pixel_chat),
-                contentDescription = null,
-                contentScale = ContentScale.FillWidth,
-                modifier = Modifier
-                    .fillMaxWidth()
-            )
-            Text(
-                text = "${selectedCharacter.value.custom_name}  ${selectedCharacter.value.level} \nExp: ${selectedCharacter.value.experience}\n${selectedCharacter.value.description}",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(24.dp)
-                    .align(Alignment.Center)
-            )
-        }
+        )
+        Text(
+            text = "이름: ${selectedCharacter.value.custom_name}\n레벨: ${selectedCharacter.value.level}\t\tExp: ${selectedCharacter.value.experience}\n${selectedCharacter.value.description}",
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(24.dp)
+                .align(Alignment.Center),
+            style = CustomTextStyle.quizContentStyle
+        )
     }
 }
 
@@ -216,7 +213,10 @@ fun UserCharacters(userCharacterList: List<UserCharacter>, selectedId: MutableSt
                         .clickable {
                             selectedId.value = item.id.toLong()
                             selectedCharacter.value = item
-                        }
+
+                            Log.d(TAG, "UserCharacters: ${item.char_ord_id}")
+                            Log.d(TAG, "UserCharacters: ${selectedCharacter.value}")
+                        }.border(BorderStroke(1.dp, DarkGray), shape = CircleShape)
                 )
             }
         }

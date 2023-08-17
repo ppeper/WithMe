@@ -165,7 +165,6 @@ fun MainFloatingActionButtons(navController: NavController) {
     val fabItems = listOf(
         MainFab.MISSION,
         MainFab.ENCYCLOPEDIA,
-        MainFab.NOTICE
     )
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,

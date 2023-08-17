@@ -99,7 +99,10 @@ fun MissionScreen(
     LaunchedEffect(Unit) {
         val mainId = missionViewModel.getLong(Constants.MAIN_CHARACTER)
         missionViewModel.getScore(1)
+        characterViewModel.getUserCharacterList()
+        characterViewModel.getMainCharacter()
     }
+
     Scaffold(snackbarHost = { SnackbarHost(snackBarHostState) }) {
         it
         Column(
@@ -118,10 +121,12 @@ fun MissionScreen(
                 missionViewModel.postAttendance(1)
                 missionViewModel.putLong(Constants.ATTENDANCE, System.currentTimeMillis())
                 attendanceIsEnabled.value = false
+                missionViewModel.postAttendance(1)
                 coroutineScope.launch {
                     snackBarHostState.showSnackbar("출석체크 완료! +Exp 5")
                 }
-
+                characterViewModel.getUserCharacterList()
+                characterViewModel.getMainCharacter()
             }
             Spacer(modifier = Modifier.size(12.dp))
             DailyGameItem(
@@ -231,7 +236,7 @@ fun UserInformationItem(totalScore: TotalScore, curCharacter: UserCharacter) {
         LinearProgressBar(
             source = R.drawable.ic_check,
             title = stringResource(R.string.exp_txt),
-            percent = curCharacter.experience * 0.01f
+            percent = curCharacter.experience
         )
     }
 }

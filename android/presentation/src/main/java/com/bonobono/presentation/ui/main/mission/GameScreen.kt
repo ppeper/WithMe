@@ -74,7 +74,7 @@ fun GameScreen(
     missionViewModel: MissionViewModel = hiltViewModel()
 ) {
     val trash = Trash("계란", R.drawable.image_egg)
-    var timeLeft by remember { mutableStateOf(10) }
+    var timeLeft by remember { mutableStateOf(20) }
 
     val miniGame by missionViewModel.miniGame.collectAsStateWithLifecycle()
     val isSuccess by missionViewModel.isSuccess.collectAsState()
@@ -135,7 +135,7 @@ fun GameScreen(
 
     if (isSuccess == true) {
         timeLeft = -1
-        OverDialog(title = "정답!!", content = "+Exp 10", source = R.raw.animation_fairy) {
+        OverDialog(title = "정답!!", content = "+Exp 5", source = R.raw.animation_fairy) {
             missionViewModel.putLong(Constants.GAME, System.currentTimeMillis())
             navController.popBackStack()
         }
@@ -196,14 +196,16 @@ fun TrashItemCard(
             modifier = Modifier.padding(10.dp)
         ) {
             DragTarget(modifier = Modifier.size(130.dp), dataToDrop = trashItem) {
-                Image(
-                    painter = painterResource(id = getTrashIcon(mission.problemId)),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(130.dp)
-                        .clip(RoundedCornerShape(16.dp))
-                )
+                if(getTrashIcon(mission.problemId) != -1) {
+                    Image(
+                        painter = painterResource(id = getTrashIcon(mission.problemId)),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(130.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                    )
+                }
             }
             Spacer(modifier = Modifier.size(8.dp))
             Text(
@@ -229,11 +231,13 @@ fun TrashCanScreen(modifier: Modifier, miniGame: MiniGame, missionViewModel: Mis
                 shape = RoundedCornerShape(topEnd = 10.dp, topStart = 10.dp)
             )
             .fillMaxHeight(0.3f)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
         items.forEach {
-            TrashCanCard(it, Modifier.weight(0.2f), missionViewModel, miniGame)
+            TrashCanCard(it, Modifier, missionViewModel, miniGame)
         }
     }
 }
@@ -247,7 +251,6 @@ fun TrashCanCard(
 ) {
     DropTarget<Trash>(
         modifier = modifier
-            .padding(12.dp)
     ) { isInBound, foodItem ->
         val bgColor = if (isInBound) {
             PrimaryBlue
@@ -283,7 +286,7 @@ fun TrashCanCard(
 
             Text(
                 text = trashCan.name,
-                fontSize = 18.sp,
+                fontSize = 14.sp,
                 color = Color.Black,
                 fontWeight = FontWeight.Bold
             )
@@ -298,13 +301,11 @@ fun getTrashIcon(id: Int): Int {
         1 -> R.drawable.image_egg
         2 -> R.drawable.image_bone
         3 -> R.drawable.image_bottle
-        4 -> R.drawable.image_milk
-        12 -> R.drawable.image_pot
-        13 -> R.drawable.image_chopstick
-        14 -> R.drawable.image_glass_bottle
-        16 -> R.drawable.image_receipt
-        17 -> R.drawable.image_box
-        else -> R.drawable.image_pot
+        4 -> R.drawable.image_pot
+        5-> R.drawable.image_clean
+        6 -> R.drawable.image_paper
+        7 -> R.drawable.image_dojagi
+        else -> -1
     }
 }
 

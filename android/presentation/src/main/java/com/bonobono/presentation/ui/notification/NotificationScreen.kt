@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import androidx.navigation.compose.rememberNavController
 import com.bonobono.domain.model.notification.Notification
 import com.bonobono.presentation.R
@@ -115,7 +116,9 @@ fun NotificationView(
                                     Locale.getDefault()
                                 )
                             }/${notification.articleId}"
-                        )
+                        ) {
+                            navController.currentDestination?.let { it1 -> popUpTo(it1.id){inclusive = true} }
+                        }
                         notificationViewModel.deleteNotification(notification.id)
                     },
                 verticalArrangement = Arrangement.spacedBy(12.dp),

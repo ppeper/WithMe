@@ -1,0 +1,28 @@
+cloud:
+  aws:
+    credentials:
+      accessKey: AKIARNYJE4X55QI7TB6F
+      secretKey: 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
+    s3:
+      bucket: bonobono
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+
+spring:
+  datasource:
+    hikari:
+      maximum-pool-size: 3
+      max-lifetime: 177000
+    url: jdbc:mariadb://stg-yswa-kr-practice-db-master.mariadb.database.azure.com:3306/S09P12D105?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul&useLegacyDatetimeCode=false
+    driver-class-name: org.mariadb.jdbc.Driver
+    username: S09P12D105
+    password: 6iglEmopgM
+  data:
+    mongodb:
+      uri: mongodb+srv://S09P12D105:YMliQn07tW@ssafy.ngivl.mongodb.net/S09P12D105?authSource=admin
+
+jwt:
+  header: Authorization
+  secret-key: q1w2e3r4

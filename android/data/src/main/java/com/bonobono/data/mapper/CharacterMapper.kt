@@ -1,5 +1,6 @@
 package com.bonobono.data.mapper
 
+import com.bonobono.data.BuildConfig
 import com.bonobono.data.model.character.response.UserCharacterResponse
 import com.bonobono.data.model.map.response.CampaignResponse
 import com.bonobono.data.model.map.response.RankingResponse
@@ -15,7 +16,7 @@ fun UserCharacterResponse.toDomain(): UserCharacter {
 }
 
 fun RankingResponse.toDomain(): Ranking {
-    return Ranking(count, nickname, profileImg)
+    return Ranking(count, nickname, BuildConfig.IMAGE_BASE_URL + profileImg)
 }
 
 fun CampaignResponse.toDomain(): Campaign {

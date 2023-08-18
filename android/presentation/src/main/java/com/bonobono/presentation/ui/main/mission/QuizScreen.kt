@@ -161,7 +161,7 @@ fun QuizPromptBox(
 @Composable
 fun checkAnswer(isSuccess: Boolean?, mission: Mission, navController: NavController, missionViewModel: MissionViewModel) {
     if (isSuccess == true) {
-        OverDialog(title = "정답!!", content = "+Exp 10", source = R.raw.animation_fairy, commentary = mission.commentary) {
+        OverDialog(title = "정답!!", content = "+Exp 5", source = R.raw.animation_fairy, commentary = mission.commentary) {
             missionViewModel.putLong(Constants.OX_QUIZ, System.currentTimeMillis())
             navController.popBackStack()
         }

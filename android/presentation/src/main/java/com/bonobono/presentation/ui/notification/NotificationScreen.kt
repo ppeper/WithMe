@@ -34,6 +34,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -54,6 +55,7 @@ import com.bonobono.presentation.utils.Constants
 import com.bonobono.presentation.utils.DateUtils
 import com.bonobono.presentation.viewmodel.NotificationViewModel
 import java.time.LocalDateTime
+import java.util.Locale
 
 @Composable
 fun NotificationScreen(
@@ -77,7 +79,8 @@ fun NotificationScreen(
                 modifier = modifier.padding(it)
             ) {
                 items(notificationList.value) { item ->
-                    NotificationView(notification = item, isEdit = isEdit, navController = navController) {
+                    NotificationView(notification = item, isEdit = isEdit, navController = navController,
+                        notificationViewModel = notificationViewModel) {
                         notificationViewModel.deleteNotification(item.id)
                     }
                 }
@@ -92,6 +95,7 @@ fun NotificationView(
     navController: NavController,
     notification: Notification,
     isEdit: Boolean,
+    notificationViewModel: NotificationViewModel,
     onDeleteClicked: () -> Unit
 ) {
     Column {
@@ -105,7 +109,14 @@ fun NotificationView(
                         interactionSource = MutableInteractionSource(),
                         indication = null
                     ) {
-                        navController.navigate("${BoardDetailNav.route}/${notification.type}/${notification.articleId}")
+                        navController.navigate(
+                            "${BoardDetailNav.route}/${
+                                notification.type.lowercase(
+                                    Locale.getDefault()
+                                )
+                            }/${notification.articleId}"
+                        )
+                        notificationViewModel.deleteNotification(notification.id)
                     },
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
@@ -179,7 +190,8 @@ fun Preview() {
     NotificationView(
         notification = Notification(0, "FREE", "1", "게시물에 댓글이 작성되었습니다.", "안녕하세요~", LocalDateTime.now().toString()),
         isEdit = true,
-        navController = rememberNavController()
+        navController = rememberNavController(),
+        notificationViewModel = hiltViewModel()
     ) {}
 }
 

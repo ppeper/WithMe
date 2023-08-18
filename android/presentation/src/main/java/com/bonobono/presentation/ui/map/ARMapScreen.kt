@@ -108,7 +108,7 @@ fun ARMapScreen(
                     // 위치 정보를 얻어오는 로직을 구현합니다. (예: FusedLocationProviderClient 사용)
                     if (currentLocation.value != null) {
                         val curCatchCharacter =
-                            findCharacterInRadius(catchCharacters, currentLocation.value!!, 50.0)
+                            findCharacterInRadius(catchCharacters, currentLocation.value!!, 1000.0)
                         if (curCatchCharacter != null) {
                             mapViewModel.setCurCatchCharacter(catchCharacter = curCatchCharacter)
                             Log.d(TAG, "juyong: ${mapViewModel.curCatchCharacter.value}")

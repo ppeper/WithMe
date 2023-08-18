@@ -74,6 +74,7 @@ import com.bonobono.presentation.ui.theme.PrimaryBlue
 import com.bonobono.presentation.ui.theme.TextGray
 import com.bonobono.presentation.ui.theme.White
 import com.bonobono.presentation.utils.NavigationUtils
+import com.bonobono.presentation.viewmodel.SharedLocalViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import kotlinx.coroutines.launch
@@ -91,6 +92,8 @@ fun MainScreen(
     val appBarState = rememberAppBarState(navController = navController)
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+    val localViewModel: SharedLocalViewModel = hiltViewModel()
+    val role = localViewModel.getRole("role")
     Scaffold(
         snackbarHost = { SnackbarHost(snackBarHostState) },
         topBar = {
@@ -110,7 +113,12 @@ fun MainScreen(
                 }
 
                 NavigationRouteName.MAIN_MAP -> {
-                    CommunityFloatingActionButton(navController = navController, item = CommunityFab.MAP)
+                    if(role == Constants.ADMIN_ROLE) {
+                        CommunityFloatingActionButton(
+                            navController = navController,
+                            item = CommunityFab.MAP
+                        )
+                    }
                 }
 
                 NavigationRouteName.COMMUNITY_FREE -> {
@@ -159,7 +167,6 @@ fun MainFloatingActionButtons(navController: NavController) {
     val fabItems = listOf(
         MainFab.MISSION,
         MainFab.ENCYCLOPEDIA,
-        MainFab.NOTICE
     )
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -258,7 +265,6 @@ fun parseCommunityRoute(route: String): String {
 fun MainNavigationScreen(
     innerPaddings: PaddingValues,
     navController: NavHostController,
-    showSnackBar: (String) -> Unit
 ) {
     NavHost(
         modifier = Modifier.padding(innerPaddings),
@@ -311,7 +317,10 @@ fun MainNavigationScreen(
             val parentEntry = remember(it) {
                 navController.getBackStackEntry(NavigationRouteName.MAIN_HOME)
             }
-            EncyclopediaScreen(navController = navController, characterViewModel = hiltViewModel(parentEntry))
+            EncyclopediaScreen(
+                navController = navController,
+                characterViewModel = hiltViewModel(parentEntry)
+            )
         }
         composable(
             route = NoticeNav.route,
@@ -504,9 +513,12 @@ fun MainNavigationScreen(
             deepLinks = ProfileEditNav.deepLinks
         ) {
             val parentEntry = remember(it) {
-            navController.getBackStackEntry(NavigationRouteName.MAIN_MY_PAGE)
-        }
-            ProfileEditScreen(navController = navController, myPageViewModel = hiltViewModel(parentEntry))
+                navController.getBackStackEntry(NavigationRouteName.MAIN_MY_PAGE)
+            }
+            ProfileEditScreen(
+                navController = navController,
+                myPageViewModel = hiltViewModel(parentEntry)
+            )
         }
         composable(
             route = "${QuizNav.route}/{type}",
@@ -542,6 +554,23 @@ fun MainNavigationScreen(
 //            }
 //        }
 
+//        composable(
+//            route = NavigationRouteName.CHATTING_GALLERY
+//        ) {
+//            val parentEntry = remember(it) {
+//                navController.getBackStackEntry(
+//                    "${ChattingEditNav.route}/${
+//                        it.arguments?.getString(
+//                            "nickname"
+//                        )
+//                    }"
+//                )
+//            }
+//            GalleryScreen(
+//                navController = navController,
+//                photoViewModel = hiltViewModel(parentEntry)
+//            )
+//        }
 //        composable(
 //            route = NavigationRouteName.CHATTING_GALLERY
 //        ) {

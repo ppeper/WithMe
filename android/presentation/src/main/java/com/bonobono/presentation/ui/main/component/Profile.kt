@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import com.bonobono.presentation.ui.common.LottieLoader
 import com.bonobono.presentation.ui.theme.DarkGray
 import com.bonobono.presentation.ui.theme.LightGray
+import com.bonobono.presentation.ui.theme.White
 
 @Composable
 fun ProfilePhoto(profileImage: Int, modifier: Modifier) {
@@ -29,8 +30,7 @@ fun ProfilePhoto(profileImage: Int, modifier: Modifier) {
         Image(
             modifier = modifier
                 .clip(CircleShape)
-                .border(BorderStroke(1.dp, DarkGray), shape = CircleShape)
-                .background(LightGray)
+                .background(White)
                 .size(80.dp)
                 .padding(8.dp),
             painter = painterResource(id = profileImage),

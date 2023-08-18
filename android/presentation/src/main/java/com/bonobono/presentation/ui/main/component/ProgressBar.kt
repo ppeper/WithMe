@@ -33,7 +33,7 @@ import com.bonobono.presentation.ui.theme.Green
 import com.bonobono.presentation.ui.theme.LightGray
 
 @Composable
-fun LinearProgressBar(source: Int, title: String, percent: Float) {
+fun LinearProgressBar(source: Int, title: String, percent: Int) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.padding(vertical = 12.dp, horizontal = 8.dp)
@@ -61,7 +61,7 @@ fun LinearProgressBar(source: Int, title: String, percent: Float) {
                         color = Black_100
                     )
                     Text(
-                        text = "${percent * 100}%",
+                        text = "$percent%",
                         fontWeight = FontWeight.Bold,
                         fontSize = 14.sp,
                         color = Black_100
@@ -76,7 +76,7 @@ fun LinearProgressBar(source: Int, title: String, percent: Float) {
                     .clip(RoundedCornerShape(8.dp)),
                 color = Green,
                 trackColor = LightGray,
-                progress = percent
+                progress = percent*0.01f
             )
         }
     }
@@ -119,11 +119,4 @@ fun CircularProgressBar(percent: Float, content: String) {
             )
         }
     }
-}
-
-@Preview
-@Composable
-fun PreviewProgressBar() {
-    LinearProgressBar(source = R.drawable.ic_check, title = "경험치", percent = 0.3f)
-    CircularProgressBar(percent = 0.5f, "")
 }

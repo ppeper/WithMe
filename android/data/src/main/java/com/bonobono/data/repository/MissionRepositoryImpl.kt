@@ -69,11 +69,6 @@ class MissionRepositoryImpl @Inject constructor(
     }
 
     override suspend fun removeCompletedTime() {
-        preferenceDatasource.remove(Constants.OX_QUIZ)
-        preferenceDatasource.remove(Constants.ATTENDANCE)
-        preferenceDatasource.remove(Constants.FOUR_QUIZ)
-        preferenceDatasource.remove(Constants.GAME)
-
         val calendar = Calendar.getInstance()
         val currentDay = calendar.get(Calendar.DAY_OF_YEAR)
 

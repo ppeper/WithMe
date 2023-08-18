@@ -1,7 +1,6 @@
 package com.bonobono.presentation.ui.map
 
 import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -38,29 +37,21 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.bonobono.domain.model.map.Campaign
-import com.bonobono.domain.model.map.CatchKey
 import com.bonobono.domain.model.map.Location
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.ARMapNav
-import com.bonobono.presentation.ui.CameraNav
 import com.bonobono.presentation.ui.NavigationRouteName
-import com.bonobono.presentation.ui.QuizNav
 import com.bonobono.presentation.ui.common.text.CustomTextStyle
-import com.bonobono.presentation.ui.community.views.link.WebView
 import com.bonobono.presentation.ui.main.component.CampaignCard
 import com.bonobono.presentation.ui.main.component.RankingCard
-import com.bonobono.presentation.ui.theme.LightGray
 import com.bonobono.presentation.ui.theme.PrimaryBlue
 import com.bonobono.presentation.ui.theme.TextGray
 import com.bonobono.presentation.ui.theme.White
-import com.bonobono.presentation.utils.Constants
 import com.bonobono.presentation.viewmodel.MapViewModel
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraPosition
@@ -71,12 +62,10 @@ import com.naver.maps.map.compose.Marker
 import com.naver.maps.map.compose.MarkerState
 import com.naver.maps.map.compose.NaverMap
 import com.naver.maps.map.compose.rememberCameraPositionState
-import com.naver.maps.map.compose.rememberFusedLocationSource
 import com.naver.maps.map.overlay.OverlayImage
 import kotlinx.coroutines.launch
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
-import java.util.Date
 
 private const val TAG = "MapScreen"
 
@@ -88,7 +77,7 @@ fun MainMapScreen(navController: NavHostController, mapViewModel: MapViewModel =
 
     val locations by mapViewModel.locations.collectAsState()
     val selectedIdx = remember {
-        mutableStateOf(0)
+        mutableStateOf(4)
     }
 
     LaunchedEffect(Unit) {
@@ -295,7 +284,7 @@ fun BottomSheetRankingContent(
         var ranking = 1
         items(rankingList.sortedByDescending { it.count }) {
             RankingCard(
-                profileImage = R.drawable.beluga_whale,
+                profileImage = it.profileImg,
                 nickName = it.nickname,
                 count = it.count,
                 ranking = ranking++
@@ -332,6 +321,7 @@ fun BottomSheetCampaignContent(
                             val encodedUrl =
                                 URLEncoder.encode(it.url, StandardCharsets.UTF_8.toString())
                             navController.navigate("${NavigationRouteName.LINK_WEB_VIEW}/${encodedUrl}")
+                            Log.d(TAG, "BottomSheetCampaignContent: $encodedUrl")
                         }, campaign = it)
                 }
             }

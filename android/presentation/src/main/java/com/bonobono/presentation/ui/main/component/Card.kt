@@ -22,10 +22,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.bonobono.domain.model.map.Campaign
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.common.LottieLoader
@@ -34,7 +37,6 @@ import com.bonobono.presentation.ui.common.text.CustomTextStyle
 import com.bonobono.presentation.ui.theme.TextGray
 import com.bonobono.presentation.ui.theme.White
 import com.bonobono.presentation.utils.DateUtils
-import com.google.android.gms.common.util.DataUtils
 
 
 @Composable
@@ -84,7 +86,7 @@ fun LargeSquareCardWithAnimation(
 }
 
 @Composable
-fun RankingCard(profileImage: Int, nickName: String, count: Int, ranking: Int) {
+fun RankingCard(profileImage: String?, nickName: String, count: Int, ranking: Int) {
     val rankingImage = listOf<Int>(
         R.drawable.ic_1st,
         R.drawable.ic_2nd,
@@ -104,13 +106,17 @@ fun RankingCard(profileImage: Int, nickName: String, count: Int, ranking: Int) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Spacer(modifier = Modifier.size(8.dp))
-            ProfilePhoto(
-                profileImage = profileImage,
-                Modifier
+            AsyncImage(
+                modifier = Modifier
                     .clip(CircleShape)
                     .background(White)
-                    .size(80.dp)
-                    .padding(8.dp)
+                    .size(80.dp),
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(profileImage)
+                    .error(R.drawable.default_profile)
+                    .build(),
+                contentDescription = "프로필",
+                contentScale = ContentScale.Crop
             )
             Spacer(modifier = Modifier.size(8.dp))
             Column {
@@ -179,5 +185,5 @@ fun CampaignCard(modifier: Modifier = Modifier, campaign: Campaign) {
 @Preview
 @Composable
 fun CardPreview() {
-    RankingCard(profileImage = R.drawable.beluga_whale, nickName = "주용가리", count = 3, ranking = 1)
+    RankingCard(profileImage = "", nickName = "주용가리", count = 3, ranking = 1)
 }

@@ -72,7 +72,9 @@ import com.bonobono.presentation.ui.notification.NotificationScreen
 import com.bonobono.presentation.ui.theme.PrimaryBlue
 import com.bonobono.presentation.ui.theme.TextGray
 import com.bonobono.presentation.ui.theme.White
+import com.bonobono.presentation.utils.Constants
 import com.bonobono.presentation.utils.NavigationUtils
+import com.bonobono.presentation.viewmodel.SharedLocalViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import kotlinx.coroutines.launch
@@ -90,6 +92,8 @@ fun MainScreen(
     val appBarState = rememberAppBarState(navController = navController)
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+    val localViewModel: SharedLocalViewModel = hiltViewModel()
+    val role = localViewModel.getRole("role")
     Scaffold(
         snackbarHost = { SnackbarHost(snackBarHostState) },
         topBar = {
@@ -109,10 +113,12 @@ fun MainScreen(
                 }
 
                 NavigationRouteName.MAIN_MAP -> {
-                    CommunityFloatingActionButton(
-                        navController = navController,
-                        item = CommunityFab.MAP
-                    )
+                    if(role == Constants.ADMIN_ROLE) {
+                        CommunityFloatingActionButton(
+                            navController = navController,
+                            item = CommunityFab.MAP
+                        )
+                    }
                 }
 
                 NavigationRouteName.COMMUNITY_FREE -> {

@@ -176,8 +176,10 @@ class SignUpViewModel @Inject constructor(
     fun signUp() = viewModelScope.launch {
         // 비밀번호 check 부분은 값이 없으면 회원가입이 안되므로 임시로 데이터 넣음
         // role도 일단 다 USER로 지정해버림 아니면 회원가입 안됨
-        val role = Role("USER")
-        val register = Register(0, name = name, nickname = nickName, password = password,  phoneNumber = phoneNum, role = listOf(role), username = username)
+        Log.d(TAG, "signUp: password ${password}")
+        val role = Role("ADMIN")
+        val register = Register(0, name = name, nickname = nickName, password = password,  phoneNumber = "1234", role = listOf(role), username = username)
+        Log.d(TAG, "signUp: ${register.toString()}")
         _signUpState.emit(signUpUseCase.invoke(register))
         Log.d(TAG, "signUp: ${signUpState.value}")
     }

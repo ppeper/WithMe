@@ -69,6 +69,7 @@ class LoginViewModel @Inject constructor(
         return when (result) {
             is NetworkResult.Success -> {
                 // token 값 sharedpreference에 넣어주자
+                Log.d(TAG, "login: ${result.data}")
                 loginResultInputUseCase.invoke(result.data)
 //                putMemberInfo()
                 "SUCCESS" // Return the login result

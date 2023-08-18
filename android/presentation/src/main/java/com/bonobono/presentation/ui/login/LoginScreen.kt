@@ -47,6 +47,9 @@ import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.FindIdNav
 import com.bonobono.presentation.ui.FindPasswordNav
 import com.bonobono.presentation.ui.JoinNav
+import com.bonobono.presentation.ui.LoginNav
+import com.bonobono.presentation.ui.MainNav
+import com.bonobono.presentation.ui.NavigationRouteName
 import com.bonobono.presentation.ui.OnBoardingNav
 import com.bonobono.presentation.ui.common.BasicTextField
 import com.bonobono.presentation.ui.common.button.PrimaryColorButton
@@ -121,9 +124,13 @@ fun LoginScreen(
                                     viewModel.putLoginInfo()
                                 }
                                 if (!mainViewModel.getBoolean(Constants.ONBOADING)) {
-                                    navController.navigate(OnBoardingNav.route)
+                                    navController.navigate(OnBoardingNav.route) {
+                                        navController.currentDestination?.let { it1 -> popUpTo(it1.id){inclusive = true} }
+                                    }
                                 } else {
-                                    navController.navigate("main_screen")
+                                    navController.navigate("main_screen") {
+                                        navController.currentDestination?.let { it1 -> popUpTo(it1.id){inclusive = true} }
+                                    }
                                 }
                             } else {
                                 Log.d(TAG, "LoginScreen: 로그인 실패")
@@ -135,10 +142,10 @@ fun LoginScreen(
                 })
             Spacer(modifier = Modifier.height(16.dp))
             LoginHelpOptions(navController)
-            Spacer(modifier = Modifier.height(60.dp))
-            SNSLoginGuide()
-            Spacer(modifier = Modifier.height(12.dp))
-            SNSLoginButtons()
+//            Spacer(modifier = Modifier.height(60.dp))
+//            SNSLoginGuide()
+//            Spacer(modifier = Modifier.height(12.dp))
+//            SNSLoginButtons()
         }
     }
 }

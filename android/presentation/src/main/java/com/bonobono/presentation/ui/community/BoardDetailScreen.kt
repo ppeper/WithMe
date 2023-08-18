@@ -70,7 +70,6 @@ import com.bonobono.domain.model.community.Article
 import com.bonobono.domain.model.community.Image
 import com.bonobono.domain.model.community.Link
 import com.bonobono.presentation.R
-import com.bonobono.presentation.ui.ChattingEditNav
 import com.bonobono.presentation.ui.NavigationRouteName
 import com.bonobono.presentation.ui.common.LoadingView
 import com.bonobono.presentation.ui.community.util.DummyData.dummyArticle
@@ -169,7 +168,7 @@ fun BoardDetailScreen(
                         article = article,
                     ) {
                         chattingRoomViewModel.enterChattingRoom(nickName = article.nickname)
-                        navController.navigate("${ChattingEditNav.route}/${article.nickname}")
+//                        navController.navigate("${ChattingEditNav.route}/${article.nickname}")
                     }
                 }
             }

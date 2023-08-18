@@ -6,7 +6,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class MemberResponse(
-    val role: List<AuthoritySetResponse>,
+    val authoritySet: List<AuthoritySetResponse>,
     val name: String,
     val nickname: String,
     val phoneNumber: String,

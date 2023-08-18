@@ -12,7 +12,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.bonobono.domain.model.NetworkResult
 import com.bonobono.domain.model.chatting.ChattingList
-import com.bonobono.presentation.ui.ChattingEditNav
 import com.bonobono.presentation.ui.chatting.view.ChattingCard
 import com.bonobono.presentation.ui.common.LoadingView
 import com.bonobono.presentation.ui.common.topbar.screen.ChattingScreen
@@ -74,7 +73,7 @@ fun ChatRoomList(
                 chattingList = item,
                 moveAction = {
                     chattingRoomViewModel.enterChattingRoom(item.nickname)
-                    navController.navigate("${ChattingEditNav.route}/${item.nickname}")
+//                    navController.navigate("${ChattingEditNav.route}/${item.nickname}")
                 },
                 exitAction = { chattingViewModel.deleteChattingItem(item) },
                 chattingViewModel = chattingViewModel

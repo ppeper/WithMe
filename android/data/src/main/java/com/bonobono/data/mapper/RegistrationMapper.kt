@@ -29,7 +29,7 @@ import kotlin.system.exitProcess
 
 fun MemberResponse.toDomain(): Member {
     return Member(
-        role = role.map { it.toDomain() },
+        authoritySet = authoritySet.map { it.toDomain() },
         name = name,
         nickname = nickname,
         phoneNumber = phoneNumber,

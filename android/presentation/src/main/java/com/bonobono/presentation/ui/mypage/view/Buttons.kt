@@ -36,8 +36,10 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.bonobono.presentation.R
 import com.bonobono.presentation.ui.LoginNav
+import com.bonobono.presentation.ui.MainNav
 import com.bonobono.presentation.ui.PointStoreNav
 import com.bonobono.presentation.ui.ProfileEditNav
 import com.bonobono.presentation.ui.mypage.PasswordEditView
@@ -115,6 +117,7 @@ fun navigateToAppSettings(context: Context) {
 @Composable
 fun MyPageButton(buttonType: String, iconName: String, navController: NavController, myPageViewModel: MyPageViewModel) {
     val loginViewModel : LoginViewModel = hiltViewModel()
+    val newNavController = rememberNavController()
     Row(verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
@@ -135,7 +138,8 @@ fun MyPageButton(buttonType: String, iconName: String, navController: NavControl
 
                     "로그아웃" -> {
                         loginViewModel.logout()
-                        navController.navigate(LoginNav.route)
+                        navController.popBackStack(LoginNav.route, false)
+                        navController.navigate("backToLogin")
                     }
 
                     else -> {

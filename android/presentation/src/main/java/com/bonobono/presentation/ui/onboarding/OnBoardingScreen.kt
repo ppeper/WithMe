@@ -64,7 +64,9 @@ fun OnBoardingScreen(navController: NavHostController, mainViewModel: MainViewMo
                 .size(24.dp),
                 onClick = {
                     mainViewModel.putBoolean(Constants.ONBOADING, true)
-                    navController.navigate("main_screen")
+                    navController.navigate("main_screen") {
+                        navController.currentDestination?.let { it1 -> popUpTo(it1.id){inclusive = true} }
+                    }
                 }
             ) {
                 Icon(

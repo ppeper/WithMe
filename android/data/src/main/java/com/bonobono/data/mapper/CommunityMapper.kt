@@ -95,7 +95,7 @@ fun CommentResponse.toDomain(): Comment {
         parentCommentId = parentCommentId,
         content = content,
         nickname = nickname,
-        profileImg = profileImg,
+        profileImg = BuildConfig.IMAGE_BASE_URL + profileImg,
         childComments = childComments.map { it.toDomain() },
         liked = liked,
         likes = likes,

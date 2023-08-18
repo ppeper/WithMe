@@ -39,7 +39,7 @@ public class ReportDetailResponseDto {
         this.content = entity.getContent();
         this.memberId = entity.getMember().getId();
         this.nickname = entity.getMember().getNickname();
-//        this.profileImg = entity.getMember().getProfileImg().getImageUrl();
+        this.profileImg = entity.getMember().getProfileImg().getImageUrl();
         this.views = entity.getViews();
         this.locationName = entity.getLocation().getName();
         this.latitude = entity.getLatitude();

@@ -40,7 +40,7 @@ public class ArticleListResponseDto {
         this.likes = entity.getArticleLikes().size();
         this.comments = entity.getComments().size();
         this.nickname = entity.getMember().getNickname();
-//        this.profileImg = entity.getMember().getProfileImg().getImageUrl();
+        this.profileImg = entity.getMember().getProfileImg().getImageUrl();
         this.createdDate = entity.getCreatedDate();
     }
 }

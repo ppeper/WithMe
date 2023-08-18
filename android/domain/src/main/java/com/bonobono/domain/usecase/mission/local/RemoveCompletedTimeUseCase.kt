@@ -1,0 +1,12 @@
+package com.bonobono.domain.usecase.mission.local
+
+import com.bonobono.domain.repository.MissionRepository
+import javax.inject.Inject
+
+class RemoveCompletedTimeUseCase @Inject constructor(
+    private val missionRepository: MissionRepository
+) {
+    suspend operator fun invoke() {
+        missionRepository.removeCompletedTime()
+    }
+}

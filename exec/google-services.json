@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "368722100826",
+    "project_id": "bonobono-2a773",
+    "storage_bucket": "bonobono-2a773.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:368722100826:android:3f290da90f13f61b1c8e63",
+        "android_client_info": {
+          "package_name": "com.bonobono"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "368722100826-usvc1df95pfqtec8a2j6mmmedpacl9v9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bonobono",
+            "certificate_hash": "950164031ea747919860b6c631d151a0cc73d51e"
+          }
+        },
+        {
+          "client_id": "368722100826-op88fr2cnh2ug4l02fgachukoasdnqbh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDE8_m65Y99B4JV1sLdYhyckwHqJyJz8As"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "368722100826-op88fr2cnh2ug4l02fgachukoasdnqbh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

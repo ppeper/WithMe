@@ -47,7 +47,7 @@ fun DropDownMenuView(
             modifier = Modifier.background(color = White)
         ) {
             // 글쓴이만 수정 삭제 가능
-            if (memberId == article.memberId) {
+            if (memberId == article.memberId || role == Constants.ADMIN_ROLE) {
                 DropdownMenuItem(
                     text = {
                         Text(text = "삭제 하기")
@@ -85,8 +85,8 @@ fun DropDownMenuView(
                                 )
                             },
                             onClick = {
-                                menuExpanded = false
                                 onFinishClick()
+                                menuExpanded = false
                             }
                         )
                     }

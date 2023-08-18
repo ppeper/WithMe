@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Community -->
+    <string name="community_free_title">자유게시판</string>
+    <string name="community_free_description">자유롭게 소통해요!</string>
+    <string name="community_with_title">함께게시판</string>
+    <string name="community_with_description">함께 바다가꾸기!</string>
+    <string name="community_alert_title">신고게시판</string>
+    <string name="community_alert_description">주변 쓰레기를 신고해요!</string>
+    <string name="login_login">로그인</string>
+    <string name="login_join">회원가입</string>
+    <string name="login_find_id">아이디 찾기</string>
+    <string name="login_find_password">비밀번호 찾기</string>
+    <string name="login_check_availability">중복확인</string>
+    <string name="login_phonenum_check_send">인증요청</string>
+    <string name="login_resend">재전송</string>
+    <string name="login_require_availability">인증요청</string>
+    <string name="login_id">아이디</string>
+    <string name="login_password">비밀번호</string>
+    <string name="login_phone_number">휴대폰 번호</string>
+    <string name="login_name">이름</string>
+    <string name="login_authentic_code">인증번호</string>
+    <string name="edit_profile_done">확인</string>
+    <string name="edit_profile_change_password">비밀번호 변경하기</string>
+    <string name="bonobono_app_name">나랑해</string>
+    <string name="evil_name">쓰레기 마왕</string>
+    <string name="game_over">GAME OVER...</string>
+    <string name="fairy_name">클로버 요정</string>
+    <string name="game_prompt_guide">분리수거를 하지 않으면 바다가 계속 아플거야!\n이 쓰레기를 버리려면 어떻게 버려야할까?</string>
+    <string name="exit">나가기</string>
+    <string name="redo">다시하기</string>
+    <string name="quiz_prompt_guide">오늘도 지구를 지켜줘서 고마워!\n\n내가 내는 문제를 맞추면 동물 친구들을 성장 시킬 수 있어!\n오늘도 화이팅!</string>
+    <string name="attendance_guide">출석체크하고 경험치 받기\n+Exp.5</string>
+    <string name="attendance_btn">출석하기</string>
+    <string name="game_guide">게임 클리어하고 경험치 받기\n+Exp.5</string>
+    <string name="game_btn">게임하기</string>
+    <string name="ox_quiz_guide">O/X 퀴즈 풀고\n경험치 얻기</string>
+    <string name="four_quiz_guide">객관식 퀴즈 풀고\n경험치 얻기</string>
+    <string name="exp_txt">경험치</string>
+</resources>

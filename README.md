@@ -2,7 +2,7 @@
 <p align="center"><img src="https://github.com/ppeper/WithMe/assets/63226023/0cd21777-c272-460d-b1a1-1c769b88e71e"></p>
 <h3>바다쓰레기는 이제 그만! 캠페인 참여는, 나랑해!</h3>
 
-<h4>아픈 바다를 깨긋하게</h4>
+<h4>아픈 바다를 깨끗하게</h4>
 
 <h4>나랑해 와 함께 지켜주세요!😃</h4> <br>
 
